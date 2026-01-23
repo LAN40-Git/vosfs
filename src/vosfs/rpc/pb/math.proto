@@ -1,0 +1,10 @@
+syntax = "proto3";
+package vosfs.math;
+
+message Request {
+    repeated uint32 values = 1;
+}
+
+message Response {
+
+}

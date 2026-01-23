@@ -1,7 +1,7 @@
 #pragma once
 
 namespace vosfs::rpc {
-class RpcProducer {
+class RpcRequest {
 
 };
 } // namespace vosfs::rpc
