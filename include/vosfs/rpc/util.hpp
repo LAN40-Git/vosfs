@@ -1,6 +1,9 @@
 #pragma once
+#include "vosfs/rpc/pb/math.pb.h"
+#include "vosfs/rpc/pb/rpc.pb.h"
 #include "vosfs/rpc/type.hpp"
 #include "vosfs/rpc/error.hpp"
+#include "vosfs/rpc/config.hpp"
 #include <kosio/net.hpp>
 #include <kosio/core.hpp>
 #include <kosio/sync.hpp>
@@ -8,8 +11,6 @@
 #include <cstdint>
 
 namespace vosfs::rpc::detail {
-
-
 struct FixedRpcRequestHeader {
     uint64_t    request_id{0};   // 8 bytes
     ServiceType service_type{0}; // 1 byte

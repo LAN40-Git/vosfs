@@ -9,6 +9,7 @@ public:
     enum ErrorCode : uint8_t {
         kSuccess = 0,
         kRedirect,
+        kShutdown,
     };
 
 public:
@@ -26,6 +27,8 @@ public:
             return "Success to handle rpc request.";
         case kRedirect:
             return "Need to redirect to another rpc provider.";
+        case kShutdown:
+            return "RPC communication completed, preparing to close the connection.";
         default:
             return "Unknown rpc error.";
         }
@@ -34,6 +37,11 @@ public:
 private:
     uint8_t error_code_;
 };
+
+static auto make_rpc_error(uint8_t error_code) -> Error {
+    return Error{error_code};
+}
+
 } // namespace vosfs::rpc::detail
 
 namespace std {

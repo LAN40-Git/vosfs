@@ -12,6 +12,8 @@ public:
         kInvalidServerAddress,
         kConnectToServerFailed,
         kSendRpcRequestFailed,
+        kParseRpcMessageFailed,
+        kConnectionShutdown,
     };
 
 public:
@@ -29,6 +31,10 @@ public:
                 return "Failed to connect to server.";
             case kSendRpcRequestFailed:
                 return "Failed to send rpc request.";
+            case kParseRpcMessageFailed:
+                return "Failed to parse rpc message.";
+            case kConnectionShutdown:
+                return "Connection shutdown.";
             default:
                 return strerror(error_code_);
         }
