@@ -23,7 +23,6 @@
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/arena.h>
 #include <google/protobuf/arenastring.h>
-#include <google/protobuf/generated_message_bases.h>
 #include <google/protobuf/generated_message_util.h>
 #include <google/protobuf/metadata_lite.h>
 #include <google/protobuf/generated_message_reflection.h>
@@ -47,41 +46,41 @@ struct TableStruct_math_2eproto {
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_math_2eproto;
 namespace vosfs {
 namespace math {
-class Request;
-struct RequestDefaultTypeInternal;
-extern RequestDefaultTypeInternal _Request_default_instance_;
-class Response;
-struct ResponseDefaultTypeInternal;
-extern ResponseDefaultTypeInternal _Response_default_instance_;
+class MathAddRequest;
+struct MathAddRequestDefaultTypeInternal;
+extern MathAddRequestDefaultTypeInternal _MathAddRequest_default_instance_;
+class MathAddResponse;
+struct MathAddResponseDefaultTypeInternal;
+extern MathAddResponseDefaultTypeInternal _MathAddResponse_default_instance_;
 }  // namespace math
 }  // namespace vosfs
 PROTOBUF_NAMESPACE_OPEN
-template<> ::vosfs::math::Request* Arena::CreateMaybeMessage<::vosfs::math::Request>(Arena*);
-template<> ::vosfs::math::Response* Arena::CreateMaybeMessage<::vosfs::math::Response>(Arena*);
+template<> ::vosfs::math::MathAddRequest* Arena::CreateMaybeMessage<::vosfs::math::MathAddRequest>(Arena*);
+template<> ::vosfs::math::MathAddResponse* Arena::CreateMaybeMessage<::vosfs::math::MathAddResponse>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace vosfs {
 namespace math {
 
 // ===================================================================
 
-class Request final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.math.Request) */ {
+class MathAddRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.math.MathAddRequest) */ {
  public:
-  inline Request() : Request(nullptr) {}
-  ~Request() override;
-  explicit PROTOBUF_CONSTEXPR Request(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline MathAddRequest() : MathAddRequest(nullptr) {}
+  ~MathAddRequest() override;
+  explicit PROTOBUF_CONSTEXPR MathAddRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  Request(const Request& from);
-  Request(Request&& from) noexcept
-    : Request() {
+  MathAddRequest(const MathAddRequest& from);
+  MathAddRequest(MathAddRequest&& from) noexcept
+    : MathAddRequest() {
     *this = ::std::move(from);
   }
 
-  inline Request& operator=(const Request& from) {
+  inline MathAddRequest& operator=(const MathAddRequest& from) {
     CopyFrom(from);
     return *this;
   }
-  inline Request& operator=(Request&& from) noexcept {
+  inline MathAddRequest& operator=(MathAddRequest&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -104,20 +103,20 @@ class Request final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const Request& default_instance() {
+  static const MathAddRequest& default_instance() {
     return *internal_default_instance();
   }
-  static inline const Request* internal_default_instance() {
-    return reinterpret_cast<const Request*>(
-               &_Request_default_instance_);
+  static inline const MathAddRequest* internal_default_instance() {
+    return reinterpret_cast<const MathAddRequest*>(
+               &_MathAddRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     0;
 
-  friend void swap(Request& a, Request& b) {
+  friend void swap(MathAddRequest& a, MathAddRequest& b) {
     a.Swap(&b);
   }
-  inline void Swap(Request* other) {
+  inline void Swap(MathAddRequest* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -130,7 +129,7 @@ class Request final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(Request* other) {
+  void UnsafeArenaSwap(MathAddRequest* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -138,14 +137,14 @@ class Request final :
 
   // implements Message ----------------------------------------------
 
-  Request* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<Request>(arena);
+  MathAddRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<MathAddRequest>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const Request& from);
+  void CopyFrom(const MathAddRequest& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const Request& from) {
-    Request::MergeImpl(*this, from);
+  void MergeFrom( const MathAddRequest& from) {
+    MathAddRequest::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -163,15 +162,15 @@ class Request final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(Request* other);
+  void InternalSwap(MathAddRequest* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "vosfs.math.Request";
+    return "vosfs.math.MathAddRequest";
   }
   protected:
-  explicit Request(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit MathAddRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -185,31 +184,28 @@ class Request final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kValuesFieldNumber = 1,
+    kAFieldNumber = 1,
+    kBFieldNumber = 2,
   };
-  // repeated uint32 values = 1;
-  int values_size() const;
+  // uint32 a = 1;
+  void clear_a();
+  uint32_t a() const;
+  void set_a(uint32_t value);
   private:
-  int _internal_values_size() const;
+  uint32_t _internal_a() const;
+  void _internal_set_a(uint32_t value);
   public:
-  void clear_values();
-  private:
-  uint32_t _internal_values(int index) const;
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
-      _internal_values() const;
-  void _internal_add_values(uint32_t value);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
-      _internal_mutable_values();
-  public:
-  uint32_t values(int index) const;
-  void set_values(int index, uint32_t value);
-  void add_values(uint32_t value);
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
-      values() const;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
-      mutable_values();
 
-  // @@protoc_insertion_point(class_scope:vosfs.math.Request)
+  // uint32 b = 2;
+  void clear_b();
+  uint32_t b() const;
+  void set_b(uint32_t value);
+  private:
+  uint32_t _internal_b() const;
+  void _internal_set_b(uint32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:vosfs.math.MathAddRequest)
  private:
   class _Internal;
 
@@ -217,8 +213,8 @@ class Request final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t > values_;
-    mutable std::atomic<int> _values_cached_byte_size_;
+    uint32_t a_;
+    uint32_t b_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -226,23 +222,24 @@ class Request final :
 };
 // -------------------------------------------------------------------
 
-class Response final :
-    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:vosfs.math.Response) */ {
+class MathAddResponse final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.math.MathAddResponse) */ {
  public:
-  inline Response() : Response(nullptr) {}
-  explicit PROTOBUF_CONSTEXPR Response(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline MathAddResponse() : MathAddResponse(nullptr) {}
+  ~MathAddResponse() override;
+  explicit PROTOBUF_CONSTEXPR MathAddResponse(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  Response(const Response& from);
-  Response(Response&& from) noexcept
-    : Response() {
+  MathAddResponse(const MathAddResponse& from);
+  MathAddResponse(MathAddResponse&& from) noexcept
+    : MathAddResponse() {
     *this = ::std::move(from);
   }
 
-  inline Response& operator=(const Response& from) {
+  inline MathAddResponse& operator=(const MathAddResponse& from) {
     CopyFrom(from);
     return *this;
   }
-  inline Response& operator=(Response&& from) noexcept {
+  inline MathAddResponse& operator=(MathAddResponse&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -265,20 +262,20 @@ class Response final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const Response& default_instance() {
+  static const MathAddResponse& default_instance() {
     return *internal_default_instance();
   }
-  static inline const Response* internal_default_instance() {
-    return reinterpret_cast<const Response*>(
-               &_Response_default_instance_);
+  static inline const MathAddResponse* internal_default_instance() {
+    return reinterpret_cast<const MathAddResponse*>(
+               &_MathAddResponse_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     1;
 
-  friend void swap(Response& a, Response& b) {
+  friend void swap(MathAddResponse& a, MathAddResponse& b) {
     a.Swap(&b);
   }
-  inline void Swap(Response* other) {
+  inline void Swap(MathAddResponse* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -291,7 +288,7 @@ class Response final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(Response* other) {
+  void UnsafeArenaSwap(MathAddResponse* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -299,26 +296,40 @@ class Response final :
 
   // implements Message ----------------------------------------------
 
-  Response* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<Response>(arena);
+  MathAddResponse* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<MathAddResponse>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
-  inline void CopyFrom(const Response& from) {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const MathAddResponse& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const MathAddResponse& from) {
+    MathAddResponse::MergeImpl(*this, from);
   }
-  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
-  void MergeFrom(const Response& from) {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
-  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
   public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(MathAddResponse* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "vosfs.math.Response";
+    return "vosfs.math.MathAddResponse";
   }
   protected:
-  explicit Response(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit MathAddResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -331,7 +342,19 @@ class Response final :
 
   // accessors -------------------------------------------------------
 
-  // @@protoc_insertion_point(class_scope:vosfs.math.Response)
+  enum : int {
+    kResultFieldNumber = 1,
+  };
+  // uint32 result = 1;
+  void clear_result();
+  uint32_t result() const;
+  void set_result(uint32_t value);
+  private:
+  uint32_t _internal_result() const;
+  void _internal_set_result(uint32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:vosfs.math.MathAddResponse)
  private:
   class _Internal;
 
@@ -339,7 +362,10 @@ class Response final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
+    uint32_t result_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
+  union { Impl_ _impl_; };
   friend struct ::TableStruct_math_2eproto;
 };
 // ===================================================================
@@ -351,58 +377,71 @@ class Response final :
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
-// Request
+// MathAddRequest
 
-// repeated uint32 values = 1;
-inline int Request::_internal_values_size() const {
-  return _impl_.values_.size();
+// uint32 a = 1;
+inline void MathAddRequest::clear_a() {
+  _impl_.a_ = 0u;
 }
-inline int Request::values_size() const {
-  return _internal_values_size();
+inline uint32_t MathAddRequest::_internal_a() const {
+  return _impl_.a_;
 }
-inline void Request::clear_values() {
-  _impl_.values_.Clear();
+inline uint32_t MathAddRequest::a() const {
+  // @@protoc_insertion_point(field_get:vosfs.math.MathAddRequest.a)
+  return _internal_a();
 }
-inline uint32_t Request::_internal_values(int index) const {
-  return _impl_.values_.Get(index);
+inline void MathAddRequest::_internal_set_a(uint32_t value) {
+  
+  _impl_.a_ = value;
 }
-inline uint32_t Request::values(int index) const {
-  // @@protoc_insertion_point(field_get:vosfs.math.Request.values)
-  return _internal_values(index);
+inline void MathAddRequest::set_a(uint32_t value) {
+  _internal_set_a(value);
+  // @@protoc_insertion_point(field_set:vosfs.math.MathAddRequest.a)
 }
-inline void Request::set_values(int index, uint32_t value) {
-  _impl_.values_.Set(index, value);
-  // @@protoc_insertion_point(field_set:vosfs.math.Request.values)
+
+// uint32 b = 2;
+inline void MathAddRequest::clear_b() {
+  _impl_.b_ = 0u;
 }
-inline void Request::_internal_add_values(uint32_t value) {
-  _impl_.values_.Add(value);
+inline uint32_t MathAddRequest::_internal_b() const {
+  return _impl_.b_;
 }
-inline void Request::add_values(uint32_t value) {
-  _internal_add_values(value);
-  // @@protoc_insertion_point(field_add:vosfs.math.Request.values)
+inline uint32_t MathAddRequest::b() const {
+  // @@protoc_insertion_point(field_get:vosfs.math.MathAddRequest.b)
+  return _internal_b();
 }
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
-Request::_internal_values() const {
-  return _impl_.values_;
+inline void MathAddRequest::_internal_set_b(uint32_t value) {
+  
+  _impl_.b_ = value;
 }
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
-Request::values() const {
-  // @@protoc_insertion_point(field_list:vosfs.math.Request.values)
-  return _internal_values();
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
-Request::_internal_mutable_values() {
-  return &_impl_.values_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
-Request::mutable_values() {
-  // @@protoc_insertion_point(field_mutable_list:vosfs.math.Request.values)
-  return _internal_mutable_values();
+inline void MathAddRequest::set_b(uint32_t value) {
+  _internal_set_b(value);
+  // @@protoc_insertion_point(field_set:vosfs.math.MathAddRequest.b)
 }
 
 // -------------------------------------------------------------------
 
-// Response
+// MathAddResponse
+
+// uint32 result = 1;
+inline void MathAddResponse::clear_result() {
+  _impl_.result_ = 0u;
+}
+inline uint32_t MathAddResponse::_internal_result() const {
+  return _impl_.result_;
+}
+inline uint32_t MathAddResponse::result() const {
+  // @@protoc_insertion_point(field_get:vosfs.math.MathAddResponse.result)
+  return _internal_result();
+}
+inline void MathAddResponse::_internal_set_result(uint32_t value) {
+  
+  _impl_.result_ = value;
+}
+inline void MathAddResponse::set_result(uint32_t value) {
+  _internal_set_result(value);
+  // @@protoc_insertion_point(field_set:vosfs.math.MathAddResponse.result)
+}
 
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
