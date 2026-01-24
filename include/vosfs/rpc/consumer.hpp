@@ -40,6 +40,9 @@ public:
         RpcCallback&& callback) -> kosio::async::Task<Result<void>>;
 
 private:
+    auto handle_response() -> kosio::async::Task<void>;
+
+private:
     kosio::net::TcpStream stream_;
     uint64_t              request_id_{0};
     RpcCallbackMap        callbacks_;

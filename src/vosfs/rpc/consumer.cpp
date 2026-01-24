@@ -76,3 +76,7 @@ auto vosfs::rpc::RpcConsumer::send_request(
 
     co_return Result<void>{};
 }
+
+auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
+    std::vector<char> buffer
+}

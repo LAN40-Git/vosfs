@@ -8,6 +8,8 @@
 #include <cstdint>
 
 namespace vosfs::rpc::detail {
+
+
 struct FixedRpcRequestHeader {
     uint64_t    request_id{0};   // 8 bytes
     ServiceType service_type{0}; // 1 byte
