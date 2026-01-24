@@ -6,9 +6,12 @@
 
 namespace vosfs {
 class Error {
+public:
     enum ErrorCode {
         kUnknown = 8000,
-
+        kInvalidServerAddress,
+        kConnectToServerFailed,
+        kSendRpcRequestFailed,
     };
 
 public:
@@ -20,6 +23,12 @@ public:
         switch (error_code_) {
             case kUnknown:
                 return "Unknown error.";
+            case kInvalidServerAddress:
+                return "Invalid server address.";
+            case kConnectToServerFailed:
+                return "Failed to connect to server.";
+            case kSendRpcRequestFailed:
+                return "Failed to send rpc request.";
             default:
                 return strerror(error_code_);
         }
