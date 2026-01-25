@@ -1,12 +1,13 @@
 #pragma once
-#include "vosfs/rpc/request.hpp"
+#include "vosfs/rpc/util.hpp"
 
 namespace vosfs::rpc {
+using RpcCallback = std::function<kosio::async::Task<void>(std::string_view resp_payload)>;
 class RpcConsumer {
     using RpcCallbackMap = tbb::concurrent_hash_map<uint64_t, RpcCallback>;
 
 public:
-    explicit RpcConsumer(kosio::net::TcpStream&& stream)
+    explicit RpcConsumer(kosio::net::TcpStream stream)
         : stream_(std::move(stream)) {
         callbacks_.rehash(4096);
     }
@@ -39,10 +40,10 @@ public:
         std::string_view req_payload,
         RpcCallback&& callback) -> kosio::async::Task<Result<void>>;
 
-private:
     [[REMEMBER_CO_AWAIT]]
-    auto prepare_shutdown() -> kosio::async::Task<void>;
+    auto shutdown() -> kosio::async::Task<void>;
 
+private:
     [[REMEMBER_CO_AWAIT]]
     auto do_shutdown() -> kosio::async::Task<void>;
 

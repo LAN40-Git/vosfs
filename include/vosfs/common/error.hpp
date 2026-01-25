@@ -9,10 +9,11 @@ class Error {
 public:
     enum ErrorCode {
         kUnknown = 8000,
-        kInvalidServerAddress,
+        kInvalidAddress,
         kConnectToServerFailed,
         kSendRpcRequestFailed,
         kParseRpcMessageFailed,
+        kBindFailed,
         kConnectionShutdown,
     };
 
@@ -25,14 +26,16 @@ public:
         switch (error_code_) {
             case kUnknown:
                 return "Unknown error.";
-            case kInvalidServerAddress:
-                return "Invalid server address.";
+            case kInvalidAddress:
+                return "Invalid address.";
             case kConnectToServerFailed:
                 return "Failed to connect to server.";
             case kSendRpcRequestFailed:
                 return "Failed to send rpc request.";
             case kParseRpcMessageFailed:
                 return "Failed to parse rpc message.";
+            case kBindFailed:
+                return "Failed to bind to address.";
             case kConnectionShutdown:
                 return "Connection shutdown.";
             default:

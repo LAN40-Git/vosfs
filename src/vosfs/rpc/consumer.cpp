@@ -4,8 +4,8 @@ auto vosfs::rpc::RpcConsumer::create(std::string_view host, uint16_t port)
 -> kosio::async::Task<Result<std::unique_ptr<RpcConsumer>>> {
     auto has_addr = kosio::net::SocketAddr::parse(host, port);
     if (!has_addr) {
-        LOG_ERROR("{}", has_addr.error());
-        co_return std::unexpected{make_error(Error::kInvalidServerAddress)};
+        LOG_ERROR("Failed to create rpc consumer : {}", has_addr.error());
+        co_return std::unexpected{make_error(Error::kInvalidAddress)};
     }
     auto has_stream = co_await kosio::net::TcpStream::connect(has_addr.value());
     if (!has_stream) {
@@ -88,7 +88,7 @@ auto vosfs::rpc::RpcConsumer::send_request(
     co_return Result<void>{};
 }
 
-auto vosfs::rpc::RpcConsumer::prepare_shutdown() -> kosio::async::Task<void> {
+auto vosfs::rpc::RpcConsumer::shutdown() -> kosio::async::Task<void> {
     // Send shutdown request
     auto ret = co_await send_request(
         detail::ServiceType::kConnection,
@@ -99,6 +99,8 @@ auto vosfs::rpc::RpcConsumer::prepare_shutdown() -> kosio::async::Task<void> {
         LOG_ERROR("Failed to send shutdown request : {}", ret.error());
         co_return;
     }
+
+    co_await wait_shutdown();
 }
 
 auto vosfs::rpc::RpcConsumer::do_shutdown() -> kosio::async::Task<void> {
@@ -131,8 +133,8 @@ auto vosfs::rpc::RpcConsumer::redirect_to(std::string_view resp_payload) -> kosi
 
     auto has_addr = kosio::net::SocketAddr::parse(host, port);
     if (!has_addr) {
-        LOG_ERROR("{}", has_addr.error());
-        co_return std::unexpected{make_error(Error::kInvalidServerAddress)};
+        LOG_ERROR("Failed to redirect to {}:{} : {}", host, port, has_addr.error());
+        co_return std::unexpected{make_error(Error::kInvalidAddress)};
     }
     auto has_stream = co_await kosio::net::TcpStream::connect(has_addr.value());
     if (!has_stream) {
@@ -177,6 +179,9 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
         }
 
         if (payload_size == 0) {
+            if (error_code == detail::RpcError::kShutdown) {
+                break;
+            }
             LOG_ERROR("Rpc error : {}", detail::make_rpc_error(error_code));
             break;
         }
