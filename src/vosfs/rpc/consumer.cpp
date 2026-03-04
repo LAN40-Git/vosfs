@@ -173,7 +173,7 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
         auto payload_size = be32toh(header.payload_size);
         auto error_code = header.error_code;
         if (payload_size > detail::MAX_RPC_MESSAGE_SIZE) {
-            LOG_ERROR("Receive unusual rpc mes, request_id : {}, payload_size : {}.", request_id, payload_size);
+            LOG_ERROR("Receive unusual rpc message, request_id : {}, payload_size : {}.", request_id, payload_size);
             callbacks_.erase(request_id);
             break;
         }
@@ -200,6 +200,9 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
             if (!has_redirect) {
                 LOG_ERROR("Failed to redirect : {}", has_redirect.error());
                 break;
+                // There is no need to send a request to close the connection
+                // because the server has already closed the connection
+                // at the time of the redirect
             }
         }
     }

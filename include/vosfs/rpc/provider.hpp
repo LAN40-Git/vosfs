@@ -29,6 +29,10 @@ private:
     [[REMEMBER_CO_AWAIT]]
     auto handle_connection() -> kosio::async::Task<void>;
 
+    auto handle_request(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void>;
+
+    auto send_response(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void>;
+
 private:
     using InvokeMap = std::unordered_map<detail::ServiceType, std::unordered_map<detail::MethodType, detail::Invoke>>;
 

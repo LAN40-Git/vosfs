@@ -15,6 +15,8 @@ public:
         kParseRpcMessageFailed,
         kBindFailed,
         kConnectionShutdown,
+        kQueueEmpty,
+        kQueueShutdown,
     };
 
 public:
@@ -38,6 +40,10 @@ public:
                 return "Failed to bind to address.";
             case kConnectionShutdown:
                 return "Connection shutdown.";
+            case kQueueEmpty:
+                return "Empty queue.";
+            case kQueueShutdown:
+                return "Shutdown queue.";
             default:
                 return strerror(error_code_);
         }

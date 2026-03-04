@@ -10,6 +10,8 @@ public:
         kSuccess = 0,
         kRedirect,
         kShutdown,
+        kFindServiceTypeFailed,
+        kFindMethodTypeFailed,
     };
 
 public:
@@ -29,6 +31,10 @@ public:
             return "Need to redirect to another rpc provider.";
         case kShutdown:
             return "RPC communication completed, preparing to close the connection.";
+        case kFindServiceTypeFailed:
+            return "Failed to find service type.";
+        case kFindMethodTypeFailed:
+            return "Failed to find method type.";
         default:
             return "Unknown rpc error.";
         }
