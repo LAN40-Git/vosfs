@@ -16,6 +16,7 @@ public:
         }
 
         queue_.push(std::move(value));
+
         cv_.notify_one();
         co_return Result<void>{};
     }
@@ -45,6 +46,7 @@ public:
         if (is_shutdown_.load(std::memory_order_acquire)) {
             co_return std::unexpected{make_error(Error::kQueueShutdown)};
         }
+
         for (auto& item : items) {
             queue_.push(std::move(item));
         }

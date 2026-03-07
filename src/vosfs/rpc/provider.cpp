@@ -52,64 +52,65 @@ auto vosfs::rpc::RpcProvider::handle_request(std::shared_ptr<detail::Session> se
             break;
         }
 
-
-    }
-
-    while (true) {
-        detail::FixedRpcResponseHeader resp_header;
-
-        // Recv fixed request header
-        detail::FixedRpcRequestHeader req_header;
-        auto ret = co_await stream.read_exact(
-            {reinterpret_cast<char*>(&req_header), sizeof(detail::FixedRpcRequestHeader)});
-        if (!ret) {
-            LOG_ERROR("{}", ret.error());
-            resp_header.error_code = detail::RpcError::kShutdown;
-            ret = co_await stream.write_all({reinterpret_cast<char*>(&resp_header), sizeof(detail::FixedRpcResponseHeader)});
-            break;
-        }
-
         auto request_id = be64toh(req_header.request_id);
+        auto payload_size = be32toh(req_header.payload_size);
         auto service_type = req_header.service_type;
         auto method_type = req_header.method_type;
-
-        resp_header.request_id = request_id;
-
-        // Get invoke
-        auto service = invokes_.find(service_type);
-        if (service == invokes_.end()) {
-            LOG_ERROR("Failed to find service type : {}", RpcType::to_string(service_type));
-            resp_header.error_code = detail::RpcError::kFindServiceTypeFailed;
-        }
-
-        auto invoke = service->second.find(method_type);
-        if (invoke == service->second.end()) {
-            LOG_ERROR("Failed to find method type : {}", RpcType::to_string(method_type));
-            resp_header.error_code = detail::RpcError::kFindMethodTypeFailed;
-        }
-
-        auto payload_size = be32toh(req_header.payload_size);
 
         if (payload_size > detail::MAX_RPC_MESSAGE_SIZE) {
             LOG_ERROR("Receive unusual rpc message, request_id : {}, payload_size : {}.", request_id, payload_size);
             break;
         }
 
-        // Recv request payload
+        // Recv req_payload
         ret = co_await stream.read_exact({buf.data(), payload_size});
         if (!ret) {
             LOG_ERROR("{}", ret.error());
-            resp_header.error_code = detail::RpcError::kShutdown;
-            ret = co_await stream.write_all({reinterpret_cast<char*>(&resp_header), sizeof(detail::FixedRpcResponseHeader)});
             break;
         }
 
-        co_await invoke->second();
+        /* detail::InvokeTask
+        uint64_t    request_id_{0};
+        Invoke      invoke_;
+        std::string req_payload_{};
+        uint8_t     error_code_{0};
+        */
+        detail::InvokeTask invoke_task;
+        invoke_task.request_id_ = request_id;
+
+        // Get invoke
+        auto service = invokes_.find(service_type);
+        if (service == invokes_.end()) {
+            invoke_task.error_code_ = detail::RpcError::kFindServiceTypeFailed;
+            co_await invoke_queue.push(std::move(invoke_task));
+            continue;
+        }
+
+        auto invoke = service->second.find(method_type);
+        if (invoke == service->second.end()) {
+            invoke_task.error_code_ = detail::RpcError::kFindMethodTypeFailed;
+            co_await invoke_queue.push(std::move(invoke_task));
+            continue;
+        }
+
+        invoke_task.req_payload_ = std::string{buf.data(), payload_size};
+        invoke_task.invoke_ = invoke->second;
+
+        co_await invoke_queue.push(std::move(invoke_task));
     }
+
+    co_await invoke_queue.shutdown();
+    session_manager_.remove_session(session->id);
 }
 
 auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void> {
     auto& stream = session->stream;
     auto& invoke_queue = session->invoke_queue;
     std::vector<char> buf(detail::MAX_RPC_MESSAGE_SIZE);
+
+    detail::FixedRpcResponseHeader resp_header;
+
+    while (true) {
+
+    }
 }

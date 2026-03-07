@@ -17,7 +17,6 @@ public:
     [[nodiscard]]
     auto find_session(uint64_t session_id) const -> std::shared_ptr<Session>;
 
-    [[nodiscard]]
     auto remove_session(uint64_t session_id) -> bool;
 
 private:
