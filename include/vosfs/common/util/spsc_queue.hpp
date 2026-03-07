@@ -30,7 +30,7 @@ public:
                 return !queue_.empty() || is_shutdown_.load(std::memory_order_relaxed);
             });
             if (is_shutdown_.load(std::memory_order_relaxed)) {
-                co_return std::unexpected{make_error(Error::kQueueEmpty)};
+                co_return std::unexpected{make_error(Error::kQueueShutdown)};
             }
         }
         T item = std::move(queue_.front());
@@ -72,14 +72,6 @@ public:
     }
 
     [[REMEMBER_CO_AWAIT]]
-    auto shutdown() -> kosio::async::Task<> {
-        co_await mutex_.lock();
-        std::unique_lock lock{mutex_, std::adopt_lock};
-        is_shutdown_.store(true, std::memory_order_relaxed);
-        cv_.notify_all();
-    }
-
-    [[REMEMBER_CO_AWAIT]]
     auto run() -> kosio::async::Task<> {
         co_await mutex_.lock();
         std::unique_lock lock{mutex_, std::adopt_lock};
@@ -87,6 +79,33 @@ public:
         std::swap(queue_, empty_queue);
         is_shutdown_.store(false, std::memory_order_relaxed);
         cv_.notify_all();
+    }
+
+    [[REMEMBER_CO_AWAIT]]
+    auto shutdown() -> kosio::async::Task<> {
+        co_await mutex_.lock();
+        std::unique_lock lock{mutex_, std::adopt_lock};
+        is_shutdown_.store(true, std::memory_order_relaxed);
+        cv_.notify_all();
+    }
+
+    [[nodiscard]]
+    auto is_shutdown() const noexcept -> bool {
+        return is_shutdown_.load(std::memory_order_acquire);
+    }
+
+    [[nodiscard]]
+    auto size() -> kosio::async::Task<std::size_t> {
+        co_await mutex_.lock();
+        std::unique_lock lock{mutex_, std::adopt_lock};
+        co_return queue_.size();
+    }
+
+    [[nodiscard]]
+    auto empty() -> kosio::async::Task<bool> {
+        co_await mutex_.lock();
+        std::unique_lock lock{mutex_, std::adopt_lock};
+        co_return queue_.size() == 0;
     }
 
 private:

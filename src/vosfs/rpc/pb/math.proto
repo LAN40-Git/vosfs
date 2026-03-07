@@ -1,11 +1,11 @@
 syntax = "proto3";
 package vosfs.math;
 
-message MathAddRequest {
+message MathRequest {
     uint32 a = 1;
     uint32 b = 2;
 }
 
-message MathAddResponse {
+message MathResponse {
     uint32 result = 1;
 }

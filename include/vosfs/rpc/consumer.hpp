@@ -28,15 +28,15 @@ public:
 public:
     [[REMEMBER_CO_AWAIT]]
     auto send_request(
-        detail::ServiceType service_type,
-        detail::MethodType method_type,
+        ServiceType service_type,
+        MethodType method_type,
         std::string_view req_payload,
         const RpcCallback& callback) -> kosio::async::Task<Result<void>>;
 
     [[REMEMBER_CO_AWAIT]]
     auto send_request(
-        detail::ServiceType service_type,
-        detail::MethodType method_type,
+        ServiceType service_type,
+        MethodType method_type,
         std::string_view req_payload,
         RpcCallback&& callback) -> kosio::async::Task<Result<void>>;
 

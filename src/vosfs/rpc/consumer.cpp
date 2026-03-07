@@ -19,8 +19,8 @@ auto vosfs::rpc::RpcConsumer::create(std::string_view host, uint16_t port)
 }
 
 auto vosfs::rpc::RpcConsumer::send_request(
-    detail::ServiceType service_type,
-    detail::MethodType method_type,
+    ServiceType service_type,
+    MethodType method_type,
     std::string_view req_payload,
     const RpcCallback& callback) -> kosio::async::Task<Result<void>> {
     co_await mutex_.lock();
@@ -54,8 +54,8 @@ auto vosfs::rpc::RpcConsumer::send_request(
 }
 
 auto vosfs::rpc::RpcConsumer::send_request(
-    detail::ServiceType service_type,
-    detail::MethodType method_type,
+    ServiceType service_type,
+    MethodType method_type,
     std::string_view req_payload,
     RpcCallback&& callback) -> kosio::async::Task<Result<void>> {
     co_await mutex_.lock();
@@ -66,16 +66,16 @@ auto vosfs::rpc::RpcConsumer::send_request(
     }
 
     // Make fixed request header
-    detail::FixedRpcRequestHeader header;
-    header.request_id = htobe64(request_id_);
-    header.service_type = service_type;
-    header.method_type = method_type;
-    header.payload_size = htobe32(req_payload.size());
+    detail::FixedRpcRequestHeader req_header;
+    req_header.request_id = htobe64(request_id_);
+    req_header.service_type = service_type;
+    req_header.method_type = method_type;
+    req_header.payload_size = htobe32(req_payload.size());
 
     callbacks_.emplace(request_id_++, std::move(callback));
 
     auto ret = co_await stream_.write_vectored(
-        std::span<const char>(reinterpret_cast<char*>(&header), sizeof(header)),
+        std::span<const char>(reinterpret_cast<char*>(&req_header), sizeof(req_header)),
         std::span<const char>(req_payload.data(), req_payload.size())
     );
 
@@ -91,8 +91,8 @@ auto vosfs::rpc::RpcConsumer::send_request(
 auto vosfs::rpc::RpcConsumer::shutdown() -> kosio::async::Task<void> {
     // Send shutdown request
     auto ret = co_await send_request(
-        detail::ServiceType::kConnection,
-        detail::MethodType::kConnectionShutdown,
+        ServiceType::kConnection,
+        MethodType::kConnectionShutdown,
         "",
         [](std::string_view resp_payload) -> kosio::async::Task<void> { co_return; });
     if (!ret) {
@@ -161,17 +161,17 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
 
     while (true) {
         // Recv fixed response header
-        detail::FixedRpcResponseHeader header;
+        detail::FixedRpcResponseHeader resp_header;
         auto ret = co_await stream_.read_exact(
-            {reinterpret_cast<char*>(&header), sizeof(detail::FixedRpcResponseHeader)});
+            {reinterpret_cast<char*>(&resp_header), sizeof(detail::FixedRpcResponseHeader)});
         if (!ret) {
             LOG_ERROR("{}", ret.error());
             break;
         }
 
-        auto request_id = be64toh(header.request_id);
-        auto payload_size = be32toh(header.payload_size);
-        auto error_code = header.error_code;
+        auto request_id = be64toh(resp_header.request_id);
+        auto payload_size = be32toh(resp_header.payload_size);
+        auto error_code = resp_header.error_code;
         if (payload_size > detail::MAX_RPC_MESSAGE_SIZE) {
             LOG_ERROR("Receive unusual rpc message, request_id : {}, payload_size : {}.", request_id, payload_size);
             callbacks_.erase(request_id);

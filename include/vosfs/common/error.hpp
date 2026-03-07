@@ -17,6 +17,11 @@ public:
         kConnectionShutdown,
         kQueueEmpty,
         kQueueShutdown,
+        kMessageParseFailed,
+        kMessageSerializeFailed,
+        kProviderIsRunning,
+        kProviderHasShutdown,
+        kStopListeningFailed,
     };
 
 public:
@@ -44,6 +49,16 @@ public:
                 return "Empty queue.";
             case kQueueShutdown:
                 return "Shutdown queue.";
+            case kMessageParseFailed:
+                return "Failed to parse message.";
+            case kMessageSerializeFailed:
+                return "Failed to serialize message.";
+            case kProviderIsRunning:
+                return "Failed to run provider because it is running.";
+            case kProviderHasShutdown:
+                return "Failed to shutdown provider because it has been shutdown.";
+            case kStopListeningFailed:
+                return "Failed to stop listening.";
             default:
                 return strerror(error_code_);
         }

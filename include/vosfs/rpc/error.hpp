@@ -12,6 +12,7 @@ public:
         kShutdown,
         kFindServiceTypeFailed,
         kFindMethodTypeFailed,
+        kGetRespPayloadFailed,
     };
 
 public:

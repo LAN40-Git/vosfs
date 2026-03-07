@@ -21,23 +21,27 @@ public:
 
 public:
     void register_invoke(
-        detail::ServiceType service_type,
-        detail::MethodType method_type,
+        ServiceType service_type,
+        MethodType method_type,
         const detail::Invoke& invoke);
 
 private:
     [[REMEMBER_CO_AWAIT]]
-    auto handle_connection() -> kosio::async::Task<void>;
+    auto run() -> kosio::async::Task<Result<void>>;
+
+    [[REMEMBER_CO_AWAIT]]
+    auto shutdown() -> kosio::async::Task<Result<void>>;
 
     auto handle_request(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void>;
 
     auto send_response(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void>;
 
 private:
-    using InvokeMap = std::unordered_map<detail::ServiceType, std::unordered_map<detail::MethodType, detail::Invoke>>;
+    using InvokeMap = std::unordered_map<ServiceType, std::unordered_map<MethodType, detail::Invoke>>;
 
     uint16_t                port_;
     kosio::net::TcpListener listener_;
+    bool                    is_shutdown_{true};
     kosio::sync::Mutex      mutex_;
     InvokeMap               invokes_;
     detail::SessionManager  session_manager_;

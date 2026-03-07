@@ -2,6 +2,7 @@
 #include "vosfs/rpc/util.hpp"
 
 namespace vosfs::rpc::detail {
+// req_payload, resp_payload, session_id, request_id
 using Invoke = std::function<kosio::async::Task<Result<std::size_t>>(std::string_view, std::span<char>, uint64_t, uint64_t)>;
 struct InvokeTask {
 public:
@@ -37,9 +38,9 @@ public:
         , req_payload_(std::move(req_payload)) {}
 
 public:
-    uint64_t    request_id_{0};
-    Invoke      invoke_;
-    std::string req_payload_{};
-    uint8_t     error_code_{0};
+    uint64_t            request_id_{0};
+    Invoke              invoke_;
+    std::string         req_payload_{};
+    RpcError::ErrorCode error_code_{RpcError::kSuccess};
 };
 } // namespace vosfs::rpc::detail

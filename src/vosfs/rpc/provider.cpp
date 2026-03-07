@@ -1,5 +1,7 @@
 #include "vosfs/rpc/provider.hpp"
 
+#include <ranges>
+
 auto vosfs::rpc::RpcProvider::create(uint16_t port)
 -> kosio::async::Task<Result<std::unique_ptr<RpcProvider>>> {
     auto has_addr = kosio::net::SocketAddr::parse("0.0.0.0", port);
@@ -16,24 +18,73 @@ auto vosfs::rpc::RpcProvider::create(uint16_t port)
 }
 
 void vosfs::rpc::RpcProvider::register_invoke(
-    detail::ServiceType service_type,
-    detail::MethodType method_type,
+    ServiceType service_type,
+    MethodType method_type,
     const detail::Invoke& invoke) {
     invokes_[service_type][method_type] = invoke;
 }
 
-auto vosfs::rpc::RpcProvider::handle_connection() -> kosio::async::Task<void> {
+auto vosfs::rpc::RpcProvider::run() -> kosio::async::Task<Result<void>> {
+    {
+        co_await mutex_.lock();
+        std::lock_guard lock(mutex_, std::adopt_lock);
+
+        if (!is_shutdown_) {
+            co_return std::unexpected{make_error(Error::kProviderIsRunning)};
+        }
+
+        is_shutdown_ = false;
+    }
+
     while (true) {
         auto has_stream = co_await listener_.accept();
-        if (!has_stream) [[unlikely]] {
+        if (!has_stream) {
             LOG_VERBOSE("Failed to accept rpc connection : {}", has_stream.error());
             break;
         }
         auto& [stream, peer_addr] = has_stream.value();
         LOG_VERBOSE("Accept connection from {}", peer_addr);
-        // assign a session
-        session_manager_.assign_session(std::move(stream), peer_addr);
+
+        auto session = session_manager_.assign_session(std::move(stream), peer_addr);
+        LOG_VERBOSE("Accept connection from {}, session_id : {}", peer_addr, session->id);
+        kosio::spawn(handle_request(session));
+        kosio::spawn(send_response(session));
     }
+
+    LOG_VERBOSE("Stop listening");
+    co_return Result<void>{};
+}
+
+auto vosfs::rpc::RpcProvider::shutdown() -> kosio::async::Task<Result<void>> {
+    co_await mutex_.lock();
+    std::lock_guard lock(mutex_, std::adopt_lock);
+
+    if (is_shutdown_) {
+        co_return std::unexpected{make_error(Error::kProviderHasShutdown)};
+    }
+
+    is_shutdown_ = true;
+
+    // Stop listening
+    auto has_cancle = co_await kosio::io::cancel(listener_.fd(), IORING_ASYNC_CANCEL_ALL);
+    if (!has_cancle) {
+        LOG_ERROR("Failed to stop listening : {}", has_cancle.error());
+        co_return std::unexpected{make_error(Error::kStopListeningFailed)};
+    }
+
+    // Clean sessions
+    while (!session_manager_.sessions_.empty()) {
+        LOG_VERBOSE("Cleaning session...");
+        for (auto& session : session_manager_.sessions_ | std::views::values) {
+            has_cancle = co_await kosio::io::cancel(session->stream.fd(), IORING_ASYNC_CANCEL_ALL);
+            if (!has_cancle) {
+                continue; // Not safe!
+            }
+        }
+        co_await kosio::time::sleep(50);
+    }
+
+    co_return Result<void>{};
 }
 
 auto vosfs::rpc::RpcProvider::handle_request(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void> {
@@ -99,8 +150,11 @@ auto vosfs::rpc::RpcProvider::handle_request(std::shared_ptr<detail::Session> se
         co_await invoke_queue.push(std::move(invoke_task));
     }
 
+    while (!(co_await invoke_queue.empty())) {
+        co_await kosio::time::sleep(50);
+        LOG_VERBOSE("Session {} is waiting for invoke complete, invoke queue size : {}.", session->id, co_await invoke_queue.size());
+    }
     co_await invoke_queue.shutdown();
-    session_manager_.remove_session(session->id);
 }
 
 auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void> {
@@ -111,6 +165,46 @@ auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> ses
     detail::FixedRpcResponseHeader resp_header;
 
     while (true) {
+        // Get invoke task
+        auto has_invoke_task = co_await invoke_queue.pop();
+        if (!has_invoke_task) {
+            LOG_ERROR("{}", has_invoke_task.error());
+            break;
+        }
+        auto invoke_task = std::move(has_invoke_task.value());
 
+        resp_header.request_id = htobe64(invoke_task.request_id_);
+
+        switch (invoke_task.error_code_) {
+            case detail::RpcError::kSuccess: {
+                // Do invoke and get resp_payload size
+                auto has_resp_payload_size = co_await invoke_task.invoke_(
+                    invoke_task.req_payload_,
+                    {buf.data(), buf.capacity()},
+                    session->id,
+                    invoke_task.request_id_);
+                if (!has_resp_payload_size) {
+                    LOG_ERROR("Failed to get resp_payload size from invoke : {}", has_resp_payload_size.error());
+                    resp_header.error_code = detail::RpcError::kGetRespPayloadFailed;
+                    break;
+                }
+                resp_header.payload_size = htobe32(has_resp_payload_size.value());
+            }
+            default: {
+                resp_header.error_code = invoke_task.error_code_;
+            }
+        }
+
+        auto ret = co_await stream.write_vectored(
+            std::span<const char>(reinterpret_cast<char*>(&resp_header), sizeof(resp_header)),
+            std::span<const char>(buf.data(), be32toh(resp_header.payload_size))
+        );
+
+        if (!ret) {
+            LOG_ERROR("{}", ret.error());
+            break;
+        }
     }
+
+    session_manager_.remove_session(session->id);
 }
