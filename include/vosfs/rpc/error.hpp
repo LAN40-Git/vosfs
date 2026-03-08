@@ -9,7 +9,6 @@ public:
     enum ErrorCode : uint8_t {
         kSuccess = 0,
         kRedirect,
-        kShutdown,
         kFindServiceTypeFailed,
         kFindMethodTypeFailed,
         kGetRespPayloadFailed,
@@ -30,8 +29,6 @@ public:
             return "Success to handle rpc request.";
         case kRedirect:
             return "Need to redirect to another rpc provider.";
-        case kShutdown:
-            return "RPC communication completed, preparing to close the connection.";
         case kFindServiceTypeFailed:
             return "Failed to find service type.";
         case kFindMethodTypeFailed:

@@ -21,6 +21,7 @@ public:
         kMessageSerializeFailed,
         kProviderIsRunning,
         kProviderHasShutdown,
+        kConsumerHasShutdown,
         kStopListeningFailed,
     };
 
@@ -57,6 +58,8 @@ public:
                 return "Failed to run provider because it is running.";
             case kProviderHasShutdown:
                 return "Failed to shutdown provider because it has been shutdown.";
+            case kConsumerHasShutdown:
+                return "Failed to shutdown consumer because it has been shutdown.";
             case kStopListeningFailed:
                 return "Failed to stop listening.";
             default:

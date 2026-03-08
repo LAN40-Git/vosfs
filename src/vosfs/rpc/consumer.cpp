@@ -14,6 +14,7 @@ auto vosfs::rpc::RpcConsumer::create(std::string_view host, uint16_t port)
     }
 
     auto consumer = std::make_unique<RpcConsumer>(std::move(has_stream.value()));
+    consumer->is_handle_response_.store(true, std::memory_order_relaxed);
     kosio::spawn(consumer->handle_response());
     co_return std::move(consumer);
 }
@@ -88,33 +89,26 @@ auto vosfs::rpc::RpcConsumer::send_request(
     co_return Result<void>{};
 }
 
-auto vosfs::rpc::RpcConsumer::shutdown() -> kosio::async::Task<void> {
-    // Send shutdown request
-    auto ret = co_await send_request(
-        ServiceType::kConnection,
-        MethodType::kConnectionShutdown,
-        "",
-        [](std::string_view resp_payload) -> kosio::async::Task<void> { co_return; });
-    if (!ret) {
-        LOG_ERROR("Failed to send shutdown request : {}", ret.error());
-        co_return;
-    }
-
-    co_await wait_shutdown();
-}
-
-auto vosfs::rpc::RpcConsumer::do_shutdown() -> kosio::async::Task<void> {
+auto vosfs::rpc::RpcConsumer::shutdown() -> kosio::async::Task<Result<void>> {
     co_await mutex_.lock();
     std::lock_guard lock(mutex_, std::adopt_lock);
 
-    co_await stream_.close();
-    is_shutdown_ = true;
-}
+    if (is_shutdown_) {
+        co_return std::unexpected{make_error(Error::kConsumerHasShutdown)};
+    }
 
-auto vosfs::rpc::RpcConsumer::wait_shutdown() const -> kosio::async::Task<void> {
-    while (!is_shutdown_) {
+    while (is_handle_response_.load(std::memory_order_relaxed)) {
+        auto has_cancle = co_await kosio::io::cancel(stream_.fd(), IORING_ASYNC_CANCEL_ALL);
+        if (!has_cancle) {
+            LOG_FATAL("{}", has_cancle.error());
+            break;
+        }
+
         co_await kosio::time::sleep(50);
     }
+
+    is_shutdown_ = true;
+    co_return Result<void>{};
 }
 
 auto vosfs::rpc::RpcConsumer::redirect_to(std::string_view resp_payload) -> kosio::async::Task<Result<void>> {
@@ -178,34 +172,34 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
             break;
         }
 
-        if (payload_size == 0) {
-            if (error_code == detail::RpcError::kShutdown) {
+        if (payload_size > 0) {
+            // Recv response payload
+            ret = co_await stream_.read_exact({buf.data(), payload_size});
+            if (!ret) [[unlikely]] {
+                LOG_ERROR("Failed to receive response payload : {}", ret.error());
                 break;
             }
-            LOG_ERROR("Rpc error : {}", detail::make_rpc_error(error_code));
-            break;
         }
 
-        // Recv response payload
-        ret = co_await stream_.read_exact({buf.data(), payload_size});
-        if (!ret) [[unlikely]] {
-            LOG_ERROR("Failed to receive response payload : {}", ret.error());
-            break;
-        }
-
-        if (error_code == detail::RpcError::kSuccess) {
-            co_await trigger_callback(request_id, {buf.data(), payload_size});
-        } else if (error_code == detail::RpcError::kRedirect) {
-            auto has_redirect = co_await redirect_to({buf.data(), payload_size});
-            if (!has_redirect) {
-                LOG_ERROR("Failed to redirect : {}", has_redirect.error());
+        switch (error_code) {
+            case detail::RpcError::kSuccess: {
+                co_await trigger_callback(request_id, {buf.data(), payload_size});
                 break;
-                // There is no need to send a request to close the connection
-                // because the server has already closed the connection
-                // at the time of the redirect
+            }
+            case detail::RpcError::kRedirect: {
+                auto has_redirect = co_await redirect_to({buf.data(), payload_size});
+                if (!has_redirect) {
+                    LOG_ERROR("Failed to redirect : {}", has_redirect.error());
+                    break;
+                }
+                break;
+            }
+            default: {
+                LOG_ERROR("Rpc error : {}", detail::make_rpc_error(error_code));
+                break;
             }
         }
     }
 
-    co_await do_shutdown();
+    is_handle_response_.store(false, std::memory_order_relaxed);
 }

@@ -41,15 +41,9 @@ public:
         RpcCallback&& callback) -> kosio::async::Task<Result<void>>;
 
     [[REMEMBER_CO_AWAIT]]
-    auto shutdown() -> kosio::async::Task<void>;
+    auto shutdown() -> kosio::async::Task<Result<void>>;
 
 private:
-    [[REMEMBER_CO_AWAIT]]
-    auto do_shutdown() -> kosio::async::Task<void>;
-
-    [[REMEMBER_CO_AWAIT]]
-    auto wait_shutdown() const -> kosio::async::Task<void>;
-
     [[REMEMBER_CO_AWAIT]]
     auto redirect_to(std::string_view resp_payload) -> kosio::async::Task<Result<void>>;
 
@@ -65,5 +59,6 @@ private:
     RpcCallbackMap        callbacks_;
     kosio::sync::Mutex    mutex_;
     bool                  is_shutdown_{false};
+    std::atomic<bool>     is_handle_response_{false};
 };
 } // namespace vosfs::rpc

@@ -25,13 +25,14 @@ public:
         MethodType method_type,
         const detail::Invoke& invoke);
 
-private:
+public:
     [[REMEMBER_CO_AWAIT]]
     auto run() -> kosio::async::Task<Result<void>>;
 
     [[REMEMBER_CO_AWAIT]]
     auto shutdown() -> kosio::async::Task<Result<void>>;
 
+private:
     auto handle_request(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void>;
 
     auto send_response(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void>;

@@ -43,7 +43,6 @@ auto vosfs::rpc::RpcProvider::run() -> kosio::async::Task<Result<void>> {
             break;
         }
         auto& [stream, peer_addr] = has_stream.value();
-        LOG_VERBOSE("Accept connection from {}", peer_addr);
 
         auto session = session_manager_.assign_session(std::move(stream), peer_addr);
         LOG_VERBOSE("Accept connection from {}, session_id : {}", peer_addr, session->id);
@@ -68,7 +67,7 @@ auto vosfs::rpc::RpcProvider::shutdown() -> kosio::async::Task<Result<void>> {
     // Stop listening
     auto has_cancle = co_await kosio::io::cancel(listener_.fd(), IORING_ASYNC_CANCEL_ALL);
     if (!has_cancle) {
-        LOG_ERROR("Failed to stop listening : {}", has_cancle.error());
+        LOG_FATAL("Failed to stop listening : {}", has_cancle.error());
         co_return std::unexpected{make_error(Error::kStopListeningFailed)};
     }
 
@@ -78,7 +77,8 @@ auto vosfs::rpc::RpcProvider::shutdown() -> kosio::async::Task<Result<void>> {
         for (auto& session : session_manager_.sessions_ | std::views::values) {
             has_cancle = co_await kosio::io::cancel(session->stream.fd(), IORING_ASYNC_CANCEL_ALL);
             if (!has_cancle) {
-                continue; // Not safe!
+                LOG_FATAL("{}", has_cancle.error());
+                continue; // unsafe
             }
         }
         co_await kosio::time::sleep(50);
@@ -168,7 +168,6 @@ auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> ses
         // Get invoke task
         auto has_invoke_task = co_await invoke_queue.pop();
         if (!has_invoke_task) {
-            LOG_ERROR("{}", has_invoke_task.error());
             break;
         }
         auto invoke_task = std::move(has_invoke_task.value());

@@ -4,13 +4,11 @@
 
 namespace vosfs::rpc {
 enum class ServiceType : uint8_t {
-    kConnection = 0,
-    kRaft,
+    kRaft = 0,
     kMath, // for test
 };
 
 enum class MethodType : uint8_t {
-    kConnectionShutdown = 0,
     kRaftRequestVote,
     kRaftAppendEntries,
     kRaftInstallSnapshot,
@@ -25,8 +23,6 @@ public:
     [[nodiscard]]
     static auto to_string(ServiceType service_type) -> std::string_view {
         switch (service_type) {
-            case ServiceType::kConnection:
-                return "Connection";
             case ServiceType::kRaft:
                 return "Raft";
             case ServiceType::kMath:
@@ -38,8 +34,6 @@ public:
     [[nodiscard]]
     static auto to_string(MethodType method_type) -> std::string_view {
         switch (method_type) {
-            case MethodType::kConnectionShutdown:
-                return "ConnectionShutdown";
             case MethodType::kRaftRequestVote:
                 return "RaftRequestVote";
             case MethodType::kRaftAppendEntries:
