@@ -97,6 +97,7 @@ auto vosfs::rpc::RpcConsumer::shutdown() -> kosio::async::Task<Result<void>> {
         co_return std::unexpected{make_error(Error::kConsumerHasShutdown)};
     }
 
+    // Stop handling response
     while (is_handle_response_.load(std::memory_order_relaxed)) {
         auto has_cancle = co_await kosio::io::cancel(stream_.fd(), IORING_ASYNC_CANCEL_ALL);
         if (!has_cancle) {

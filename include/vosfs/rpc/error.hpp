@@ -9,6 +9,7 @@ public:
     enum ErrorCode : uint8_t {
         kSuccess = 0,
         kRedirect,
+        kShutdown,
         kFindServiceTypeFailed,
         kFindMethodTypeFailed,
         kGetRespPayloadFailed,

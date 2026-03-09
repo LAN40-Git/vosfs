@@ -87,6 +87,70 @@ auto vosfs::rpc::RpcProvider::shutdown() -> kosio::async::Task<Result<void>> {
     co_return Result<void>{};
 }
 
+auto vosfs::rpc::RpcProvider::handle_auth_request(kosio::net::TcpStream stream) -> kosio::async::Task<void> {
+    std::vector<char> buf(detail::MAX_RPC_MESSAGE_SIZE);
+    detail::FixedRpcRequestHeader req_header;
+
+    while (true) {
+        // Recv fixed request header
+        auto ret = co_await stream.read_exact(
+            {reinterpret_cast<char*>(&req_header), sizeof(detail::FixedRpcRequestHeader)});
+        if (!ret) {
+            LOG_ERROR("{}", ret.error());
+            break;
+        }
+
+        auto request_id = be64toh(req_header.request_id);
+        auto payload_size = be32toh(req_header.payload_size);
+        auto service_type = req_header.service_type;
+        auto method_type = req_header.method_type;
+
+        // Reject RPC requests that are not authentication services
+        if (service_type != )
+
+        if (payload_size > detail::MAX_RPC_MESSAGE_SIZE) {
+            LOG_ERROR("Receive unusual rpc message, request_id : {}, payload_size : {}.", request_id, payload_size);
+            break;
+        }
+
+        // Recv req_payload
+        ret = co_await stream.read_exact({buf.data(), payload_size});
+        if (!ret) {
+            LOG_ERROR("{}", ret.error());
+            break;
+        }
+
+        /* detail::InvokeTask
+        uint64_t    request_id_{0};
+        Invoke      invoke_;
+        std::string req_payload_{};
+        uint8_t     error_code_{0};
+        */
+        detail::InvokeTask invoke_task;
+        invoke_task.request_id_ = request_id;
+
+        // Get invoke
+        auto service = invokes_.find(service_type);
+        if (service == invokes_.end()) {
+            invoke_task.error_code_ = detail::RpcError::kFindServiceTypeFailed;
+            co_await invoke_queue.push(std::move(invoke_task));
+            continue;
+        }
+
+        auto invoke = service->second.find(method_type);
+        if (invoke == service->second.end()) {
+            invoke_task.error_code_ = detail::RpcError::kFindMethodTypeFailed;
+            co_await invoke_queue.push(std::move(invoke_task));
+            continue;
+        }
+
+        invoke_task.req_payload_ = std::string{buf.data(), payload_size};
+        invoke_task.invoke_ = invoke->second;
+
+        co_await invoke_queue.push(std::move(invoke_task));
+    }
+}
+
 auto vosfs::rpc::RpcProvider::handle_request(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void> {
     auto& stream = session->stream;
     auto& invoke_queue = session->invoke_queue;
@@ -150,10 +214,6 @@ auto vosfs::rpc::RpcProvider::handle_request(std::shared_ptr<detail::Session> se
         co_await invoke_queue.push(std::move(invoke_task));
     }
 
-    while (!(co_await invoke_queue.empty())) {
-        co_await kosio::time::sleep(50);
-        LOG_VERBOSE("Session {} is waiting for invoke complete, invoke queue size : {}.", session->id, co_await invoke_queue.size());
-    }
     co_await invoke_queue.shutdown();
 }
 

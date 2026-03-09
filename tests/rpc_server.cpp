@@ -4,6 +4,14 @@
 using namespace vosfs;
 using namespace vosfs::rpc;
 
+auto shutdown(std::unique_ptr<RpcProvider>& provider) -> kosio::async::Task<void> {
+    co_await kosio::time::sleep(5000);
+    auto ret = co_await provider->shutdown();
+    if (!ret) {
+        LOG_ERROR("Failed to shutdown provider  : {}", ret.error());
+    }
+}
+
 auto process(std::unique_ptr<RpcProvider>& provider) -> kosio::async::Task<void> {
     auto ret = co_await provider->run();
     if (!ret) {
