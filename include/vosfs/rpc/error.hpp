@@ -13,6 +13,7 @@ public:
         kFindServiceTypeFailed,
         kFindMethodTypeFailed,
         kGetRespPayloadFailed,
+        kUnauthenticated,
     };
 
 public:
@@ -34,6 +35,8 @@ public:
             return "Failed to find service type.";
         case kFindMethodTypeFailed:
             return "Failed to find method type.";
+        case kUnauthenticated:
+            return "Unauthenticated rpc request.";
         default:
             return "Unknown rpc error.";
         }

@@ -46,7 +46,7 @@ auto vosfs::rpc::RpcProvider::run() -> kosio::async::Task<Result<void>> {
 
         auto session = session_manager_.assign_session(std::move(stream), peer_addr);
         LOG_VERBOSE("Accept connection from {}, session_id : {}", peer_addr, session->id);
-        kosio::spawn(handle_request(session));
+        kosio::spawn(handle_authenticated_request(session));
         kosio::spawn(send_response(session));
     }
 
@@ -87,7 +87,7 @@ auto vosfs::rpc::RpcProvider::shutdown() -> kosio::async::Task<Result<void>> {
     co_return Result<void>{};
 }
 
-auto vosfs::rpc::RpcProvider::handle_auth_request(kosio::net::TcpStream stream) -> kosio::async::Task<void> {
+auto vosfs::rpc::RpcProvider::handle_unauthenticated_request(kosio::net::TcpStream stream) -> kosio::async::Task<void> {
     std::vector<char> buf(detail::MAX_RPC_MESSAGE_SIZE);
     detail::FixedRpcRequestHeader req_header;
 
@@ -105,11 +105,14 @@ auto vosfs::rpc::RpcProvider::handle_auth_request(kosio::net::TcpStream stream) 
         auto service_type = req_header.service_type;
         auto method_type = req_header.method_type;
 
-        // Reject RPC requests that are not authentication services
-        if (service_type != )
-
         if (payload_size > detail::MAX_RPC_MESSAGE_SIZE) {
             LOG_ERROR("Receive unusual rpc message, request_id : {}, payload_size : {}.", request_id, payload_size);
+            break;
+        }
+
+        // Reject RPC requests that are unauthenticated services or signout method
+        if (service_type != ServiceType::kAuth || method_type == MethodType::kAuthSignout) {
+            LOG_ERROR("Receive unauthenticated rpc request.");
             break;
         }
 
@@ -151,7 +154,7 @@ auto vosfs::rpc::RpcProvider::handle_auth_request(kosio::net::TcpStream stream) 
     }
 }
 
-auto vosfs::rpc::RpcProvider::handle_request(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void> {
+auto vosfs::rpc::RpcProvider::handle_authenticated_request(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void> {
     auto& stream = session->stream;
     auto& invoke_queue = session->invoke_queue;
     std::vector<char> buf(detail::MAX_RPC_MESSAGE_SIZE);
