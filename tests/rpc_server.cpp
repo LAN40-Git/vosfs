@@ -31,8 +31,7 @@ auto main_loop() -> kosio::async::Task<void> {
     auto provider = std::move(has_provider.value());
     // Register invokes
     provider->register_invoke(ServiceType::kMath, MethodType::kMathAdd, [](
-        std::string_view req_payload, std::span<char> resp_payload,
-        uint64_t session_id, uint64_t request_id) -> kosio::async::Task<Result<std::size_t>> {
+        std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<Result<std::size_t>> {
         math::MathRequest request;
         math::MathResponse response;
 
@@ -49,8 +48,7 @@ auto main_loop() -> kosio::async::Task<void> {
     });
 
     provider->register_invoke(ServiceType::kMath, MethodType::kMathSub, [](
-        std::string_view req_payload, std::span<char> resp_payload,
-        uint64_t session_id, uint64_t request_id) -> kosio::async::Task<Result<std::size_t>> {
+        std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<Result<std::size_t>> {
         math::MathRequest request;
         math::MathResponse response;
 

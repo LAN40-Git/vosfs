@@ -158,7 +158,7 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
         // Recv fixed response header
         detail::FixedRpcResponseHeader resp_header;
         auto ret = co_await stream_.read_exact(
-            {reinterpret_cast<char*>(&resp_header), sizeof(detail::FixedRpcResponseHeader)});
+            {reinterpret_cast<char*>(&resp_header), sizeof(resp_header)});
         if (!ret) {
             LOG_ERROR("{}", ret.error());
             break;
@@ -180,6 +180,11 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
                 LOG_ERROR("Failed to receive response payload : {}", ret.error());
                 break;
             }
+        }
+
+        // Remove callback when rpc request not success
+        if (error_code != detail::RpcError::kSuccess) {
+            callbacks_.erase(request_id);
         }
 
         switch (error_code) {

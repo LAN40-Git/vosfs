@@ -9,7 +9,6 @@ public:
     enum ErrorCode : uint8_t {
         kSuccess = 0,
         kRedirect,
-        kShutdown,
         kFindServiceTypeFailed,
         kFindMethodTypeFailed,
         kGetRespPayloadFailed,
@@ -36,7 +35,7 @@ public:
         case kFindMethodTypeFailed:
             return "Failed to find method type.";
         case kUnauthenticated:
-            return "Unauthenticated rpc request.";
+            return "The client is unauthenticated.";
         default:
             return "Unknown rpc error.";
         }

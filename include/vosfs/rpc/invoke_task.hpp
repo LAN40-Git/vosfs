@@ -2,8 +2,8 @@
 #include "vosfs/rpc/util.hpp"
 
 namespace vosfs::rpc::detail {
-// req_payload, resp_payload, session_id, request_id
-using Invoke = std::function<kosio::async::Task<Result<std::size_t>>(std::string_view, std::span<char>, uint64_t, uint64_t)>;
+// req_payload, resp_payload
+using Invoke = std::function<kosio::async::Task<Result<std::size_t>>(std::string_view, std::span<char>)>;
 struct InvokeTask {
 public:
     InvokeTask() = default;
