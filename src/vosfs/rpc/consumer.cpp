@@ -14,7 +14,6 @@ auto vosfs::rpc::RpcConsumer::create(std::string_view host, uint16_t port)
     }
 
     auto consumer = std::make_unique<RpcConsumer>(std::move(has_stream.value()));
-    consumer->is_handle_response_.store(true, std::memory_order_relaxed);
     kosio::spawn(consumer->handle_response());
     co_return std::move(consumer);
 }
@@ -47,7 +46,6 @@ auto vosfs::rpc::RpcConsumer::send_request(
 
     if (!ret) {
         LOG_ERROR("{}", ret.error());
-        co_await stream_.close();
         co_return std::unexpected{make_error(Error::kSendRpcRequestFailed)};
     }
 
@@ -82,7 +80,6 @@ auto vosfs::rpc::RpcConsumer::send_request(
 
     if (!ret) {
         LOG_ERROR("{}", ret.error());
-        co_await stream_.close();
         co_return std::unexpected{make_error(Error::kSendRpcRequestFailed)};
     }
 
@@ -90,25 +87,23 @@ auto vosfs::rpc::RpcConsumer::send_request(
 }
 
 auto vosfs::rpc::RpcConsumer::shutdown() -> kosio::async::Task<Result<void>> {
-    co_await mutex_.lock();
-    std::lock_guard lock(mutex_, std::adopt_lock);
+    {
+        co_await mutex_.lock();
+        std::lock_guard lock(mutex_, std::adopt_lock);
 
-    if (is_shutdown_) {
-        co_return std::unexpected{make_error(Error::kConsumerHasShutdown)};
-    }
-
-    // Stop handling response
-    while (is_handle_response_.load(std::memory_order_relaxed)) {
-        auto has_cancle = co_await kosio::io::cancel(stream_.fd(), IORING_ASYNC_CANCEL_ALL);
-        if (!has_cancle) {
-            LOG_FATAL("{}", has_cancle.error());
-            break;
+        if (is_shutdown_) {
+            co_return std::unexpected{make_error(Error::kConsumerHasShutdown)};
         }
-
-        co_await kosio::time::sleep(50);
     }
 
-    is_shutdown_ = true;
+    auto ret = co_await send_request(ServiceType::kConn, MethodType::kConnShutdown, "",
+                    [](std::string_view) -> kosio::async::Task<void> {co_return;});
+
+    if (!ret) {
+        co_return ret;
+    }
+
+    co_await shutdown_latch_.wait();
     co_return Result<void>{};
 }
 
@@ -153,6 +148,7 @@ auto vosfs::rpc::RpcConsumer::trigger_callback(uint64_t request_id, std::string_
 
 auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
     std::vector<char> buf(detail::MAX_RPC_MESSAGE_SIZE);
+    bool need_redirect = false;
 
     while (true) {
         // Recv fixed response header
@@ -183,7 +179,17 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
         }
 
         if (error_code == detail::RpcError::kShutdown) {
-            break;
+            if (!need_redirect) {
+                co_await stream_.close();
+                break;
+            } else {
+                auto has_redirect = co_await redirect_to({buf.data(), payload_size});
+                if (!has_redirect) {
+                    LOG_ERROR("Failed to redirect : {}", has_redirect.error());
+                    break;
+                }
+                need_redirect = false;
+            }
         }
 
         // Remove callback when rpc request not success
@@ -197,15 +203,20 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
                 break;
             }
             case detail::RpcError::kRedirect: {
-                auto has_redirect = co_await redirect_to({buf.data(), payload_size});
-                if (!has_redirect) {
-                    LOG_ERROR("Failed to redirect : {}", has_redirect.error());
-                    break;
+                need_redirect = true;
+                if (!co_await send_request(ServiceType::kConn, MethodType::kConnShutdown, "",
+                    [](std::string_view) -> kosio::async::Task<void> {co_return;})) {
+                    co_return;
                 }
                 break;
             }
             case detail::RpcError::kNeedShutdown: {
-
+                // Notify the server to stop reading and writing
+                if (!co_await send_request(ServiceType::kConn, MethodType::kConnShutdown, "",
+                    [](std::string_view) -> kosio::async::Task<void> {co_return;})) {
+                    co_return;
+                }
+                break;
             }
             default: {
                 LOG_ERROR("Rpc error : {}", detail::make_rpc_error(error_code));
@@ -214,5 +225,10 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
         }
     }
 
-    is_handle_response_.store(false, std::memory_order_relaxed);
+    {
+        co_await mutex_.lock();
+        std::lock_guard lock(mutex_, std::adopt_lock);
+        is_shutdown_ = true;
+    }
+    shutdown_latch_.count_down();
 }
