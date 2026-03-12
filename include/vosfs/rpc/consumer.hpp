@@ -68,6 +68,6 @@ private:
     kosio::sync::Mutex    mutex_;
     kosio::sync::Latch    shutdown_latch_{1};
     Status                status_{Running};
-    // bool                  is_shutdown_{false};
+
 };
 } // namespace vosfs::rpc

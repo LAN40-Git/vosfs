@@ -5,10 +5,8 @@ using namespace vosfs;
 using namespace vosfs::rpc;
 
 auto process(std::unique_ptr<RpcConsumer> consumer) -> kosio::async::Task<void> {
-    std::size_t n = 5;
-    while (--n > 0) {
+    while (true) {
         co_await kosio::time::sleep(1000);
-        LOG_INFO("n = {}", n);
 
         math::MathRequest request;
         request.set_a(20);
@@ -25,10 +23,11 @@ auto process(std::unique_ptr<RpcConsumer> consumer) -> kosio::async::Task<void> 
         });
         if (!ret) {
             LOG_ERROR("Failed to send request : {}", ret.error());
+            break;
         }
     }
 
-    co_await consumer->shutdown();
+    // co_await consumer->shutdown();
 }
 
 auto main_loop() -> kosio::async::Task<void> {

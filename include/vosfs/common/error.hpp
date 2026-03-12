@@ -58,9 +58,9 @@ public:
             case kProviderIsRunning:
                 return "Failed to run provider because it is running.";
             case kProviderHasShutdown:
-                return "Failed to shutdown provider because it has been shutdown.";
+                return "The provider has been shutdown.";
             case kConsumerHasShutdown:
-                return "Failed to shutdown consumer because it has been shutdown.";
+                return "The consumer has been shutdown.";
             case kStopListeningFailed:
                 return "Failed to stop listening.";
             case kNeedRedirect:

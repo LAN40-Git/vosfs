@@ -122,11 +122,11 @@ auto vosfs::rpc::RpcProvider::handle_unauth_request(std::shared_ptr<detail::Sess
             break;
         }
 
-        // if (!is_unauth_request(service_type, method_type)) {
-        //     invoke_task.error_code_ = detail::RpcError::kUnauthenticated;
-        //     co_await invoke_queue.push(std::move(invoke_task));
-        //     continue;
-        // }
+        if (!is_unauth_request(service_type, method_type)) {
+            invoke_task.error_code_ = detail::RpcError::kUnauthenticated;
+            co_await invoke_queue.push(std::move(invoke_task));
+            continue;
+        }
 
         // Get invoke
         auto service = invokes_.find(service_type);
