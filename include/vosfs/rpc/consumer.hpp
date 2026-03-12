@@ -5,6 +5,12 @@ namespace vosfs::rpc {
 using RpcCallback = std::function<kosio::async::Task<void>(std::string_view resp_payload)>;
 class RpcConsumer {
     using RpcCallbackMap = tbb::concurrent_hash_map<uint64_t, RpcCallback>;
+
+    enum Status {
+        Running = 0,
+        ShuttingDown,
+        ShutDown
+    };
 public:
     explicit RpcConsumer(kosio::net::TcpStream stream)
         : stream_(std::move(stream)) {
@@ -52,12 +58,16 @@ private:
     [[REMEMBER_CO_AWAIT]]
     auto handle_response() -> kosio::async::Task<void>;
 
+    [[REMEMBER_CO_AWAIT]]
+    auto send_shutdown_request() -> kosio::async::Task<Result<void>>;
+
 private:
     kosio::net::TcpStream stream_;
     uint64_t              request_id_{0};
     RpcCallbackMap        callbacks_;
     kosio::sync::Mutex    mutex_;
     kosio::sync::Latch    shutdown_latch_{1};
-    bool                  is_shutdown_{false};
+    Status                status_{Running};
+    // bool                  is_shutdown_{false};
 };
 } // namespace vosfs::rpc

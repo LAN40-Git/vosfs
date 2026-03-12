@@ -103,6 +103,9 @@ auto vosfs::rpc::RpcProvider::handle_unauth_request(std::shared_ptr<detail::Sess
         auto payload_size = be32toh(req_header.payload_size);
         auto service_type = req_header.service_type;
         auto method_type = req_header.method_type;
+        if (service_type == ServiceType::kConn && method_type == MethodType::kConnShutdown) {
+            break;
+        }
 
         if (payload_size > detail::MAX_RPC_MESSAGE_SIZE) {
             LOG_ERROR("Receive unusual rpc message, request_id : {}, payload_size : {}.", request_id, payload_size);
@@ -112,19 +115,18 @@ auto vosfs::rpc::RpcProvider::handle_unauth_request(std::shared_ptr<detail::Sess
         detail::InvokeTask invoke_task;
         invoke_task.request_id_ = request_id;
 
-        if ((service_type != ServiceType::kAuth && service_type != ServiceType::kConn) ||
-            method_type == MethodType::kAuthSignout) {
-            invoke_task.error_code_ = detail::RpcError::kUnauthenticated;
-            co_await invoke_queue.push(std::move(invoke_task));
-            continue;
-        }
-
         // Recv req_payload
         ret = co_await stream.read_exact({buf.data(), payload_size});
         if (!ret) {
             LOG_ERROR("{}", ret.error());
             break;
         }
+
+        // if (!is_unauth_request(service_type, method_type)) {
+        //     invoke_task.error_code_ = detail::RpcError::kUnauthenticated;
+        //     co_await invoke_queue.push(std::move(invoke_task));
+        //     continue;
+        // }
 
         // Get invoke
         auto service = invokes_.find(service_type);
@@ -170,6 +172,9 @@ auto vosfs::rpc::RpcProvider::handle_auth_request(std::shared_ptr<detail::Sessio
         auto payload_size = be32toh(req_header.payload_size);
         auto service_type = req_header.service_type;
         auto method_type = req_header.method_type;
+        if (service_type == ServiceType::kConn && method_type == MethodType::kConnShutdown) {
+            break;
+        }
 
         if (payload_size > detail::MAX_RPC_MESSAGE_SIZE) {
             LOG_ERROR("Receive unusual rpc message, request_id : {}, payload_size : {}.", request_id, payload_size);
@@ -221,6 +226,8 @@ auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> ses
         // Get invoke task
         auto has_invoke_task = co_await invoke_queue.pop();
         if (!has_invoke_task) {
+            resp_header.error_code = detail::RpcError::kShutdown;
+            co_await stream.write_all({reinterpret_cast<char*>(&resp_header), sizeof(resp_header)});
             break;
         }
         auto invoke_task = std::move(has_invoke_task.value());
@@ -233,6 +240,7 @@ auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> ses
                 auto has_resp_payload_size = co_await invoke_task.invoke_(
                     invoke_task.req_payload_,
                     {buf.data(), buf.capacity()});
+
                 if (!has_resp_payload_size) {
                     if (has_resp_payload_size.error().value() == Error::kNeedRedirect) {
                         resp_header.error_code = detail::RpcError::kRedirect;
@@ -242,10 +250,10 @@ auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> ses
                     break;
                 }
                 resp_header.payload_size = htobe32(has_resp_payload_size.value());
+                break;
             }
             default: {
                 resp_header.error_code = invoke_task.error_code_;
-                break;
             }
         }
 
@@ -275,4 +283,16 @@ auto vosfs::rpc::RpcProvider::remind_all_sessions_shutdown() -> kosio::async::Ta
         invoke_task.error_code_ = detail::RpcError::kNeedShutdown;
         co_await session->invoke_queue.push(std::move(invoke_task));
     }
+}
+
+auto vosfs::rpc::RpcProvider::is_unauth_request(ServiceType service_type, MethodType method_type) -> bool {
+    if (service_type != ServiceType::kAuth && service_type != ServiceType::kConn) {
+        return false;
+    }
+
+    if (method_type == MethodType::kAuthSignout) {
+        return false;
+    }
+
+    return true;
 }

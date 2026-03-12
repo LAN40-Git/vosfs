@@ -26,21 +26,21 @@ auto vosfs::rpc::RpcConsumer::send_request(
     co_await mutex_.lock();
     std::lock_guard lock(mutex_, std::adopt_lock);
 
-    if (is_shutdown_) {
+    if (status_ == ShutDown) {
         co_return std::unexpected{make_error(Error::kConnectionShutdown)};
     }
 
     // Make fixed request header
-    detail::FixedRpcRequestHeader header;
-    header.request_id = htobe64(request_id_);
-    header.service_type = service_type;
-    header.method_type = method_type;
-    header.payload_size = htobe32(req_payload.size());
+    detail::FixedRpcRequestHeader req_header;
+    req_header.request_id = htobe64(request_id_);
+    req_header.payload_size = htobe32(req_payload.size());
+    req_header.service_type = service_type;
+    req_header.method_type = method_type;
 
     callbacks_.emplace(request_id_++, callback);
 
     auto ret = co_await stream_.write_vectored(
-        std::span<const char>(reinterpret_cast<char*>(&header), sizeof(header)),
+        std::span<const char>(reinterpret_cast<char*>(&req_header), sizeof(req_header)),
         std::span<const char>(req_payload.data(), req_payload.size())
     );
 
@@ -60,16 +60,16 @@ auto vosfs::rpc::RpcConsumer::send_request(
     co_await mutex_.lock();
     std::lock_guard lock(mutex_, std::adopt_lock);
 
-    if (is_shutdown_) {
-        co_return std::unexpected{make_error(Error::kConnectionShutdown)};
+    if (status_ == ShutDown) {
+        co_return std::unexpected{make_error(Error::kConsumerHasShutdown)};
     }
 
     // Make fixed request header
     detail::FixedRpcRequestHeader req_header;
     req_header.request_id = htobe64(request_id_);
+    req_header.payload_size = htobe32(req_payload.size());
     req_header.service_type = service_type;
     req_header.method_type = method_type;
-    req_header.payload_size = htobe32(req_payload.size());
 
     callbacks_.emplace(request_id_++, std::move(callback));
 
@@ -91,19 +91,19 @@ auto vosfs::rpc::RpcConsumer::shutdown() -> kosio::async::Task<Result<void>> {
         co_await mutex_.lock();
         std::lock_guard lock(mutex_, std::adopt_lock);
 
-        if (is_shutdown_) {
+        if (status_ == ShuttingDown || status_ == ShutDown) {
             co_return std::unexpected{make_error(Error::kConsumerHasShutdown)};
         }
+
+        status_ = ShuttingDown;
     }
 
-    auto ret = co_await send_request(ServiceType::kConn, MethodType::kConnShutdown, "",
-                    [](std::string_view) -> kosio::async::Task<void> {co_return;});
-
-    if (!ret) {
+    if (auto ret = co_await send_shutdown_request(); !ret) {
         co_return ret;
     }
 
     co_await shutdown_latch_.wait();
+    LOG_INFO("Consumer has shutdown.");
     co_return Result<void>{};
 }
 
@@ -169,15 +169,6 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
             break;
         }
 
-        if (payload_size > 0) {
-            // Recv response payload
-            ret = co_await stream_.read_exact({buf.data(), payload_size});
-            if (!ret) [[unlikely]] {
-                LOG_ERROR("Failed to receive response payload : {}", ret.error());
-                break;
-            }
-        }
-
         if (error_code == detail::RpcError::kShutdown) {
             if (!need_redirect) {
                 co_await stream_.close();
@@ -189,6 +180,15 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
                     break;
                 }
                 need_redirect = false;
+            }
+        }
+
+        if (payload_size > 0) {
+            // Recv response payload
+            ret = co_await stream_.read_exact({buf.data(), payload_size});
+            if (!ret) [[unlikely]] {
+                LOG_ERROR("Failed to receive response payload : {}", ret.error());
+                break;
             }
         }
 
@@ -225,10 +225,13 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
         }
     }
 
-    {
-        co_await mutex_.lock();
-        std::lock_guard lock(mutex_, std::adopt_lock);
-        is_shutdown_ = true;
-    }
+    co_await mutex_.lock();
+    std::lock_guard lock(mutex_, std::adopt_lock);
+    status_ = ShutDown;
     shutdown_latch_.count_down();
+}
+
+auto vosfs::rpc::RpcConsumer::send_shutdown_request() -> kosio::async::Task<Result<void>> {
+    co_return co_await send_request(ServiceType::kConn, MethodType::kConnShutdown, "",
+                    [](std::string_view) -> kosio::async::Task<void> {co_return;});
 }

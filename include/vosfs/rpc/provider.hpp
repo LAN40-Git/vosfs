@@ -41,6 +41,10 @@ private:
 
     auto remind_all_sessions_shutdown() -> kosio::async::Task<void>;
 
+
+private:
+    static auto is_unauth_request(ServiceType service_type, MethodType method_type) -> bool;
+
 private:
     using InvokeMap = std::unordered_map<ServiceType, std::unordered_map<MethodType, detail::Invoke>>;
 

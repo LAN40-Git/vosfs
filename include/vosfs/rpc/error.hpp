@@ -51,8 +51,8 @@ private:
     uint8_t error_code_;
 };
 
-static auto make_rpc_error(uint8_t error_code) -> Error {
-    return Error{error_code};
+static auto make_rpc_error(uint8_t error_code) -> RpcError {
+    return RpcError{error_code};
 }
 
 } // namespace vosfs::rpc::detail

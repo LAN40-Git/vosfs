@@ -8,7 +8,7 @@ class RpcProvider;
 
 namespace vosfs::rpc::detail {
 struct Session {
-    bool                        is_auth{false};
+    bool                        is_auth;
     std::string                 id;
     kosio::net::TcpStream       stream;
     kosio::net::SocketAddr      addr;
@@ -22,7 +22,7 @@ public:
     auto assign_unauth_session(kosio::net::TcpStream&& stream, kosio::net::SocketAddr addr) -> std::shared_ptr<Session>;
 
     [[nodiscard]]
-    auto assign_auth_session(std::string id, kosio::net::TcpStream&& stream, kosio::net::SocketAddr addr) -> std::shared_ptr<Session>;
+    auto assign_auth_session(const std::string& id, kosio::net::TcpStream&& stream, kosio::net::SocketAddr addr) -> std::shared_ptr<Session>;
 
     [[nodiscard]]
     auto find_session(bool is_auth, std::string session_id) const -> std::shared_ptr<Session>;

@@ -64,6 +64,11 @@ auto main_loop() -> kosio::async::Task<void> {
         co_return response.ByteSizeLong();
     });
 
+    provider->register_invoke(ServiceType::kConn, MethodType::kConnShutdown, [](
+        std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<Result<std::size_t>> {
+        co_return 0;
+    });
+
     kosio::spawn(process(provider));
     co_await kosio::signal::ctrl_c();
     co_await provider->shutdown();
