@@ -71,29 +71,10 @@ auto vosfs::rpc::RpcProvider::shutdown() -> kosio::async::Task<Result<void>> {
         co_return std::unexpected{make_error(Error::kStopListeningFailed)};
     }
 
-    // Clean unauthenticated sessions
-    while (!session_manager_.unauth_sessions_.empty()) {
-        for (auto session : session_manager_.unauth_sessions_ | std::views::values) {
-            has_cancle = co_await kosio::io::cancel(session->stream.fd(), IORING_ASYNC_CANCEL_ALL);
-            if (!has_cancle) {
-                LOG_FATAL("Failed to cancle operations of Session {} : {}", session->id, has_cancle.error());
-                // TODO: unsafe here
-                continue;
-            }
-        }
-        co_await kosio::time::sleep(50);
-    }
+    co_await this->remind_all_sessions_shutdown();
 
-    // Clean authenticated sessions
-    while (!session_manager_.auth_sessions_.empty()) {
-        for (auto session : session_manager_.auth_sessions_ | std::views::values) {
-            has_cancle = co_await kosio::io::cancel(session->stream.fd(), IORING_ASYNC_CANCEL_ALL);
-            if (!has_cancle) {
-                LOG_FATAL("Failed to cancle operations of Session {} : {}", session->id, has_cancle.error());
-                // TODO: unsafe here
-                continue;
-            }
-        }
+    while (!session_manager_.unauth_sessions_.empty()
+        || !session_manager_.auth_sessions_.empty()) {
         co_await kosio::time::sleep(50);
     }
 
@@ -131,7 +112,8 @@ auto vosfs::rpc::RpcProvider::handle_unauth_request(std::shared_ptr<detail::Sess
         detail::InvokeTask invoke_task;
         invoke_task.request_id_ = request_id;
 
-        if (service_type != ServiceType::kAuth || method_type == MethodType::kAuthSignout) {
+        if ((service_type != ServiceType::kAuth && service_type != ServiceType::kConn) ||
+            method_type == MethodType::kAuthSignout) {
             invoke_task.error_code_ = detail::RpcError::kUnauthenticated;
             co_await invoke_queue.push(std::move(invoke_task));
             continue;
@@ -239,8 +221,6 @@ auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> ses
         // Get invoke task
         auto has_invoke_task = co_await invoke_queue.pop();
         if (!has_invoke_task) {
-            // Remind client to close the connection
-
             break;
         }
         auto invoke_task = std::move(has_invoke_task.value());
@@ -254,14 +234,18 @@ auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> ses
                     invoke_task.req_payload_,
                     {buf.data(), buf.capacity()});
                 if (!has_resp_payload_size) {
-                    LOG_ERROR("Failed to get resp_payload size from invoke : {}", has_resp_payload_size.error());
-                    resp_header.error_code = detail::RpcError::kGetRespPayloadFailed;
+                    if (has_resp_payload_size.error().value() == Error::kNeedRedirect) {
+                        resp_header.error_code = detail::RpcError::kRedirect;
+                    } else {
+                        resp_header.error_code = detail::RpcError::kGetRespPayloadFailed;
+                    }
                     break;
                 }
                 resp_header.payload_size = htobe32(has_resp_payload_size.value());
             }
             default: {
                 resp_header.error_code = invoke_task.error_code_;
+                break;
             }
         }
 
@@ -277,4 +261,18 @@ auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> ses
     }
 
     session_manager_.remove_session(session->is_auth, session->id);
+}
+
+auto vosfs::rpc::RpcProvider::remind_all_sessions_shutdown() -> kosio::async::Task<void> {
+    for (const auto& session : session_manager_.unauth_sessions_ | std::views::values) {
+        detail::InvokeTask invoke_task;
+        invoke_task.error_code_ = detail::RpcError::kNeedShutdown;
+        co_await session->invoke_queue.push(std::move(invoke_task));
+    }
+
+    for (const auto& session : session_manager_.auth_sessions_ | std::views::values) {
+        detail::InvokeTask invoke_task;
+        invoke_task.error_code_ = detail::RpcError::kNeedShutdown;
+        co_await session->invoke_queue.push(std::move(invoke_task));
+    }
 }

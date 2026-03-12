@@ -23,6 +23,7 @@ public:
         kProviderHasShutdown,
         kConsumerHasShutdown,
         kStopListeningFailed,
+        kNeedRedirect,
     };
 
 public:
@@ -62,6 +63,8 @@ public:
                 return "Failed to shutdown consumer because it has been shutdown.";
             case kStopListeningFailed:
                 return "Failed to stop listening.";
+            case kNeedRedirect:
+                return "Need to redirect to leader.";
             default:
                 return strerror(error_code_);
         }

@@ -39,6 +39,8 @@ private:
 
     auto send_response(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void>;
 
+    auto remind_all_sessions_shutdown() -> kosio::async::Task<void>;
+
 private:
     using InvokeMap = std::unordered_map<ServiceType, std::unordered_map<MethodType, detail::Invoke>>;
 

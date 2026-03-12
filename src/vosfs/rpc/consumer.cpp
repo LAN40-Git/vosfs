@@ -182,6 +182,10 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
             }
         }
 
+        if (error_code == detail::RpcError::kShutdown) {
+            break;
+        }
+
         // Remove callback when rpc request not success
         if (error_code != detail::RpcError::kSuccess) {
             callbacks_.erase(request_id);
@@ -199,6 +203,9 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
                     break;
                 }
                 break;
+            }
+            case detail::RpcError::kNeedShutdown: {
+
             }
             default: {
                 LOG_ERROR("Rpc error : {}", detail::make_rpc_error(error_code));
