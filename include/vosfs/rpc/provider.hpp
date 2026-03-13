@@ -9,8 +9,8 @@ class RpcProvider {
         ShutDown
     };
 public:
-    explicit RpcProvider(uint16_t port, kosio::net::TcpListener listener)
-        : port_(port), listener_(std::move(listener)) {}
+    explicit RpcProvider(kosio::net::TcpListener listener)
+        : listener_(std::move(listener)) {}
 
     // Delete copy
     RpcProvider(const RpcProvider&) = delete;
@@ -22,7 +22,7 @@ public:
 
 public:
     [[REMEMBER_CO_AWAIT]]
-    static auto create(uint16_t port) -> kosio::async::Task<Result<std::unique_ptr<RpcProvider>>>;
+    static auto create() -> kosio::async::Task<Result<std::unique_ptr<RpcProvider>>>;
 
 public:
     void register_invoke(
@@ -44,7 +44,6 @@ private:
 private:
     using InvokeMap = std::unordered_map<ServiceType, std::unordered_map<MethodType, detail::Invoke>>;
 
-    uint16_t                port_;
     kosio::net::TcpListener listener_;
     InvokeMap               invokes_;
     kosio::sync::Mutex      mutex_;

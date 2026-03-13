@@ -1,8 +1,8 @@
 #include "vosfs/rpc/consumer.hpp"
 
-auto vosfs::rpc::RpcConsumer::create(std::string_view host, uint16_t port)
+auto vosfs::rpc::RpcConsumer::create(std::string_view host)
 -> kosio::async::Task<Result<std::unique_ptr<RpcConsumer>>> {
-    auto has_addr = kosio::net::SocketAddr::parse(host, port);
+    auto has_addr = kosio::net::SocketAddr::parse(host, detail::RPC_PORT);
     if (!has_addr) {
         LOG_ERROR("Failed to create rpc consumer : {}", has_addr.error());
         co_return std::unexpected{make_error(Error::kInvalidAddress)};

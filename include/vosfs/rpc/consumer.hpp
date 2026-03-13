@@ -28,7 +28,7 @@ public:
 
 public:
     [[REMEMBER_CO_AWAIT]]
-    static auto create(std::string_view host, uint16_t port) -> kosio::async::Task<Result<std::unique_ptr<RpcConsumer>>>;
+    static auto create(std::string_view host) -> kosio::async::Task<Result<std::unique_ptr<RpcConsumer>>>;
 
 public:
     [[REMEMBER_CO_AWAIT]]

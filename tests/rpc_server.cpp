@@ -22,7 +22,7 @@ auto process(std::unique_ptr<RpcProvider>& provider) -> kosio::async::Task<void>
 }
 
 auto main_loop() -> kosio::async::Task<void> {
-    auto has_provider = co_await RpcProvider::create(8080);
+    auto has_provider = co_await RpcProvider::create();
     if (!has_provider) {
         LOG_ERROR("Failed to create RpcProvider : {}", has_provider.error());
         co_return;

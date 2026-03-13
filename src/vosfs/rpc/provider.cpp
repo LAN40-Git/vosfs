@@ -1,9 +1,9 @@
 #include "vosfs/rpc/provider.hpp"
 #include <ranges>
 
-auto vosfs::rpc::RpcProvider::create(uint16_t port)
+auto vosfs::rpc::RpcProvider::create()
 -> kosio::async::Task<Result<std::unique_ptr<RpcProvider>>> {
-    auto has_addr = kosio::net::SocketAddr::parse("0.0.0.0", port);
+    auto has_addr = kosio::net::SocketAddr::parse("0.0.0.0", detail::RPC_PORT);
     if (!has_addr) {
         LOG_ERROR("Failed to create rpc provider : {}", has_addr.error());
         co_return std::unexpected{make_error(Error::kInvalidAddress)};
@@ -13,7 +13,7 @@ auto vosfs::rpc::RpcProvider::create(uint16_t port)
         LOG_ERROR("Failed to create rpc provider : {}", has_listener.error());
         co_return std::unexpected{make_error(Error::kBindFailed)};
     }
-    co_return std::make_unique<RpcProvider>(port, std::move(has_listener.value()));
+    co_return std::make_unique<RpcProvider>(std::move(has_listener.value()));
 }
 
 void vosfs::rpc::RpcProvider::register_invoke(
