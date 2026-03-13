@@ -81,7 +81,7 @@ auto vosfs::rpc::RpcProvider::shutdown() -> kosio::async::Task<Result<void>> {
     }
 
     LOG_VERBOSE("The sessions has been clean up.");
-
+    is_shutdown_ = true;
     co_return Result<void>{};
 }
 
@@ -175,11 +175,7 @@ auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> ses
                     {buf.data(), buf.capacity()});
 
                 if (!has_resp_payload_size) {
-                    if (has_resp_payload_size.error().value() == Error::kNeedRedirect) {
-                        resp_header.error_code = detail::RpcError::kRedirect;
-                    } else {
-                        resp_header.error_code = detail::RpcError::kGetRespPayloadFailed;
-                    }
+                    resp_header.error_code = detail::RpcError::kGetRespPayloadFailed;
                     break;
                 }
                 resp_header.payload_size = htobe32(has_resp_payload_size.value());

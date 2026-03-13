@@ -148,7 +148,6 @@ auto vosfs::rpc::RpcConsumer::trigger_callback(uint64_t request_id, std::string_
 
 auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
     std::vector<char> buf(detail::MAX_RPC_MESSAGE_SIZE);
-    bool need_redirect = false;
 
     while (true) {
         // Recv fixed response header
@@ -170,17 +169,8 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
         }
 
         if (error_code == detail::RpcError::kShutdown) {
-            if (!need_redirect) {
-                co_await stream_.close();
-                break;
-            } else {
-                auto has_redirect = co_await redirect_to({buf.data(), payload_size});
-                if (!has_redirect) {
-                    LOG_ERROR("Failed to redirect : {}", has_redirect.error());
-                    break;
-                }
-                need_redirect = false;
-            }
+            co_await stream_.close();
+            break;
         }
 
         if (payload_size > 0) {
@@ -200,14 +190,6 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
         switch (error_code) {
             case detail::RpcError::kSuccess: {
                 co_await trigger_callback(request_id, {buf.data(), payload_size});
-                break;
-            }
-            case detail::RpcError::kRedirect: {
-                need_redirect = true;
-                if (!co_await send_request(ServiceType::kConn, MethodType::kConnShutdown, "",
-                    [](std::string_view) -> kosio::async::Task<void> {co_return;})) {
-                    co_return;
-                }
                 break;
             }
             case detail::RpcError::kNeedShutdown: {
