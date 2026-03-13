@@ -3,6 +3,11 @@
 
 namespace vosfs::rpc {
 class RpcProvider {
+    enum Status {
+        Running = 0,
+        ShuttingDown,
+        ShutDown
+    };
 public:
     explicit RpcProvider(uint16_t port, kosio::net::TcpListener listener)
         : port_(port), listener_(std::move(listener)) {}
@@ -26,7 +31,6 @@ public:
         const detail::Invoke& invoke);
 
 public:
-    [[REMEMBER_CO_AWAIT]]
     auto run() -> kosio::async::Task<Result<void>>;
 
     [[REMEMBER_CO_AWAIT]]
@@ -37,16 +41,15 @@ private:
 
     auto send_response(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void>;
 
-    auto remind_all_sessions_shutdown() -> kosio::async::Task<void>;
-
 private:
     using InvokeMap = std::unordered_map<ServiceType, std::unordered_map<MethodType, detail::Invoke>>;
 
     uint16_t                port_;
     kosio::net::TcpListener listener_;
-    bool                    is_shutdown_{true};
-    kosio::sync::Mutex      mutex_;
     InvokeMap               invokes_;
+    kosio::sync::Mutex      mutex_;
+    bool                    is_shutdown_{true};
+    std::atomic<bool>       is_listening_{false};
     detail::SessionManager  session_manager_;
 };
 } // namespace vosfs::rpc

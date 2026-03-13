@@ -1,5 +1,4 @@
 #include "vosfs/rpc/provider.hpp"
-
 #include <ranges>
 
 auto vosfs::rpc::RpcProvider::create(uint16_t port)
@@ -32,9 +31,9 @@ auto vosfs::rpc::RpcProvider::run() -> kosio::async::Task<Result<void>> {
         if (!is_shutdown_) {
             co_return std::unexpected{make_error(Error::kProviderIsRunning)};
         }
-
-        is_shutdown_ = false;
     }
+
+    is_listening_.store(true, std::memory_order_relaxed);
 
     while (true) {
         auto has_stream = co_await listener_.accept();
@@ -44,13 +43,14 @@ auto vosfs::rpc::RpcProvider::run() -> kosio::async::Task<Result<void>> {
         }
         auto& [stream, peer_addr] = has_stream.value();
 
-        auto session = session_manager_.assign_unauth_session(std::move(stream), peer_addr);
+        auto session = session_manager_.assign_session(std::move(stream), peer_addr);
         LOG_VERBOSE("Accept connection from {}, session_id : {}", peer_addr, session->id);
-        kosio::spawn(handle_unauth_request(session));
+        kosio::spawn(handle_request(session));
         kosio::spawn(send_response(session));
     }
 
-    LOG_VERBOSE("Stop listening");
+    is_listening_.store(false, std::memory_order_relaxed);
+    LOG_VERBOSE("The provider has stop listening.");
     co_return Result<void>{};
 }
 
@@ -58,27 +58,29 @@ auto vosfs::rpc::RpcProvider::shutdown() -> kosio::async::Task<Result<void>> {
     co_await mutex_.lock();
     std::lock_guard lock(mutex_, std::adopt_lock);
 
-    if (is_shutdown_) {
-        co_return std::unexpected{make_error(Error::kProviderHasShutdown)};
-    }
-
-    is_shutdown_ = true;
-
     // Stop listening
-    auto has_cancle = co_await kosio::io::cancel(listener_.fd(), IORING_ASYNC_CANCEL_ALL);
-    if (!has_cancle) {
-        LOG_FATAL("Failed to stop listening : {}", has_cancle.error());
-        co_return std::unexpected{make_error(Error::kStopListeningFailed)};
-    }
+    while (is_listening_.load(std::memory_order_relaxed)) {
+        auto has_cancle = co_await kosio::io::cancel(listener_.fd(), IORING_ASYNC_CANCEL_ALL);
+        if (!has_cancle) {
+            LOG_FATAL("Failed to stop listening : {}", has_cancle.error());
+            co_return std::unexpected{make_error(Error::kStopListeningFailed)};
+        }
 
-    co_await this->remind_all_sessions_shutdown();
-
-    while (!session_manager_.unauth_sessions_.empty()
-        || !session_manager_.auth_sessions_.empty()) {
         co_await kosio::time::sleep(50);
     }
 
-    LOG_VERBOSE("The sessions has been clean up");
+    // Clear sessions
+    for (const auto& session : session_manager_.sessions_ | std::views::values) {
+        detail::InvokeTask invoke_task;
+        invoke_task.error_code_ = detail::RpcError::kNeedShutdown;
+        co_await session->invoke_queue.push(std::move(invoke_task));
+    }
+
+    while (!session_manager_.sessions_.empty()) {
+        co_await kosio::time::sleep(50);
+    }
+
+    LOG_VERBOSE("The sessions has been clean up.");
 
     co_return Result<void>{};
 }
@@ -199,19 +201,5 @@ auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> ses
         }
     }
 
-    session_manager_.remove_session(session->is_auth, session->id);
-}
-
-auto vosfs::rpc::RpcProvider::remind_all_sessions_shutdown() -> kosio::async::Task<void> {
-    for (const auto& session : session_manager_.unauth_sessions_ | std::views::values) {
-        detail::InvokeTask invoke_task;
-        invoke_task.error_code_ = detail::RpcError::kNeedShutdown;
-        co_await session->invoke_queue.push(std::move(invoke_task));
-    }
-
-    for (const auto& session : session_manager_.auth_sessions_ | std::views::values) {
-        detail::InvokeTask invoke_task;
-        invoke_task.error_code_ = detail::RpcError::kNeedShutdown;
-        co_await session->invoke_queue.push(std::move(invoke_task));
-    }
+    session_manager_.remove_session(session->id);
 }

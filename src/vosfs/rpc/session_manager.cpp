@@ -2,7 +2,7 @@
 
 auto vosfs::rpc::detail::SessionManager::assign_session(kosio::net::TcpStream&& stream,
     kosio::net::SocketAddr addr) -> std::shared_ptr<Session> {
-    // TODO: 从集群配置中
+    // TODO: 从集群配置中读取
     auto id = addr.to_string();
     auto new_session = std::make_shared<Session>(id, std::move(stream), addr);
     auto copy_session = new_session;

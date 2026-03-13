@@ -56,11 +56,11 @@ public:
             case kMessageSerializeFailed:
                 return "Failed to serialize message.";
             case kProviderIsRunning:
-                return "Failed to run provider because it is running.";
+                return "The provider is running.";
             case kProviderHasShutdown:
-                return "The provider has been shutdown.";
+                return "The provider has shutdown.";
             case kConsumerHasShutdown:
-                return "The consumer has been shutdown.";
+                return "The consumer has shutdown.";
             case kStopListeningFailed:
                 return "Failed to stop listening.";
             case kNeedRedirect:
