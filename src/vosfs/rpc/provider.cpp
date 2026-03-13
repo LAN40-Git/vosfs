@@ -83,76 +83,7 @@ auto vosfs::rpc::RpcProvider::shutdown() -> kosio::async::Task<Result<void>> {
     co_return Result<void>{};
 }
 
-auto vosfs::rpc::RpcProvider::handle_unauth_request(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void> {
-    auto& stream = session->stream;
-    auto& invoke_queue = session->invoke_queue;
-    std::vector<char> buf(detail::MAX_RPC_MESSAGE_SIZE);
-
-    detail::FixedRpcRequestHeader req_header;
-
-    while (true) {
-        // Recv fixed request header
-        auto ret = co_await stream.read_exact(
-            {reinterpret_cast<char*>(&req_header), sizeof(req_header)});
-        if (!ret) {
-            LOG_ERROR("{}", ret.error());
-            break;
-        }
-
-        auto request_id = be64toh(req_header.request_id);
-        auto payload_size = be32toh(req_header.payload_size);
-        auto service_type = req_header.service_type;
-        auto method_type = req_header.method_type;
-        if (service_type == ServiceType::kConn && method_type == MethodType::kConnShutdown) {
-            break;
-        }
-
-        if (payload_size > detail::MAX_RPC_MESSAGE_SIZE) {
-            LOG_ERROR("Receive unusual rpc message, request_id : {}, payload_size : {}.", request_id, payload_size);
-            break;
-        }
-
-        detail::InvokeTask invoke_task;
-        invoke_task.request_id_ = request_id;
-
-        // Recv req_payload
-        ret = co_await stream.read_exact({buf.data(), payload_size});
-        if (!ret) {
-            LOG_ERROR("{}", ret.error());
-            break;
-        }
-
-        if (!is_unauth_request(service_type, method_type)) {
-            invoke_task.error_code_ = detail::RpcError::kUnauthenticated;
-            co_await invoke_queue.push(std::move(invoke_task));
-            continue;
-        }
-
-        // Get invoke
-        auto service = invokes_.find(service_type);
-        if (service == invokes_.end()) {
-            invoke_task.error_code_ = detail::RpcError::kFindServiceTypeFailed;
-            co_await invoke_queue.push(std::move(invoke_task));
-            continue;
-        }
-
-        auto invoke = service->second.find(method_type);
-        if (invoke == service->second.end()) {
-            invoke_task.error_code_ = detail::RpcError::kFindMethodTypeFailed;
-            co_await invoke_queue.push(std::move(invoke_task));
-            continue;
-        }
-
-        invoke_task.req_payload_ = std::string{buf.data(), payload_size};
-        invoke_task.invoke_ = invoke->second;
-
-        co_await invoke_queue.push(std::move(invoke_task));
-    }
-
-    co_await invoke_queue.shutdown();
-}
-
-auto vosfs::rpc::RpcProvider::handle_auth_request(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void> {
+auto vosfs::rpc::RpcProvider::handle_request(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void> {
     auto& stream = session->stream;
     auto& invoke_queue = session->invoke_queue;
     std::vector<char> buf(detail::MAX_RPC_MESSAGE_SIZE);
@@ -283,16 +214,4 @@ auto vosfs::rpc::RpcProvider::remind_all_sessions_shutdown() -> kosio::async::Ta
         invoke_task.error_code_ = detail::RpcError::kNeedShutdown;
         co_await session->invoke_queue.push(std::move(invoke_task));
     }
-}
-
-auto vosfs::rpc::RpcProvider::is_unauth_request(ServiceType service_type, MethodType method_type) -> bool {
-    if (service_type != ServiceType::kAuth && service_type != ServiceType::kConn) {
-        return false;
-    }
-
-    if (method_type == MethodType::kAuthSignout) {
-        return false;
-    }
-
-    return true;
 }

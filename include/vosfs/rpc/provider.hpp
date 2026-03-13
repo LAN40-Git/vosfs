@@ -33,17 +33,11 @@ public:
     auto shutdown() -> kosio::async::Task<Result<void>>;
 
 private:
-    auto handle_unauth_request(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void>;
-
-    auto handle_auth_request(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void>;
+    auto handle_request(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void>;
 
     auto send_response(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void>;
 
     auto remind_all_sessions_shutdown() -> kosio::async::Task<void>;
-
-
-private:
-    static auto is_unauth_request(ServiceType service_type, MethodType method_type) -> bool;
 
 private:
     using InvokeMap = std::unordered_map<ServiceType, std::unordered_map<MethodType, detail::Invoke>>;

@@ -6,7 +6,6 @@
 namespace vosfs::rpc {
 enum class ServiceType : uint8_t {
     kMinService = 0,
-    kAuth,
     kConn,
     kSession,
     kRaft,
@@ -16,9 +15,6 @@ enum class ServiceType : uint8_t {
 
 enum class MethodType : uint8_t {
     kMinMethod = 0,
-    kAuthSignup,
-    kAuthSignin,
-    kAuthSignout,
     kConnShutdown,
     kSessionClose,
     kRaftRequestVote,
@@ -36,8 +32,6 @@ public:
     [[nodiscard]]
     static auto to_string(ServiceType service_type) -> std::string_view {
         switch (service_type) {
-            case ServiceType::kAuth:
-                return "Auth";
             case ServiceType::kConn:
                 return "Conn";
             case ServiceType::kSession:
@@ -53,12 +47,6 @@ public:
     [[nodiscard]]
     static auto to_string(MethodType method_type) -> std::string_view {
         switch (method_type) {
-            case MethodType::kAuthSignup:
-                return "AuthSignup";
-            case MethodType::kAuthSignin:
-                return "AuthSignin";
-            case MethodType::kAuthSignout:
-                return "AuthSignout";
             case MethodType::kConnShutdown:
                 return "ConnShutdown";
             case MethodType::kSessionClose:
