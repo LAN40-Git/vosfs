@@ -1,6 +1,4 @@
 #pragma once
-#include "vosfs/rpc/pb/math.pb.h"
-#include "vosfs/rpc/pb/rpc.pb.h"
 #include "vosfs/rpc/type.hpp"
 #include "vosfs/rpc/error.hpp"
 #include "vosfs/rpc/config.hpp"

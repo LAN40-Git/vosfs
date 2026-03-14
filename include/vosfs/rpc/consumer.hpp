@@ -28,7 +28,7 @@ public:
 
 public:
     [[REMEMBER_CO_AWAIT]]
-    static auto create(std::string_view host) -> kosio::async::Task<Result<std::unique_ptr<RpcConsumer>>>;
+    static auto create(std::string_view host, uint16_t port) -> kosio::async::Task<Result<std::unique_ptr<RpcConsumer>>>;
 
 public:
     [[REMEMBER_CO_AWAIT]]
@@ -49,8 +49,8 @@ public:
     auto shutdown() -> kosio::async::Task<Result<void>>;
 
 private:
-    [[REMEMBER_CO_AWAIT]]
-    auto redirect_to(std::string_view resp_payload) -> kosio::async::Task<Result<void>>;
+    // [[REMEMBER_CO_AWAIT]]
+    // auto redirect_to(std::string_view resp_payload) -> kosio::async::Task<Result<void>>;
 
     [[REMEMBER_CO_AWAIT]]
     auto trigger_callback(uint64_t request_id, std::string_view resp_payload) -> kosio::async::Task<void>;

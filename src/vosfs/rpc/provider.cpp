@@ -1,9 +1,9 @@
 #include "vosfs/rpc/provider.hpp"
 #include <ranges>
 
-auto vosfs::rpc::RpcProvider::create()
+auto vosfs::rpc::RpcProvider::create(uint16_t port, AuthMode auth_mode)
 -> kosio::async::Task<Result<std::unique_ptr<RpcProvider>>> {
-    auto has_addr = kosio::net::SocketAddr::parse("0.0.0.0", detail::RPC_PORT);
+    auto has_addr = kosio::net::SocketAddr::parse("0.0.0.0", port);
     if (!has_addr) {
         LOG_ERROR("Failed to create rpc provider : {}", has_addr.error());
         co_return std::unexpected{make_error(Error::kInvalidAddress)};
@@ -13,7 +13,7 @@ auto vosfs::rpc::RpcProvider::create()
         LOG_ERROR("Failed to create rpc provider : {}", has_listener.error());
         co_return std::unexpected{make_error(Error::kBindFailed)};
     }
-    co_return std::make_unique<RpcProvider>(std::move(has_listener.value()));
+    co_return std::make_unique<RpcProvider>(port, auth_mode, std::move(has_listener.value()));
 }
 
 void vosfs::rpc::RpcProvider::register_invoke(
@@ -45,6 +45,7 @@ auto vosfs::rpc::RpcProvider::run() -> kosio::async::Task<Result<void>> {
 
         auto session = session_manager_.assign_session(std::move(stream), peer_addr);
         LOG_VERBOSE("Accept connection from {}, session_id : {}", peer_addr, session->id);
+        session->is_authorized = false;
         kosio::spawn(handle_request(session));
         kosio::spawn(send_response(session));
     }
@@ -105,6 +106,7 @@ auto vosfs::rpc::RpcProvider::handle_request(std::shared_ptr<detail::Session> se
         auto payload_size = be32toh(req_header.payload_size);
         auto service_type = req_header.service_type;
         auto method_type = req_header.method_type;
+
         if (service_type == ServiceType::kConn && method_type == MethodType::kConnShutdown) {
             break;
         }
@@ -123,6 +125,14 @@ auto vosfs::rpc::RpcProvider::handle_request(std::shared_ptr<detail::Session> se
 
         detail::InvokeTask invoke_task;
         invoke_task.request_id_ = request_id;
+
+        if (auth_mode_ == AuthMode::REQUIRED) {
+            if (!session->is_authorized) {
+                invoke_task.error_code_ = detail::RpcError::kUnauthenticated;
+                co_await invoke_queue.push(std::move(invoke_task));
+                continue;
+            }
+        }
 
         // Get invoke
         auto service = invokes_.find(service_type);

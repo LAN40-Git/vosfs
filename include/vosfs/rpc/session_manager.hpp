@@ -8,7 +8,8 @@ class RpcProvider;
 
 namespace vosfs::rpc::detail {
 struct Session {
-    std::string                 id;
+    bool                        is_authorized;
+    uint64_t                    id;
     kosio::net::TcpStream       stream;
     kosio::net::SocketAddr      addr;
     util::SPSCQueue<InvokeTask> invoke_queue;
@@ -21,12 +22,13 @@ public:
     auto assign_session(kosio::net::TcpStream&& stream, kosio::net::SocketAddr addr) -> std::shared_ptr<Session>;
 
     [[nodiscard]]
-    auto find_session(const std::string& session_id) const -> std::shared_ptr<Session>;
+    auto find_session(uint64_t session_id) const -> std::shared_ptr<Session>;
 
-    void remove_session(const std::string& session_id);
+    void remove_session(uint64_t session_id);
 
 private:
-    using SessionMap = tbb::concurrent_hash_map<std::string, std::shared_ptr<Session>>;
+    using SessionMap = tbb::concurrent_hash_map<uint64_t, std::shared_ptr<Session>>;
     SessionMap sessions_;
+    uint64_t   id_{0};
 };
 } // namespace vosfs::rpc::detail

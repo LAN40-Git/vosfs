@@ -1,8 +1,8 @@
 #include "vosfs/rpc/consumer.hpp"
 
-auto vosfs::rpc::RpcConsumer::create(std::string_view host)
+auto vosfs::rpc::RpcConsumer::create(std::string_view host, uint16_t port)
 -> kosio::async::Task<Result<std::unique_ptr<RpcConsumer>>> {
-    auto has_addr = kosio::net::SocketAddr::parse(host, detail::RPC_PORT);
+    auto has_addr = kosio::net::SocketAddr::parse(host, port);
     if (!has_addr) {
         LOG_ERROR("Failed to create rpc consumer : {}", has_addr.error());
         co_return std::unexpected{make_error(Error::kInvalidAddress)};
@@ -107,34 +107,34 @@ auto vosfs::rpc::RpcConsumer::shutdown() -> kosio::async::Task<Result<void>> {
     co_return Result<void>{};
 }
 
-auto vosfs::rpc::RpcConsumer::redirect_to(std::string_view resp_payload) -> kosio::async::Task<Result<void>> {
-    co_await mutex_.lock();
-    std::lock_guard lock(mutex_, std::adopt_lock);
-
-    RedirectInfo redirect_info;
-    if (!redirect_info.ParseFromArray(resp_payload.data(), resp_payload.size())) {
-        co_return std::unexpected{make_error(Error::kParseRpcMessageFailed)};
-    }
-
-    auto host = redirect_info.host();
-    auto port = static_cast<uint16_t>(redirect_info.port());
-
-    co_await stream_.close();
-
-    auto has_addr = kosio::net::SocketAddr::parse(host, port);
-    if (!has_addr) {
-        LOG_ERROR("Failed to redirect to {}:{} : {}", host, port, has_addr.error());
-        co_return std::unexpected{make_error(Error::kInvalidAddress)};
-    }
-    auto has_stream = co_await kosio::net::TcpStream::connect(has_addr.value());
-    if (!has_stream) {
-        LOG_ERROR("{}", has_stream.error());
-        co_return std::unexpected{make_error(Error::kConnectToServerFailed)};
-    }
-
-    stream_ = std::move(has_stream.value());
-    co_return Result<void>{};
-}
+// auto vosfs::rpc::RpcConsumer::redirect_to(std::string_view resp_payload) -> kosio::async::Task<Result<void>> {
+//     co_await mutex_.lock();
+//     std::lock_guard lock(mutex_, std::adopt_lock);
+//
+//     RedirectInfo redirect_info;
+//     if (!redirect_info.ParseFromArray(resp_payload.data(), resp_payload.size())) {
+//         co_return std::unexpected{make_error(Error::kParseRpcMessageFailed)};
+//     }
+//
+//     auto host = redirect_info.host();
+//     auto port = static_cast<uint16_t>(redirect_info.port());
+//
+//     co_await stream_.close();
+//
+//     auto has_addr = kosio::net::SocketAddr::parse(host, port);
+//     if (!has_addr) {
+//         LOG_ERROR("Failed to redirect to {}:{} : {}", host, port, has_addr.error());
+//         co_return std::unexpected{make_error(Error::kInvalidAddress)};
+//     }
+//     auto has_stream = co_await kosio::net::TcpStream::connect(has_addr.value());
+//     if (!has_stream) {
+//         LOG_ERROR("{}", has_stream.error());
+//         co_return std::unexpected{make_error(Error::kConnectToServerFailed)};
+//     }
+//
+//     stream_ = std::move(has_stream.value());
+//     co_return Result<void>{};
+// }
 
 auto vosfs::rpc::RpcConsumer::trigger_callback(uint64_t request_id, std::string_view resp_payload) -> kosio::async::Task<void> {
     tbb::concurrent_hash_map<uint64_t, RpcCallback>::accessor acc;

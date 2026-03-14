@@ -1,6 +1,0 @@
-syntax = "proto3";
-package vosfs.raft;
-
-message LogEntry {
-
-}

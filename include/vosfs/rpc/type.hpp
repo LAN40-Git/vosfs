@@ -7,7 +7,6 @@ namespace vosfs::rpc {
 enum class ServiceType : uint8_t {
     kMinService = 0,
     kConn,
-    kSession,
     kRaft,
     kMath, // for test
     kMaxService
@@ -16,14 +15,11 @@ enum class ServiceType : uint8_t {
 enum class MethodType : uint8_t {
     kMinMethod = 0,
     kConnShutdown,
-    kSessionClose,
     kRaftRequestVote,
     kRaftAppendEntries,
     kRaftInstallSnapshot,
     kMathAdd,
     kMathSub,
-    kMathMul,
-    kMathDiv,
     kMaxMethod
 };
 
@@ -34,8 +30,6 @@ public:
         switch (service_type) {
             case ServiceType::kConn:
                 return "Conn";
-            case ServiceType::kSession:
-                return "Session";
             case ServiceType::kRaft:
                 return "Raft";
             case ServiceType::kMath:
@@ -49,8 +43,6 @@ public:
         switch (method_type) {
             case MethodType::kConnShutdown:
                 return "ConnShutdown";
-            case MethodType::kSessionClose:
-                return "SessionClose";
             case MethodType::kRaftRequestVote:
                 return "RaftRequestVote";
             case MethodType::kRaftAppendEntries:

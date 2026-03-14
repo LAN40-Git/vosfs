@@ -1,2 +1,2 @@
-protoc -I=src/vosfs/rpc/pb src/vosfs/rpc/pb/*.proto --cpp_out=include/vosfs/rpc/pb
-mv include/vosfs/rpc/pb/*.cc src/vosfs/rpc/pb
+protoc -I=src/vosfs/api/mathpb src/vosfs/api/mathpb/*.proto --cpp_out=include/vosfs/api/mathpb
+mv include/vosfs/api/mathpb/*.cc src/vosfs/api/mathpb

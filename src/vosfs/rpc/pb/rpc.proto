@@ -1,7 +1,0 @@
-syntax = "proto3";
-package vosfs.rpc;
-
-message RedirectInfo {
-    bytes host = 1;
-    uint32 port = 2;
-}

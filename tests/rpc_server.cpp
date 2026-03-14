@@ -1,4 +1,5 @@
 #include <kosio/signal.hpp>
+#include "vosfs/api/mathpb/math.pb.h"
 #include "vosfs/rpc/provider.hpp"
 
 using namespace vosfs;
@@ -22,7 +23,7 @@ auto process(std::unique_ptr<RpcProvider>& provider) -> kosio::async::Task<void>
 }
 
 auto main_loop() -> kosio::async::Task<void> {
-    auto has_provider = co_await RpcProvider::create();
+    auto has_provider = co_await RpcProvider::create(8080, RpcProvider::AuthMode::NONE);
     if (!has_provider) {
         LOG_ERROR("Failed to create RpcProvider : {}", has_provider.error());
         co_return;

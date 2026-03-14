@@ -1,10 +1,18 @@
-file(GLOB CLIENT_SRCS "client/*.cpp" "client/*.cc")
-file(GLOB PROTO_SRCS "rpc/pb/*.cpp" "rpc/pb/*.cc")
-file(GLOB RPC_SRCS "rpc/*.cpp" "rpc/*.cc")
+file(GLOB API_SRCS
+        "api/mathpb/*.cc"
+)
+
+file(GLOB COMMON_SRCS
+        "common/*.cpp"
+)
+
+file(GLOB RPC_SRCS
+        "rpc/*.cpp"
+)
 
 set(VOSFS_SRCS
-        ${CLIENT_SRCS}
-        ${PROTO_SRCS}
+        ${API_SRCS}
+        ${COMMON_SRCS}
         ${RPC_SRCS}
         PARENT_SCOPE
 )

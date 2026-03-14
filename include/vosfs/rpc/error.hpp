@@ -10,6 +10,7 @@ public:
         kSuccess = 0,
         kShutdown,
         kNeedShutdown,
+        kUnauthenticated,
         kFindServiceTypeFailed,
         kFindMethodTypeFailed,
         kGetRespPayloadFailed,
@@ -26,18 +27,20 @@ public:
     [[nodiscard]]
     auto message() const noexcept -> std::string_view {
         switch (error_code_) {
-        case kSuccess:
-            return "Success to handle rpc request.";
-        case kShutdown:
-            return "Normal shutdown.";
-        case kNeedShutdown:
-            return "Need to send the shutdown rp.";
-        case kFindServiceTypeFailed:
-            return "Failed to find service type.";
-        case kFindMethodTypeFailed:
-            return "Failed to find method type.";
-        default:
-            return "Unknown rpc error.";
+            case kSuccess:
+                return "Success to handle rpc request.";
+            case kShutdown:
+                return "Normal shutdown.";
+            case kNeedShutdown:
+                return "Need to send the shutdown rp.";
+            case kUnauthenticated:
+                return "Failed to handle unauthenticated rpc request.";
+            case kFindServiceTypeFailed:
+                return "Failed to find service type.";
+            case kFindMethodTypeFailed:
+                return "Failed to find method type.";
+            default:
+                return "Unknown rpc error.";
         }
     }
 

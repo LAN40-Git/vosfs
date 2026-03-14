@@ -1,4 +1,5 @@
 #include <kosio/signal.hpp>
+#include "vosfs/api/mathpb/math.pb.h"
 #include "vosfs/rpc/consumer.hpp"
 
 using namespace vosfs;
@@ -31,7 +32,7 @@ auto process(std::unique_ptr<RpcConsumer> consumer) -> kosio::async::Task<void> 
 }
 
 auto main_loop() -> kosio::async::Task<void> {
-    auto has_consumer = co_await RpcConsumer::create("127.0.0.1");
+    auto has_consumer = co_await RpcConsumer::create("127.0.0.1", 8080);
     if (!has_consumer) {
         LOG_ERROR("Failed to create consumer : {}", has_consumer.error());
         co_return;
