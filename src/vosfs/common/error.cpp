@@ -20,10 +20,6 @@ auto vosfs::Error::message() const noexcept -> std::string_view {
             return "Empty queue.";
         case kQueueShutdown:
             return "Shutdown queue.";
-        case kMessageParseFailed:
-            return "Failed to parse message.";
-        case kMessageSerializeFailed:
-            return "Failed to serialize message.";
         case kProviderIsRunning:
             return "The provider is running.";
         case kProviderHasShutdown:
@@ -37,4 +33,8 @@ auto vosfs::Error::message() const noexcept -> std::string_view {
         default:
             return strerror(error_code_);
     }
+}
+
+auto vosfs::Error::value() const noexcept -> int {
+    return error_code_;
 }

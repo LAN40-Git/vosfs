@@ -1,6 +1,6 @@
 #include <kosio/signal.hpp>
 #include "vosfs/api/mathpb/math.pb.h"
-#include "vosfs/rpc/consumer.hpp"
+#include "vosfs/rpc.hpp"
 
 using namespace vosfs;
 using namespace vosfs::rpc;

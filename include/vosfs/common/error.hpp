@@ -17,8 +17,6 @@ public:
         kConnectionShutdown,
         kQueueEmpty,
         kQueueShutdown,
-        kMessageParseFailed,
-        kMessageSerializeFailed,
         kProviderIsRunning,
         kProviderHasShutdown,
         kConsumerHasShutdown,
@@ -32,11 +30,8 @@ public:
 public:
     [[nodiscard]]
     auto message() const noexcept -> std::string_view;
-
     [[nodiscard]]
-    auto value() const noexcept -> int {
-        return error_code_;
-    }
+    auto value() const noexcept -> int;
 
 private:
     int error_code_;

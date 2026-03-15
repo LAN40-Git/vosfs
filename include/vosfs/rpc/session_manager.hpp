@@ -20,10 +20,8 @@ class SessionManager {
 public:
     [[nodiscard]]
     auto assign_session(kosio::net::TcpStream&& stream, kosio::net::SocketAddr addr) -> std::shared_ptr<Session>;
-
     [[nodiscard]]
     auto find_session(uint64_t session_id) const -> std::shared_ptr<Session>;
-
     void remove_session(uint64_t session_id);
 
 private:

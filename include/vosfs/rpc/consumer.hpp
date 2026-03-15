@@ -37,27 +37,22 @@ public:
         MethodType method_type,
         std::string_view req_payload,
         const RpcCallback& callback) -> kosio::async::Task<Result<void>>;
-
     [[REMEMBER_CO_AWAIT]]
     auto send_request(
         ServiceType service_type,
         MethodType method_type,
         std::string_view req_payload,
         RpcCallback&& callback) -> kosio::async::Task<Result<void>>;
-
     [[REMEMBER_CO_AWAIT]]
     auto shutdown() -> kosio::async::Task<Result<void>>;
 
 private:
     // [[REMEMBER_CO_AWAIT]]
     // auto redirect_to(std::string_view resp_payload) -> kosio::async::Task<Result<void>>;
-
     [[REMEMBER_CO_AWAIT]]
     auto trigger_callback(uint64_t request_id, std::string_view resp_payload) -> kosio::async::Task<void>;
-
     [[REMEMBER_CO_AWAIT]]
     auto handle_response() -> kosio::async::Task<void>;
-
     [[REMEMBER_CO_AWAIT]]
     auto send_shutdown_request() -> kosio::async::Task<Result<void>>;
 

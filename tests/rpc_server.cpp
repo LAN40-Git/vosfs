@@ -1,6 +1,6 @@
 #include <kosio/signal.hpp>
 #include "vosfs/api/mathpb/math.pb.h"
-#include "vosfs/rpc/provider.hpp"
+#include "vosfs/rpc.hpp"
 
 using namespace vosfs;
 using namespace vosfs::rpc;
@@ -32,41 +32,24 @@ auto main_loop() -> kosio::async::Task<void> {
     auto provider = std::move(has_provider.value());
     // Register invokes
     provider->register_invoke(ServiceType::kMath, MethodType::kMathAdd, [](
-        std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<Result<std::size_t>> {
+        std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<RpcResult<std::size_t>> {
         math::MathRequest request;
         math::MathResponse response;
 
         if (!request.ParseFromArray(req_payload.data(), req_payload.size())) {
-            co_return std::unexpected{make_error(Error::kMessageParseFailed)};
+            co_return std::unexpected{make_rpc_error(RpcError::kMessageParseFailed)};
         }
 
         response.set_result(request.a() + request.b());
         if (!response.SerializeToArray(resp_payload.data(), resp_payload.size())) {
-            co_return std::unexpected{make_error(Error::kMessageSerializeFailed)};
-        }
-
-        co_return response.ByteSizeLong();
-    });
-
-    provider->register_invoke(ServiceType::kMath, MethodType::kMathSub, [](
-        std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<Result<std::size_t>> {
-        math::MathRequest request;
-        math::MathResponse response;
-
-        if (!request.ParseFromArray(req_payload.data(), req_payload.size())) {
-            co_return std::unexpected{make_error(Error::kMessageParseFailed)};
-        }
-
-        response.set_result(request.a() - request.b());
-        if (!response.SerializeToArray(resp_payload.data(), resp_payload.size())) {
-            co_return std::unexpected{make_error(Error::kMessageSerializeFailed)};
+            co_return std::unexpected{make_rpc_error(RpcError::kMessageSerializeFailed)};
         }
 
         co_return response.ByteSizeLong();
     });
 
     provider->register_invoke(ServiceType::kConn, MethodType::kConnShutdown, [](
-        std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<Result<std::size_t>> {
+        std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<RpcResult<std::size_t>> {
         co_return 0;
     });
 
