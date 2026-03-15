@@ -27,7 +27,6 @@ message(STATUS "Compiler: " "${CMAKE_CXX_COMPILER_ID}")
 message(STATUS "Build type: " "${CMAKE_BUILD_TYPE}")
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/vosfs/rpc/pb)
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(LIBURING REQUIRED liburing)

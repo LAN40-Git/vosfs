@@ -1,4 +1,5 @@
 #pragma once
+#include "vosfs/api/serverpb/rpc.pb.h"
 #include "vosfs/rpc/type.hpp"
 #include "vosfs/rpc/error.hpp"
 #include "vosfs/rpc/config.hpp"
