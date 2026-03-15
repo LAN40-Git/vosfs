@@ -13,7 +13,12 @@ auto vosfs::rpc::RpcProvider::create(uint16_t port, AuthMode auth_mode)
         LOG_ERROR("Failed to create rpc provider : {}", has_listener.error());
         co_return std::unexpected{make_error(Error::kBindFailed)};
     }
-    co_return std::make_unique<RpcProvider>(port, auth_mode, std::move(has_listener.value()));
+    auto provider = std::make_unique<RpcProvider>(port, auth_mode, std::move(has_listener.value()));
+    provider->register_invoke(ServiceType::kConn, MethodType::kConnShutdown, [](
+        std::string_view, std::span<char>) -> kosio::async::Task<InvokeResult> {
+        co_return std::make_pair(RpcError::kShutdown, 0);
+    });
+    co_return std::move(provider);
 }
 
 void vosfs::rpc::RpcProvider::register_invoke(
@@ -73,7 +78,7 @@ auto vosfs::rpc::RpcProvider::shutdown() -> kosio::async::Task<Result<void>> {
     // Clear sessions
     for (const auto& session : session_manager_.sessions_ | std::views::values) {
         detail::InvokeTask invoke_task;
-        invoke_task.error_code_ = detail::RpcError::kNeedShutdown;
+        invoke_task.error_code_ = RpcError::kNeedShutdown;
         co_await session->invoke_queue.push(std::move(invoke_task));
     }
 
@@ -128,7 +133,7 @@ auto vosfs::rpc::RpcProvider::handle_request(std::shared_ptr<detail::Session> se
 
         if (auth_mode_ == AuthMode::REQUIRED) {
             if (!session->is_authorized) {
-                invoke_task.error_code_ = detail::RpcError::kUnauthenticated;
+                invoke_task.error_code_ = RpcError::kUnauthenticated;
                 co_await invoke_queue.push(std::move(invoke_task));
                 continue;
             }
@@ -137,14 +142,14 @@ auto vosfs::rpc::RpcProvider::handle_request(std::shared_ptr<detail::Session> se
         // Get invoke
         auto service = invokes_.find(service_type);
         if (service == invokes_.end()) {
-            invoke_task.error_code_ = detail::RpcError::kFindServiceTypeFailed;
+            invoke_task.error_code_ = RpcError::kFindServiceTypeFailed;
             co_await invoke_queue.push(std::move(invoke_task));
             continue;
         }
 
         auto invoke = service->second.find(method_type);
         if (invoke == service->second.end()) {
-            invoke_task.error_code_ = detail::RpcError::kFindMethodTypeFailed;
+            invoke_task.error_code_ = RpcError::kFindMethodTypeFailed;
             co_await invoke_queue.push(std::move(invoke_task));
             continue;
         }
@@ -169,31 +174,20 @@ auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> ses
         // Get invoke task
         auto has_invoke_task = co_await invoke_queue.pop();
         if (!has_invoke_task) {
-            resp_header.error_code = detail::RpcError::kShutdown;
+            resp_header.error_code = RpcError::kShutdown;
             co_await stream.write_all({reinterpret_cast<char*>(&resp_header), sizeof(resp_header)});
             break;
         }
         auto invoke_task = std::move(has_invoke_task.value());
-
         resp_header.request_id = htobe64(invoke_task.request_id_);
+        resp_header.error_code = invoke_task.error_code_;
 
-        switch (invoke_task.error_code_) {
-            case detail::RpcError::kSuccess: {
-                // Do invoke and get resp_payload size
-                auto has_resp_payload_size = co_await invoke_task.invoke_(
-                    invoke_task.req_payload_,
-                    {buf.data(), buf.capacity()});
-
-                if (!has_resp_payload_size) {
-                    resp_header.error_code = detail::RpcError::kGetRespPayloadFailed;
-                    break;
-                }
-                resp_header.payload_size = htobe32(has_resp_payload_size.value());
-                break;
-            }
-            default: {
-                resp_header.error_code = invoke_task.error_code_;
-            }
+        if (invoke_task.error_code_ == RpcError::kSuccess) {
+            auto ret = co_await invoke_task.invoke_(
+                invoke_task.req_payload_,
+                {buf.data(), buf.capacity()});
+            resp_header.error_code = ret.first;
+            resp_header.payload_size = htobe32(ret.second);
         }
 
         auto ret = co_await stream.write_vectored(
@@ -207,5 +201,7 @@ auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> ses
         }
     }
 
+    // Delay 100ms before shutdown
+    co_await kosio::time::sleep(100);
     session_manager_.remove_session(session->id);
 }

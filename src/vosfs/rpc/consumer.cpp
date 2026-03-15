@@ -168,7 +168,7 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
             break;
         }
 
-        if (error_code == detail::RpcError::kShutdown) {
+        if (error_code == RpcError::kShutdown) {
             co_await stream_.close();
             break;
         }
@@ -183,16 +183,20 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
         }
 
         // Remove callback when rpc request not success
-        if (error_code != detail::RpcError::kSuccess) {
+        if (error_code != RpcError::kSuccess) {
             callbacks_.erase(request_id);
         }
 
         switch (error_code) {
-            case detail::RpcError::kSuccess: {
+            case RpcError::kSuccess: {
                 co_await trigger_callback(request_id, {buf.data(), payload_size});
                 break;
             }
-            case detail::RpcError::kNeedShutdown: {
+            case RpcError::kRedirect: {
+
+                break;
+            }
+            case RpcError::kNeedShutdown: {
                 // Notify the server to stop reading and writing
                 if (!co_await send_request(ServiceType::kConn, MethodType::kConnShutdown, "",
                     [](std::string_view) -> kosio::async::Task<void> {co_return;})) {
@@ -201,7 +205,7 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
                 break;
             }
             default: {
-                LOG_ERROR("Rpc error : {}", detail::make_rpc_error(error_code));
+                LOG_ERROR("Rpc error : {}", make_rpc_error(error_code));
                 break;
             }
         }
