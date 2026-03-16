@@ -24,8 +24,10 @@ auto vosfs::Error::message() const noexcept -> std::string_view {
             return "The provider is running.";
         case kProviderHasShutdown:
             return "The provider has shutdown.";
-        case kConsumerHasShutdown:
-            return "The consumer has shutdown.";
+        case kConsumerRunning:
+            return "The consumer is running.";
+        case kConsumerNotRunning:
+            return "The consumer is not running.";
         case kStopListeningFailed:
             return "Failed to stop listening.";
         case kNeedRedirect:

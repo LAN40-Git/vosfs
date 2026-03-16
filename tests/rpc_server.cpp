@@ -36,16 +36,24 @@ auto main_loop() -> kosio::async::Task<void> {
         math::MathRequest request;
         math::MathResponse response;
 
-        if (!request.ParseFromArray(req_payload.data(), req_payload.size())) {
-            co_return std::make_pair(RpcError::kMessageParseFailed, 0);
-        }
-
-        response.set_result(request.a() + request.b());
-        if (!response.SerializeToArray(resp_payload.data(), resp_payload.size())) {
+        RedirectInfo info;
+        info.set_host("127.0.0.1");
+        info.set_port(8080);
+        if (!info.SerializeToArray(resp_payload.data(), resp_payload.size())) {
             co_return std::make_pair(RpcError::kMessageSerializeFailed, 0);
         }
+        co_return std::make_pair(RpcError::kRedirect, info.ByteSizeLong());
 
-        co_return std::make_pair(RpcError::kSuccess,  response.ByteSizeLong());
+        // if (!request.ParseFromArray(req_payload.data(), req_payload.size())) {
+        //     co_return std::make_pair(RpcError::kMessageParseFailed, 0);
+        // }
+        //
+        // response.set_result(request.a() + request.b());
+        // if (!response.SerializeToArray(resp_payload.data(), resp_payload.size())) {
+        //     co_return std::make_pair(RpcError::kMessageSerializeFailed, 0);
+        // }
+        //
+        // co_return std::make_pair(RpcError::kSuccess,  response.ByteSizeLong());
     });
 
     kosio::spawn(process(provider));

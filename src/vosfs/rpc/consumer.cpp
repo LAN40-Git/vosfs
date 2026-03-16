@@ -1,8 +1,8 @@
 #include "vosfs/rpc/consumer.hpp"
 
-auto vosfs::rpc::RpcConsumer::create(std::string_view host, uint16_t port)
+auto vosfs::rpc::RpcConsumer::create(std::string_view server_host, uint16_t server_port)
 -> kosio::async::Task<Result<std::unique_ptr<RpcConsumer>>> {
-    auto has_addr = kosio::net::SocketAddr::parse(host, port);
+    auto has_addr = kosio::net::SocketAddr::parse(server_host, server_port);
     if (!has_addr) {
         LOG_ERROR("Failed to create rpc consumer : {}", has_addr.error());
         co_return std::unexpected{make_error(Error::kInvalidAddress)};
@@ -13,7 +13,7 @@ auto vosfs::rpc::RpcConsumer::create(std::string_view host, uint16_t port)
         co_return std::unexpected{make_error(Error::kConnectToServerFailed)};
     }
 
-    auto consumer = std::make_unique<RpcConsumer>(std::move(has_stream.value()));
+    auto consumer = std::make_unique<RpcConsumer>(server_host, server_port, std::move(has_stream.value()));
     kosio::spawn(consumer->handle_response());
     co_return std::move(consumer);
 }
@@ -27,7 +27,7 @@ auto vosfs::rpc::RpcConsumer::send_request(
     std::lock_guard lock(mutex_, std::adopt_lock);
 
     if (status_ == ShutDown) {
-        co_return std::unexpected{make_error(Error::kConnectionShutdown)};
+        co_return std::unexpected{make_error(Error::kConsumerNotRunning)};
     }
 
     // Make fixed request header
@@ -61,7 +61,7 @@ auto vosfs::rpc::RpcConsumer::send_request(
     std::lock_guard lock(mutex_, std::adopt_lock);
 
     if (status_ == ShutDown) {
-        co_return std::unexpected{make_error(Error::kConsumerHasShutdown)};
+        co_return std::unexpected{make_error(Error::kConsumerNotRunning)};
     }
 
     // Make fixed request header
@@ -86,13 +86,36 @@ auto vosfs::rpc::RpcConsumer::send_request(
     co_return Result<void>{};
 }
 
+auto vosfs::rpc::RpcConsumer::run() -> kosio::async::Task<Result<void>> {
+    co_await mutex_.lock();
+    std::lock_guard lock(mutex_, std::adopt_lock);
+    if (status_ != ShutDown) {
+        co_return std::unexpected{make_error(Error::kConsumerRunning)};
+    }
+
+    auto has_addr = kosio::net::SocketAddr::parse(server_host_, server_port_);
+    if (!has_addr) {
+        LOG_ERROR("Failed to create rpc consumer : {}", has_addr.error());
+        co_return std::unexpected{make_error(Error::kInvalidAddress)};
+    }
+    auto has_stream = co_await kosio::net::TcpStream::connect(has_addr.value());
+    if (!has_stream) {
+        LOG_ERROR("{}", has_stream.error());
+        co_return std::unexpected{make_error(Error::kConnectToServerFailed)};
+    }
+    stream_ = std::move(has_stream.value());
+    kosio::spawn(handle_response());
+    status_ = Running;
+    co_return Result<void>{};
+}
+
 auto vosfs::rpc::RpcConsumer::shutdown() -> kosio::async::Task<Result<void>> {
     {
         co_await mutex_.lock();
         std::lock_guard lock(mutex_, std::adopt_lock);
 
-        if (status_ == ShuttingDown || status_ == ShutDown) {
-            co_return std::unexpected{make_error(Error::kConsumerHasShutdown)};
+        if (status_ != Running) {
+            co_return std::unexpected{make_error(Error::kConsumerNotRunning)};
         }
 
         status_ = ShuttingDown;
@@ -102,37 +125,15 @@ auto vosfs::rpc::RpcConsumer::shutdown() -> kosio::async::Task<Result<void>> {
         co_return ret;
     }
 
-    co_await shutdown_latch_.wait();
+    while (true) {
+        co_await kosio::time::sleep(50);
+        co_await mutex_.lock();
+        std::lock_guard lock(mutex_, std::adopt_lock);
+        if (status_ == ShutDown) {
+            break;
+        }
+    }
     LOG_INFO("Consumer has shutdown.");
-    co_return Result<void>{};
-}
-
-auto vosfs::rpc::RpcConsumer::redirect_to(std::string_view resp_payload) -> kosio::async::Task<Result<void>> {
-    co_await mutex_.lock();
-    std::lock_guard lock(mutex_, std::adopt_lock);
-
-    RedirectInfo redirect_info;
-    if (!redirect_info.ParseFromArray(resp_payload.data(), resp_payload.size())) {
-        co_return std::unexpected{make_error(Error::kParseRpcMessageFailed)};
-    }
-
-    auto host = redirect_info.host();
-    auto port = static_cast<uint16_t>(redirect_info.port());
-
-    co_await stream_.close();
-
-    auto has_addr = kosio::net::SocketAddr::parse(host, port);
-    if (!has_addr) {
-        LOG_ERROR("Failed to redirect to {}:{} : {}", host, port, has_addr.error());
-        co_return std::unexpected{make_error(Error::kInvalidAddress)};
-    }
-    auto has_stream = co_await kosio::net::TcpStream::connect(has_addr.value());
-    if (!has_stream) {
-        LOG_ERROR("{}", has_stream.error());
-        co_return std::unexpected{make_error(Error::kConnectToServerFailed)};
-    }
-
-    stream_ = std::move(has_stream.value());
     co_return Result<void>{};
 }
 
@@ -148,6 +149,7 @@ auto vosfs::rpc::RpcConsumer::trigger_callback(uint64_t request_id, std::string_
 
 auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
     std::vector<char> buf(detail::MAX_RPC_MESSAGE_SIZE);
+    bool need_redirect{false};
 
     while (true) {
         // Recv fixed response header
@@ -170,6 +172,19 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
 
         if (error_code == RpcError::kShutdown) {
             co_await stream_.close();
+            {
+                co_await mutex_.lock();
+                std::lock_guard lock(mutex_, std::adopt_lock);
+                status_ = ShutDown;
+            }
+
+            if (need_redirect) {
+                auto has_reidrect = co_await run();
+                if (!has_reidrect) {
+                    LOG_ERROR("Failed to redirect to {}:{} : {}", server_host_, server_port_, has_reidrect.error());
+                }
+            }
+
             break;
         }
 
@@ -193,7 +208,16 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
                 break;
             }
             case RpcError::kRedirect: {
-                // TODO: 完成重
+                need_redirect = true;
+                RedirectInfo info;
+                info.ParseFromArray(buf.data(), payload_size);
+                server_host_ = info.host();
+                server_port_ = info.port();
+                // Notify the server to stop reading and writing
+                if (!co_await send_request(ServiceType::kConn, MethodType::kConnShutdown, "",
+                    [](std::string_view) -> kosio::async::Task<void> {co_return;})) {
+                    co_return;
+                }
                 break;
             }
             case RpcError::kNeedShutdown: {
@@ -210,11 +234,6 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
             }
         }
     }
-
-    co_await mutex_.lock();
-    std::lock_guard lock(mutex_, std::adopt_lock);
-    status_ = ShutDown;
-    shutdown_latch_.count_down();
 }
 
 auto vosfs::rpc::RpcConsumer::send_shutdown_request() -> kosio::async::Task<Result<void>> {

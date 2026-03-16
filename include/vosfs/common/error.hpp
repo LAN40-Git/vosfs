@@ -19,7 +19,8 @@ public:
         kQueueShutdown,
         kProviderIsRunning,
         kProviderHasShutdown,
-        kConsumerHasShutdown,
+        kConsumerRunning,
+        kConsumerNotRunning,
         kStopListeningFailed,
         kNeedRedirect,
     };
