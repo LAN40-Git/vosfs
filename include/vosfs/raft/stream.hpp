@@ -1,7 +1,7 @@
 #pragma once
 
 namespace vosfs::raft::detail {
-class RaftCluster {
+class PeerStream {
 
 };
 } // namespace vosfs::raft::detail

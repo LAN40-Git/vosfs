@@ -34,7 +34,7 @@ public:
                 return "Success to handle rpc request.";
             case kShutdown:
                 return "Normal shutdown.";
-                case kRedirect:
+            case kRedirect:
                 return "Need to redirect to leader.";
             case kNeedShutdown:
                 return "Need to send the shutdown rp.";
