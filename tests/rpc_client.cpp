@@ -8,7 +8,6 @@ using namespace vosfs::rpc;
 auto process(std::unique_ptr<RpcConsumer> consumer) -> kosio::async::Task<void> {
     while (true) {
         co_await kosio::time::sleep(1000);
-
         math::MathRequest request;
         request.set_a(20);
         request.set_b(10);

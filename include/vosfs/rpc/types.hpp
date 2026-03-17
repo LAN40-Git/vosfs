@@ -1,9 +1,14 @@
 #pragma once
+#include <functional>
 #include <cstdint>
 #include <format>
-#include <string_view>
+#include <kosio/async/coroutine/task.hpp>
+#include "vosfs/rpc/error.hpp"
 
 namespace vosfs::rpc {
+using InvokeResult = std::pair<RpcError::ErrorCode, std::size_t>;
+using RpcRequestHandler = std::function<kosio::async::Task<InvokeResult>(std::string_view, std::span<char>)>;
+
 enum class ServiceType : uint8_t {
     kMinService = 0,
     kConn,

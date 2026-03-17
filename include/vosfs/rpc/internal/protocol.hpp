@@ -1,13 +1,6 @@
 #pragma once
 #include "vosfs/api/serverpb/rpc.pb.h"
-#include "vosfs/rpc/type.hpp"
-#include "vosfs/rpc/error.hpp"
-#include "vosfs/rpc/config.hpp"
-#include <kosio/net.hpp>
-#include <kosio/core.hpp>
-#include <kosio/sync.hpp>
-#include <tbb/concurrent_hash_map.h>
-#include <cstdint>
+#include "vosfs/rpc/types.hpp"
 
 namespace vosfs::rpc::detail {
 struct FixedRpcRequestHeader {

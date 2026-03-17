@@ -1,5 +1,5 @@
 #pragma once
-#include "vosfs/rpc/util.hpp"
+#include "vosfs/rpc/types.hpp"
 
 namespace vosfs::rpc {
 using InvokeResult = std::pair<RpcError::ErrorCode, std::size_t>;

@@ -1,5 +1,8 @@
 #pragma once
-#include "vosfs/rpc/session_manager.hpp"
+#include "vosfs/rpc/internal/config.hpp"
+#include "vosfs/rpc/internal/protocol.hpp"
+#include "vosfs/rpc/internal/invoker.hpp"
+#include "vosfs/rpc/internal/session_manager.hpp"
 
 namespace vosfs::rpc {
 class RpcProvider {
@@ -32,10 +35,10 @@ public:
     static auto create(uint16_t port, AuthMode auth_mode) -> kosio::async::Task<Result<std::unique_ptr<RpcProvider>>>;
 
 public:
-    void register_invoke(
+    void register_handler(
         ServiceType service_type,
         MethodType method_type,
-        const detail::Invoke& invoke);
+        const RpcRequestHandler& handler);
 
 public:
     auto run() -> kosio::async::Task<Result<void>>;
@@ -52,10 +55,10 @@ private:
     uint16_t                port_;
     AuthMode                auth_mode_;
     kosio::net::TcpListener listener_;
-    InvokeMap               invokes_;
     kosio::sync::Mutex      mutex_;
     bool                    is_shutdown_{true};
     std::atomic<bool>       is_listening_{false};
     detail::SessionManager  session_manager_;
+    detail::RpcInvoker      invoker_;
 };
 } // namespace vosfs::rpc

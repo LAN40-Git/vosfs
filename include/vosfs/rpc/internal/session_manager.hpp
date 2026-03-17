@@ -1,6 +1,8 @@
 #pragma once
-#include "vosfs/rpc/invoke_task.hpp"
+#include "invoke_task.hpp"
 #include "vosfs/common/util/spsc_queue.hpp"
+#include <kosio/net.hpp>
+#include <tbb/concurrent_hash_map.h>
 
 namespace vosfs::rpc {
 class RpcProvider;

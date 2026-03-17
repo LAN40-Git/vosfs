@@ -1,7 +1,7 @@
 #pragma once
-#include "vosfs/common/error.hpp"
-#include <string_view>
 #include <cstdint>
+#include <string_view>
+#include "vosfs/common/error.hpp"
 
 namespace vosfs::rpc {
 class RpcError {
@@ -56,6 +56,9 @@ public:
 private:
     uint8_t error_code_;
 };
+
+template <typename T>
+using RpcResult = std::expected<T, RpcError>;
 
 static auto make_rpc_error(uint8_t error_code) -> RpcError {
     return RpcError{error_code};
