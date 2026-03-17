@@ -23,33 +23,8 @@ auto vosfs::rpc::RpcConsumer::send_request(
     MethodType method_type,
     std::string_view req_payload,
     const RpcCallback& callback) -> kosio::async::Task<Result<void>> {
-    co_await mutex_.lock();
-    std::lock_guard lock(mutex_, std::adopt_lock);
-
-    if (status_ == ShutDown) {
-        co_return std::unexpected{make_error(Error::kConsumerNotRunning)};
-    }
-
-    // Make fixed request header
-    detail::FixedRpcRequestHeader req_header;
-    req_header.request_id = htobe64(request_id_);
-    req_header.payload_size = htobe32(req_payload.size());
-    req_header.service_type = service_type;
-    req_header.method_type = method_type;
-
-    callbacks_.emplace(request_id_++, callback);
-
-    auto ret = co_await stream_.write_vectored(
-        std::span<const char>(reinterpret_cast<char*>(&req_header), sizeof(req_header)),
-        std::span<const char>(req_payload.data(), req_payload.size())
-    );
-
-    if (!ret) {
-        LOG_ERROR("{}", ret.error());
-        co_return std::unexpected{make_error(Error::kSendRpcRequestFailed)};
-    }
-
-    co_return Result<void>{};
+    auto copy_callback = callback;
+    co_return co_await send_request_impl(service_type, method_type, req_payload, std::move(copy_callback));
 }
 
 auto vosfs::rpc::RpcConsumer::send_request(
@@ -57,33 +32,7 @@ auto vosfs::rpc::RpcConsumer::send_request(
     MethodType method_type,
     std::string_view req_payload,
     RpcCallback&& callback) -> kosio::async::Task<Result<void>> {
-    co_await mutex_.lock();
-    std::lock_guard lock(mutex_, std::adopt_lock);
-
-    if (status_ == ShutDown) {
-        co_return std::unexpected{make_error(Error::kConsumerNotRunning)};
-    }
-
-    // Make fixed request header
-    detail::FixedRpcRequestHeader req_header;
-    req_header.request_id = htobe64(request_id_);
-    req_header.payload_size = htobe32(req_payload.size());
-    req_header.service_type = service_type;
-    req_header.method_type = method_type;
-
-    callbacks_.emplace(request_id_++, std::move(callback));
-
-    auto ret = co_await stream_.write_vectored(
-        std::span<const char>(reinterpret_cast<char*>(&req_header), sizeof(req_header)),
-        std::span<const char>(req_payload.data(), req_payload.size())
-    );
-
-    if (!ret) {
-        LOG_ERROR("{}", ret.error());
-        co_return std::unexpected{make_error(Error::kSendRpcRequestFailed)};
-    }
-
-    co_return Result<void>{};
+    co_return co_await send_request_impl(service_type, method_type, req_payload, std::move(callback));
 }
 
 auto vosfs::rpc::RpcConsumer::run() -> kosio::async::Task<Result<void>> {
@@ -137,6 +86,40 @@ auto vosfs::rpc::RpcConsumer::shutdown() -> kosio::async::Task<Result<void>> {
     co_return Result<void>{};
 }
 
+auto vosfs::rpc::RpcConsumer::send_request_impl(
+    ServiceType service_type,
+    MethodType method_type,
+    std::string_view req_payload,
+    RpcCallback&& callback) -> kosio::async::Task<Result<void>> {
+    co_await mutex_.lock();
+    std::lock_guard lock(mutex_, std::adopt_lock);
+
+    if (status_ == ShutDown) {
+        co_return std::unexpected{make_error(Error::kConsumerNotRunning)};
+    }
+
+    // Make fixed request header
+    detail::FixedRpcRequestHeader req_header;
+    req_header.request_id = htobe64(request_id_);
+    req_header.payload_size = htobe32(req_payload.size());
+    req_header.service_type = service_type;
+    req_header.method_type = method_type;
+
+    callbacks_.emplace(request_id_++, std::move(callback));
+
+    auto ret = co_await stream_.write_vectored(
+        std::span<const char>(reinterpret_cast<char*>(&req_header), sizeof(req_header)),
+        std::span<const char>(req_payload.data(), req_payload.size())
+    );
+
+    if (!ret) {
+        LOG_ERROR("{}", ret.error());
+        co_return std::unexpected{make_error(Error::kSendRpcRequestFailed)};
+    }
+
+    co_return Result<void>{};
+}
+
 auto vosfs::rpc::RpcConsumer::trigger_callback(uint64_t request_id, std::string_view resp_payload) -> kosio::async::Task<void> {
     tbb::concurrent_hash_map<uint64_t, RpcCallback>::accessor acc;
     if (callbacks_.find(acc, request_id)) {
@@ -149,7 +132,7 @@ auto vosfs::rpc::RpcConsumer::trigger_callback(uint64_t request_id, std::string_
 
 auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
     std::vector<char> buf(detail::MAX_RPC_MESSAGE_SIZE);
-    bool need_redirect{false};
+    bool reconn{false};
 
     while (true) {
         // Recv fixed response header
@@ -172,19 +155,9 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
 
         if (error_code == RpcError::kShutdown) {
             co_await stream_.close();
-            {
-                co_await mutex_.lock();
-                std::lock_guard lock(mutex_, std::adopt_lock);
-                status_ = ShutDown;
-            }
-
-            if (need_redirect) {
-                auto has_reidrect = co_await run();
-                if (!has_reidrect) {
-                    LOG_ERROR("Failed to redirect to {}:{} : {}", server_host_, server_port_, has_reidrect.error());
-                }
-            }
-
+            co_await mutex_.lock();
+            std::lock_guard lock(mutex_, std::adopt_lock);
+            status_ = ShutDown;
             break;
         }
 
@@ -208,7 +181,7 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
                 break;
             }
             case RpcError::kRedirect: {
-                need_redirect = true;
+                reconn = true;
                 RedirectInfo info;
                 info.ParseFromArray(buf.data(), payload_size);
                 server_host_ = info.host();
@@ -230,6 +203,15 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
             }
             default: {
                 LOG_ERROR("Rpc error : {}", make_rpc_error(error_code));
+                break;
+            }
+        }
+    }
+
+    if (reconn) {
+        std::size_t n{0};
+        while (n++ < detail::RECONN_RETRY_TIMES) {
+            if (auto ret = co_await run(); ret) {
                 break;
             }
         }
