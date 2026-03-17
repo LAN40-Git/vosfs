@@ -14,10 +14,10 @@ auto vosfs::rpc::RpcProvider::create(uint16_t port, AuthMode auth_mode)
         co_return std::unexpected{make_error(Error::kBindFailed)};
     }
     auto provider = std::make_unique<RpcProvider>(port, auth_mode, std::move(has_listener.value()));
-    // provider->register_handler(ServiceType::kConn, MethodType::kConnShutdown, [](
-    //     std::string_view, std::span<char>) -> kosio::async::Task<InvokeResult> {
-    //     co_return std::make_pair(RpcError::kShutdown, 0);
-    // });
+    provider->register_handler(ServiceType::kConn, MethodType::kConnShutdown, [](
+        std::string_view, std::span<char>) -> kosio::async::Task<InvokeResult> {
+        co_return std::make_pair(RpcError::kShutdown, 0);
+    });
     co_return std::move(provider);
 }
 
@@ -50,7 +50,6 @@ auto vosfs::rpc::RpcProvider::run() -> kosio::async::Task<Result<void>> {
 
         auto session = session_manager_.assign_session(std::move(stream), peer_addr);
         LOG_VERBOSE("Accept connection from {}, session_id : {}", peer_addr, session->id);
-        session->is_authorized = false;
         kosio::spawn(handle_request(session));
         kosio::spawn(send_response(session));
     }
@@ -76,10 +75,10 @@ auto vosfs::rpc::RpcProvider::shutdown() -> kosio::async::Task<Result<void>> {
     }
 
     // Clear sessions
-    for (const auto& session : session_manager_.sessions_ | std::views::values) {
-        RpcRequest request;
-        request.error_code = RpcError::kNeedShutdown;
-        co_await session->requests.push(std::move(request));
+    for (auto session : session_manager_.sessions_ | std::views::values) {
+        detail::FixedRpcResponseHeader resp_header;
+        resp_header.error_code = RpcError::kNeedShutdown;
+        co_await session->stream.write_all({reinterpret_cast<char*>(&resp_header), sizeof(resp_header)});
     }
 
     while (!session_manager_.sessions_.empty()) {
@@ -160,17 +159,19 @@ auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> ses
         resp_header.error_code = request.error_code;
 
         if (auth_mode_ == AuthMode::REQUIRED) {
-            if (!session->is_authorized) {
-                request.error_code = RpcError::kUnauthenticated;
+            if (!session->is_authorized && !invoker_.is_unauth_method(request.service_type, request.method_type)) {
+                resp_header.error_code = RpcError::kUnauthenticated;
             }
         } else {
-            auto ret = co_await invoker_.invoke(
+            if (resp_header.error_code == RpcError::kSuccess) {
+                auto ret = co_await invoker_.invoke(
                 request.service_type,
                 request.method_type,
                 request.req_payload,
                 {buf.data(), buf.capacity()});
-            resp_header.error_code = ret.first;
-            resp_header.payload_size = htobe32(ret.second);
+                resp_header.error_code = ret.first;
+                resp_header.payload_size = htobe32(ret.second);
+            }
         }
 
         auto ret = co_await stream.write_vectored(
@@ -184,7 +185,5 @@ auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> ses
         }
     }
 
-    // Delay 100ms before close connection
-    co_await kosio::time::sleep(100);
     session_manager_.remove_session(session->id);
 }

@@ -31,10 +31,6 @@ auto main_loop() -> kosio::async::Task<void> {
 
     auto provider = std::move(has_provider.value());
     // Register invokes
-    provider->register_handler(ServiceType::kConn, MethodType::kConnShutdown, [](
-        std::string_view, std::span<char>) -> kosio::async::Task<InvokeResult> {
-        co_return std::make_pair(RpcError::kShutdown, 0);
-    });
     provider->register_handler(ServiceType::kMath, MethodType::kMathAdd, [](
         std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<InvokeResult> {
         math::MathRequest request;

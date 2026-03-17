@@ -187,16 +187,14 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
                 server_host_ = info.host();
                 server_port_ = info.port();
                 // Notify the server to stop reading and writing
-                if (!co_await send_request(ServiceType::kConn, MethodType::kConnShutdown, "",
-                    [](std::string_view) -> kosio::async::Task<void> {co_return;})) {
+                if (!co_await send_shutdown_request()) {
                     co_return;
                 }
                 break;
             }
             case RpcError::kNeedShutdown: {
                 // Notify the server to stop reading and writing
-                if (!co_await send_request(ServiceType::kConn, MethodType::kConnShutdown, "",
-                    [](std::string_view) -> kosio::async::Task<void> {co_return;})) {
+                if (!co_await send_shutdown_request()) {
                     co_return;
                 }
                 break;

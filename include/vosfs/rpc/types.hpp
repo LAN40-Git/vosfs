@@ -11,6 +11,7 @@ using RpcRequestHandler = std::function<kosio::async::Task<InvokeResult>(std::st
 
 enum class ServiceType : uint8_t {
     kMinService = 0,
+    kAuth,
     kConn,
     kRaft,
     kMath, // for test
@@ -19,6 +20,9 @@ enum class ServiceType : uint8_t {
 
 enum class MethodType : uint8_t {
     kMinMethod = 0,
+    kAuthSignin,
+    kAuthSignout,
+    kAuthSignup,
     kConnShutdown,
     kRaftRequestVote,
     kRaftAppendEntries,
