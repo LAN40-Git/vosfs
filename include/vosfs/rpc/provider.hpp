@@ -50,7 +50,7 @@ private:
     auto send_response(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void>;
 
 private:
-    using InvokeMap = std::unordered_map<ServiceType, std::unordered_map<MethodType, detail::Invoke>>;
+    using RpcRequest = detail::RpcInvoker::Request;
 
     uint16_t                port_;
     AuthMode                auth_mode_;

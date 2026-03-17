@@ -105,7 +105,7 @@ auto vosfs::rpc::RpcConsumer::send_request_impl(
     req_header.service_type = service_type;
     req_header.method_type = method_type;
 
-    callbacks_.emplace(request_id_++, std::move(callback));
+    requests_.emplace(request_id_++, RpcRequest{service_type, method_type, std::move(callback)});
 
     auto ret = co_await stream_.write_vectored(
         std::span<const char>(reinterpret_cast<char*>(&req_header), sizeof(req_header)),
@@ -121,12 +121,12 @@ auto vosfs::rpc::RpcConsumer::send_request_impl(
 }
 
 auto vosfs::rpc::RpcConsumer::trigger_callback(uint64_t request_id, std::string_view resp_payload) -> kosio::async::Task<void> {
-    tbb::concurrent_hash_map<uint64_t, RpcCallback>::accessor acc;
-    if (callbacks_.find(acc, request_id)) {
-        auto callback = std::move(acc->second);
+    tbb::concurrent_hash_map<uint64_t, RpcRequest>::accessor acc;
+    if (requests_.find(acc, request_id)) {
+        auto callback = std::move(acc->second.callback);
         acc.release();
         co_await callback(resp_payload);
-        callbacks_.erase(request_id);
+        requests_.erase(request_id);
     }
 }
 
@@ -149,7 +149,7 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
         auto error_code = resp_header.error_code;
         if (payload_size > detail::MAX_RPC_MESSAGE_SIZE) {
             LOG_ERROR("Receive unusual rpc message, request_id : {}, payload_size : {}.", request_id, payload_size);
-            callbacks_.erase(request_id);
+            requests_.erase(request_id);
             break;
         }
 
@@ -172,7 +172,7 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
 
         // Remove callback when rpc request not success
         if (error_code != RpcError::kSuccess) {
-            callbacks_.erase(request_id);
+            requests_.erase(request_id);
         }
 
         switch (error_code) {

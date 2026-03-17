@@ -1,19 +1,22 @@
 #pragma once
+#include "vosfs/common/util/spsc_queue.hpp"
 #include "vosfs/rpc/types.hpp"
 
 namespace vosfs::rpc::detail {
 class RpcInvoker {
+    using InvokeResult = std::pair<RpcError::ErrorCode, std::size_t>;
     using Method = RpcRequestHandler;
     using MethodMap = std::unordered_map<ServiceType, std::unordered_map<MethodType, Method>>;
 
 public:
     struct Request {
-        uint64_t            request_id_{0};
-        ServiceType         service_type_;
-        MethodType          method_type_;
-        RpcError::ErrorCode error_code_{RpcError::kSuccess};
+        uint64_t            request_id{};
+        ServiceType         service_type{};
+        MethodType          method_type{};
+        std::string         req_payload{};
+        RpcError::ErrorCode error_code{RpcError::kSuccess};
     };
-    using RequestQueue =
+    using RequestQueue = util::SPSCQueue<Request>;
 
 public:
     void register_method(ServiceType service_type, MethodType method_type, const Method& invoke);

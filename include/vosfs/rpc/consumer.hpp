@@ -1,16 +1,20 @@
 #pragma once
 #include <utility>
+#include <kosio/net.hpp>
+#include <kosio/sync.hpp>
+#include <tbb/concurrent_hash_map.h>
 #include "vosfs/rpc/internal/config.hpp"
+#include "vosfs/rpc/internal/protocol.hpp"
 
 namespace vosfs::rpc {
 using RpcCallback = std::function<kosio::async::Task<void>(std::string_view resp_payload)>;
 class RpcConsumer {
-    struct Request {
-        ServiceType service_type;
-        MethodType  method_type;
-        RpcCallback callback;
+    struct RpcRequest {
+        ServiceType service_type{};
+        MethodType  method_type{};
+        RpcCallback callback{};
     };
-    using RequestMap = tbb::concurrent_hash_map<uint64_t, RpcCallback>;
+    using RequestMap = tbb::concurrent_hash_map<uint64_t, RpcRequest>;
 
     enum Status {
         Running = 0,
@@ -20,7 +24,7 @@ class RpcConsumer {
 public:
     explicit RpcConsumer(std::string_view server_host, uint16_t server_port, kosio::net::TcpStream stream)
         : server_host_(server_host), server_port_(server_port), stream_(std::move(stream)) {
-        callbacks_.rehash(4096);
+        requests_.rehash(4096);
     }
 
 public:
@@ -78,7 +82,7 @@ private:
     std::string           server_host_;
     uint16_t              server_port_;
     kosio::net::TcpStream stream_;
-    uint64_t              request_id_{0};
+    uint64_t              request_id_{0}; // current request id
     RequestMap            requests_;
     kosio::sync::Mutex    mutex_;
     Status                status_{Running};

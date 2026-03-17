@@ -13,6 +13,7 @@ file(GLOB RAFT_SRCS
 
 file(GLOB RPC_SRCS
         "rpc/*.cpp"
+        "rpc/internal/*.cpp"
 )
 
 set(VOSFS_SRCS

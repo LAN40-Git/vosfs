@@ -1,6 +1,5 @@
 #pragma once
-#include "invoke_task.hpp"
-#include "vosfs/common/util/spsc_queue.hpp"
+#include "vosfs/rpc/internal/invoker.hpp"
 #include <kosio/net.hpp>
 #include <tbb/concurrent_hash_map.h>
 
@@ -10,11 +9,11 @@ class RpcProvider;
 
 namespace vosfs::rpc::detail {
 struct Session {
-    bool                        is_authorized;
-    uint64_t                    id;
-    kosio::net::TcpStream       stream;
-    kosio::net::SocketAddr      addr;
-    util::SPSCQueue<InvokeTask> invoke_queue;
+    bool                     is_authorized;
+    uint64_t                 id;
+    kosio::net::TcpStream    stream;
+    kosio::net::SocketAddr   addr;
+    RpcInvoker::RequestQueue requests;
 };
 
 class SessionManager {
