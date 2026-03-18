@@ -9,6 +9,7 @@ file(GLOB COMMON_SRCS
 
 file(GLOB RAFT_SRCS
         "raft/*.cpp"
+        "raft/internal/*.cpp"
 )
 
 file(GLOB RPC_SRCS

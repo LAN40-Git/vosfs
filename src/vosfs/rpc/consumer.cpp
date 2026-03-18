@@ -21,10 +21,9 @@ auto vosfs::rpc::RpcConsumer::create(std::string_view server_host, uint16_t serv
 auto vosfs::rpc::RpcConsumer::send_request(
     ServiceType service_type,
     MethodType method_type,
-    std::string&& req_payload,
+    std::string_view req_payload,
     const RpcCallback& callback) -> kosio::async::Task<Result<void>> {
-    auto copy_callback = callback;
-    co_return co_await send_request_impl(service_type, method_type, std::move(req_payload), std::move(copy_callback));
+    co_return co_await send_request_impl(service_type, method_type, std::string{req_payload}, RpcCallback{callback});
 }
 
 auto vosfs::rpc::RpcConsumer::send_request(

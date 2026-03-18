@@ -46,7 +46,7 @@ public:
     auto send_request(
         ServiceType service_type,
         MethodType method_type,
-        std::string&& req_payload,
+        std::string_view req_payload,
         const RpcCallback& callback) -> kosio::async::Task<Result<void>>;
 
     [[REMEMBER_CO_AWAIT]]
