@@ -23,7 +23,7 @@ auto vosfs::rpc::detail::RpcInvoker::invoke(
     co_return co_await method(req_payload, resp_payload);
 }
 
-auto vosfs::rpc::detail::RpcInvoker::is_unauth_method(ServiceType service_type, MethodType method_type) const noexcept -> bool {
+auto vosfs::rpc::detail::RpcInvoker::is_unauth_method(ServiceType service_type, MethodType method_type) noexcept -> bool {
     if ((service_type != ServiceType::kAuth && service_type != ServiceType::kConn) ||
         method_type == MethodType::kAuthSignout) {
         return false;

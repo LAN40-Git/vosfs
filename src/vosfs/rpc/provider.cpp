@@ -159,7 +159,7 @@ auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> ses
         resp_header.error_code = request.error_code;
 
         if (auth_mode_ == AuthMode::REQUIRED) {
-            if (!session->is_authorized && !invoker_.is_unauth_method(request.service_type, request.method_type)) {
+            if (!session->is_authorized && !detail::RpcInvoker::is_unauth_method(request.service_type, request.method_type)) {
                 resp_header.error_code = RpcError::kUnauthenticated;
             }
         } else {

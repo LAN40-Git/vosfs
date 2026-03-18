@@ -21,18 +21,18 @@ auto vosfs::rpc::RpcConsumer::create(std::string_view server_host, uint16_t serv
 auto vosfs::rpc::RpcConsumer::send_request(
     ServiceType service_type,
     MethodType method_type,
-    std::string_view req_payload,
+    std::string&& req_payload,
     const RpcCallback& callback) -> kosio::async::Task<Result<void>> {
     auto copy_callback = callback;
-    co_return co_await send_request_impl(service_type, method_type, req_payload, std::move(copy_callback));
+    co_return co_await send_request_impl(service_type, method_type, std::move(req_payload), std::move(copy_callback));
 }
 
 auto vosfs::rpc::RpcConsumer::send_request(
     ServiceType service_type,
     MethodType method_type,
-    std::string_view req_payload,
+    std::string&& req_payload,
     RpcCallback&& callback) -> kosio::async::Task<Result<void>> {
-    co_return co_await send_request_impl(service_type, method_type, req_payload, std::move(callback));
+    co_return co_await send_request_impl(service_type, method_type, std::move(req_payload), std::move(callback));
 }
 
 auto vosfs::rpc::RpcConsumer::run() -> kosio::async::Task<Result<void>> {
@@ -89,7 +89,7 @@ auto vosfs::rpc::RpcConsumer::shutdown() -> kosio::async::Task<Result<void>> {
 auto vosfs::rpc::RpcConsumer::send_request_impl(
     ServiceType service_type,
     MethodType method_type,
-    std::string_view req_payload,
+    std::string&& req_payload,
     RpcCallback&& callback) -> kosio::async::Task<Result<void>> {
     co_await mutex_.lock();
     std::lock_guard lock(mutex_, std::adopt_lock);
@@ -105,7 +105,7 @@ auto vosfs::rpc::RpcConsumer::send_request_impl(
     req_header.service_type = service_type;
     req_header.method_type = method_type;
 
-    requests_.emplace(request_id_++, RpcRequest{service_type, method_type, std::move(callback)});
+    requests_.emplace(request_id_++, RpcRequest{service_type, method_type, std::move(req_payload), std::move(callback)});
 
     auto ret = co_await stream_.write_vectored(
         std::span<const char>(reinterpret_cast<char*>(&req_header), sizeof(req_header)),
@@ -154,10 +154,6 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
         }
 
         if (error_code == RpcError::kShutdown) {
-            co_await stream_.close();
-            co_await mutex_.lock();
-            std::lock_guard lock(mutex_, std::adopt_lock);
-            status_ = ShutDown;
             break;
         }
 
@@ -205,6 +201,14 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
             }
         }
     }
+
+    co_await stream_.close();
+    {
+        co_await mutex_.lock();
+        std::lock_guard lock(mutex_, std::adopt_lock);
+        status_ = ShutDown;
+    }
+
 
     if (reconn) {
         std::size_t n{0};

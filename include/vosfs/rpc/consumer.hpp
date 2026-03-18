@@ -12,6 +12,7 @@ class RpcConsumer {
     struct RpcRequest {
         ServiceType service_type{};
         MethodType  method_type{};
+        std::string req_payload{};
         RpcCallback callback{};
     };
     using RequestMap = tbb::concurrent_hash_map<uint64_t, RpcRequest>;
@@ -45,14 +46,14 @@ public:
     auto send_request(
         ServiceType service_type,
         MethodType method_type,
-        std::string_view req_payload,
+        std::string&& req_payload,
         const RpcCallback& callback) -> kosio::async::Task<Result<void>>;
 
     [[REMEMBER_CO_AWAIT]]
     auto send_request(
         ServiceType service_type,
         MethodType method_type,
-        std::string_view req_payload,
+        std::string&& req_payload,
         RpcCallback&& callback) -> kosio::async::Task<Result<void>>;
 
     [[REMEMBER_CO_AWAIT]]
@@ -66,7 +67,7 @@ private:
     auto send_request_impl(
         ServiceType service_type,
         MethodType method_type,
-        std::string_view req_payload,
+        std::string&& req_payload,
         RpcCallback&& callback) -> kosio::async::Task<Result<void>>;
 
     [[REMEMBER_CO_AWAIT]]
@@ -86,6 +87,5 @@ private:
     RequestMap            requests_;
     kosio::sync::Mutex    mutex_;
     Status                status_{Running};
-
 };
 } // namespace vosfs::rpc
