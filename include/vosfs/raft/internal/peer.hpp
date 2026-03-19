@@ -28,12 +28,14 @@ public:
     auto shutdown() const -> kosio::async::Task<Result<void>>;
 
 private:
+    [[REMEMBER_CO_AWAIT]]
     auto send_request(
         rpc::ServiceType service_type,
         rpc::MethodType method_type,
         std::string_view req_payload,
         const rpc::RpcCallback& callback) const -> kosio::async::Task<Result<void>>;
 
+    [[REMEMBER_CO_AWAIT]]
     auto send_request(
         rpc::ServiceType service_type,
         rpc::MethodType method_type,
