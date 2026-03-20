@@ -1,5 +1,6 @@
 #include <kosio/core.hpp>
 #include <kosio/net.hpp>
+#include <kosio/signal/signal.hpp>
 
 using namespace kosio;
 using namespace kosio::net;
