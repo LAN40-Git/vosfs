@@ -13,7 +13,7 @@ auto vosfs::rpc::RpcConsumer::create(std::string_view server_host, uint16_t serv
         co_return std::unexpected{make_error(Error::kConnectToServerFailed)};
     }
 
-    auto consumer = std::make_unique<RpcConsumer>(server_host, server_port, std::move(has_stream.value()));
+    auto consumer = std::unique_ptr<RpcConsumer>(new RpcConsumer(server_host, server_port, std::move(has_stream.value())));
     kosio::spawn(consumer->handle_response());
     co_return std::move(consumer);
 }

@@ -18,10 +18,11 @@ public:
         REQUIRED
     };
 
-public:
+private:
     explicit RpcProvider(uint16_t port, AuthMode auth_mode, kosio::net::TcpListener listener)
         : port_(port), auth_mode_(auth_mode), listener_(std::move(listener)) {}
 
+public:
     // Delete copy
     RpcProvider(const RpcProvider&) = delete;
     auto operator=(const RpcProvider&) -> RpcProvider& = delete;

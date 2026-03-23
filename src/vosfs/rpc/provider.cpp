@@ -13,7 +13,7 @@ auto vosfs::rpc::RpcProvider::create(uint16_t port, AuthMode auth_mode)
         LOG_ERROR("Failed to create rpc provider : {}", has_listener.error());
         co_return std::unexpected{make_error(Error::kBindFailed)};
     }
-    auto provider = std::make_unique<RpcProvider>(port, auth_mode, std::move(has_listener.value()));
+    auto provider = std::unique_ptr<RpcProvider>(new RpcProvider(port, auth_mode, std::move(has_listener.value())));
     provider->register_handler(ServiceType::kConn, MethodType::kConnShutdown, [](
         std::string_view, std::span<char>) -> kosio::async::Task<InvokeResult> {
         co_return std::make_pair(RpcError::kShutdown, 0);

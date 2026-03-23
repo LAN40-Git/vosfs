@@ -22,7 +22,8 @@ class RpcConsumer {
         ShuttingDown,
         ShutDown
     };
-public:
+
+private:
     explicit RpcConsumer(std::string_view server_host, uint16_t server_port, kosio::net::TcpStream stream)
         : server_host_(server_host), server_port_(server_port), stream_(std::move(stream)) {
         requests_.rehash(4096);
