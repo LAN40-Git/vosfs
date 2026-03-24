@@ -1,17 +1,20 @@
 #pragma once
 #include <cstdint>
 #include "vosfs/rpc/consumer.hpp"
+#include "vosfs/raft/internal/config.hpp"
 
 namespace vosfs::raft::detail {
 class Peer {
 public:
     explicit Peer(uint64_t member_id, std::string_view name,
-        std::string_view host, uint16_t port,
+        std::string_view host,
         std::unique_ptr<rpc::RpcConsumer> consumer);
 
 public:
     Peer(const Peer&) = delete;
     auto operator=(const Peer&) -> Peer& = delete;
+    Peer(Peer&& other) noexcept = default;
+    auto operator=(Peer&&) noexcept -> Peer& = default;
 
 public:
     [[nodiscard]]
@@ -20,10 +23,11 @@ public:
     auto name() const noexcept -> std::string_view { return name_; }
     [[nodiscard]]
     auto host() const noexcept -> std::string_view { return host_; }
-    [[nodiscard]]
-    auto port() const noexcept -> uint16_t { return port_; }
 
 public:
+    [[REMEMBER_CO_AWAIT]]
+    static auto create(uint64_t member_id, std::string_view name, std::string_view host) -> kosio::async::Task<Result<Peer>>;
+
     [[REMEMBER_CO_AWAIT]]
     auto shutdown() const -> kosio::async::Task<Result<void>>;
 
@@ -46,7 +50,6 @@ private:
     uint64_t                          member_id_;
     std::string                       name_;
     std::string                       host_;
-    uint16_t                          port_;
     std::unique_ptr<rpc::RpcConsumer> consumer_;
 };
 } // namespace vosfs::raft::detail

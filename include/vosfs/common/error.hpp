@@ -12,6 +12,8 @@ public:
         kInvalidAddress,
         kConnectToServerFailed,
         kSendRpcRequestFailed,
+        kJsonParseFailed,
+        kRepeatedPeer,
         kRaftConfigFileOpenFailed,
         kRaftConfigFileWriteFailed,
         kLocalNodeNotFound,

@@ -10,6 +10,10 @@ auto vosfs::Error::message() const noexcept -> std::string_view {
             return "Failed to connect to server.";
         case kSendRpcRequestFailed:
             return "Failed to send rpc request.";
+        case kJsonParseFailed:
+            return "Failed to parse json object.";
+        case kRepeatedPeer:
+            return "Find repeated peer.";
         case kRaftConfigFileOpenFailed:
             return "Failed to open raft configuration file.";
         case kRaftConfigFileWriteFailed:

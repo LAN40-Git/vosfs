@@ -80,3 +80,62 @@ auto vosfs::raft::detail::RaftCluster::create(
     }
     co_return Result<void>{};
 }
+
+auto vosfs::raft::detail::RaftCluster::load(std::string_view path) -> kosio::async::Task<Result<RaftCluster>> {
+    std::filesystem::path config_file_path(path);
+    std::ifstream config_file(config_file_path);
+
+    if (!config_file) {
+        co_return std::unexpected{make_error(errno)};
+    }
+
+    try {
+        auto json = nlohmann::json::parse(config_file);
+        config_file.close();
+
+        auto cluster_id = json["cluster_id"].get<uint64_t>();
+        auto local_member_id = json["member_id"].get<std::uint64_t>();
+        auto local_name = json["name"].get<std::string>();
+        auto local_host = json["host"].get<std::string>();
+        auto has_node_addr = kosio::net::SocketAddr::parse(local_host, RAFT_PROVIDER_PORT);
+        if (!has_node_addr) {
+            LOG_ERROR("{}", has_node_addr.error());
+            co_return std::unexpected{make_error(Error::kInvalidAddress)};
+        }
+
+        PeerMap peers;
+        const auto& nodes_json = json["nodes"];
+        for (const auto& node_json : nodes_json) {
+            NodeInfo node_info;
+            auto member_id = node_json["member_id"].get<uint64_t>();
+            node_info.name = node_json["name"].get<std::string>();
+            node_info.host = node_json["host"].get<std::string>();
+
+            // Check repeat
+            if (peers.contains(member_id)) {
+                co_return std::unexpected{make_error(Error::kRepeatedPeer)};
+            }
+
+            auto has_peer = co_await Peer::create(member_id, node_info.name, node_info.host);
+            if (!has_peer) {
+                co_return std::unexpected{has_peer.error()};
+            }
+            peers.emplace(member_id, std::move(has_peer.value()));
+        }
+
+        co_return RaftCluster{
+            cluster_id,
+            local_member_id,
+            std::move(local_name),
+            std::move(local_host),
+            std::move(peers),
+            path,
+            std::move(json)};
+    } catch (const nlohmann::json::parse_error& e) {
+        LOG_VERBOSE("Failed to parse json file", e.what());
+        co_return std::unexpected{make_error(Error::kJsonParseFailed)};
+    } catch (...) {
+        LOG_VERBOSE("Unknown exception while loading config");
+        co_return std::unexpected{make_error(Error::kJsonParseFailed)};
+    }
+}

@@ -2,11 +2,10 @@
 
 vosfs::raft::detail::Peer::Peer(
     uint64_t member_id, std::string_view name, std::string_view host,
-    uint16_t port, std::unique_ptr<rpc::RpcConsumer> consumer)
+    std::unique_ptr<rpc::RpcConsumer> consumer)
     : member_id_(member_id)
     , name_(name)
     , host_(host)
-    , port_(port)
     , consumer_(std::move(consumer)) {}
 
 auto vosfs::raft::detail::Peer::shutdown() const -> kosio::async::Task<Result<void>> {

@@ -2,7 +2,6 @@
 #include <nlohmann/json.hpp>
 #include <kosio/fs.hpp>
 #include <xxh3.h>
-#include "vosfs/raft/internal/config.hpp"
 #include "vosfs/raft/internal/peer.hpp"
 
 namespace vosfs::raft::detail {
@@ -39,11 +38,16 @@ private:
                 nlohmann::json&& json);
 
 public:
+    [[REMEMBER_CO_AWAIT]]
     static auto create(
         std::string_view path,
         uint64_t cluster_id,
         std::string_view name,
         const std::unordered_set<NodeInfo>& node_infos) -> kosio::async::Task<Result<void>>;
+
+
+    [[REMEMBER_CO_AWAIT]]
+    static auto load(std::string_view path) -> kosio::async::Task<Result<RaftCluster>>;
 
 private:
     uint64_t              cluster_id_;
