@@ -42,12 +42,8 @@ public:
         const RpcRequestHandler& handler);
 
 public:
-    /// @brief Let provider run
-    /// @note not-thread-safe!
     auto run() -> kosio::async::Task<void>;
 
-    /// @brief Let provider shutdown
-    /// @note not-thread-safe!
     [[REMEMBER_CO_AWAIT]]
     auto shutdown() -> kosio::async::Task<Result<void>>;
 
@@ -62,7 +58,9 @@ private:
     uint16_t                port_;
     AuthMode                auth_mode_;
     kosio::net::TcpListener listener_;
-    bool                    is_accepting_;
+    kosio::sync::Mutex      mutex_;
+    bool                    is_shutdown_{true};
+    std::atomic<bool>       is_listening_{false};
     detail::SessionManager  session_manager_;
     detail::RpcInvoker      invoker_;
 };

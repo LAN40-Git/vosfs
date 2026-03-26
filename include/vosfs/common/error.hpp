@@ -9,6 +9,8 @@ class Error {
 public:
     enum ErrorCode {
         kUnknown = 8000,
+        kCreateProviderFailed,
+        kCreatePeerFailed,
         kInvalidAddress,
         kConnectToServerFailed,
         kSendRpcRequestFailed,
@@ -21,7 +23,6 @@ public:
         kConnectionShutdown,
         kQueueEmpty,
         kQueueShutdown,
-        kProviderIsRunning,
         kProviderHasShutdown,
         kConsumerRunning,
         kConsumerNotRunning,

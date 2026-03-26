@@ -108,10 +108,14 @@ auto vosfs::raft::detail::RaftCluster::load(std::string_view path) -> kosio::asy
         for (const auto& node_json : nodes_json) {
             NodeInfo node_info;
             auto member_id = node_json["member_id"].get<uint64_t>();
+            // ignore myself
+            if (local_member_id == member_id) {
+                continue;
+            }
             node_info.name = node_json["name"].get<std::string>();
             node_info.host = node_json["host"].get<std::string>();
 
-            // Check repeat
+            // check repeat
             if (peers.contains(member_id)) {
                 co_return std::unexpected{make_error(Error::kRepeatedPeer)};
             }

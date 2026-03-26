@@ -13,13 +13,13 @@ private:
     explicit Transport(
         RaftCluster&& cluster,
         std::unique_ptr<rpc::RpcProvider> raft_provider,
-        std::unique_ptr<rpc::RpcProvider> client_provider)
-        : cluster_(std::move(cluster))
-        , raft_provider_(std::move(raft_provider))
-        , client_provider_(std::move(client_provider)) {}
+        std::unique_ptr<rpc::RpcProvider> client_provider);
 
 public:
-    static auto create(std::unique_ptr<RaftCluster> cluster) -> Transport;
+    static auto create(RaftCluster&& cluster) -> kosio::async::Task<Result<Transport>>;
+
+public:
+    void run();
 
 private:
     RaftCluster                       cluster_;

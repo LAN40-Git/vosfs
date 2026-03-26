@@ -28,6 +28,16 @@ class RaftCluster {
         }
     };
 
+public:
+    [[nodiscard]]
+    auto cluster_id() const noexcept -> uint64_t { return cluster_id_; }
+    [[nodiscard]]
+    auto member_id() const noexcept -> uint64_t { return member_id_; }
+    [[nodiscard]]
+    auto name() const noexcept -> std::string_view { return name_; }
+    [[nodiscard]]
+    auto host() const noexcept -> std::string_view { return host_; }
+
 private:
     RaftCluster(uint64_t cluster_id,
                 uint64_t member_id,

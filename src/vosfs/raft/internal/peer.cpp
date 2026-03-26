@@ -8,6 +8,16 @@ vosfs::raft::detail::Peer::Peer(
     , host_(host)
     , consumer_(std::move(consumer)) {}
 
+auto vosfs::raft::detail::Peer::create(uint64_t member_id, std::string_view name,
+    std::string_view host) -> kosio::async::Task<Result<Peer>> {
+    // try to connect to the raft node at host:RAFT:PROVIDER_PORT
+    auto ret = co_await rpc::RpcConsumer::create(host, RAFT_PROVIDER_PORT);
+    if (!ret) {
+        co_return std::unexpected{make_error(Error::kCreatePeerFailed)};
+    }
+    co_return Peer(member_id, name, host, std::move(ret.value()));
+}
+
 auto vosfs::raft::detail::Peer::shutdown() const -> kosio::async::Task<Result<void>> {
     co_return co_await consumer_->shutdown();
 }

@@ -4,6 +4,10 @@ auto vosfs::Error::message() const noexcept -> std::string_view {
     switch (error_code_) {
         case kUnknown:
             return "Unknown error.";
+        case kCreateProviderFailed:
+            return "Failed to create provider.";
+        case kCreatePeerFailed:
+            return "Failed to create peer.";
         case kInvalidAddress:
             return "Invalid address.";
         case kConnectToServerFailed:
@@ -28,8 +32,6 @@ auto vosfs::Error::message() const noexcept -> std::string_view {
             return "Empty queue.";
         case kQueueShutdown:
             return "Shutdown queue.";
-        case kProviderIsRunning:
-            return "The provider is running.";
         case kProviderHasShutdown:
             return "The provider has shutdown.";
         case kConsumerRunning:

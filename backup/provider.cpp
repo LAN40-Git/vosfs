@@ -29,18 +29,25 @@ void vosfs::rpc::RpcProvider::register_handler(
 }
 
 auto vosfs::rpc::RpcProvider::run() -> kosio::async::Task<void> {
-    is_accepting_ = true;
+    {
+        co_await mutex_.lock();
+        std::lock_guard lock(mutex_, std::adopt_lock);
+
+        if (!is_shutdown_) {
+            LOG_ERROR("The provider is running.");
+            co_return;
+        }
+
+        is_shutdown_ = false;
+    }
+
+    is_listening_.store(true, std::memory_order_relaxed);
 
     while (true) {
         auto has_stream = co_await listener_.accept();
         if (!has_stream) {
-            if (has_stream.error().value() == ECANCELED) {
-                break;
-            }
-
-            // fatal error
-            LOG_FATAL("Failed to accept rpc connection : {}", has_stream.error());
-            std::abort();
+            LOG_VERBOSE("Failed to accept rpc connection : {}", has_stream.error());
+            break;
         }
         auto& [stream, peer_addr] = has_stream.value();
 
@@ -51,12 +58,16 @@ auto vosfs::rpc::RpcProvider::run() -> kosio::async::Task<void> {
         kosio::spawn(send_response(session));
     }
 
-    is_accepting_ = false;
+    is_listening_.store(false, std::memory_order_relaxed);
     LOG_VERBOSE("The provider has stop listening.");
 }
 
 auto vosfs::rpc::RpcProvider::shutdown() -> kosio::async::Task<Result<void>> {
-    while (is_accepting_) {
+    co_await mutex_.lock();
+    std::lock_guard lock(mutex_, std::adopt_lock);
+
+    // Stop listening
+    while (is_listening_.load(std::memory_order_relaxed)) {
         auto has_cancel = co_await kosio::io::cancel(listener_.fd(), IORING_ASYNC_CANCEL_ALL);
         if (!has_cancel) {
             LOG_FATAL("Failed to stop listening : {}", has_cancel.error());
@@ -78,6 +89,7 @@ auto vosfs::rpc::RpcProvider::shutdown() -> kosio::async::Task<Result<void>> {
     }
 
     LOG_VERBOSE("The sessions has been clean up.");
+    is_shutdown_ = true;
     co_return Result<void>{};
 }
 

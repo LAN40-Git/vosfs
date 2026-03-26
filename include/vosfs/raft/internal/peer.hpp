@@ -5,7 +5,7 @@
 
 namespace vosfs::raft::detail {
 class Peer {
-public:
+private:
     explicit Peer(uint64_t member_id, std::string_view name,
         std::string_view host,
         std::unique_ptr<rpc::RpcConsumer> consumer);
@@ -50,6 +50,7 @@ private:
     uint64_t                          member_id_;
     std::string                       name_;
     std::string                       host_;
+    // Connection to this peer
     std::unique_ptr<rpc::RpcConsumer> consumer_;
 };
 } // namespace vosfs::raft::detail
