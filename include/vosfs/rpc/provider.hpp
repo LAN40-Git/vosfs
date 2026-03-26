@@ -62,7 +62,7 @@ private:
     uint16_t                port_;
     AuthMode                auth_mode_;
     kosio::net::TcpListener listener_;
-    bool                    is_accepting_;
+    bool                    is_accepting_{true};
     detail::SessionManager  session_manager_;
     detail::RpcInvoker      invoker_;
 };

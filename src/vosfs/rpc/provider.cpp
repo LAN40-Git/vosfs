@@ -30,7 +30,6 @@ void vosfs::rpc::RpcProvider::register_handler(
 
 auto vosfs::rpc::RpcProvider::run() -> kosio::async::Task<void> {
     is_accepting_ = true;
-
     while (true) {
         auto has_stream = co_await listener_.accept();
         if (!has_stream) {

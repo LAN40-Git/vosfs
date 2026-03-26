@@ -19,7 +19,10 @@ public:
     static auto create(RaftCluster&& cluster) -> kosio::async::Task<Result<Transport>>;
 
 public:
-    void run();
+    void run() const;
+
+    [[REMEMBER_CO_AWAIT]]
+    auto shutdown() const -> kosio::async::Task<Result<void>>;
 
 private:
     RaftCluster                       cluster_;

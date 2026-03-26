@@ -27,3 +27,17 @@ auto vosfs::raft::detail::Transport::create(RaftCluster&& cluster) -> kosio::asy
     co_return Transport(std::move(cluster), std::move(raft_provider), std::move(client_provider));
 }
 
+void vosfs::raft::detail::Transport::run() const {
+    kosio::spawn(raft_provider_->run());
+    kosio::spawn(client_provider_->run());
+}
+
+auto vosfs::raft::detail::Transport::shutdown() const -> kosio::async::Task<Result<void>> {
+    auto ret = co_await raft_provider_->shutdown();
+    if (!ret) {
+        co_return ret;
+    }
+    ret = co_await client_provider_->shutdown();
+    co_return ret;
+}
+
