@@ -20,7 +20,6 @@ class RaftCluster {
         auto hash() const noexcept -> uint64_t {
             XXH3_state_t state;
             XXH3_64bits_reset(&state);
-
             XXH3_64bits_update(&state, name.data(), name.size());
             XXH3_64bits_update(&state, host.data(), host.size());
 
