@@ -1,13 +1,23 @@
 #pragma once
+#include "vosfs/api/serverpb/raft.pb.h"
 #include "vosfs/raft/internal/transport.hpp"
 
 namespace vosfs::raft {
 class RaftNode {
-public:
+private:
+    // explicit RaftNode() {}
 
+public:
+    static auto create() -> kosio::async::Task<Result<std::unique_ptr<RaftNode>>>;
 
 private:
-    auto start_election_timeout() -> kosio::async::Task<void>;
+    auto election_loop() -> kosio::async::Task<void>;
+
+    auto heartbeat_loop() -> kosio::async::Task<void>;
+
+private:
+    [[REMEMBER_CO_AWAIT]]
+    auto handle_request_vote_request(std::string_view req_payload) -> kosio::async::Task<void>;
 
 private:
     enum Role { kLeader, kFollower, kCandidate };
