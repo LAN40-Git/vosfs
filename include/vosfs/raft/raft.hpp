@@ -1,5 +1,6 @@
 #pragma once
-#include "vosfs/api/serverpb/raft.pb.h"
+#include "vosfs/raft/internal/message_factory.hpp"
+#include "vosfs/raft/internal/log.hpp"
 #include "vosfs/raft/internal/transport.hpp"
 
 namespace vosfs::raft {
@@ -20,24 +21,30 @@ private:
 
 private:
     [[REMEMBER_CO_AWAIT]]
-    auto handle_request_vote_request(std::string_view req_payload) -> kosio::async::Task<void>;
+    auto handle_request_vote_request(std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::InvokeResult>;
+
+private:
+    [[REMEMBER_CO_AWAIT]]
+    auto handle_request_vote_response(std::string_view resp_payload) -> kosio::async::Task<void>;
 
 private:
     enum Role { kLeader, kFollower, kCandidate };
 
-    kosio::sync::Mutex      mutex_;
-    std::atomic<bool>       is_shutdown_{false};
-    std::atomic<uint64_t>   last_reset_time_{0};
-    detail::Transport       transport_;
-    std::atomic<Role>       role_{kFollower};
-    std::size_t             votes_{0};
-    std::optional<uint64_t> leader_id_{std::nullopt};
+    kosio::sync::Mutex                mutex_;
+    std::atomic<bool>                 is_shutdown_{false};
+    std::atomic<uint64_t>             last_reset_time_{0};
+    detail::Transport                 transport_;
+    std::atomic<Role>                 role_{kFollower};
+    std::size_t                       votes_{0};
+    std::optional<uint64_t>           leader_id_{std::nullopt};
+    std::unique_ptr<rpc::RpcProvider> raft_provider_;
+    std::unique_ptr<rpc::RpcProvider> client_provider_;
 
     /* RaftState from https://raft.github.io/raft.pdf */
     // Persistent state on all servers
     std::atomic<uint64_t>    current_term_;
     std::optional<uint64_t>  voted_for_;
-    // detail::RaftLog          logs_;
+    detail::RaftLog          logs_;
 
     // Volatile state on all servers
     uint64_t commit_index_{0};

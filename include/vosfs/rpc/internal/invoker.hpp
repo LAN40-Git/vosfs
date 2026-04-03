@@ -4,7 +4,6 @@
 
 namespace vosfs::rpc::detail {
 class RpcInvoker {
-    using InvokeResult = std::pair<RpcError::ErrorCode, std::size_t>;
     using Method = RpcRequestHandler;
     using MethodMap = std::unordered_map<ServiceType, std::unordered_map<MethodType, Method>>;
 

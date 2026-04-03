@@ -35,9 +35,39 @@ void vosfs::raft::RaftNode::do_election() {
     voted_for_ = transport_.member_id();
     votes_ = 1;
     // broadcast reqeust vote request
-    //kosio::spawn(transport_)
+    auto request = detail::MessageFactory::make_request_vote_request(
+        current_term_.load(std::memory_order_relaxed),
+        transport_.member_id(),
+        logs_.last_log_index(),
+        logs_.last_log_term());
+    kosio::spawn(transport_.broadcast_request(
+        rpc::ServiceType::kRaft,
+        rpc::MethodType::kRaftRequestVote,
+        request.SerializeAsString(),
+        [this](std::string_view resp_payload) -> kosio::async::Task<void> {
+            co_await this->handle_request_vote_response(resp_payload);
+        }));
 }
 
-auto vosfs::raft::RaftNode::handle_request_vote_request(std::string_view req_payload) -> kosio::async::Task<void> {
+auto vosfs::raft::RaftNode::handle_request_vote_request(
+    std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::InvokeResult> {
+    RequestVoteRequest request;
+    if (!request.ParseFromArray(req_payload.data(), req_payload.size())) {
+        co_return std::make_pair(rpc::RpcError::kMessageParseFailed, 0);
+    }
+
+    auto term = request.term();
+    auto candidate_id = request.candidate_id();
+    auto last_log_index = request.last_log_index();
+    auto last_log_term = request.last_log_term();
+
+    if (term < current_term_.load(std::memory_order_relaxed)) {
+
+    }
+
+    RequestVoteResponse response;
+}
+
+auto vosfs::raft::RaftNode::handle_request_vote_response(std::string_view resp_payload) -> kosio::async::Task<void> {
 
 }

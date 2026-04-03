@@ -8,6 +8,7 @@ class RpcError {
 public:
     enum ErrorCode : uint8_t {
         kSuccess = 0,
+        kFailed,
         kShutdown,
         kRedirect,
         kNeedShutdown,
@@ -32,6 +33,8 @@ public:
         switch (error_code_) {
             case kSuccess:
                 return "Success to handle rpc request.";
+            case kFailed:
+                return "Failed to handle rpc request.";
             case kShutdown:
                 return "Normal shutdown.";
             case kRedirect:

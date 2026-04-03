@@ -9,19 +9,11 @@ class RaftNode;
 namespace vosfs::raft::detail {
 class Transport {
 private:
-    explicit Transport(
-        RaftCluster&& cluster,
-        std::unique_ptr<rpc::RpcProvider> raft_provider,
-        std::unique_ptr<rpc::RpcProvider> client_provider);
+    explicit Transport(RaftCluster&& cluster)
+        : cluster_(std::move(cluster)) {}
 
 public:
     static auto create(RaftCluster&& cluster) -> kosio::async::Task<Result<Transport>>;
-
-public:
-    void run() const;
-
-    [[REMEMBER_CO_AWAIT]]
-    auto shutdown() const -> kosio::async::Task<Result<void>>;
 
 public:
     [[REMEMBER_CO_AWAIT]]
@@ -65,7 +57,5 @@ public:
 
 private:
     RaftCluster                       cluster_;
-    std::unique_ptr<rpc::RpcProvider> raft_provider_;
-    std::unique_ptr<rpc::RpcProvider> client_provider_;
 };
 } // namespace vosfs::raft::detail
