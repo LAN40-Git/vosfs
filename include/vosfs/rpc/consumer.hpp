@@ -63,6 +63,9 @@ public:
     [[REMEMBER_CO_AWAIT]]
     auto shutdown() -> kosio::async::Task<Result<void>>;
 
+    [[REMEMBER_CO_AWAIT]]
+    auto is_running() -> kosio::async::Task<bool>;
+
 private:
     [[REMEMBER_CO_AWAIT]]
     auto send_request_impl(

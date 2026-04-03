@@ -4,6 +4,8 @@ auto vosfs::Error::message() const noexcept -> std::string_view {
     switch (error_code_) {
         case kUnknown:
             return "Unknown error.";
+        case kConnectToPeerFailed:
+            return "Failed to connect to peer.";
         case kCreateProviderFailed:
             return "Failed to create provider.";
         case kCreatePeerFailed:

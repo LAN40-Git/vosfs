@@ -8,7 +8,6 @@ class RaftNode;
 
 namespace vosfs::raft::detail {
 class Transport {
-    friend class RaftNode;
 private:
     explicit Transport(
         RaftCluster&& cluster,
@@ -23,6 +22,46 @@ public:
 
     [[REMEMBER_CO_AWAIT]]
     auto shutdown() const -> kosio::async::Task<Result<void>>;
+
+public:
+    [[REMEMBER_CO_AWAIT]]
+    auto unicast_request(
+        uint64_t peer_id,
+        rpc::ServiceType service_type,
+        rpc::MethodType method_type,
+        std::string_view req_payload,
+        const rpc::RpcCallback& callback) -> kosio::async::Task<void>;
+
+    [[REMEMBER_CO_AWAIT]]
+    auto unicast_request(
+        uint64_t peer_id,
+        rpc::ServiceType service_type,
+        rpc::MethodType method_type,
+        std::string&& req_payload,
+        rpc::RpcCallback&& callback) -> kosio::async::Task<void>;
+
+    [[REMEMBER_CO_AWAIT]]
+    auto broadcast_request(
+        rpc::ServiceType service_type,
+        rpc::MethodType method_type,
+        std::string_view req_payload,
+        const rpc::RpcCallback& callback) -> kosio::async::Task<void>;
+
+    auto broadcast_request(
+        rpc::ServiceType service_type,
+        rpc::MethodType method_type,
+        std::string&& req_payload,
+        rpc::RpcCallback&& callback) -> kosio::async::Task<void>;
+
+public:
+    [[nodiscard]]
+    auto cluster_id() const noexcept -> uint64_t { return cluster_.cluster_id(); }
+    [[nodiscard]]
+    auto member_id() const noexcept -> uint64_t { return cluster_.member_id(); }
+    [[nodiscard]]
+    auto name() const noexcept -> std::string_view { return cluster_.name(); }
+    [[nodiscard]]
+    auto host() const noexcept -> std::string_view { return cluster_.host(); }
 
 private:
     RaftCluster                       cluster_;

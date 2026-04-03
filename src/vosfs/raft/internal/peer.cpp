@@ -18,6 +18,13 @@ auto vosfs::raft::detail::Peer::create(uint64_t member_id, std::string_view name
     co_return Peer(member_id, name, host, std::move(ret.value()));
 }
 
+auto vosfs::raft::detail::Peer::check_status() const -> kosio::async::Task<Result<void>> {
+    if (!co_await consumer_->is_running()) {
+        co_return co_await consumer_->run();
+    }
+    co_return Result<void>{};
+}
+
 auto vosfs::raft::detail::Peer::shutdown() const -> kosio::async::Task<Result<void>> {
     co_return co_await consumer_->shutdown();
 }

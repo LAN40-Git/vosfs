@@ -41,3 +41,80 @@ auto vosfs::raft::detail::Transport::shutdown() const -> kosio::async::Task<Resu
     co_return ret;
 }
 
+auto vosfs::raft::detail::Transport::unicast_request(
+    uint64_t peer_id, rpc::ServiceType service_type,
+    rpc::MethodType method_type, std::string_view req_payload, const rpc::RpcCallback& callback)
+    -> kosio::async::Task<void> {
+    auto& peers = cluster_.peers();
+    auto it = peers.find(peer_id);
+    if (it == peers.end()) {
+        LOG_ERROR("peer {} not found", peer_id);
+        co_return;
+    }
+
+    auto& peer = it->second;
+    if (auto ret = co_await peer.check_status(); !ret) {
+        LOG_ERROR("{}", ret.error());
+        co_return;
+    }
+
+    if (auto ret = co_await peer.send_request(service_type, method_type, req_payload, callback)) {
+        LOG_ERROR("{}", ret.error());
+        co_return;
+    }
+}
+
+auto vosfs::raft::detail::Transport::unicast_request(uint64_t peer_id, rpc::ServiceType service_type,
+    rpc::MethodType method_type, std::string&& req_payload, rpc::RpcCallback&& callback)
+    -> kosio::async::Task<void> {
+    auto& peers = cluster_.peers();
+    auto it = peers.find(peer_id);
+    if (it == peers.end()) {
+        LOG_ERROR("peer {} not found", peer_id);
+        co_return;
+    }
+
+    auto& peer = it->second;
+    if (auto ret = co_await peer.check_status(); !ret) {
+        LOG_ERROR("{}", ret.error());
+        co_return;
+    }
+
+    if (auto ret = co_await peer.send_request(service_type, method_type, std::move(req_payload), callback)) {
+        LOG_ERROR("{}", ret.error());
+    }
+}
+
+auto vosfs::raft::detail::Transport::broadcast_request(rpc::ServiceType service_type, rpc::MethodType method_type,
+    std::string_view req_payload, const rpc::RpcCallback& callback)
+    -> kosio::async::Task<void> {
+    auto& peers = cluster_.peers();
+    for (auto& peer : peers | std::views::values) {
+        if (auto ret = co_await peer.check_status(); !ret) {
+            LOG_ERROR("{}", ret.error());
+            co_return;
+        }
+
+        if (auto ret = co_await peer.send_request(service_type, method_type, req_payload, callback)) {
+            LOG_ERROR("{}", ret.error());
+        }
+    }
+}
+
+auto vosfs::raft::detail::Transport::broadcast_request(
+    rpc::ServiceType service_type, rpc::MethodType method_type,
+    std::string&& req_payload, rpc::RpcCallback&& callback)
+    -> kosio::async::Task<void> {
+    auto& peers = cluster_.peers();
+    for (auto& peer : peers | std::views::values) {
+        if (auto ret = co_await peer.check_status(); !ret) {
+            LOG_ERROR("{}", ret.error());
+            co_return;
+        }
+
+        if (auto ret = co_await peer.send_request(service_type, method_type, std::move(req_payload), callback)) {
+            LOG_ERROR("{}", ret.error());
+        }
+    }
+}
+

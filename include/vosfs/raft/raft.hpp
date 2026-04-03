@@ -16,6 +16,9 @@ private:
     auto heartbeat_loop() -> kosio::async::Task<void>;
 
 private:
+    void do_election();
+
+private:
     [[REMEMBER_CO_AWAIT]]
     auto handle_request_vote_request(std::string_view req_payload) -> kosio::async::Task<void>;
 

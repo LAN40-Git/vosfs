@@ -85,6 +85,13 @@ auto vosfs::rpc::RpcConsumer::shutdown() -> kosio::async::Task<Result<void>> {
     co_return Result<void>{};
 }
 
+auto vosfs::rpc::RpcConsumer::is_running() -> kosio::async::Task<bool> {
+    co_await mutex_.lock();
+    std::lock_guard lock(mutex_, std::adopt_lock);
+
+    co_return status_ == Running;
+}
+
 auto vosfs::rpc::RpcConsumer::send_request_impl(
     ServiceType service_type,
     MethodType method_type,

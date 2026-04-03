@@ -7,8 +7,7 @@ namespace vosfs::raft::detail {
 class Peer {
 private:
     explicit Peer(uint64_t member_id, std::string_view name,
-        std::string_view host,
-        std::unique_ptr<rpc::RpcConsumer> consumer);
+        std::string_view host, std::unique_ptr<rpc::RpcConsumer> consumer);
 
 public:
     Peer(const Peer&) = delete;
@@ -28,10 +27,14 @@ public:
     [[REMEMBER_CO_AWAIT]]
     static auto create(uint64_t member_id, std::string_view name, std::string_view host) -> kosio::async::Task<Result<Peer>>;
 
+public:
     [[REMEMBER_CO_AWAIT]]
     auto shutdown() const -> kosio::async::Task<Result<void>>;
 
-private:
+    [[REMEMBER_CO_AWAIT]]
+    auto check_status() const -> kosio::async::Task<Result<void>>;
+
+public:
     [[REMEMBER_CO_AWAIT]]
     auto send_request(
         rpc::ServiceType service_type,
@@ -50,7 +53,7 @@ private:
     uint64_t                          member_id_;
     std::string                       name_;
     std::string                       host_;
-    // Connection to this peer
+    // connection to this peer
     std::unique_ptr<rpc::RpcConsumer> consumer_;
 };
 } // namespace vosfs::raft::detail
