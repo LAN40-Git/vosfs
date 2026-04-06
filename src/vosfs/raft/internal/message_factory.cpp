@@ -10,3 +10,9 @@ auto vosfs::raft::detail::MessageFactory::make_request_vote_request(
     request.set_last_log_term(last_log_term);
     return request;
 }
+
+auto vosfs::raft::detail::MessageFactory::make_request_vote_response(
+    uint64_t term,
+    bool vote_granted) -> RequestVoteResponse {
+
+}
