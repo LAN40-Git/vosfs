@@ -54,8 +54,10 @@ public:
     auto name() const noexcept -> std::string_view { return cluster_.name(); }
     [[nodiscard]]
     auto host() const noexcept -> std::string_view { return cluster_.host(); }
+    [[nodiscard]]
+    auto peer_count() const noexcept -> uint64_t { return cluster_.peer_count(); }
 
 private:
-    RaftCluster                       cluster_;
+    RaftCluster cluster_;
 };
 } // namespace vosfs::raft::detail

@@ -57,6 +57,16 @@ void vosfs::raft::RaftNode::increase_term_to(uint64_t term) {
     votes_ = 0;
     voted_for_.reset();
     current_term_.store(term, std::memory_order_release);
+    role_.store(kFollower, std::memory_order_release);
+    last_reset_time_.store(kosio::util::current_ms(), std::memory_order_relaxed);
+    // TODO: persist
+}
+
+void vosfs::raft::RaftNode::become_leader() {
+    votes_ = 0;
+    voted_for_ = std::nullopt;
+    role_.store(kLeader, std::memory_order_release);
+
 }
 
 auto vosfs::raft::RaftNode::handle_request_vote_request(
@@ -81,10 +91,6 @@ auto vosfs::raft::RaftNode::handle_request_vote_request(
 
     if (term > current_term) {
         increase_term_to(term);
-        role_.store(kFollower, std::memory_order_release);
-        last_reset_time_.store(kosio::util::current_ms(), std::memory_order_relaxed);
-        // TODO: persist
-
     }
 
     bool up_to_date_log{false};
@@ -125,5 +131,19 @@ auto vosfs::raft::RaftNode::handle_request_vote_response(std::string_view resp_p
         co_return;
     }
 
+    if (term > current_term) {
+        increase_term_to(term);
+        co_return;
+    }
 
+    if (role_.load(std::memory_order_relaxed) == kLeader) {
+        co_return;
+    }
+
+    if (vote_granted) {
+        if (++votes_ > transport_.peer_count() / 2 &&
+            role_.load(std::memory_order_relaxed) == kCandidate) {
+            become_leader();
+        }
+    }
 }

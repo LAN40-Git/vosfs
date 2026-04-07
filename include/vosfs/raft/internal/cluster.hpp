@@ -59,6 +59,8 @@ public:
     auto host() const noexcept -> std::string_view { return host_; }
     [[nodiscard]]
     auto peers() -> PeerMap& { return peers_; }
+    [[nodiscard]]
+    auto peer_count() const noexcept -> uint64_t { return peers_.size(); }
 
 private:
     uint64_t              cluster_id_;

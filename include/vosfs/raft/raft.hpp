@@ -20,6 +20,7 @@ private:
     void do_election();
     void do_heartbeat();
     void increase_term_to(uint64_t term);
+    void become_leader();
 
 private:
     [[REMEMBER_CO_AWAIT]]
