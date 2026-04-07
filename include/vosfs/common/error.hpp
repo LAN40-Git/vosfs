@@ -9,6 +9,10 @@ class Error {
 public:
     enum ErrorCode {
         kUnknown = 8000,
+        kTruncateFailed,
+        kRecoverFailed,
+        kPersistFailed,
+        kRocksDBEngineCreateFailed,
         kConnectToPeerFailed,
         kCreateProviderFailed,
         kCreatePeerFailed,

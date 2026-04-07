@@ -25,7 +25,22 @@ auto vosfs::raft::RaftNode::election_loop() -> kosio::async::Task<void> {
 }
 
 auto vosfs::raft::RaftNode::heartbeat_loop() -> kosio::async::Task<void> {
+    while (!is_shutdown_.load(std::memory_order_relaxed)) {
+        co_await kosio::time::sleep(detail::HEARTBEAT_INTERVAL);
 
+        if (role_.load(std::memory_order_acquire) != kLeader) {
+            continue;
+        }
+
+        co_await mutex_.lock();
+        std::lock_guard lock(mutex_, std::adopt_lock);
+
+        if (role_.load(std::memory_order_relaxed) != kLeader) {
+            continue;
+        }
+
+
+    }
 }
 
 void vosfs::raft::RaftNode::do_election() {
@@ -50,6 +65,10 @@ void vosfs::raft::RaftNode::do_election() {
 }
 
 void vosfs::raft::RaftNode::do_heartbeat() {
+    if (role_.load(std::memory_order_acquire) != kLeader) {
+        return;
+    }
+
 
 }
 
@@ -66,13 +85,17 @@ void vosfs::raft::RaftNode::become_leader() {
     votes_ = 0;
     voted_for_ = std::nullopt;
     role_.store(kLeader, std::memory_order_release);
-
+    // update next_index
+    for (auto& next_index : next_index_ | std::views::values) {
+        next_index = logs_.last_log_index() + 1;
+    }
+    // TODO: persist
 }
 
 auto vosfs::raft::RaftNode::handle_request_vote_request(
     std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::InvokeResult> {
     RequestVoteRequest request;
-    if (!request.ParseFromArray(req_payload.data(), req_payload.size())) {
+    if (!request.ParseFromArray(req_payload.data(), static_cast<int>(req_payload.size()))) {
         co_return std::make_pair(rpc::RpcError::kMessageParseFailed, 0);
     }
 
@@ -110,9 +133,14 @@ auto vosfs::raft::RaftNode::handle_request_vote_request(
     co_return detail::MessageFactory::make_request_vote_response(resp_payload, term, can_vote);
 }
 
+auto vosfs::raft::RaftNode::handle_append_entries_request(
+    std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::InvokeResult> {
+
+}
+
 auto vosfs::raft::RaftNode::handle_request_vote_response(std::string_view resp_payload) -> kosio::async::Task<void> {
     RequestVoteResponse response;
-    if (!response.ParseFromArray(resp_payload.data(), resp_payload.size())) {
+    if (!response.ParseFromArray(resp_payload.data(), static_cast<int>(resp_payload.size()))) {
         co_return;
     }
 

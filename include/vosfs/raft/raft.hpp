@@ -24,11 +24,19 @@ private:
 
 private:
     [[REMEMBER_CO_AWAIT]]
-    auto handle_request_vote_request(std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::InvokeResult>;
+    auto handle_request_vote_request(std::string_view req_payload, std::span<char> resp_payload)
+        -> kosio::async::Task<rpc::InvokeResult>;
+
+    [[REMEMBER_CO_AWAIT]]
+    auto handle_append_entries_request(std::string_view req_payload, std::span<char> resp_payload)
+        -> kosio::async::Task<rpc::InvokeResult>;
 
 private:
     [[REMEMBER_CO_AWAIT]]
     auto handle_request_vote_response(std::string_view resp_payload) -> kosio::async::Task<void>;
+
+    [[REMEMBER_CO_AWAIT]]
+    auto handle_append_entries_response(std::string_view resp_payload) -> kosio::async::Task<void>;
 
 private:
     enum Role { kLeader, kFollower, kCandidate };

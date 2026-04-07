@@ -4,6 +4,14 @@ auto vosfs::Error::message() const noexcept -> std::string_view {
     switch (error_code_) {
         case kUnknown:
             return "Unknown error.";
+        case kTruncateFailed:
+            return "Failed to truncate data.";
+        case kRecoverFailed:
+            return "Failed to recover data.";
+        case kPersistFailed:
+            return "Failed to persist data.";
+        case kRocksDBEngineCreateFailed:
+            return "Failed to create rocksdb engine.";
         case kConnectToPeerFailed:
             return "Failed to connect to peer.";
         case kCreateProviderFailed:
