@@ -12,7 +12,15 @@ auto vosfs::raft::detail::MessageFactory::make_request_vote_request(
 }
 
 auto vosfs::raft::detail::MessageFactory::make_request_vote_response(
+    std::span<char> resp_payload,
     uint64_t term,
-    bool vote_granted) -> RequestVoteResponse {
-
+    bool vote_granted) -> rpc::InvokeResult {
+    RequestVoteResponse response;
+    response.set_term(term);
+    response.set_vote_granted(vote_granted);
+    auto size = static_cast<int>(response.ByteSizeLong());
+    if (!response.SerializeToArray(resp_payload.data(), size)) {
+        return std::make_pair(rpc::RpcError::kMessageSerializeFailed, 0);
+    }
+    return std::make_pair(rpc::RpcError::kSuccess, size);
 }

@@ -49,6 +49,16 @@ void vosfs::raft::RaftNode::do_election() {
         }));
 }
 
+void vosfs::raft::RaftNode::do_heartbeat() {
+
+}
+
+void vosfs::raft::RaftNode::increase_term_to(uint64_t term) {
+    votes_ = 0;
+    voted_for_.reset();
+    current_term_.store(term, std::memory_order_release);
+}
+
 auto vosfs::raft::RaftNode::handle_request_vote_request(
     std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::InvokeResult> {
     RequestVoteRequest request;
@@ -61,13 +71,59 @@ auto vosfs::raft::RaftNode::handle_request_vote_request(
     auto last_log_index = request.last_log_index();
     auto last_log_term = request.last_log_term();
 
-    if (term < current_term_.load(std::memory_order_relaxed)) {
+    co_await mutex_.lock();
+    std::lock_guard lock(mutex_, std::adopt_lock);
+
+    auto current_term = current_term_.load(std::memory_order_relaxed);
+    if (term < current_term) {
+        co_return detail::MessageFactory::make_request_vote_response(resp_payload, current_term, false);
+    }
+
+    if (term > current_term) {
+        increase_term_to(term);
+        role_.store(kFollower, std::memory_order_release);
+        last_reset_time_.store(kosio::util::current_ms(), std::memory_order_relaxed);
+        // TODO: persist
 
     }
 
-    RequestVoteResponse response;
+    bool up_to_date_log{false};
+
+    if (last_log_index > logs_.last_log_index() ||
+        (last_log_index == logs_.last_log_index() &&
+            last_log_term == logs_.last_log_term())) {
+        up_to_date_log = true;
+    }
+
+    bool can_vote = !voted_for_.has_value() && up_to_date_log;
+
+    if (can_vote) {
+        voted_for_ = candidate_id;
+    }
+
+    co_return detail::MessageFactory::make_request_vote_response(resp_payload, term, can_vote);
 }
 
 auto vosfs::raft::RaftNode::handle_request_vote_response(std::string_view resp_payload) -> kosio::async::Task<void> {
+    RequestVoteResponse response;
+    if (!response.ParseFromArray(resp_payload.data(), resp_payload.size())) {
+        co_return;
+    }
+
+    auto term = response.term();
+    auto vote_granted = response.vote_granted();
+
+    if (term < current_term_.load(std::memory_order_acquire)) {
+        co_return;
+    }
+
+    co_await mutex_.lock();
+    std::lock_guard lock(mutex_, std::adopt_lock);
+
+    auto current_term = current_term_.load(std::memory_order_relaxed);
+    if (term < current_term) {
+        co_return;
+    }
+
 
 }

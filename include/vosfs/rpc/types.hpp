@@ -6,6 +6,7 @@
 #include "vosfs/rpc/error.hpp"
 
 namespace vosfs::rpc {
+// <RpcError,resp_payload_size>
 using InvokeResult = std::pair<RpcError::ErrorCode, std::size_t>;
 using RpcRequestHandler = std::function<kosio::async::Task<InvokeResult>(std::string_view, std::span<char>)>;
 
