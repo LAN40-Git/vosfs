@@ -9,7 +9,6 @@ auto vosfs::rpc::detail::RpcInvoker::invoke(
     MethodType method_type,
     std::string_view req_payload,
     std::span<char> resp_payload) -> kosio::async::Task<RpcResult> {
-    // find method
     auto it_service = methods_.find(service_type);
     if (it_service == methods_.end()) {
         co_return make_result(RpcResult::kFindServiceTypeFailed);

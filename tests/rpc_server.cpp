@@ -49,8 +49,7 @@ auto main_loop() -> kosio::async::Task<void> {
             co_return make_result(RpcResult::kMessageSerializeFailed);
         }
 
-        resp_payload = resp_payload.subspan(0, response.ByteSizeLong());
-        co_return make_result(RpcResult::kSuccess);
+        co_return make_result(RpcResult::kSuccess, response.ByteSizeLong());
     });
 
     kosio::spawn(process(provider));

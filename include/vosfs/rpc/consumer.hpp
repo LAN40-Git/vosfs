@@ -16,7 +16,7 @@ class RpcConsumer {
         std::string req_payload{};
         RpcCallback callback{};
     };
-    using RequestMap = tbb::concurrent_hash_map<uint64_t, RpcRequest>;
+    using RequestMap = std::unordered_map<uint64_t, RpcRequest>;
 
     enum Status {
         Running = 0,
@@ -77,6 +77,9 @@ private:
 
     [[REMEMBER_CO_AWAIT]]
     auto trigger_callback(uint64_t request_id, std::string_view resp_payload) -> kosio::async::Task<void>;
+
+    [[REMEMBER_CO_AWAIT]]
+    auto remove_request(uint64_t request_id) -> kosio::async::Task<void>;
 
     [[REMEMBER_CO_AWAIT]]
     auto handle_response() -> kosio::async::Task<void>;

@@ -111,12 +111,12 @@ auto vosfs::rpc::RpcConsumer::send_request_impl(
     req_header.service_type = service_type;
     req_header.method_type = method_type;
 
-    requests_.emplace(request_id_++, RpcRequest{service_type, method_type, std::move(req_payload), std::move(callback)});
-
     auto ret = co_await stream_.write_vectored(
         std::span<const char>(reinterpret_cast<char*>(&req_header), sizeof(req_header)),
-        std::span<const char>(req_payload.data(), req_payload.size())
+        std::span<const char>(req_payload.data(), be32toh(req_header.payload_size))
     );
+
+    requests_.emplace(request_id_++, RpcRequest{service_type, method_type, std::move(req_payload), std::move(callback)});
 
     if (!ret) {
         LOG_ERROR("{}", ret.error());
@@ -127,13 +127,21 @@ auto vosfs::rpc::RpcConsumer::send_request_impl(
 }
 
 auto vosfs::rpc::RpcConsumer::trigger_callback(uint64_t request_id, std::string_view resp_payload) -> kosio::async::Task<void> {
-    tbb::concurrent_hash_map<uint64_t, RpcRequest>::accessor acc;
-    if (requests_.find(acc, request_id)) {
-        auto callback = std::move(acc->second.callback);
-        acc.release();
-        co_await callback(resp_payload);
+    co_await mutex_.lock();
+    std::lock_guard lock(mutex_, std::adopt_lock);
+
+    auto it = requests_.find(request_id);
+    if (it != requests_.end()) {
+        auto request = it->second;
+        co_await request.callback(resp_payload);
         requests_.erase(request_id);
     }
+}
+
+auto vosfs::rpc::RpcConsumer::remove_request(uint64_t request_id) -> kosio::async::Task<void> {
+    co_await mutex_.lock();
+    std::lock_guard lock(mutex_, std::adopt_lock);
+    requests_.erase(request_id);
 }
 
 auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
@@ -155,7 +163,7 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
         auto status = resp_header.status;
         if (payload_size > detail::MAX_RPC_MESSAGE_SIZE) {
             LOG_ERROR("Receive unusual rpc message, request_id : {}, payload_size : {}.", request_id, payload_size);
-            requests_.erase(request_id);
+            co_await remove_request(request_id);
             break;
         }
 
@@ -174,7 +182,7 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
 
         // Remove callback when rpc request not success
         if (status != RpcResult::kSuccess) {
-            requests_.erase(request_id);
+            co_await remove_request(request_id);
         }
 
         switch (status) {

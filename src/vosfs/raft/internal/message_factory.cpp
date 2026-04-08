@@ -22,8 +22,7 @@ auto vosfs::raft::detail::MessageFactory::make_request_vote_response(
     if (!response.SerializeToArray(resp_payload.data(), size)) {
         return rpc::make_result(rpc::RpcResult::kMessageSerializeFailed);
     }
-    resp_payload = resp_payload.subspan(0, size);
-    return rpc::make_result(rpc::RpcResult::kSuccess);
+    return rpc::make_result(rpc::RpcResult::kSuccess, size);
 }
 
 auto vosfs::raft::detail::MessageFactory::make_append_entries_request(
@@ -56,6 +55,5 @@ auto vosfs::raft::detail::MessageFactory::make_append_entries_response(
     if (!response.SerializeToArray(resp_payload.data(), size)) {
         return rpc::make_result(rpc::RpcResult::kMessageSerializeFailed);
     }
-    resp_payload = resp_payload.subspan(0, size);
-    return rpc::make_result(rpc::RpcResult::kSuccess);
+    return rpc::make_result(rpc::RpcResult::kSuccess, size);
 }

@@ -21,12 +21,15 @@ public:
     };
 
 public:
-    explicit RpcResult(uint8_t status)
-        : status_(status) {}
+    explicit RpcResult(uint8_t status, uint32_t size)
+        : status_(status), size_(size) {}
 
 public:
     [[nodiscard]]
     auto value() const noexcept -> uint8_t { return status_; }
+
+    [[nodiscard]]
+    auto size() const noexcept -> uint32_t { return size_; }
 
     [[nodiscard]]
     auto message() const noexcept -> std::string_view {
@@ -57,11 +60,12 @@ public:
     }
 
 private:
-    uint8_t status_;
+    uint8_t  status_;
+    uint32_t size_;
 };
 
-static auto make_result(uint8_t status) -> RpcResult {
-    return RpcResult{status};
+static auto make_result(uint8_t status, uint32_t size = 0) -> RpcResult {
+    return RpcResult{status, size};
 }
 } // namespace vosfs::rpc
 

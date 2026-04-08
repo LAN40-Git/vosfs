@@ -123,6 +123,8 @@ auto vosfs::rpc::RpcProvider::handle_request(std::shared_ptr<detail::Session> se
         request.method_type = method_type;
         request.req_payload = std::string{buf.data(), payload_size};
 
+        //LOG_INFO("request_id : {}, payload_size : {}, service_type : {}, method_type : {}", request_id, payload_size, RpcType::to_string(service_type), RpcType::to_string(method_type));
+
         co_await requests.push(std::move(request));
     }
 
@@ -154,14 +156,13 @@ auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> ses
             }
         } else {
             if (resp_header.status == RpcResult::kSuccess) {
-                std::span<char> resp_payload = {buf.data(), buf.capacity()};
-                auto ret = co_await invoker_.invoke(
+                auto result = co_await invoker_.invoke(
                 request.service_type,
                 request.method_type,
                 request.req_payload,
-                resp_payload);
-                resp_header.status = static_cast<RpcResult::Status>(ret.value());
-                resp_header.payload_size = htobe32(resp_payload.size());
+                {buf.data(), buf.capacity()});
+                resp_header.status = static_cast<RpcResult::Status>(result.value());
+                resp_header.payload_size = htobe32(result.size());
             }
         }
 
