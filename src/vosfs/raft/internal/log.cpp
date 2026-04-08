@@ -17,9 +17,8 @@ auto vosfs::raft::detail::RaftLog::create(Persister& persister) -> Result<RaftLo
     // recover entries
     uint64_t i = last_included_index + 1;
     std::vector<LogEntry> entries;
-    std::string log_entry_prefix = std::string{LOG_ENTRY_PREFIX};
     while (true) {
-        auto key = log_entry_prefix + std::to_string(i++);
+        auto key = LOG_ENTRY_PREFIX + std::to_string(i++);
         std::string entry_payload;
         ret = persister.recover(key, &entry_payload);
         if (!ret) {
@@ -50,7 +49,7 @@ auto vosfs::raft::detail::RaftLog::last_log_index() const noexcept -> uint64_t {
 
 auto vosfs::raft::detail::RaftLog::last_log_term() const noexcept -> uint64_t {
     if (entries_.empty() && last_log_index() == 0) {
-        return 0;
+        return last_included_index_;
     }
     if (entries_.empty() && last_log_index() > 0) {
         return last_included_term_;
@@ -58,31 +57,30 @@ auto vosfs::raft::detail::RaftLog::last_log_term() const noexcept -> uint64_t {
     return entries_.back().term();
 }
 
-auto vosfs::raft::detail::RaftLog::get_term(uint64_t index) const -> uint64_t {
-    if (index == last_included_index_) {
-        return last_included_term_;
-    } else if (index > last_included_index_ && index <= last_log_index()) {
+auto vosfs::raft::detail::RaftLog::get_term(uint64_t index) const -> Result<uint64_t> {
+    if (index > last_included_index_ && index <= last_log_index()) {
         auto arr_idx = index - last_included_index_ - 1;
         return entries_[arr_idx].term();
-    } else {
-        LOG_FATAL("get_term: index {} out of range [{}, {}]",
-                  index, last_included_index_, last_log_index());
-        std::abort();
     }
+
+    if (index == last_included_index_) {
+        return last_included_term_;
+    }
+
+    return std::unexpected{make_error(Error::kInvalidLogIndex)};
 }
 
-auto vosfs::raft::detail::RaftLog::get_entry(uint64_t index) const -> LogEntry {
+auto vosfs::raft::detail::RaftLog::get_entry(uint64_t index) const -> Result<LogEntry> {
     if (index > last_included_index_ && index <= last_log_index()) {
         auto arr_idx = index - last_included_index_ - 1;
         return entries_[arr_idx];
-    } else {
-        LOG_FATAL("get_entry: index {} out of range [{}, {}]", index, last_included_index_, last_log_index());
-        std::abort();
     }
+
+    return std::unexpected{make_error(Error::kInvalidLogIndex)};
 }
 
 auto vosfs::raft::detail::RaftLog::get_entries(
-    uint64_t index, std::size_t size) const -> std::vector<LogEntry> {
+    uint64_t index, std::size_t size) const -> Result<std::vector<LogEntry>> {
     if (index > last_included_index_ && index <= last_log_index()) {
         std::vector<LogEntry> entries;
         auto arr_idx = index - last_included_index_ - 1;
@@ -93,10 +91,28 @@ auto vosfs::raft::detail::RaftLog::get_entries(
         }
 
         return entries;
-    } else if (index <= last_included_index_) {
-        LOG_FATAL("get_entries: index {} is in snapshot", index);
-        std::abort();
-    } else {
-        return {};
     }
+
+    return std::unexpected{make_error(Error::kInvalidLogIndex)};
+}
+
+auto vosfs::raft::detail::RaftLog::append_entry(LogEntry&& entry) -> Result<void> {
+    auto key = LOG_ENTRY_PREFIX + std::to_string(entry.index());
+    auto value = entry.SerializeAsString();
+    entries_.emplace_back(std::move(entry));
+    return persister_.persist(key, value);
+}
+
+auto vosfs::raft::detail::RaftLog::truncate_entries(uint64_t index) -> Result<void> {
+    if (index <= last_included_index_ || index > last_log_index()) {
+        return std::unexpected{make_error(Error::kInvalidLogIndex)};
+    }
+
+    std::vector<std::string> keys;
+    for (uint64_t i = index; i <= last_log_index(); ++i) {
+        keys.emplace_back(LOG_ENTRY_PREFIX + std::to_string(i));
+    }
+
+    entries_.erase(entries_.begin() + index - last_included_index_ - 1, entries_.end());
+    return persister_.truncate_batch(keys);
 }

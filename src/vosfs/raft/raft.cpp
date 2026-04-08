@@ -1,5 +1,10 @@
 #include "vosfs/raft/raft.hpp"
 
+auto vosfs::raft::RaftNode::shutdown() -> kosio::async::Task<void> {
+    is_shutdown_.store(true, std::memory_order_release);
+    auto ret = co_await client_provider_->shutdown();
+}
+
 auto vosfs::raft::RaftNode::election_loop() -> kosio::async::Task<void> {
     kosio::util::FastRand rand;
     while (!is_shutdown_.load(std::memory_order_relaxed)) {
@@ -58,11 +63,10 @@ void vosfs::raft::RaftNode::persist_voted_for() const {
         std::to_string(voted_for_.value()));
         if (!ret) {
             LOG_FATAL("{}", ret.error());
-            std::abort();
+
         }
     } else {
-        auto ret = persister_.persist(detail::CURRENT_TERM_KEY,
-        "");
+        auto ret = persister_.persist(detail::CURRENT_TERM_KEY, "");
         if (!ret) {
             LOG_FATAL("{}", ret.error());
             std::abort();
@@ -98,28 +102,41 @@ void vosfs::raft::RaftNode::do_heartbeat() {
     auto leader_id  = transport_.member_id();
     auto commit_index = commit_index_;
     auto last_log_index = logs_.last_log_index();
-    for (const auto& [member_id, next_index] : next_index_) {
+    for (auto& [member_id, next_index] : next_index_) {
         std::vector<LogEntry> entries;
         if (next_index <= last_log_index) {
-            if (next_index < logs_.start_index()) {
+            if (next_index <= logs_.last_included_index()) {
                 // TODO: send snapshot
                 continue;
+            }
+
+            auto batch_size = std::min(detail::MAX_ENTRIES_PER_APPEND, last_log_index - next_index + 1);
+            auto ret = logs_.get_entries(next_index, batch_size);
+            if (!ret) {
+                LOG_WARN("{}", ret.error());
+                --next_index;
+                continue;
             } else {
-                auto batch_size = std::min(detail::MAX_ENTRIES_PER_APPEND, last_log_index - next_index + 1);
-                entries = logs_.get_entries(next_index, batch_size);
+                entries = std::move(ret.value());
             }
         }
 
         auto prev_log_index = next_index - 1;
-        uint64_t prev_log_term  = logs_.get_term(prev_log_index);
+        auto ret = logs_.get_term(prev_log_index);
+        if (!ret) {
+            LOG_WARN("{}", ret.error());
+            --next_index;
+            continue;
+        }
+        auto prev_log_term = ret.value();
 
         auto request = detail::MessageFactory::make_append_entries_request(
-            current_term_.load(std::memory_order_relaxed),
-            transport_.member_id(),
+            current_term,
+            leader_id,
             prev_log_index,
             prev_log_term,
             entries,
-            commit_index_);
+            commit_index);
 
         kosio::spawn(transport_.unicast_request(
             member_id,
@@ -139,7 +156,6 @@ void vosfs::raft::RaftNode::increase_term_to(uint64_t term) {
     current_term_.store(term, std::memory_order_release);
     persist_current_term();
     role_.store(kFollower, std::memory_order_release);
-    last_reset_time_.store(kosio::util::current_ms(), std::memory_order_relaxed);
 }
 
 void vosfs::raft::RaftNode::become_leader() {
@@ -176,6 +192,7 @@ auto vosfs::raft::RaftNode::handle_request_vote_request(
 
     if (term > current_term) {
         increase_term_to(term);
+        current_term = term;
     }
 
     bool up_to_date_log{false};
@@ -192,12 +209,80 @@ auto vosfs::raft::RaftNode::handle_request_vote_request(
         voted_for_ = candidate_id;
     }
 
-    co_return detail::MessageFactory::make_request_vote_response(resp_payload, term, can_vote);
+    co_return detail::MessageFactory::make_request_vote_response(resp_payload, current_term, can_vote);
 }
 
 auto vosfs::raft::RaftNode::handle_append_entries_request(
-    std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
+    std::string_view req_payload,
+    std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
+    AppendEntriesRequest request;
+    if (!request.ParseFromArray(req_payload.data(), static_cast<int>(req_payload.size()))) [[unlikely]] {
+        co_return rpc::make_result(rpc::RpcResult::kMessageParseFailed);
+    }
 
+    auto leader_id = request.leader_id();
+    auto term = request.term();
+    auto prev_log_index = request.prev_log_index();
+    auto prev_log_term = request.prev_log_term();
+    auto entries = request.entries();
+    auto leader_commit = request.leader_commit();
+
+    co_await mutex_.lock();
+    std::lock_guard lock(mutex_, std::adopt_lock);
+
+    auto current_term = current_term_.load(std::memory_order_relaxed);
+    if (term < current_term) {
+        co_return detail::MessageFactory::make_append_entries_response(resp_payload,  current_term, false);
+    }
+
+    if (term > current_term) {
+        increase_term_to(term);
+        current_term = term;
+    }
+
+    leader_id_ = leader_id;
+    last_reset_time_.store(kosio::util::current_ms(), std::memory_order_relaxed);
+
+    // check log consistency
+    bool log_ok{false};
+    if (prev_log_index <= logs_.last_log_index()) {
+        auto ret = logs_.get_term(prev_log_index);
+        if (!ret) {
+            LOG_WARN("{}", ret.error());
+
+        } else if (ret.value() == prev_log_term) {
+            log_ok = true;
+        }
+    }
+
+    if (!log_ok) {
+        co_return detail::MessageFactory::make_append_entries_response(
+            resp_payload, current_term, false);
+    }
+
+    // append and persist entries
+    if (!entries.empty()) {
+        auto last_index = logs_.last_log_index();
+        for (const auto& entry : entries) {
+            auto idx = entry.index();
+            if (idx <= last_index) {
+                auto ret = logs_.get_term(idx);
+                if (ret && ret.value() != entry.term()) {
+                    logs_.truncate_entries(idx);
+                    last_index = idx - 1;
+                }
+            }
+        }
+
+        //logs_.append_entries(entries);
+    }
+
+    if (leader_commit > commit_index_) {
+        commit_index_ = std::min(logs_.last_log_index(), leader_commit);
+        // TODO: apply to statemachine
+    }
+
+    co_return detail::MessageFactory::make_append_entries_response(resp_payload, current_term, true);
 }
 
 auto vosfs::raft::RaftNode::handle_request_vote_response(std::string_view resp_payload) -> kosio::async::Task<void> {
@@ -236,4 +321,8 @@ auto vosfs::raft::RaftNode::handle_request_vote_response(std::string_view resp_p
             become_leader();
         }
     }
+}
+
+auto vosfs::raft::RaftNode::handle_append_entries_response(std::string_view resp_payload) -> kosio::async::Task<void> {
+
 }

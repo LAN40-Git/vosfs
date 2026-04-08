@@ -11,6 +11,9 @@ private:
 public:
     static auto create() -> kosio::async::Task<Result<std::unique_ptr<RaftNode>>>;
 
+public:
+    auto shutdown() -> kosio::async::Task<void>;
+
 private:
     auto election_loop() -> kosio::async::Task<void>;
 

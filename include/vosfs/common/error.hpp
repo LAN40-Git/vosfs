@@ -9,6 +9,7 @@ class Error {
 public:
     enum ErrorCode {
         kUnknown = 8000,
+        kInvalidLogIndex,
         kProtoSerializeFailed,
         kProtoParseFailed,
         kTruncateFailed,
