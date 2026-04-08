@@ -15,7 +15,7 @@ public:
         kUnauthenticated,
         kFindServiceTypeFailed,
         kFindMethodTypeFailed,
-        kGetRespPayloadFailed,
+        kMessageTooLarge,
         kMessageParseFailed,
         kMessageSerializeFailed,
     };
@@ -50,6 +50,8 @@ public:
             return "Failed to find service type.";
         case kFindMethodTypeFailed:
             return "Failed to find method type.";
+        case kMessageTooLarge:
+            return "Message too large.";
         case kMessageParseFailed:
             return "Failed to parse message.";
         case kMessageSerializeFailed:

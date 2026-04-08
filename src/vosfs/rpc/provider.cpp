@@ -123,8 +123,6 @@ auto vosfs::rpc::RpcProvider::handle_request(std::shared_ptr<detail::Session> se
         request.method_type = method_type;
         request.req_payload = std::string{buf.data(), payload_size};
 
-        //LOG_INFO("request_id : {}, payload_size : {}, service_type : {}, method_type : {}", request_id, payload_size, RpcType::to_string(service_type), RpcType::to_string(method_type));
-
         co_await requests.push(std::move(request));
     }
 

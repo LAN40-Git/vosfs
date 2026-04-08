@@ -5,8 +5,13 @@
 namespace vosfs::raft::detail {
 class RaftLog {
 private:
-    explicit RaftLog(uint64_t start_index, std::vector<LogEntry>&& entries, Persister& persister)
-        : start_index_(start_index)
+    explicit RaftLog(
+        uint64_t last_included_index,
+        uint64_t last_included_term,
+        std::vector<LogEntry>&& entries,
+        Persister& persister)
+        : last_included_index_(last_included_index)
+        , last_included_term_(last_included_term)
         , entries_(std::move(entries))
         , persister_(persister) {}
 
@@ -14,12 +19,23 @@ public:
     static auto create(Persister& persister) -> Result<RaftLog>;
 
 public:
+    [[nodiscard]] auto last_included_index() const noexcept -> uint64_t;
+
+    [[nodiscard]] auto last_included_term() const noexcept -> uint64_t;
+
     [[nodiscard]] auto last_log_index() const noexcept -> uint64_t;
 
     [[nodiscard]] auto last_log_term() const noexcept -> uint64_t;
 
+    [[nodiscard]] auto get_term(uint64_t index) const -> uint64_t;
+
+    [[nodiscard]] auto get_entry(uint64_t index) const -> LogEntry;
+
+    [[nodiscard]] auto get_entries(uint64_t index, std::size_t size) const -> std::vector<LogEntry>;
+
 private:
-    uint64_t              start_index_;
+    uint64_t              last_included_index_;
+    uint64_t              last_included_term_;
     std::vector<LogEntry> entries_;
     Persister&            persister_;
 };

@@ -8,8 +8,10 @@ constexpr uint16_t RAFT_PROVIDER_PORT = 8888;
 
 constexpr uint16_t CLIENT_PROVIDER_PORT = 8889;
 
-// ====== Interval configuration ======
+// ====== Raft internal configuration ======
 constexpr std::size_t HEARTBEAT_INTERVAL = 100;
+
+constexpr std::size_t MAX_ENTRIES_PER_APPEND = 100;
 
 // ====== Path configuration ======
 constexpr std::string_view DATA_DIR = "/var/lib/vosfs";

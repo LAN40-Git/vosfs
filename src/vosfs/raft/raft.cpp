@@ -94,7 +94,42 @@ void vosfs::raft::RaftNode::do_election() {
 }
 
 void vosfs::raft::RaftNode::do_heartbeat() {
+    auto current_term = current_term_.load(std::memory_order_relaxed);
+    auto leader_id  = transport_.member_id();
+    auto commit_index = commit_index_;
+    auto last_log_index = logs_.last_log_index();
+    for (const auto& [member_id, next_index] : next_index_) {
+        std::vector<LogEntry> entries;
+        if (next_index <= last_log_index) {
+            if (next_index < logs_.start_index()) {
+                // TODO: send snapshot
+                continue;
+            } else {
+                auto batch_size = std::min(detail::MAX_ENTRIES_PER_APPEND, last_log_index - next_index + 1);
+                entries = logs_.get_entries(next_index, batch_size);
+            }
+        }
 
+        auto prev_log_index = next_index - 1;
+        uint64_t prev_log_term  = logs_.get_term(prev_log_index);
+
+        auto request = detail::MessageFactory::make_append_entries_request(
+            current_term_.load(std::memory_order_relaxed),
+            transport_.member_id(),
+            prev_log_index,
+            prev_log_term,
+            entries,
+            commit_index_);
+
+        kosio::spawn(transport_.unicast_request(
+            member_id,
+            rpc::ServiceType::kRaft,
+            rpc::MethodType::kRaftAppendEntries,
+            request.SerializeAsString(),
+            [this](std::string_view resp_payload) -> kosio::async::Task<void> {
+                co_await this->handle_append_entries_response(resp_payload);
+            }));
+    }
 }
 
 void vosfs::raft::RaftNode::increase_term_to(uint64_t term) {
