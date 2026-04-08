@@ -6,6 +6,7 @@
 
 namespace vosfs::raft::detail {
 class RaftCluster {
+public:
     using PeerMap = std::unordered_map<uint64_t, Peer>;
 
     struct NodeInfo {

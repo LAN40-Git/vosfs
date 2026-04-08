@@ -26,8 +26,23 @@ public:
 
     [[nodiscard]]
     static auto make_request_vote_response(
-    std::span<char> resp_payload,
+        std::span<char> resp_payload,
         uint64_t term,
         bool vote_granted) -> rpc::InvokeResult;
+
+    [[nodiscard]]
+    static auto make_append_entries_request(
+        uint64_t term,
+        uint64_t leader_id,
+        uint64_t prev_log_index,
+        uint64_t prev_log_term,
+        std::vector<LogEntry>& entries,
+        uint64_t leader_commit) -> AppendEntriesRequest;
+
+    [[nodiscard]]
+    static auto make_append_entries_response(
+        std::span<char> resp_payload,
+        uint64_t term,
+        bool success) -> rpc::InvokeResult;
 };
 } // namespace vosfs::raft::detail

@@ -44,7 +44,7 @@ auto vosfs::raft::detail::RaftLog::last_log_term() const noexcept -> uint64_t {
         std::string value;
         auto ret = persister_.recover(SNAPSHOT_LAST_INCLUDED_TERM_KEY, &value);
         if (!ret) {
-            LOG_ERROR("last_log_term recover faile{}", ret.error());
+            LOG_FATAL("last_log_term recover failed : {}", ret.error());
             std::abort();
         }
 

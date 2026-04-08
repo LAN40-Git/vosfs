@@ -14,11 +14,9 @@ public:
     static auto create(Persister& persister) -> Result<RaftLog>;
 
 public:
-    [[nodiscard]]
-    auto last_log_index() const noexcept -> uint64_t;
+    [[nodiscard]] auto last_log_index() const noexcept -> uint64_t;
 
-    [[nodiscard]]
-    auto last_log_term() const noexcept -> uint64_t;
+    [[nodiscard]] auto last_log_term() const noexcept -> uint64_t;
 
 private:
     uint64_t              start_index_;

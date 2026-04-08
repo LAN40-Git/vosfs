@@ -55,6 +55,8 @@ public:
     [[nodiscard]]
     auto host() const noexcept -> std::string_view { return cluster_.host(); }
     [[nodiscard]]
+    auto peers() -> RaftCluster::PeerMap& { return cluster_.peers(); }
+    [[nodiscard]]
     auto peer_count() const noexcept -> uint64_t { return cluster_.peer_count(); }
 
 private:

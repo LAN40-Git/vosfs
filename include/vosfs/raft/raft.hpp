@@ -17,6 +17,8 @@ private:
     auto heartbeat_loop() -> kosio::async::Task<void>;
 
 private:
+    void persist_current_term() const;
+    void persist_voted_for() const;
     void do_election();
     void do_heartbeat();
     void increase_term_to(uint64_t term);
@@ -56,6 +58,7 @@ private:
     std::atomic<uint64_t>    current_term_;
     std::optional<uint64_t>  voted_for_;
     detail::RaftLog          logs_;
+    detail::Persister        persister_;
 
     // Volatile state on all servers
     uint64_t commit_index_{0};

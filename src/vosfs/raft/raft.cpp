@@ -39,16 +39,45 @@ auto vosfs::raft::RaftNode::heartbeat_loop() -> kosio::async::Task<void> {
             continue;
         }
 
+        do_heartbeat();
+    }
+}
 
+void vosfs::raft::RaftNode::persist_current_term() const {
+    auto ret = persister_.persist(detail::CURRENT_TERM_KEY,
+        std::to_string(current_term_.load(std::memory_order_relaxed)));
+    if (!ret) {
+        LOG_FATAL("{}", ret.error());
+        std::abort();
+    }
+}
+
+void vosfs::raft::RaftNode::persist_voted_for() const {
+    if (voted_for_.has_value()) {
+        auto ret = persister_.persist(detail::CURRENT_TERM_KEY,
+        std::to_string(voted_for_.value()));
+        if (!ret) {
+            LOG_FATAL("{}", ret.error());
+            std::abort();
+        }
+    } else {
+        auto ret = persister_.persist(detail::CURRENT_TERM_KEY,
+        "");
+        if (!ret) {
+            LOG_FATAL("{}", ret.error());
+            std::abort();
+        }
     }
 }
 
 void vosfs::raft::RaftNode::do_election() {
     role_.store(kCandidate, std::memory_order_relaxed);
-    current_term_.fetch_add(1, std::memory_order_relaxed);
+    votes_ = 1;
     // votes for myself at this term
     voted_for_ = transport_.member_id();
-    votes_ = 1;
+    persist_voted_for();
+    current_term_.fetch_add(1, std::memory_order_relaxed);
+    persist_current_term();
     // broadcast reqeust vote request
     auto request = detail::MessageFactory::make_request_vote_request(
         current_term_.load(std::memory_order_relaxed),
@@ -65,31 +94,29 @@ void vosfs::raft::RaftNode::do_election() {
 }
 
 void vosfs::raft::RaftNode::do_heartbeat() {
-    if (role_.load(std::memory_order_acquire) != kLeader) {
-        return;
-    }
-
 
 }
 
 void vosfs::raft::RaftNode::increase_term_to(uint64_t term) {
     votes_ = 0;
     voted_for_.reset();
+    persist_voted_for();
     current_term_.store(term, std::memory_order_release);
+    persist_current_term();
     role_.store(kFollower, std::memory_order_release);
     last_reset_time_.store(kosio::util::current_ms(), std::memory_order_relaxed);
-    // TODO: persist
 }
 
 void vosfs::raft::RaftNode::become_leader() {
     votes_ = 0;
-    voted_for_ = std::nullopt;
+    voted_for_.reset();
+    persist_voted_for();
     role_.store(kLeader, std::memory_order_release);
     // update next_index
-    for (auto& next_index : next_index_ | std::views::values) {
-        next_index = logs_.last_log_index() + 1;
+    auto& peers = transport_.peers();
+    for (const auto& peer : peers | std::views::values) {
+        next_index_[peer.member_id()] = logs_.last_log_index() + 1;
     }
-    // TODO: persist
 }
 
 auto vosfs::raft::RaftNode::handle_request_vote_request(
