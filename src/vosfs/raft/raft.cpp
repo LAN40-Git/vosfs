@@ -243,14 +243,12 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
     leader_id_ = leader_id;
     last_reset_time_.store(kosio::util::current_ms(), std::memory_order_relaxed);
 
-    // check log consistency
+    // The previous log entry of the added log entries
+    // must exist in the local log entries
     bool log_ok{false};
     if (prev_log_index <= logs_.last_log_index()) {
         auto ret = logs_.get_term(prev_log_index);
-        if (!ret) {
-            LOG_WARN("{}", ret.error());
-
-        } else if (ret.value() == prev_log_term) {
+        if (ret && ret.value() == prev_log_term) {
             log_ok = true;
         }
     }
@@ -260,26 +258,37 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
             resp_payload, current_term, false);
     }
 
-    // append and persist entries
     if (!entries.empty()) {
-        auto last_index = logs_.last_log_index();
+        // truncate conflict log entries
         for (const auto& entry : entries) {
             auto idx = entry.index();
-            if (idx <= last_index) {
-                auto ret = logs_.get_term(idx);
-                if (ret && ret.value() != entry.term()) {
-                    logs_.truncate_entries(idx);
-                    last_index = idx - 1;
+            if (idx > logs_.last_log_index()) {
+                break;
+            }
+
+            auto local_term = logs_.get_term(idx);
+            if (!local_term || local_term.value() != entry.term()) {
+                auto ret = logs_.truncate_entries(idx);
+                if (!ret) {
+                    LOG_WARN("{}", ret.error());
+                    co_return detail::MessageFactory::make_append_entries_response(
+                        resp_payload, current_term, false);
                 }
+                break;
             }
         }
 
-        //logs_.append_entries(entries);
+        // append and persist entries
+        auto ret = logs_.append_entries(entries);
+        if (!ret) {
+            LOG_WARN("{}", ret.error());
+            co_return detail::MessageFactory::make_append_entries_response(resp_payload, current_term, false);
+        }
     }
 
     if (leader_commit > commit_index_) {
         commit_index_ = std::min(logs_.last_log_index(), leader_commit);
-        // TODO: apply to statemachine
+        // TODO: apply to statemachine and update commit_index
     }
 
     co_return detail::MessageFactory::make_append_entries_response(resp_payload, current_term, true);

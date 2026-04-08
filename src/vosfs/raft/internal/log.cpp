@@ -99,8 +99,25 @@ auto vosfs::raft::detail::RaftLog::get_entries(
 auto vosfs::raft::detail::RaftLog::append_entry(LogEntry&& entry) -> Result<void> {
     auto key = LOG_ENTRY_PREFIX + std::to_string(entry.index());
     auto value = entry.SerializeAsString();
-    entries_.emplace_back(std::move(entry));
-    return persister_.persist(key, value);
+    auto ret = persister_.persist(key, value);
+    if (ret) {
+        entries_.emplace_back(std::move(entry));
+    }
+    return ret;
+}
+
+auto vosfs::raft::detail::RaftLog::append_entries(const google::protobuf::RepeatedPtrField<LogEntry>& entries) -> Result<void> {
+    std::vector<KV> kvs;
+    for (const auto& entry : entries) {
+        kvs.emplace_back(LOG_ENTRY_PREFIX + std::to_string(entry.index()), entry.SerializeAsString());
+    }
+    auto ret = persister_.persist_batch(kvs);
+    if (ret) {
+        for (const auto& entry : entries) {
+            entries_.push_back(entry);
+        }
+    }
+    return ret;
 }
 
 auto vosfs::raft::detail::RaftLog::truncate_entries(uint64_t index) -> Result<void> {

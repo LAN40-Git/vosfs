@@ -31,8 +31,6 @@ message AppendEntriesRequest {
 message AppendEntriesResponse {
     uint64 term = 1;
     bool success = 2;
-//    uint64 last_log_index = 3;
-//    uint64 conflict_index = 4;
 }
 
 message InstallSnapshotRequest {
@@ -47,4 +45,19 @@ message InstallSnapshotRequest {
 
 message InstallSnapshotResponse {
     uint64 term = 1;
+}
+
+message UploadFile {
+
+}
+
+message DownloadFile {
+
+}
+
+message ClientCommand {
+    oneof cmd {
+        UploadFile upload_file = 1;
+        DownloadFile download_file = 2;
+    }
 }

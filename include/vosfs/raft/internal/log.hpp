@@ -36,7 +36,7 @@ public:
 
     [[nodiscard]] auto append_entry(LogEntry&& entry) -> Result<void>;
 
-    [[nodiscard]] auto append_entries() -> Result<void>;
+    [[nodiscard]] auto append_entries(const google::protobuf::RepeatedPtrField<LogEntry>& entries) -> Result<void>;
 
     [[nodiscard]] auto truncate_entries(uint64_t index) -> Result<void>;
 
