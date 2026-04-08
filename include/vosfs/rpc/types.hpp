@@ -3,12 +3,10 @@
 #include <cstdint>
 #include <format>
 #include <kosio/async/coroutine/task.hpp>
-#include "vosfs/rpc/error.hpp"
+#include "vosfs/rpc/result.hpp"
 
 namespace vosfs::rpc {
-// <RpcError,resp_payload_size>
-using InvokeResult = std::pair<RpcError::ErrorCode, std::size_t>;
-using RpcRequestHandler = std::function<kosio::async::Task<InvokeResult>(std::string_view, std::span<char>)>;
+using RpcRequestHandler = std::function<kosio::async::Task<RpcResult>(std::string_view, std::span<char>)>;
 
 enum class ServiceType : uint8_t {
     kMinService = 0,

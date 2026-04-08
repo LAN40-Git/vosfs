@@ -12,9 +12,9 @@ struct FixedRpcRequestHeader {
 };
 
 struct FixedRpcResponseHeader {
-    uint64_t            request_id{0};   // 8 bytes
-    uint32_t            payload_size{0}; // 4 bytes
-    RpcError::ErrorCode error_code{0};   // 1 byte
+    uint64_t          request_id{0};   // 8 bytes
+    uint32_t          payload_size{0}; // 4 bytes
+    RpcResult::Status status{0};       // 1 byte
     // 13 bytes total
 };
 } // namespace vosfs::rpc::detail

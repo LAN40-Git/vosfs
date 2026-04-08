@@ -1,4 +1,5 @@
 #pragma once
+#include "vosfs/common/error.hpp"
 #include "vosfs/rpc/internal/config.hpp"
 #include "vosfs/rpc/internal/protocol.hpp"
 #include "vosfs/rpc/internal/invoker.hpp"

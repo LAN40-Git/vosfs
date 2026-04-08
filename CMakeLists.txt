@@ -51,7 +51,7 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(XXHASH REQUIRED libxxhash)
 
 # ====== LIBRARY ======
-set(ROCKSDB_LIBARIES
+set(ROCKSDB_LIBRARIES
         rocksdb
         snappy
         z

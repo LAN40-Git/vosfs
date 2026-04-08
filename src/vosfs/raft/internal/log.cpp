@@ -14,8 +14,9 @@ auto vosfs::raft::detail::RaftLog::create(Persister& persister) -> Result<RaftLo
     // recover entries
     uint64_t i = start_index;
     std::vector<LogEntry> entries;
+    std::string log_entry_prefix = std::string{LOG_ENTRY_PREFIX};
     while (true) {
-        auto key = LOG_ENTRY_PREFIX + std::to_string(i++);
+        auto key = log_entry_prefix + std::to_string(i++);
         std::string entry_payload;
         ret = persister.recover(key, &entry_payload);
         if (!ret) {

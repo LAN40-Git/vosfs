@@ -8,15 +8,15 @@ auto vosfs::rpc::detail::RpcInvoker::invoke(
     ServiceType service_type,
     MethodType method_type,
     std::string_view req_payload,
-    std::span<char> resp_payload) -> kosio::async::Task<InvokeResult> {
+    std::span<char> resp_payload) -> kosio::async::Task<RpcResult> {
     // find method
     auto it_service = methods_.find(service_type);
     if (it_service == methods_.end()) {
-        co_return std::make_pair(RpcError::kFindServiceTypeFailed, 0);
+        co_return make_result(RpcResult::kFindServiceTypeFailed);
     }
     auto it_method = it_service->second.find(method_type);
     if (it_method == it_service->second.end()) {
-        co_return std::make_pair(RpcError::kFindMethodTypeFailed, 0);
+        co_return make_result(RpcResult::kFindMethodTypeFailed);
     }
     auto& method = it_method->second;
 

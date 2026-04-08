@@ -14,11 +14,7 @@ auto shutdown(std::unique_ptr<RpcProvider>& provider) -> kosio::async::Task<void
 }
 
 auto process(std::unique_ptr<RpcProvider>& provider) -> kosio::async::Task<void> {
-    auto ret = co_await provider->run();
-    if (!ret) {
-        LOG_ERROR("Failed to run provider : {}", ret.error());
-    }
-
+    co_await provider->run();
     LOG_INFO("Provider stopped.");
 }
 
@@ -32,7 +28,7 @@ auto main_loop() -> kosio::async::Task<void> {
     auto provider = std::move(has_provider.value());
     // Register invokes
     provider->register_handler(ServiceType::kMath, MethodType::kMathAdd, [](
-        std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<InvokeResult> {
+        std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<RpcResult> {
         math::MathRequest request;
         math::MathResponse response;
 
@@ -44,16 +40,17 @@ auto main_loop() -> kosio::async::Task<void> {
         // }
         // co_return std::make_pair(RpcError::kRedirect, info.ByteSizeLong());
 
-        if (!request.ParseFromArray(req_payload.data(), req_payload.size())) {
-            co_return std::make_pair(RpcError::kMessageParseFailed, 0);
+        if (!request.ParseFromArray(req_payload.data(), static_cast<int>(req_payload.size()))) {
+            co_return make_result(RpcResult::kMessageParseFailed);
         }
 
         response.set_result(request.a() + request.b());
-        if (!response.SerializeToArray(resp_payload.data(), resp_payload.size())) {
-            co_return std::make_pair(RpcError::kMessageSerializeFailed, 0);
+        if (!response.SerializeToArray(resp_payload.data(), static_cast<int>(req_payload.size()))) {
+            co_return make_result(RpcResult::kMessageSerializeFailed);
         }
 
-        co_return std::make_pair(RpcError::kSuccess,  response.ByteSizeLong());
+        resp_payload = resp_payload.subspan(0, response.ByteSizeLong());
+        co_return make_result(RpcResult::kSuccess);
     });
 
     kosio::spawn(process(provider));

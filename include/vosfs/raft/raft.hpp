@@ -27,11 +27,11 @@ private:
 private:
     [[REMEMBER_CO_AWAIT]]
     auto handle_request_vote_request(std::string_view req_payload, std::span<char> resp_payload)
-        -> kosio::async::Task<rpc::InvokeResult>;
+        -> kosio::async::Task<rpc::RpcResult>;
 
     [[REMEMBER_CO_AWAIT]]
     auto handle_append_entries_request(std::string_view req_payload, std::span<char> resp_payload)
-        -> kosio::async::Task<rpc::InvokeResult>;
+        -> kosio::async::Task<rpc::RpcResult>;
 
 private:
     [[REMEMBER_CO_AWAIT]]

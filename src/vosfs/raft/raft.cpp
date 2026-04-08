@@ -120,10 +120,10 @@ void vosfs::raft::RaftNode::become_leader() {
 }
 
 auto vosfs::raft::RaftNode::handle_request_vote_request(
-    std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::InvokeResult> {
+    std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
     RequestVoteRequest request;
     if (!request.ParseFromArray(req_payload.data(), static_cast<int>(req_payload.size()))) {
-        co_return std::make_pair(rpc::RpcError::kMessageParseFailed, 0);
+        co_return rpc::make_result(rpc::RpcResult::kMessageParseFailed);
     }
 
     auto term = request.term();
@@ -161,7 +161,7 @@ auto vosfs::raft::RaftNode::handle_request_vote_request(
 }
 
 auto vosfs::raft::RaftNode::handle_append_entries_request(
-    std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::InvokeResult> {
+    std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
 
 }
 

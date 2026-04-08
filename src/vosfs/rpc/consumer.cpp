@@ -152,14 +152,14 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
 
         auto request_id = be64toh(resp_header.request_id);
         auto payload_size = be32toh(resp_header.payload_size);
-        auto error_code = resp_header.error_code;
+        auto status = resp_header.status;
         if (payload_size > detail::MAX_RPC_MESSAGE_SIZE) {
             LOG_ERROR("Receive unusual rpc message, request_id : {}, payload_size : {}.", request_id, payload_size);
             requests_.erase(request_id);
             break;
         }
 
-        if (error_code == RpcError::kShutdown) {
+        if (status == RpcResult::kShutdown) {
             break;
         }
 
@@ -173,36 +173,38 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
         }
 
         // Remove callback when rpc request not success
-        if (error_code != RpcError::kSuccess) {
+        if (status != RpcResult::kSuccess) {
             requests_.erase(request_id);
         }
 
-        switch (error_code) {
-            case RpcError::kSuccess: {
+        switch (status) {
+            case RpcResult::kSuccess: {
                 co_await trigger_callback(request_id, {buf.data(), payload_size});
                 break;
             }
-            case RpcError::kRedirect: {
+            case RpcResult::kRedirect: {
                 reconn = true;
                 RedirectInfo info;
-                info.ParseFromArray(buf.data(), payload_size);
+                if (!info.ParseFromArray(buf.data(), static_cast<int>(payload_size))) {
+                    LOG_ERROR("Failed to redirect to new server.");
+                }
                 server_host_ = info.host();
                 server_port_ = info.port();
-                // Notify the server to stop reading and writing
+                // notify the server to stop reading and writing
                 if (!co_await send_shutdown_request()) {
                     co_return;
                 }
                 break;
             }
-            case RpcError::kNeedShutdown: {
-                // Notify the server to stop reading and writing
+            case RpcResult::kNeedShutdown: {
+                // notify the server to stop reading and writing
                 if (!co_await send_shutdown_request()) {
                     co_return;
                 }
                 break;
             }
             default: {
-                LOG_ERROR("Rpc error : {}", make_rpc_error(error_code));
+                LOG_ERROR("Rpc result : {}", make_result(status));
                 break;
             }
         }

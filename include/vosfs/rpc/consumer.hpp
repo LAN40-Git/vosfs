@@ -3,6 +3,7 @@
 #include <kosio/net.hpp>
 #include <kosio/sync.hpp>
 #include <tbb/concurrent_hash_map.h>
+#include "vosfs/common/error.hpp"
 #include "vosfs/rpc/internal/config.hpp"
 #include "vosfs/rpc/internal/protocol.hpp"
 

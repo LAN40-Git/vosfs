@@ -28,7 +28,7 @@ public:
     static auto make_request_vote_response(
         std::span<char> resp_payload,
         uint64_t term,
-        bool vote_granted) -> rpc::InvokeResult;
+        bool vote_granted) -> rpc::RpcResult;
 
     [[nodiscard]]
     static auto make_append_entries_request(
@@ -43,6 +43,6 @@ public:
     static auto make_append_entries_response(
         std::span<char> resp_payload,
         uint64_t term,
-        bool success) -> rpc::InvokeResult;
+        bool success) -> rpc::RpcResult;
 };
 } // namespace vosfs::raft::detail

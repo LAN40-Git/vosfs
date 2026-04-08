@@ -13,8 +13,9 @@ public:
         ServiceType         service_type{};
         MethodType          method_type{};
         std::string         req_payload{};
-        RpcError::ErrorCode error_code{RpcError::kSuccess};
+        RpcResult::Status   status{RpcResult::kSuccess};
     };
+
     using RequestQueue = util::SPSCQueue<Request>;
 
 public:
@@ -25,7 +26,7 @@ public:
         ServiceType service_type,
         MethodType method_type,
         std::string_view req_payload,
-        std::span<char> resp_payload) -> kosio::async::Task<InvokeResult>;
+        std::span<char> resp_payload) -> kosio::async::Task<RpcResult>;
 
 public:
     static auto is_unauth_method(ServiceType service_type, MethodType method_type) noexcept -> bool;

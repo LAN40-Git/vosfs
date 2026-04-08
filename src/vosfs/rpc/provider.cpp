@@ -15,8 +15,8 @@ auto vosfs::rpc::RpcProvider::create(uint16_t port, AuthMode auth_mode)
     }
     auto provider = std::unique_ptr<RpcProvider>(new RpcProvider(port, auth_mode, std::move(has_listener.value())));
     provider->register_handler(ServiceType::kConn, MethodType::kConnShutdown, [](
-        std::string_view, std::span<char>) -> kosio::async::Task<InvokeResult> {
-        co_return std::make_pair(RpcError::kShutdown, 0);
+        std::string_view, std::span<char>) -> kosio::async::Task<RpcResult> {
+        co_return make_result(RpcResult::kShutdown);
     });
     co_return std::move(provider);
 }
@@ -68,7 +68,7 @@ auto vosfs::rpc::RpcProvider::shutdown() -> kosio::async::Task<Result<void>> {
     // Clear sessions
     for (auto session : session_manager_.sessions_ | std::views::values) {
         detail::FixedRpcResponseHeader resp_header;
-        resp_header.error_code = RpcError::kNeedShutdown;
+        resp_header.status = RpcResult::kNeedShutdown;
         co_await session->stream.write_all({reinterpret_cast<char*>(&resp_header), sizeof(resp_header)});
     }
 
@@ -140,27 +140,28 @@ auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> ses
         // get rpc request
         auto has_request = co_await requests.pop();
         if (!has_request) {
-            resp_header.error_code = RpcError::kShutdown;
+            resp_header.status = RpcResult::kShutdown;
             co_await stream.write_all({reinterpret_cast<char*>(&resp_header), sizeof(resp_header)});
             break;
         }
         auto request = std::move(has_request.value());
         resp_header.request_id = htobe64(request.request_id);
-        resp_header.error_code = request.error_code;
+        resp_header.status = request.status;
 
         if (auth_mode_ == AuthMode::REQUIRED) {
             if (!session->is_authorized && !detail::RpcInvoker::is_unauth_method(request.service_type, request.method_type)) {
-                resp_header.error_code = RpcError::kUnauthenticated;
+                resp_header.status = RpcResult::kUnauthenticated;
             }
         } else {
-            if (resp_header.error_code == RpcError::kSuccess) {
+            if (resp_header.status == RpcResult::kSuccess) {
+                std::span<char> resp_payload = {buf.data(), buf.capacity()};
                 auto ret = co_await invoker_.invoke(
                 request.service_type,
                 request.method_type,
                 request.req_payload,
-                {buf.data(), buf.capacity()});
-                resp_header.error_code = ret.first;
-                resp_header.payload_size = htobe32(ret.second);
+                resp_payload);
+                resp_header.status = static_cast<RpcResult::Status>(ret.value());
+                resp_header.payload_size = htobe32(resp_payload.size());
             }
         }
 
