@@ -27,5 +27,5 @@ constexpr std::string_view SNAPSHOT_LAST_INCLUDED_INDEX_KEY = "raft/snapshot/las
 
 constexpr std::string_view SNAPSHOT_LAST_INCLUDED_TERM_KEY = "raft/snapshot/last_included_term";
 
-constexpr std::string_view LOG_ENTRY_PREFIX = "raft/log/";
+constexpr std::string LOG_ENTRY_PREFIX = "raft/log/";
 } // namespace vosfs::raft::detail
