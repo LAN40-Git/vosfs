@@ -2,6 +2,7 @@
 #include "vosfs/raft/internal/message_factory.hpp"
 #include "vosfs/raft/internal/log.hpp"
 #include "vosfs/raft/internal/transport.hpp"
+#include "vosfs/raft/internal/state_machine.hpp"
 
 namespace vosfs::raft {
 class RaftNode {
@@ -25,6 +26,7 @@ private:
     void do_heartbeat();
     void increase_term_to(uint64_t term);
     void become_leader();
+    void apply_to_state_machine();
 
 private:
     [[REMEMBER_CO_AWAIT]]
@@ -68,6 +70,7 @@ private:
     std::optional<uint64_t>  voted_for_;
     detail::RaftLog          logs_;
     detail::Persister        persister_;
+    detail::StateMachine     state_machine_;
 
     // Volatile state on all servers
     uint64_t commit_index_{0};

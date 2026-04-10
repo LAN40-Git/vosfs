@@ -137,28 +137,61 @@ struct InstallSnapshotResponseDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 InstallSnapshotResponseDefaultTypeInternal _InstallSnapshotResponse_default_instance_;
-PROTOBUF_CONSTEXPR UploadFile::UploadFile(
+PROTOBUF_CONSTEXPR UploadFileRequest::UploadFileRequest(
     ::_pbi::ConstantInitialized) {}
-struct UploadFileDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR UploadFileDefaultTypeInternal()
+struct UploadFileRequestDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR UploadFileRequestDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
-  ~UploadFileDefaultTypeInternal() {}
+  ~UploadFileRequestDefaultTypeInternal() {}
   union {
-    UploadFile _instance;
+    UploadFileRequest _instance;
   };
 };
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 UploadFileDefaultTypeInternal _UploadFile_default_instance_;
-PROTOBUF_CONSTEXPR DownloadFile::DownloadFile(
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 UploadFileRequestDefaultTypeInternal _UploadFileRequest_default_instance_;
+PROTOBUF_CONSTEXPR DownloadFileRequest::DownloadFileRequest(
     ::_pbi::ConstantInitialized) {}
-struct DownloadFileDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR DownloadFileDefaultTypeInternal()
+struct DownloadFileRequestDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR DownloadFileRequestDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
-  ~DownloadFileDefaultTypeInternal() {}
+  ~DownloadFileRequestDefaultTypeInternal() {}
   union {
-    DownloadFile _instance;
+    DownloadFileRequest _instance;
   };
 };
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 DownloadFileDefaultTypeInternal _DownloadFile_default_instance_;
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 DownloadFileRequestDefaultTypeInternal _DownloadFileRequest_default_instance_;
+PROTOBUF_CONSTEXPR DeleteFileRequest::DeleteFileRequest(
+    ::_pbi::ConstantInitialized) {}
+struct DeleteFileRequestDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR DeleteFileRequestDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~DeleteFileRequestDefaultTypeInternal() {}
+  union {
+    DeleteFileRequest _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 DeleteFileRequestDefaultTypeInternal _DeleteFileRequest_default_instance_;
+PROTOBUF_CONSTEXPR ListFileRequest::ListFileRequest(
+    ::_pbi::ConstantInitialized) {}
+struct ListFileRequestDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR ListFileRequestDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~ListFileRequestDefaultTypeInternal() {}
+  union {
+    ListFileRequest _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 ListFileRequestDefaultTypeInternal _ListFileRequest_default_instance_;
+PROTOBUF_CONSTEXPR ListDirRequest::ListDirRequest(
+    ::_pbi::ConstantInitialized) {}
+struct ListDirRequestDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR ListDirRequestDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~ListDirRequestDefaultTypeInternal() {}
+  union {
+    ListDirRequest _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 ListDirRequestDefaultTypeInternal _ListDirRequest_default_instance_;
 PROTOBUF_CONSTEXPR ClientCommand::ClientCommand(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.cmd_)*/{}
@@ -175,7 +208,7 @@ struct ClientCommandDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 ClientCommandDefaultTypeInternal _ClientCommand_default_instance_;
 }  // namespace raft
 }  // namespace vosfs
-static ::_pb::Metadata file_level_metadata_raft_2eproto[10];
+static ::_pb::Metadata file_level_metadata_raft_2eproto[13];
 static constexpr ::_pb::EnumDescriptor const** file_level_enum_descriptors_raft_2eproto = nullptr;
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_raft_2eproto = nullptr;
 
@@ -258,13 +291,31 @@ const uint32_t TableStruct_raft_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pro
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::InstallSnapshotResponse, _impl_.id_),
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::InstallSnapshotResponse, _impl_.term_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::UploadFile, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::UploadFileRequest, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::DownloadFile, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::DownloadFileRequest, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::DeleteFileRequest, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::ListFileRequest, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::ListDirRequest, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
@@ -276,7 +327,6 @@ const uint32_t TableStruct_raft_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pro
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   ::_pbi::kInvalidFieldOffsetTag,
-  ::_pbi::kInvalidFieldOffsetTag,
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::ClientCommand, _impl_.cmd_),
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
@@ -287,9 +337,12 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 40, 51, -1, sizeof(::vosfs::raft::AppendEntriesResponse)},
   { 56, -1, -1, sizeof(::vosfs::raft::InstallSnapshotRequest)},
   { 69, -1, -1, sizeof(::vosfs::raft::InstallSnapshotResponse)},
-  { 77, -1, -1, sizeof(::vosfs::raft::UploadFile)},
-  { 83, -1, -1, sizeof(::vosfs::raft::DownloadFile)},
-  { 89, -1, -1, sizeof(::vosfs::raft::ClientCommand)},
+  { 77, -1, -1, sizeof(::vosfs::raft::UploadFileRequest)},
+  { 83, -1, -1, sizeof(::vosfs::raft::DownloadFileRequest)},
+  { 89, -1, -1, sizeof(::vosfs::raft::DeleteFileRequest)},
+  { 95, -1, -1, sizeof(::vosfs::raft::ListFileRequest)},
+  { 101, -1, -1, sizeof(::vosfs::raft::ListDirRequest)},
+  { 107, -1, -1, sizeof(::vosfs::raft::ClientCommand)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -300,8 +353,11 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::vosfs::raft::_AppendEntriesResponse_default_instance_._instance,
   &::vosfs::raft::_InstallSnapshotRequest_default_instance_._instance,
   &::vosfs::raft::_InstallSnapshotResponse_default_instance_._instance,
-  &::vosfs::raft::_UploadFile_default_instance_._instance,
-  &::vosfs::raft::_DownloadFile_default_instance_._instance,
+  &::vosfs::raft::_UploadFileRequest_default_instance_._instance,
+  &::vosfs::raft::_DownloadFileRequest_default_instance_._instance,
+  &::vosfs::raft::_DeleteFileRequest_default_instance_._instance,
+  &::vosfs::raft::_ListFileRequest_default_instance_._instance,
+  &::vosfs::raft::_ListDirRequest_default_instance_._instance,
   &::vosfs::raft::_ClientCommand_default_instance_._instance,
 };
 
@@ -325,17 +381,18 @@ const char descriptor_table_protodef_raft_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "ded_index\030\003 \001(\004\022\032\n\022last_included_term\030\004 "
   "\001(\004\022\016\n\006offset\030\005 \001(\004\022\014\n\004data\030\006 \001(\014\022\014\n\004don"
   "e\030\007 \001(\010\"3\n\027InstallSnapshotResponse\022\n\n\002id"
-  "\030\001 \001(\004\022\014\n\004term\030\002 \001(\004\"\014\n\nUploadFile\"\016\n\014Do"
-  "wnloadFile\"x\n\rClientCommand\022-\n\013upload_fi"
-  "le\030\001 \001(\0132\026.vosfs.raft.UploadFileH\000\0221\n\rdo"
-  "wnload_file\030\002 \001(\0132\030.vosfs.raft.DownloadF"
-  "ileH\000B\005\n\003cmdb\006proto3"
+  "\030\001 \001(\004\022\014\n\004term\030\002 \001(\004\"\023\n\021UploadFileReques"
+  "t\"\025\n\023DownloadFileRequest\"\023\n\021DeleteFileRe"
+  "quest\"\021\n\017ListFileRequest\"\020\n\016ListDirReque"
+  "st\"L\n\rClientCommand\0224\n\013upload_file\030\001 \001(\013"
+  "2\035.vosfs.raft.UploadFileRequestH\000B\005\n\003cmd"
+  "b\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_raft_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_raft_2eproto = {
-    false, false, 940, descriptor_table_protodef_raft_2eproto,
+    false, false, 968, descriptor_table_protodef_raft_2eproto,
     "raft.proto",
-    &descriptor_table_raft_2eproto_once, nullptr, 0, 10,
+    &descriptor_table_raft_2eproto_once, nullptr, 0, 13,
     schemas, file_default_instances, TableStruct_raft_2eproto::offsets,
     file_level_metadata_raft_2eproto, file_level_enum_descriptors_raft_2eproto,
     file_level_service_descriptors_raft_2eproto,
@@ -2282,31 +2339,31 @@ void InstallSnapshotResponse::InternalSwap(InstallSnapshotResponse* other) {
 
 // ===================================================================
 
-class UploadFile::_Internal {
+class UploadFileRequest::_Internal {
  public:
 };
 
-UploadFile::UploadFile(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+UploadFileRequest::UploadFileRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase(arena, is_message_owned) {
-  // @@protoc_insertion_point(arena_constructor:vosfs.raft.UploadFile)
+  // @@protoc_insertion_point(arena_constructor:vosfs.raft.UploadFileRequest)
 }
-UploadFile::UploadFile(const UploadFile& from)
+UploadFileRequest::UploadFileRequest(const UploadFileRequest& from)
   : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase() {
-  UploadFile* const _this = this; (void)_this;
+  UploadFileRequest* const _this = this; (void)_this;
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  // @@protoc_insertion_point(copy_constructor:vosfs.raft.UploadFile)
+  // @@protoc_insertion_point(copy_constructor:vosfs.raft.UploadFileRequest)
 }
 
 
 
 
 
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData UploadFile::_class_data_ = {
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData UploadFileRequest::_class_data_ = {
     ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl,
     ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl,
 };
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*UploadFile::GetClassData() const { return &_class_data_; }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*UploadFileRequest::GetClassData() const { return &_class_data_; }
 
 
 
@@ -2314,7 +2371,7 @@ const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*UploadFile::GetClassData() con
 
 
 
-::PROTOBUF_NAMESPACE_ID::Metadata UploadFile::GetMetadata() const {
+::PROTOBUF_NAMESPACE_ID::Metadata UploadFileRequest::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
       file_level_metadata_raft_2eproto[7]);
@@ -2322,31 +2379,31 @@ const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*UploadFile::GetClassData() con
 
 // ===================================================================
 
-class DownloadFile::_Internal {
+class DownloadFileRequest::_Internal {
  public:
 };
 
-DownloadFile::DownloadFile(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+DownloadFileRequest::DownloadFileRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase(arena, is_message_owned) {
-  // @@protoc_insertion_point(arena_constructor:vosfs.raft.DownloadFile)
+  // @@protoc_insertion_point(arena_constructor:vosfs.raft.DownloadFileRequest)
 }
-DownloadFile::DownloadFile(const DownloadFile& from)
+DownloadFileRequest::DownloadFileRequest(const DownloadFileRequest& from)
   : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase() {
-  DownloadFile* const _this = this; (void)_this;
+  DownloadFileRequest* const _this = this; (void)_this;
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  // @@protoc_insertion_point(copy_constructor:vosfs.raft.DownloadFile)
+  // @@protoc_insertion_point(copy_constructor:vosfs.raft.DownloadFileRequest)
 }
 
 
 
 
 
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData DownloadFile::_class_data_ = {
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData DownloadFileRequest::_class_data_ = {
     ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl,
     ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl,
 };
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*DownloadFile::GetClassData() const { return &_class_data_; }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*DownloadFileRequest::GetClassData() const { return &_class_data_; }
 
 
 
@@ -2354,7 +2411,7 @@ const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*DownloadFile::GetClassData() c
 
 
 
-::PROTOBUF_NAMESPACE_ID::Metadata DownloadFile::GetMetadata() const {
+::PROTOBUF_NAMESPACE_ID::Metadata DownloadFileRequest::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
       file_level_metadata_raft_2eproto[8]);
@@ -2362,21 +2419,136 @@ const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*DownloadFile::GetClassData() c
 
 // ===================================================================
 
-class ClientCommand::_Internal {
+class DeleteFileRequest::_Internal {
  public:
-  static const ::vosfs::raft::UploadFile& upload_file(const ClientCommand* msg);
-  static const ::vosfs::raft::DownloadFile& download_file(const ClientCommand* msg);
 };
 
-const ::vosfs::raft::UploadFile&
+DeleteFileRequest::DeleteFileRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase(arena, is_message_owned) {
+  // @@protoc_insertion_point(arena_constructor:vosfs.raft.DeleteFileRequest)
+}
+DeleteFileRequest::DeleteFileRequest(const DeleteFileRequest& from)
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase() {
+  DeleteFileRequest* const _this = this; (void)_this;
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:vosfs.raft.DeleteFileRequest)
+}
+
+
+
+
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData DeleteFileRequest::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl,
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl,
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*DeleteFileRequest::GetClassData() const { return &_class_data_; }
+
+
+
+
+
+
+
+::PROTOBUF_NAMESPACE_ID::Metadata DeleteFileRequest::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
+      file_level_metadata_raft_2eproto[9]);
+}
+
+// ===================================================================
+
+class ListFileRequest::_Internal {
+ public:
+};
+
+ListFileRequest::ListFileRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase(arena, is_message_owned) {
+  // @@protoc_insertion_point(arena_constructor:vosfs.raft.ListFileRequest)
+}
+ListFileRequest::ListFileRequest(const ListFileRequest& from)
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase() {
+  ListFileRequest* const _this = this; (void)_this;
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:vosfs.raft.ListFileRequest)
+}
+
+
+
+
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData ListFileRequest::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl,
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl,
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*ListFileRequest::GetClassData() const { return &_class_data_; }
+
+
+
+
+
+
+
+::PROTOBUF_NAMESPACE_ID::Metadata ListFileRequest::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
+      file_level_metadata_raft_2eproto[10]);
+}
+
+// ===================================================================
+
+class ListDirRequest::_Internal {
+ public:
+};
+
+ListDirRequest::ListDirRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase(arena, is_message_owned) {
+  // @@protoc_insertion_point(arena_constructor:vosfs.raft.ListDirRequest)
+}
+ListDirRequest::ListDirRequest(const ListDirRequest& from)
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase() {
+  ListDirRequest* const _this = this; (void)_this;
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:vosfs.raft.ListDirRequest)
+}
+
+
+
+
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData ListDirRequest::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl,
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl,
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*ListDirRequest::GetClassData() const { return &_class_data_; }
+
+
+
+
+
+
+
+::PROTOBUF_NAMESPACE_ID::Metadata ListDirRequest::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
+      file_level_metadata_raft_2eproto[11]);
+}
+
+// ===================================================================
+
+class ClientCommand::_Internal {
+ public:
+  static const ::vosfs::raft::UploadFileRequest& upload_file(const ClientCommand* msg);
+};
+
+const ::vosfs::raft::UploadFileRequest&
 ClientCommand::_Internal::upload_file(const ClientCommand* msg) {
   return *msg->_impl_.cmd_.upload_file_;
 }
-const ::vosfs::raft::DownloadFile&
-ClientCommand::_Internal::download_file(const ClientCommand* msg) {
-  return *msg->_impl_.cmd_.download_file_;
-}
-void ClientCommand::set_allocated_upload_file(::vosfs::raft::UploadFile* upload_file) {
+void ClientCommand::set_allocated_upload_file(::vosfs::raft::UploadFileRequest* upload_file) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   clear_cmd();
   if (upload_file) {
@@ -2390,21 +2562,6 @@ void ClientCommand::set_allocated_upload_file(::vosfs::raft::UploadFile* upload_
     _impl_.cmd_.upload_file_ = upload_file;
   }
   // @@protoc_insertion_point(field_set_allocated:vosfs.raft.ClientCommand.upload_file)
-}
-void ClientCommand::set_allocated_download_file(::vosfs::raft::DownloadFile* download_file) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  clear_cmd();
-  if (download_file) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-      ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(download_file);
-    if (message_arena != submessage_arena) {
-      download_file = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, download_file, submessage_arena);
-    }
-    set_has_download_file();
-    _impl_.cmd_.download_file_ = download_file;
-  }
-  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.ClientCommand.download_file)
 }
 ClientCommand::ClientCommand(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
@@ -2424,13 +2581,8 @@ ClientCommand::ClientCommand(const ClientCommand& from)
   clear_has_cmd();
   switch (from.cmd_case()) {
     case kUploadFile: {
-      _this->_internal_mutable_upload_file()->::vosfs::raft::UploadFile::MergeFrom(
+      _this->_internal_mutable_upload_file()->::vosfs::raft::UploadFileRequest::MergeFrom(
           from._internal_upload_file());
-      break;
-    }
-    case kDownloadFile: {
-      _this->_internal_mutable_download_file()->::vosfs::raft::DownloadFile::MergeFrom(
-          from._internal_download_file());
       break;
     }
     case CMD_NOT_SET: {
@@ -2481,12 +2633,6 @@ void ClientCommand::clear_cmd() {
       }
       break;
     }
-    case kDownloadFile: {
-      if (GetArenaForAllocation() == nullptr) {
-        delete _impl_.cmd_.download_file_;
-      }
-      break;
-    }
     case CMD_NOT_SET: {
       break;
     }
@@ -2511,18 +2657,10 @@ const char* ClientCommand::_InternalParse(const char* ptr, ::_pbi::ParseContext*
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // .vosfs.raft.UploadFile upload_file = 1;
+      // .vosfs.raft.UploadFileRequest upload_file = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
           ptr = ctx->ParseMessage(_internal_mutable_upload_file(), ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // .vosfs.raft.DownloadFile download_file = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
-          ptr = ctx->ParseMessage(_internal_mutable_download_file(), ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -2556,18 +2694,11 @@ uint8_t* ClientCommand::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .vosfs.raft.UploadFile upload_file = 1;
+  // .vosfs.raft.UploadFileRequest upload_file = 1;
   if (_internal_has_upload_file()) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
       InternalWriteMessage(1, _Internal::upload_file(this),
         _Internal::upload_file(this).GetCachedSize(), target, stream);
-  }
-
-  // .vosfs.raft.DownloadFile download_file = 2;
-  if (_internal_has_download_file()) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(2, _Internal::download_file(this),
-        _Internal::download_file(this).GetCachedSize(), target, stream);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -2587,18 +2718,11 @@ size_t ClientCommand::ByteSizeLong() const {
   (void) cached_has_bits;
 
   switch (cmd_case()) {
-    // .vosfs.raft.UploadFile upload_file = 1;
+    // .vosfs.raft.UploadFileRequest upload_file = 1;
     case kUploadFile: {
       total_size += 1 +
         ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
           *_impl_.cmd_.upload_file_);
-      break;
-    }
-    // .vosfs.raft.DownloadFile download_file = 2;
-    case kDownloadFile: {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-          *_impl_.cmd_.download_file_);
       break;
     }
     case CMD_NOT_SET: {
@@ -2625,13 +2749,8 @@ void ClientCommand::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::
 
   switch (from.cmd_case()) {
     case kUploadFile: {
-      _this->_internal_mutable_upload_file()->::vosfs::raft::UploadFile::MergeFrom(
+      _this->_internal_mutable_upload_file()->::vosfs::raft::UploadFileRequest::MergeFrom(
           from._internal_upload_file());
-      break;
-    }
-    case kDownloadFile: {
-      _this->_internal_mutable_download_file()->::vosfs::raft::DownloadFile::MergeFrom(
-          from._internal_download_file());
       break;
     }
     case CMD_NOT_SET: {
@@ -2662,7 +2781,7 @@ void ClientCommand::InternalSwap(ClientCommand* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata ClientCommand::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
-      file_level_metadata_raft_2eproto[9]);
+      file_level_metadata_raft_2eproto[12]);
 }
 
 // @@protoc_insertion_point(namespace_scope)
@@ -2697,13 +2816,25 @@ template<> PROTOBUF_NOINLINE ::vosfs::raft::InstallSnapshotResponse*
 Arena::CreateMaybeMessage< ::vosfs::raft::InstallSnapshotResponse >(Arena* arena) {
   return Arena::CreateMessageInternal< ::vosfs::raft::InstallSnapshotResponse >(arena);
 }
-template<> PROTOBUF_NOINLINE ::vosfs::raft::UploadFile*
-Arena::CreateMaybeMessage< ::vosfs::raft::UploadFile >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::vosfs::raft::UploadFile >(arena);
+template<> PROTOBUF_NOINLINE ::vosfs::raft::UploadFileRequest*
+Arena::CreateMaybeMessage< ::vosfs::raft::UploadFileRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::vosfs::raft::UploadFileRequest >(arena);
 }
-template<> PROTOBUF_NOINLINE ::vosfs::raft::DownloadFile*
-Arena::CreateMaybeMessage< ::vosfs::raft::DownloadFile >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::vosfs::raft::DownloadFile >(arena);
+template<> PROTOBUF_NOINLINE ::vosfs::raft::DownloadFileRequest*
+Arena::CreateMaybeMessage< ::vosfs::raft::DownloadFileRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::vosfs::raft::DownloadFileRequest >(arena);
+}
+template<> PROTOBUF_NOINLINE ::vosfs::raft::DeleteFileRequest*
+Arena::CreateMaybeMessage< ::vosfs::raft::DeleteFileRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::vosfs::raft::DeleteFileRequest >(arena);
+}
+template<> PROTOBUF_NOINLINE ::vosfs::raft::ListFileRequest*
+Arena::CreateMaybeMessage< ::vosfs::raft::ListFileRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::vosfs::raft::ListFileRequest >(arena);
+}
+template<> PROTOBUF_NOINLINE ::vosfs::raft::ListDirRequest*
+Arena::CreateMaybeMessage< ::vosfs::raft::ListDirRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::vosfs::raft::ListDirRequest >(arena);
 }
 template<> PROTOBUF_NOINLINE ::vosfs::raft::ClientCommand*
 Arena::CreateMaybeMessage< ::vosfs::raft::ClientCommand >(Arena* arena) {

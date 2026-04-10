@@ -57,53 +57,41 @@ auto vosfs::raft::detail::RaftLog::last_log_term() const noexcept -> uint64_t {
     return entries_.back().term();
 }
 
-auto vosfs::raft::detail::RaftLog::get_term(uint64_t index) const -> Result<uint64_t> {
-    if (index > last_included_index_ && index <= last_log_index()) {
-        auto arr_idx = index - last_included_index_ - 1;
-        return entries_[arr_idx].term();
-    }
-
+auto vosfs::raft::detail::RaftLog::get_term(uint64_t index) const -> uint64_t {
+    assert((index > last_included_index_ && index <= last_log_index()) || index == last_included_index_);
     if (index == last_included_index_) {
         return last_included_term_;
     }
-
-    return std::unexpected{make_error(Error::kInvalidLogIndex)};
+    auto arr_idx = index - last_included_index_ - 1;
+    return entries_[arr_idx].term();
 }
 
-auto vosfs::raft::detail::RaftLog::get_entry(uint64_t index) const -> Result<LogEntry> {
-    if (index > last_included_index_ && index <= last_log_index()) {
-        auto arr_idx = index - last_included_index_ - 1;
-        return entries_[arr_idx];
-    }
-
-    return std::unexpected{make_error(Error::kInvalidLogIndex)};
+auto vosfs::raft::detail::RaftLog::get_entry(uint64_t index) const -> LogEntry {
+    assert(index > last_included_index_ && index <= last_log_index());
+    auto arr_idx = index - last_included_index_ - 1;
+    return entries_[arr_idx];
 }
 
 auto vosfs::raft::detail::RaftLog::get_entries(
-    uint64_t index, std::size_t size) const -> Result<std::vector<LogEntry>> {
-    if (index > last_included_index_ && index <= last_log_index()) {
-        std::vector<LogEntry> entries;
-        auto arr_idx = index - last_included_index_ - 1;
+    uint64_t index, std::size_t size) const -> std::vector<LogEntry> {
+    assert(index > last_included_index_ && index <= last_log_index());
 
-        while (size > 0 && arr_idx < entries_.size()) {
-            entries.push_back(entries_[arr_idx++]);
-            --size;
-        }
+    std::vector<LogEntry> entries;
+    auto arr_idx = index - last_included_index_ - 1;
 
-        return entries;
+    while (size > 0 && arr_idx < entries_.size()) {
+        entries.push_back(entries_[arr_idx++]);
+        --size;
     }
 
-    return std::unexpected{make_error(Error::kInvalidLogIndex)};
+    return entries;
 }
 
 auto vosfs::raft::detail::RaftLog::get_entries_span(
-    uint64_t index, std::size_t size) const -> Result<std::span<const LogEntry>> {
-    if (index > last_included_index_ && index <= last_log_index()) {
-        auto arr_idx = index - last_included_index_ - 1;
-        return std::span{entries_.begin() + arr_idx, size};
-    }
-
-    return std::unexpected{make_error(Error::kInvalidLogIndex)};
+    uint64_t index, std::size_t size) const -> std::span<const LogEntry> {
+    assert(index > last_included_index_ && index <= last_log_index());
+    auto arr_idx = index - last_included_index_ - 1;
+    return std::span{entries_.begin() + arr_idx, size};
 }
 
 auto vosfs::raft::detail::RaftLog::append_entry(LogEntry&& entry) -> Result<void> {

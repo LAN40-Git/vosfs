@@ -115,24 +115,11 @@ void vosfs::raft::RaftNode::do_heartbeat() {
             }
 
             auto batch_size = std::min(detail::MAX_ENTRIES_PER_APPEND, last_log_index - next_index + 1);
-            auto ret = logs_.get_entries(next_index, batch_size);
-            if (!ret) {
-                LOG_WARN("{}", ret.error());
-                --next_index;
-                continue;
-            } else {
-                entries = std::move(ret.value());
-            }
+            entries = logs_.get_entries(next_index, batch_size);
         }
 
         auto prev_log_index = next_index - 1;
-        auto ret = logs_.get_term(prev_log_index);
-        if (!ret) {
-            LOG_WARN("{}", ret.error());
-            --next_index;
-            continue;
-        }
-        auto prev_log_term = ret.value();
+        auto prev_log_term = logs_.get_term(prev_log_index);
 
         auto request = detail::MessageFactory::make_append_entries_request(
             current_term,
@@ -172,6 +159,12 @@ void vosfs::raft::RaftNode::become_leader() {
     for (const auto& peer : peers | std::views::values) {
         next_index_[peer.member_id()] = logs_.last_log_index() + 1;
     }
+}
+
+void vosfs::raft::RaftNode::apply_to_state_machine() {
+    auto size = commit_index_ - last_applied_;
+    state_machine_.apply(logs_.get_entries_span(last_applied_ + 1, size));
+    last_applied_ = commit_index_;
 }
 
 auto vosfs::raft::RaftNode::handle_request_vote_request(
@@ -251,11 +244,10 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
     // The previous log entry of the added log entries
     // must exist in the local log entries
     bool log_ok{false};
-    if (prev_log_index <= logs_.last_log_index()) {
-        auto ret = logs_.get_term(prev_log_index);
-        if (ret && ret.value() == prev_log_term) {
-            log_ok = true;
-        }
+    if (prev_log_index <= logs_.last_log_index() &&
+        prev_log_index >= logs_.last_included_index() &&
+        prev_log_term == logs_.get_term(prev_log_index)) {
+        log_ok = true;
     }
 
     if (!log_ok) {
@@ -271,8 +263,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
                 break;
             }
 
-            auto local_term = logs_.get_term(idx);
-            if (!local_term || local_term.value() != entry.term()) {
+            if (logs_.get_term(idx) != entry.term()) {
                 auto ret = logs_.truncate_entries(idx);
                 if (!ret) {
                     LOG_WARN("{}", ret.error());
@@ -294,7 +285,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
 
     if (leader_commit > commit_index_) {
         commit_index_ = std::min(logs_.last_log_index(), leader_commit);
-        // TODO: apply to statemachine and update commit_index
+        apply_to_state_machine();
     }
 
     co_return detail::MessageFactory::make_append_entries_response(
@@ -386,16 +377,15 @@ auto vosfs::raft::RaftNode::handle_append_entries_response(std::string_view resp
     }
 
     match_index_[id] = last_log_index;
-    std::vector<uint64_t> idxs;
+    next_index_[id] = last_log_index + 1;
+    std::vector<uint64_t> idxs{};
     idxs.reserve(transport_.peer_count());
     for (auto idx: match_index_ | std::views::values) {
         idxs.push_back(idx);
     }
     std::ranges::sort(idxs);
     commit_index_ = idxs[idxs.size()/2];
-    // TODO: apply to state machine
-
-    last_applied_ = commit_index_;
+    apply_to_state_machine();
 }
 
 auto vosfs::raft::RaftNode::handle_install_snapshot_response(std::string_view resp_payload) -> kosio::async::Task<void> {

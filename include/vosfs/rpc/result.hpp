@@ -18,6 +18,7 @@ public:
         kMessageTooLarge,
         kMessageParseFailed,
         kMessageSerializeFailed,
+        kCommandNotFound,
     };
 
 public:
@@ -56,6 +57,8 @@ public:
             return "Failed to parse message.";
         case kMessageSerializeFailed:
             return "Failed to serialize message.";
+        case kCommandNotFound:
+            return "Command not found.";
         default:
             return "Unknown rpc result.";
         }

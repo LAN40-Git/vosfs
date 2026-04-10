@@ -52,17 +52,53 @@ message InstallSnapshotResponse {
     uint64 term = 2;
 }
 
-message UploadFile {
+message ChunkInfo {
+    uint32 id = 1;
+    uint64 offset = 2;
+    uint64 size = 3;
+}
+
+message FileInfo {
+    uint64 id = 1;
+    string path = 2;
+    string name = 3;
+    uint64 size = 4;
+    bool is_dir = 5;
+    uint64 parent_id = 6;
+}
+
+message UploadFileRequest {
+    FileInfo file_info = 1;
+    repeated ChunkInfo chunk_infos = 2;
+    string checksum = 3; // MD5
+}
+
+message DownloadFileRequest {
 
 }
 
-message DownloadFile {
+message DeleteFileRequest {
+
+}
+
+message CreateFileRequest {
+
+}
+
+message CreateDirRequest {
+
+}
+
+message ListFileRequest {
+
+}
+
+message ListDirRequest {
 
 }
 
 message ClientCommand {
     oneof cmd {
-        UploadFile upload_file = 1;
-        DownloadFile download_file = 2;
+        UploadFileRequest upload_file = 1;
     }
 }

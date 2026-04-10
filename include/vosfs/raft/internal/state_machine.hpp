@@ -18,6 +18,8 @@ public:
     void apply(std::span<const LogEntry> entries);
 
 private:
+
+private:
     std::unordered_map<uint64_t, ResponseContext> pending_map_;
 };
 } // namespace vosfs::raft::detail

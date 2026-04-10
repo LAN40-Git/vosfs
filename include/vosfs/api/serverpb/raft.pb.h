@@ -56,15 +56,24 @@ extern AppendEntriesResponseDefaultTypeInternal _AppendEntriesResponse_default_i
 class ClientCommand;
 struct ClientCommandDefaultTypeInternal;
 extern ClientCommandDefaultTypeInternal _ClientCommand_default_instance_;
-class DownloadFile;
-struct DownloadFileDefaultTypeInternal;
-extern DownloadFileDefaultTypeInternal _DownloadFile_default_instance_;
+class DeleteFileRequest;
+struct DeleteFileRequestDefaultTypeInternal;
+extern DeleteFileRequestDefaultTypeInternal _DeleteFileRequest_default_instance_;
+class DownloadFileRequest;
+struct DownloadFileRequestDefaultTypeInternal;
+extern DownloadFileRequestDefaultTypeInternal _DownloadFileRequest_default_instance_;
 class InstallSnapshotRequest;
 struct InstallSnapshotRequestDefaultTypeInternal;
 extern InstallSnapshotRequestDefaultTypeInternal _InstallSnapshotRequest_default_instance_;
 class InstallSnapshotResponse;
 struct InstallSnapshotResponseDefaultTypeInternal;
 extern InstallSnapshotResponseDefaultTypeInternal _InstallSnapshotResponse_default_instance_;
+class ListDirRequest;
+struct ListDirRequestDefaultTypeInternal;
+extern ListDirRequestDefaultTypeInternal _ListDirRequest_default_instance_;
+class ListFileRequest;
+struct ListFileRequestDefaultTypeInternal;
+extern ListFileRequestDefaultTypeInternal _ListFileRequest_default_instance_;
 class LogEntry;
 struct LogEntryDefaultTypeInternal;
 extern LogEntryDefaultTypeInternal _LogEntry_default_instance_;
@@ -74,22 +83,25 @@ extern RequestVoteRequestDefaultTypeInternal _RequestVoteRequest_default_instanc
 class RequestVoteResponse;
 struct RequestVoteResponseDefaultTypeInternal;
 extern RequestVoteResponseDefaultTypeInternal _RequestVoteResponse_default_instance_;
-class UploadFile;
-struct UploadFileDefaultTypeInternal;
-extern UploadFileDefaultTypeInternal _UploadFile_default_instance_;
+class UploadFileRequest;
+struct UploadFileRequestDefaultTypeInternal;
+extern UploadFileRequestDefaultTypeInternal _UploadFileRequest_default_instance_;
 }  // namespace raft
 }  // namespace vosfs
 PROTOBUF_NAMESPACE_OPEN
 template<> ::vosfs::raft::AppendEntriesRequest* Arena::CreateMaybeMessage<::vosfs::raft::AppendEntriesRequest>(Arena*);
 template<> ::vosfs::raft::AppendEntriesResponse* Arena::CreateMaybeMessage<::vosfs::raft::AppendEntriesResponse>(Arena*);
 template<> ::vosfs::raft::ClientCommand* Arena::CreateMaybeMessage<::vosfs::raft::ClientCommand>(Arena*);
-template<> ::vosfs::raft::DownloadFile* Arena::CreateMaybeMessage<::vosfs::raft::DownloadFile>(Arena*);
+template<> ::vosfs::raft::DeleteFileRequest* Arena::CreateMaybeMessage<::vosfs::raft::DeleteFileRequest>(Arena*);
+template<> ::vosfs::raft::DownloadFileRequest* Arena::CreateMaybeMessage<::vosfs::raft::DownloadFileRequest>(Arena*);
 template<> ::vosfs::raft::InstallSnapshotRequest* Arena::CreateMaybeMessage<::vosfs::raft::InstallSnapshotRequest>(Arena*);
 template<> ::vosfs::raft::InstallSnapshotResponse* Arena::CreateMaybeMessage<::vosfs::raft::InstallSnapshotResponse>(Arena*);
+template<> ::vosfs::raft::ListDirRequest* Arena::CreateMaybeMessage<::vosfs::raft::ListDirRequest>(Arena*);
+template<> ::vosfs::raft::ListFileRequest* Arena::CreateMaybeMessage<::vosfs::raft::ListFileRequest>(Arena*);
 template<> ::vosfs::raft::LogEntry* Arena::CreateMaybeMessage<::vosfs::raft::LogEntry>(Arena*);
 template<> ::vosfs::raft::RequestVoteRequest* Arena::CreateMaybeMessage<::vosfs::raft::RequestVoteRequest>(Arena*);
 template<> ::vosfs::raft::RequestVoteResponse* Arena::CreateMaybeMessage<::vosfs::raft::RequestVoteResponse>(Arena*);
-template<> ::vosfs::raft::UploadFile* Arena::CreateMaybeMessage<::vosfs::raft::UploadFile>(Arena*);
+template<> ::vosfs::raft::UploadFileRequest* Arena::CreateMaybeMessage<::vosfs::raft::UploadFileRequest>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace vosfs {
 namespace raft {
@@ -1409,23 +1421,23 @@ class InstallSnapshotResponse final :
 };
 // -------------------------------------------------------------------
 
-class UploadFile final :
-    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:vosfs.raft.UploadFile) */ {
+class UploadFileRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:vosfs.raft.UploadFileRequest) */ {
  public:
-  inline UploadFile() : UploadFile(nullptr) {}
-  explicit PROTOBUF_CONSTEXPR UploadFile(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline UploadFileRequest() : UploadFileRequest(nullptr) {}
+  explicit PROTOBUF_CONSTEXPR UploadFileRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  UploadFile(const UploadFile& from);
-  UploadFile(UploadFile&& from) noexcept
-    : UploadFile() {
+  UploadFileRequest(const UploadFileRequest& from);
+  UploadFileRequest(UploadFileRequest&& from) noexcept
+    : UploadFileRequest() {
     *this = ::std::move(from);
   }
 
-  inline UploadFile& operator=(const UploadFile& from) {
+  inline UploadFileRequest& operator=(const UploadFileRequest& from) {
     CopyFrom(from);
     return *this;
   }
-  inline UploadFile& operator=(UploadFile&& from) noexcept {
+  inline UploadFileRequest& operator=(UploadFileRequest&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -1448,20 +1460,20 @@ class UploadFile final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const UploadFile& default_instance() {
+  static const UploadFileRequest& default_instance() {
     return *internal_default_instance();
   }
-  static inline const UploadFile* internal_default_instance() {
-    return reinterpret_cast<const UploadFile*>(
-               &_UploadFile_default_instance_);
+  static inline const UploadFileRequest* internal_default_instance() {
+    return reinterpret_cast<const UploadFileRequest*>(
+               &_UploadFileRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     7;
 
-  friend void swap(UploadFile& a, UploadFile& b) {
+  friend void swap(UploadFileRequest& a, UploadFileRequest& b) {
     a.Swap(&b);
   }
-  inline void Swap(UploadFile* other) {
+  inline void Swap(UploadFileRequest* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -1474,7 +1486,7 @@ class UploadFile final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(UploadFile* other) {
+  void UnsafeArenaSwap(UploadFileRequest* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -1482,15 +1494,15 @@ class UploadFile final :
 
   // implements Message ----------------------------------------------
 
-  UploadFile* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<UploadFile>(arena);
+  UploadFileRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<UploadFileRequest>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
-  inline void CopyFrom(const UploadFile& from) {
+  inline void CopyFrom(const UploadFileRequest& from) {
     ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
   }
   using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
-  void MergeFrom(const UploadFile& from) {
+  void MergeFrom(const UploadFileRequest& from) {
     ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
   }
   public:
@@ -1498,10 +1510,10 @@ class UploadFile final :
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "vosfs.raft.UploadFile";
+    return "vosfs.raft.UploadFileRequest";
   }
   protected:
-  explicit UploadFile(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit UploadFileRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -1514,7 +1526,7 @@ class UploadFile final :
 
   // accessors -------------------------------------------------------
 
-  // @@protoc_insertion_point(class_scope:vosfs.raft.UploadFile)
+  // @@protoc_insertion_point(class_scope:vosfs.raft.UploadFileRequest)
  private:
   class _Internal;
 
@@ -1527,23 +1539,23 @@ class UploadFile final :
 };
 // -------------------------------------------------------------------
 
-class DownloadFile final :
-    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:vosfs.raft.DownloadFile) */ {
+class DownloadFileRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:vosfs.raft.DownloadFileRequest) */ {
  public:
-  inline DownloadFile() : DownloadFile(nullptr) {}
-  explicit PROTOBUF_CONSTEXPR DownloadFile(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline DownloadFileRequest() : DownloadFileRequest(nullptr) {}
+  explicit PROTOBUF_CONSTEXPR DownloadFileRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  DownloadFile(const DownloadFile& from);
-  DownloadFile(DownloadFile&& from) noexcept
-    : DownloadFile() {
+  DownloadFileRequest(const DownloadFileRequest& from);
+  DownloadFileRequest(DownloadFileRequest&& from) noexcept
+    : DownloadFileRequest() {
     *this = ::std::move(from);
   }
 
-  inline DownloadFile& operator=(const DownloadFile& from) {
+  inline DownloadFileRequest& operator=(const DownloadFileRequest& from) {
     CopyFrom(from);
     return *this;
   }
-  inline DownloadFile& operator=(DownloadFile&& from) noexcept {
+  inline DownloadFileRequest& operator=(DownloadFileRequest&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -1566,20 +1578,20 @@ class DownloadFile final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const DownloadFile& default_instance() {
+  static const DownloadFileRequest& default_instance() {
     return *internal_default_instance();
   }
-  static inline const DownloadFile* internal_default_instance() {
-    return reinterpret_cast<const DownloadFile*>(
-               &_DownloadFile_default_instance_);
+  static inline const DownloadFileRequest* internal_default_instance() {
+    return reinterpret_cast<const DownloadFileRequest*>(
+               &_DownloadFileRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     8;
 
-  friend void swap(DownloadFile& a, DownloadFile& b) {
+  friend void swap(DownloadFileRequest& a, DownloadFileRequest& b) {
     a.Swap(&b);
   }
-  inline void Swap(DownloadFile* other) {
+  inline void Swap(DownloadFileRequest* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -1592,7 +1604,7 @@ class DownloadFile final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(DownloadFile* other) {
+  void UnsafeArenaSwap(DownloadFileRequest* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -1600,15 +1612,15 @@ class DownloadFile final :
 
   // implements Message ----------------------------------------------
 
-  DownloadFile* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<DownloadFile>(arena);
+  DownloadFileRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<DownloadFileRequest>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
-  inline void CopyFrom(const DownloadFile& from) {
+  inline void CopyFrom(const DownloadFileRequest& from) {
     ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
   }
   using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
-  void MergeFrom(const DownloadFile& from) {
+  void MergeFrom(const DownloadFileRequest& from) {
     ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
   }
   public:
@@ -1616,10 +1628,10 @@ class DownloadFile final :
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "vosfs.raft.DownloadFile";
+    return "vosfs.raft.DownloadFileRequest";
   }
   protected:
-  explicit DownloadFile(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit DownloadFileRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -1632,7 +1644,361 @@ class DownloadFile final :
 
   // accessors -------------------------------------------------------
 
-  // @@protoc_insertion_point(class_scope:vosfs.raft.DownloadFile)
+  // @@protoc_insertion_point(class_scope:vosfs.raft.DownloadFileRequest)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+  };
+  friend struct ::TableStruct_raft_2eproto;
+};
+// -------------------------------------------------------------------
+
+class DeleteFileRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:vosfs.raft.DeleteFileRequest) */ {
+ public:
+  inline DeleteFileRequest() : DeleteFileRequest(nullptr) {}
+  explicit PROTOBUF_CONSTEXPR DeleteFileRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  DeleteFileRequest(const DeleteFileRequest& from);
+  DeleteFileRequest(DeleteFileRequest&& from) noexcept
+    : DeleteFileRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline DeleteFileRequest& operator=(const DeleteFileRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline DeleteFileRequest& operator=(DeleteFileRequest&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const DeleteFileRequest& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const DeleteFileRequest* internal_default_instance() {
+    return reinterpret_cast<const DeleteFileRequest*>(
+               &_DeleteFileRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    9;
+
+  friend void swap(DeleteFileRequest& a, DeleteFileRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(DeleteFileRequest* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(DeleteFileRequest* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  DeleteFileRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<DeleteFileRequest>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
+  inline void CopyFrom(const DeleteFileRequest& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
+  void MergeFrom(const DeleteFileRequest& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
+  }
+  public:
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "vosfs.raft.DeleteFileRequest";
+  }
+  protected:
+  explicit DeleteFileRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:vosfs.raft.DeleteFileRequest)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+  };
+  friend struct ::TableStruct_raft_2eproto;
+};
+// -------------------------------------------------------------------
+
+class ListFileRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:vosfs.raft.ListFileRequest) */ {
+ public:
+  inline ListFileRequest() : ListFileRequest(nullptr) {}
+  explicit PROTOBUF_CONSTEXPR ListFileRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  ListFileRequest(const ListFileRequest& from);
+  ListFileRequest(ListFileRequest&& from) noexcept
+    : ListFileRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline ListFileRequest& operator=(const ListFileRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline ListFileRequest& operator=(ListFileRequest&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const ListFileRequest& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const ListFileRequest* internal_default_instance() {
+    return reinterpret_cast<const ListFileRequest*>(
+               &_ListFileRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    10;
+
+  friend void swap(ListFileRequest& a, ListFileRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(ListFileRequest* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(ListFileRequest* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  ListFileRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<ListFileRequest>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
+  inline void CopyFrom(const ListFileRequest& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
+  void MergeFrom(const ListFileRequest& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
+  }
+  public:
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "vosfs.raft.ListFileRequest";
+  }
+  protected:
+  explicit ListFileRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:vosfs.raft.ListFileRequest)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+  };
+  friend struct ::TableStruct_raft_2eproto;
+};
+// -------------------------------------------------------------------
+
+class ListDirRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:vosfs.raft.ListDirRequest) */ {
+ public:
+  inline ListDirRequest() : ListDirRequest(nullptr) {}
+  explicit PROTOBUF_CONSTEXPR ListDirRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  ListDirRequest(const ListDirRequest& from);
+  ListDirRequest(ListDirRequest&& from) noexcept
+    : ListDirRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline ListDirRequest& operator=(const ListDirRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline ListDirRequest& operator=(ListDirRequest&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const ListDirRequest& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const ListDirRequest* internal_default_instance() {
+    return reinterpret_cast<const ListDirRequest*>(
+               &_ListDirRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    11;
+
+  friend void swap(ListDirRequest& a, ListDirRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(ListDirRequest* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(ListDirRequest* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  ListDirRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<ListDirRequest>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
+  inline void CopyFrom(const ListDirRequest& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
+  void MergeFrom(const ListDirRequest& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
+  }
+  public:
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "vosfs.raft.ListDirRequest";
+  }
+  protected:
+  explicit ListDirRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:vosfs.raft.ListDirRequest)
  private:
   class _Internal;
 
@@ -1690,7 +2056,6 @@ class ClientCommand final :
   }
   enum CmdCase {
     kUploadFile = 1,
-    kDownloadFile = 2,
     CMD_NOT_SET = 0,
   };
 
@@ -1699,7 +2064,7 @@ class ClientCommand final :
                &_ClientCommand_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    9;
+    12;
 
   friend void swap(ClientCommand& a, ClientCommand& b) {
     a.Swap(&b);
@@ -1773,43 +2138,24 @@ class ClientCommand final :
 
   enum : int {
     kUploadFileFieldNumber = 1,
-    kDownloadFileFieldNumber = 2,
   };
-  // .vosfs.raft.UploadFile upload_file = 1;
+  // .vosfs.raft.UploadFileRequest upload_file = 1;
   bool has_upload_file() const;
   private:
   bool _internal_has_upload_file() const;
   public:
   void clear_upload_file();
-  const ::vosfs::raft::UploadFile& upload_file() const;
-  PROTOBUF_NODISCARD ::vosfs::raft::UploadFile* release_upload_file();
-  ::vosfs::raft::UploadFile* mutable_upload_file();
-  void set_allocated_upload_file(::vosfs::raft::UploadFile* upload_file);
+  const ::vosfs::raft::UploadFileRequest& upload_file() const;
+  PROTOBUF_NODISCARD ::vosfs::raft::UploadFileRequest* release_upload_file();
+  ::vosfs::raft::UploadFileRequest* mutable_upload_file();
+  void set_allocated_upload_file(::vosfs::raft::UploadFileRequest* upload_file);
   private:
-  const ::vosfs::raft::UploadFile& _internal_upload_file() const;
-  ::vosfs::raft::UploadFile* _internal_mutable_upload_file();
+  const ::vosfs::raft::UploadFileRequest& _internal_upload_file() const;
+  ::vosfs::raft::UploadFileRequest* _internal_mutable_upload_file();
   public:
   void unsafe_arena_set_allocated_upload_file(
-      ::vosfs::raft::UploadFile* upload_file);
-  ::vosfs::raft::UploadFile* unsafe_arena_release_upload_file();
-
-  // .vosfs.raft.DownloadFile download_file = 2;
-  bool has_download_file() const;
-  private:
-  bool _internal_has_download_file() const;
-  public:
-  void clear_download_file();
-  const ::vosfs::raft::DownloadFile& download_file() const;
-  PROTOBUF_NODISCARD ::vosfs::raft::DownloadFile* release_download_file();
-  ::vosfs::raft::DownloadFile* mutable_download_file();
-  void set_allocated_download_file(::vosfs::raft::DownloadFile* download_file);
-  private:
-  const ::vosfs::raft::DownloadFile& _internal_download_file() const;
-  ::vosfs::raft::DownloadFile* _internal_mutable_download_file();
-  public:
-  void unsafe_arena_set_allocated_download_file(
-      ::vosfs::raft::DownloadFile* download_file);
-  ::vosfs::raft::DownloadFile* unsafe_arena_release_download_file();
+      ::vosfs::raft::UploadFileRequest* upload_file);
+  ::vosfs::raft::UploadFileRequest* unsafe_arena_release_upload_file();
 
   void clear_cmd();
   CmdCase cmd_case() const;
@@ -1817,7 +2163,6 @@ class ClientCommand final :
  private:
   class _Internal;
   void set_has_upload_file();
-  void set_has_download_file();
 
   inline bool has_cmd() const;
   inline void clear_has_cmd();
@@ -1829,8 +2174,7 @@ class ClientCommand final :
     union CmdUnion {
       constexpr CmdUnion() : _constinit_{} {}
         ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized _constinit_;
-      ::vosfs::raft::UploadFile* upload_file_;
-      ::vosfs::raft::DownloadFile* download_file_;
+      ::vosfs::raft::UploadFileRequest* upload_file_;
     } cmd_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     uint32_t _oneof_case_[1];
@@ -2564,17 +2908,29 @@ inline void InstallSnapshotResponse::set_term(uint64_t value) {
 
 // -------------------------------------------------------------------
 
-// UploadFile
+// UploadFileRequest
 
 // -------------------------------------------------------------------
 
-// DownloadFile
+// DownloadFileRequest
+
+// -------------------------------------------------------------------
+
+// DeleteFileRequest
+
+// -------------------------------------------------------------------
+
+// ListFileRequest
+
+// -------------------------------------------------------------------
+
+// ListDirRequest
 
 // -------------------------------------------------------------------
 
 // ClientCommand
 
-// .vosfs.raft.UploadFile upload_file = 1;
+// .vosfs.raft.UploadFileRequest upload_file = 1;
 inline bool ClientCommand::_internal_has_upload_file() const {
   return cmd_case() == kUploadFile;
 }
@@ -2592,11 +2948,11 @@ inline void ClientCommand::clear_upload_file() {
     clear_has_cmd();
   }
 }
-inline ::vosfs::raft::UploadFile* ClientCommand::release_upload_file() {
+inline ::vosfs::raft::UploadFileRequest* ClientCommand::release_upload_file() {
   // @@protoc_insertion_point(field_release:vosfs.raft.ClientCommand.upload_file)
   if (_internal_has_upload_file()) {
     clear_has_cmd();
-    ::vosfs::raft::UploadFile* temp = _impl_.cmd_.upload_file_;
+    ::vosfs::raft::UploadFileRequest* temp = _impl_.cmd_.upload_file_;
     if (GetArenaForAllocation() != nullptr) {
       temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
     }
@@ -2606,27 +2962,27 @@ inline ::vosfs::raft::UploadFile* ClientCommand::release_upload_file() {
     return nullptr;
   }
 }
-inline const ::vosfs::raft::UploadFile& ClientCommand::_internal_upload_file() const {
+inline const ::vosfs::raft::UploadFileRequest& ClientCommand::_internal_upload_file() const {
   return _internal_has_upload_file()
       ? *_impl_.cmd_.upload_file_
-      : reinterpret_cast< ::vosfs::raft::UploadFile&>(::vosfs::raft::_UploadFile_default_instance_);
+      : reinterpret_cast< ::vosfs::raft::UploadFileRequest&>(::vosfs::raft::_UploadFileRequest_default_instance_);
 }
-inline const ::vosfs::raft::UploadFile& ClientCommand::upload_file() const {
+inline const ::vosfs::raft::UploadFileRequest& ClientCommand::upload_file() const {
   // @@protoc_insertion_point(field_get:vosfs.raft.ClientCommand.upload_file)
   return _internal_upload_file();
 }
-inline ::vosfs::raft::UploadFile* ClientCommand::unsafe_arena_release_upload_file() {
+inline ::vosfs::raft::UploadFileRequest* ClientCommand::unsafe_arena_release_upload_file() {
   // @@protoc_insertion_point(field_unsafe_arena_release:vosfs.raft.ClientCommand.upload_file)
   if (_internal_has_upload_file()) {
     clear_has_cmd();
-    ::vosfs::raft::UploadFile* temp = _impl_.cmd_.upload_file_;
+    ::vosfs::raft::UploadFileRequest* temp = _impl_.cmd_.upload_file_;
     _impl_.cmd_.upload_file_ = nullptr;
     return temp;
   } else {
     return nullptr;
   }
 }
-inline void ClientCommand::unsafe_arena_set_allocated_upload_file(::vosfs::raft::UploadFile* upload_file) {
+inline void ClientCommand::unsafe_arena_set_allocated_upload_file(::vosfs::raft::UploadFileRequest* upload_file) {
   clear_cmd();
   if (upload_file) {
     set_has_upload_file();
@@ -2634,91 +2990,17 @@ inline void ClientCommand::unsafe_arena_set_allocated_upload_file(::vosfs::raft:
   }
   // @@protoc_insertion_point(field_unsafe_arena_set_allocated:vosfs.raft.ClientCommand.upload_file)
 }
-inline ::vosfs::raft::UploadFile* ClientCommand::_internal_mutable_upload_file() {
+inline ::vosfs::raft::UploadFileRequest* ClientCommand::_internal_mutable_upload_file() {
   if (!_internal_has_upload_file()) {
     clear_cmd();
     set_has_upload_file();
-    _impl_.cmd_.upload_file_ = CreateMaybeMessage< ::vosfs::raft::UploadFile >(GetArenaForAllocation());
+    _impl_.cmd_.upload_file_ = CreateMaybeMessage< ::vosfs::raft::UploadFileRequest >(GetArenaForAllocation());
   }
   return _impl_.cmd_.upload_file_;
 }
-inline ::vosfs::raft::UploadFile* ClientCommand::mutable_upload_file() {
-  ::vosfs::raft::UploadFile* _msg = _internal_mutable_upload_file();
+inline ::vosfs::raft::UploadFileRequest* ClientCommand::mutable_upload_file() {
+  ::vosfs::raft::UploadFileRequest* _msg = _internal_mutable_upload_file();
   // @@protoc_insertion_point(field_mutable:vosfs.raft.ClientCommand.upload_file)
-  return _msg;
-}
-
-// .vosfs.raft.DownloadFile download_file = 2;
-inline bool ClientCommand::_internal_has_download_file() const {
-  return cmd_case() == kDownloadFile;
-}
-inline bool ClientCommand::has_download_file() const {
-  return _internal_has_download_file();
-}
-inline void ClientCommand::set_has_download_file() {
-  _impl_._oneof_case_[0] = kDownloadFile;
-}
-inline void ClientCommand::clear_download_file() {
-  if (_internal_has_download_file()) {
-    if (GetArenaForAllocation() == nullptr) {
-      delete _impl_.cmd_.download_file_;
-    }
-    clear_has_cmd();
-  }
-}
-inline ::vosfs::raft::DownloadFile* ClientCommand::release_download_file() {
-  // @@protoc_insertion_point(field_release:vosfs.raft.ClientCommand.download_file)
-  if (_internal_has_download_file()) {
-    clear_has_cmd();
-    ::vosfs::raft::DownloadFile* temp = _impl_.cmd_.download_file_;
-    if (GetArenaForAllocation() != nullptr) {
-      temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-    }
-    _impl_.cmd_.download_file_ = nullptr;
-    return temp;
-  } else {
-    return nullptr;
-  }
-}
-inline const ::vosfs::raft::DownloadFile& ClientCommand::_internal_download_file() const {
-  return _internal_has_download_file()
-      ? *_impl_.cmd_.download_file_
-      : reinterpret_cast< ::vosfs::raft::DownloadFile&>(::vosfs::raft::_DownloadFile_default_instance_);
-}
-inline const ::vosfs::raft::DownloadFile& ClientCommand::download_file() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.ClientCommand.download_file)
-  return _internal_download_file();
-}
-inline ::vosfs::raft::DownloadFile* ClientCommand::unsafe_arena_release_download_file() {
-  // @@protoc_insertion_point(field_unsafe_arena_release:vosfs.raft.ClientCommand.download_file)
-  if (_internal_has_download_file()) {
-    clear_has_cmd();
-    ::vosfs::raft::DownloadFile* temp = _impl_.cmd_.download_file_;
-    _impl_.cmd_.download_file_ = nullptr;
-    return temp;
-  } else {
-    return nullptr;
-  }
-}
-inline void ClientCommand::unsafe_arena_set_allocated_download_file(::vosfs::raft::DownloadFile* download_file) {
-  clear_cmd();
-  if (download_file) {
-    set_has_download_file();
-    _impl_.cmd_.download_file_ = download_file;
-  }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:vosfs.raft.ClientCommand.download_file)
-}
-inline ::vosfs::raft::DownloadFile* ClientCommand::_internal_mutable_download_file() {
-  if (!_internal_has_download_file()) {
-    clear_cmd();
-    set_has_download_file();
-    _impl_.cmd_.download_file_ = CreateMaybeMessage< ::vosfs::raft::DownloadFile >(GetArenaForAllocation());
-  }
-  return _impl_.cmd_.download_file_;
-}
-inline ::vosfs::raft::DownloadFile* ClientCommand::mutable_download_file() {
-  ::vosfs::raft::DownloadFile* _msg = _internal_mutable_download_file();
-  // @@protoc_insertion_point(field_mutable:vosfs.raft.ClientCommand.download_file)
   return _msg;
 }
 
@@ -2734,6 +3016,12 @@ inline ClientCommand::CmdCase ClientCommand::cmd_case() const {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

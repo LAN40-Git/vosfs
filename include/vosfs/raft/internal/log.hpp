@@ -28,13 +28,13 @@ public:
 
     [[nodiscard]] auto last_log_term() const noexcept -> uint64_t;
 
-    [[nodiscard]] auto get_term(uint64_t index) const -> Result<uint64_t>;
+    [[nodiscard]] auto get_term(uint64_t index) const -> uint64_t;
 
-    [[nodiscard]] auto get_entry(uint64_t index) const -> Result<LogEntry>;
+    [[nodiscard]] auto get_entry(uint64_t index) const -> LogEntry;
 
-    [[nodiscard]] auto get_entries(uint64_t index, std::size_t size) const -> Result<std::vector<LogEntry>>;
+    [[nodiscard]] auto get_entries(uint64_t index, std::size_t size) const -> std::vector<LogEntry>;
 
-    [[nodiscard]] auto get_entries_span(uint64_t index, std::size_t size) const -> Result<std::span<const LogEntry>>;
+    [[nodiscard]] auto get_entries_span(uint64_t index, std::size_t size) const -> std::span<const LogEntry>;
 
     [[nodiscard]] auto append_entry(LogEntry&& entry) -> Result<void>;
 
