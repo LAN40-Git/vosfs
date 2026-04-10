@@ -23,6 +23,7 @@
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/arena.h>
 #include <google/protobuf/arenastring.h>
+#include <google/protobuf/generated_message_bases.h>
 #include <google/protobuf/generated_message_util.h>
 #include <google/protobuf/metadata_lite.h>
 #include <google/protobuf/generated_message_reflection.h>
@@ -52,6 +53,12 @@ extern AppendEntriesRequestDefaultTypeInternal _AppendEntriesRequest_default_ins
 class AppendEntriesResponse;
 struct AppendEntriesResponseDefaultTypeInternal;
 extern AppendEntriesResponseDefaultTypeInternal _AppendEntriesResponse_default_instance_;
+class ClientCommand;
+struct ClientCommandDefaultTypeInternal;
+extern ClientCommandDefaultTypeInternal _ClientCommand_default_instance_;
+class DownloadFile;
+struct DownloadFileDefaultTypeInternal;
+extern DownloadFileDefaultTypeInternal _DownloadFile_default_instance_;
 class InstallSnapshotRequest;
 struct InstallSnapshotRequestDefaultTypeInternal;
 extern InstallSnapshotRequestDefaultTypeInternal _InstallSnapshotRequest_default_instance_;
@@ -67,16 +74,22 @@ extern RequestVoteRequestDefaultTypeInternal _RequestVoteRequest_default_instanc
 class RequestVoteResponse;
 struct RequestVoteResponseDefaultTypeInternal;
 extern RequestVoteResponseDefaultTypeInternal _RequestVoteResponse_default_instance_;
+class UploadFile;
+struct UploadFileDefaultTypeInternal;
+extern UploadFileDefaultTypeInternal _UploadFile_default_instance_;
 }  // namespace raft
 }  // namespace vosfs
 PROTOBUF_NAMESPACE_OPEN
 template<> ::vosfs::raft::AppendEntriesRequest* Arena::CreateMaybeMessage<::vosfs::raft::AppendEntriesRequest>(Arena*);
 template<> ::vosfs::raft::AppendEntriesResponse* Arena::CreateMaybeMessage<::vosfs::raft::AppendEntriesResponse>(Arena*);
+template<> ::vosfs::raft::ClientCommand* Arena::CreateMaybeMessage<::vosfs::raft::ClientCommand>(Arena*);
+template<> ::vosfs::raft::DownloadFile* Arena::CreateMaybeMessage<::vosfs::raft::DownloadFile>(Arena*);
 template<> ::vosfs::raft::InstallSnapshotRequest* Arena::CreateMaybeMessage<::vosfs::raft::InstallSnapshotRequest>(Arena*);
 template<> ::vosfs::raft::InstallSnapshotResponse* Arena::CreateMaybeMessage<::vosfs::raft::InstallSnapshotResponse>(Arena*);
 template<> ::vosfs::raft::LogEntry* Arena::CreateMaybeMessage<::vosfs::raft::LogEntry>(Arena*);
 template<> ::vosfs::raft::RequestVoteRequest* Arena::CreateMaybeMessage<::vosfs::raft::RequestVoteRequest>(Arena*);
 template<> ::vosfs::raft::RequestVoteResponse* Arena::CreateMaybeMessage<::vosfs::raft::RequestVoteResponse>(Arena*);
+template<> ::vosfs::raft::UploadFile* Arena::CreateMaybeMessage<::vosfs::raft::UploadFile>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace vosfs {
 namespace raft {
@@ -385,10 +398,20 @@ class RequestVoteResponse final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kTermFieldNumber = 1,
-    kVoteGrantedFieldNumber = 2,
+    kIdFieldNumber = 1,
+    kTermFieldNumber = 2,
+    kVoteGrantedFieldNumber = 3,
   };
-  // uint64 term = 1;
+  // uint64 id = 1;
+  void clear_id();
+  uint64_t id() const;
+  void set_id(uint64_t value);
+  private:
+  uint64_t _internal_id() const;
+  void _internal_set_id(uint64_t value);
+  public:
+
+  // uint64 term = 2;
   void clear_term();
   uint64_t term() const;
   void set_term(uint64_t value);
@@ -397,7 +420,7 @@ class RequestVoteResponse final :
   void _internal_set_term(uint64_t value);
   public:
 
-  // bool vote_granted = 2;
+  // bool vote_granted = 3;
   void clear_vote_granted();
   bool vote_granted() const;
   void set_vote_granted(bool value);
@@ -414,6 +437,7 @@ class RequestVoteResponse final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
+    uint64_t id_;
     uint64_t term_;
     bool vote_granted_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -931,10 +955,22 @@ class AppendEntriesResponse final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kTermFieldNumber = 1,
-    kSuccessFieldNumber = 2,
+    kIdFieldNumber = 1,
+    kTermFieldNumber = 2,
+    kLastLogIndexFieldNumber = 4,
+    kConflictIndexFieldNumber = 5,
+    kSuccessFieldNumber = 3,
   };
-  // uint64 term = 1;
+  // uint64 id = 1;
+  void clear_id();
+  uint64_t id() const;
+  void set_id(uint64_t value);
+  private:
+  uint64_t _internal_id() const;
+  void _internal_set_id(uint64_t value);
+  public:
+
+  // uint64 term = 2;
   void clear_term();
   uint64_t term() const;
   void set_term(uint64_t value);
@@ -943,7 +979,29 @@ class AppendEntriesResponse final :
   void _internal_set_term(uint64_t value);
   public:
 
-  // bool success = 2;
+  // uint64 last_log_index = 4;
+  void clear_last_log_index();
+  uint64_t last_log_index() const;
+  void set_last_log_index(uint64_t value);
+  private:
+  uint64_t _internal_last_log_index() const;
+  void _internal_set_last_log_index(uint64_t value);
+  public:
+
+  // optional uint64 conflict_index = 5;
+  bool has_conflict_index() const;
+  private:
+  bool _internal_has_conflict_index() const;
+  public:
+  void clear_conflict_index();
+  uint64_t conflict_index() const;
+  void set_conflict_index(uint64_t value);
+  private:
+  uint64_t _internal_conflict_index() const;
+  void _internal_set_conflict_index(uint64_t value);
+  public:
+
+  // bool success = 3;
   void clear_success();
   bool success() const;
   void set_success(bool value);
@@ -960,9 +1018,13 @@ class AppendEntriesResponse final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    uint64_t term_;
-    bool success_;
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    uint64_t id_;
+    uint64_t term_;
+    uint64_t last_log_index_;
+    uint64_t conflict_index_;
+    bool success_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_raft_2eproto;
@@ -1309,9 +1371,19 @@ class InstallSnapshotResponse final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kTermFieldNumber = 1,
+    kIdFieldNumber = 1,
+    kTermFieldNumber = 2,
   };
-  // uint64 term = 1;
+  // uint64 id = 1;
+  void clear_id();
+  uint64_t id() const;
+  void set_id(uint64_t value);
+  private:
+  uint64_t _internal_id() const;
+  void _internal_set_id(uint64_t value);
+  public:
+
+  // uint64 term = 2;
   void clear_term();
   uint64_t term() const;
   void set_term(uint64_t value);
@@ -1328,8 +1400,441 @@ class InstallSnapshotResponse final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
+    uint64_t id_;
     uint64_t term_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_raft_2eproto;
+};
+// -------------------------------------------------------------------
+
+class UploadFile final :
+    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:vosfs.raft.UploadFile) */ {
+ public:
+  inline UploadFile() : UploadFile(nullptr) {}
+  explicit PROTOBUF_CONSTEXPR UploadFile(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  UploadFile(const UploadFile& from);
+  UploadFile(UploadFile&& from) noexcept
+    : UploadFile() {
+    *this = ::std::move(from);
+  }
+
+  inline UploadFile& operator=(const UploadFile& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline UploadFile& operator=(UploadFile&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const UploadFile& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const UploadFile* internal_default_instance() {
+    return reinterpret_cast<const UploadFile*>(
+               &_UploadFile_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    7;
+
+  friend void swap(UploadFile& a, UploadFile& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(UploadFile* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(UploadFile* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  UploadFile* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<UploadFile>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
+  inline void CopyFrom(const UploadFile& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
+  void MergeFrom(const UploadFile& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
+  }
+  public:
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "vosfs.raft.UploadFile";
+  }
+  protected:
+  explicit UploadFile(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:vosfs.raft.UploadFile)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+  };
+  friend struct ::TableStruct_raft_2eproto;
+};
+// -------------------------------------------------------------------
+
+class DownloadFile final :
+    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:vosfs.raft.DownloadFile) */ {
+ public:
+  inline DownloadFile() : DownloadFile(nullptr) {}
+  explicit PROTOBUF_CONSTEXPR DownloadFile(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  DownloadFile(const DownloadFile& from);
+  DownloadFile(DownloadFile&& from) noexcept
+    : DownloadFile() {
+    *this = ::std::move(from);
+  }
+
+  inline DownloadFile& operator=(const DownloadFile& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline DownloadFile& operator=(DownloadFile&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const DownloadFile& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const DownloadFile* internal_default_instance() {
+    return reinterpret_cast<const DownloadFile*>(
+               &_DownloadFile_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    8;
+
+  friend void swap(DownloadFile& a, DownloadFile& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(DownloadFile* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(DownloadFile* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  DownloadFile* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<DownloadFile>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
+  inline void CopyFrom(const DownloadFile& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
+  void MergeFrom(const DownloadFile& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
+  }
+  public:
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "vosfs.raft.DownloadFile";
+  }
+  protected:
+  explicit DownloadFile(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:vosfs.raft.DownloadFile)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+  };
+  friend struct ::TableStruct_raft_2eproto;
+};
+// -------------------------------------------------------------------
+
+class ClientCommand final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.ClientCommand) */ {
+ public:
+  inline ClientCommand() : ClientCommand(nullptr) {}
+  ~ClientCommand() override;
+  explicit PROTOBUF_CONSTEXPR ClientCommand(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  ClientCommand(const ClientCommand& from);
+  ClientCommand(ClientCommand&& from) noexcept
+    : ClientCommand() {
+    *this = ::std::move(from);
+  }
+
+  inline ClientCommand& operator=(const ClientCommand& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline ClientCommand& operator=(ClientCommand&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const ClientCommand& default_instance() {
+    return *internal_default_instance();
+  }
+  enum CmdCase {
+    kUploadFile = 1,
+    kDownloadFile = 2,
+    CMD_NOT_SET = 0,
+  };
+
+  static inline const ClientCommand* internal_default_instance() {
+    return reinterpret_cast<const ClientCommand*>(
+               &_ClientCommand_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    9;
+
+  friend void swap(ClientCommand& a, ClientCommand& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(ClientCommand* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(ClientCommand* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  ClientCommand* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<ClientCommand>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const ClientCommand& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const ClientCommand& from) {
+    ClientCommand::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ClientCommand* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "vosfs.raft.ClientCommand";
+  }
+  protected:
+  explicit ClientCommand(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kUploadFileFieldNumber = 1,
+    kDownloadFileFieldNumber = 2,
+  };
+  // .vosfs.raft.UploadFile upload_file = 1;
+  bool has_upload_file() const;
+  private:
+  bool _internal_has_upload_file() const;
+  public:
+  void clear_upload_file();
+  const ::vosfs::raft::UploadFile& upload_file() const;
+  PROTOBUF_NODISCARD ::vosfs::raft::UploadFile* release_upload_file();
+  ::vosfs::raft::UploadFile* mutable_upload_file();
+  void set_allocated_upload_file(::vosfs::raft::UploadFile* upload_file);
+  private:
+  const ::vosfs::raft::UploadFile& _internal_upload_file() const;
+  ::vosfs::raft::UploadFile* _internal_mutable_upload_file();
+  public:
+  void unsafe_arena_set_allocated_upload_file(
+      ::vosfs::raft::UploadFile* upload_file);
+  ::vosfs::raft::UploadFile* unsafe_arena_release_upload_file();
+
+  // .vosfs.raft.DownloadFile download_file = 2;
+  bool has_download_file() const;
+  private:
+  bool _internal_has_download_file() const;
+  public:
+  void clear_download_file();
+  const ::vosfs::raft::DownloadFile& download_file() const;
+  PROTOBUF_NODISCARD ::vosfs::raft::DownloadFile* release_download_file();
+  ::vosfs::raft::DownloadFile* mutable_download_file();
+  void set_allocated_download_file(::vosfs::raft::DownloadFile* download_file);
+  private:
+  const ::vosfs::raft::DownloadFile& _internal_download_file() const;
+  ::vosfs::raft::DownloadFile* _internal_mutable_download_file();
+  public:
+  void unsafe_arena_set_allocated_download_file(
+      ::vosfs::raft::DownloadFile* download_file);
+  ::vosfs::raft::DownloadFile* unsafe_arena_release_download_file();
+
+  void clear_cmd();
+  CmdCase cmd_case() const;
+  // @@protoc_insertion_point(class_scope:vosfs.raft.ClientCommand)
+ private:
+  class _Internal;
+  void set_has_upload_file();
+  void set_has_download_file();
+
+  inline bool has_cmd() const;
+  inline void clear_has_cmd();
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    union CmdUnion {
+      constexpr CmdUnion() : _constinit_{} {}
+        ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized _constinit_;
+      ::vosfs::raft::UploadFile* upload_file_;
+      ::vosfs::raft::DownloadFile* download_file_;
+    } cmd_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    uint32_t _oneof_case_[1];
+
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_raft_2eproto;
@@ -1429,7 +1934,27 @@ inline void RequestVoteRequest::set_last_log_term(uint64_t value) {
 
 // RequestVoteResponse
 
-// uint64 term = 1;
+// uint64 id = 1;
+inline void RequestVoteResponse::clear_id() {
+  _impl_.id_ = uint64_t{0u};
+}
+inline uint64_t RequestVoteResponse::_internal_id() const {
+  return _impl_.id_;
+}
+inline uint64_t RequestVoteResponse::id() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.RequestVoteResponse.id)
+  return _internal_id();
+}
+inline void RequestVoteResponse::_internal_set_id(uint64_t value) {
+  
+  _impl_.id_ = value;
+}
+inline void RequestVoteResponse::set_id(uint64_t value) {
+  _internal_set_id(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.RequestVoteResponse.id)
+}
+
+// uint64 term = 2;
 inline void RequestVoteResponse::clear_term() {
   _impl_.term_ = uint64_t{0u};
 }
@@ -1449,7 +1974,7 @@ inline void RequestVoteResponse::set_term(uint64_t value) {
   // @@protoc_insertion_point(field_set:vosfs.raft.RequestVoteResponse.term)
 }
 
-// bool vote_granted = 2;
+// bool vote_granted = 3;
 inline void RequestVoteResponse::clear_vote_granted() {
   _impl_.vote_granted_ = false;
 }
@@ -1711,7 +2236,27 @@ inline void AppendEntriesRequest::set_leader_commit(uint64_t value) {
 
 // AppendEntriesResponse
 
-// uint64 term = 1;
+// uint64 id = 1;
+inline void AppendEntriesResponse::clear_id() {
+  _impl_.id_ = uint64_t{0u};
+}
+inline uint64_t AppendEntriesResponse::_internal_id() const {
+  return _impl_.id_;
+}
+inline uint64_t AppendEntriesResponse::id() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.AppendEntriesResponse.id)
+  return _internal_id();
+}
+inline void AppendEntriesResponse::_internal_set_id(uint64_t value) {
+  
+  _impl_.id_ = value;
+}
+inline void AppendEntriesResponse::set_id(uint64_t value) {
+  _internal_set_id(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.AppendEntriesResponse.id)
+}
+
+// uint64 term = 2;
 inline void AppendEntriesResponse::clear_term() {
   _impl_.term_ = uint64_t{0u};
 }
@@ -1731,7 +2276,7 @@ inline void AppendEntriesResponse::set_term(uint64_t value) {
   // @@protoc_insertion_point(field_set:vosfs.raft.AppendEntriesResponse.term)
 }
 
-// bool success = 2;
+// bool success = 3;
 inline void AppendEntriesResponse::clear_success() {
   _impl_.success_ = false;
 }
@@ -1749,6 +2294,54 @@ inline void AppendEntriesResponse::_internal_set_success(bool value) {
 inline void AppendEntriesResponse::set_success(bool value) {
   _internal_set_success(value);
   // @@protoc_insertion_point(field_set:vosfs.raft.AppendEntriesResponse.success)
+}
+
+// uint64 last_log_index = 4;
+inline void AppendEntriesResponse::clear_last_log_index() {
+  _impl_.last_log_index_ = uint64_t{0u};
+}
+inline uint64_t AppendEntriesResponse::_internal_last_log_index() const {
+  return _impl_.last_log_index_;
+}
+inline uint64_t AppendEntriesResponse::last_log_index() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.AppendEntriesResponse.last_log_index)
+  return _internal_last_log_index();
+}
+inline void AppendEntriesResponse::_internal_set_last_log_index(uint64_t value) {
+  
+  _impl_.last_log_index_ = value;
+}
+inline void AppendEntriesResponse::set_last_log_index(uint64_t value) {
+  _internal_set_last_log_index(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.AppendEntriesResponse.last_log_index)
+}
+
+// optional uint64 conflict_index = 5;
+inline bool AppendEntriesResponse::_internal_has_conflict_index() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool AppendEntriesResponse::has_conflict_index() const {
+  return _internal_has_conflict_index();
+}
+inline void AppendEntriesResponse::clear_conflict_index() {
+  _impl_.conflict_index_ = uint64_t{0u};
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline uint64_t AppendEntriesResponse::_internal_conflict_index() const {
+  return _impl_.conflict_index_;
+}
+inline uint64_t AppendEntriesResponse::conflict_index() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.AppendEntriesResponse.conflict_index)
+  return _internal_conflict_index();
+}
+inline void AppendEntriesResponse::_internal_set_conflict_index(uint64_t value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.conflict_index_ = value;
+}
+inline void AppendEntriesResponse::set_conflict_index(uint64_t value) {
+  _internal_set_conflict_index(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.AppendEntriesResponse.conflict_index)
 }
 
 // -------------------------------------------------------------------
@@ -1929,7 +2522,27 @@ inline void InstallSnapshotRequest::set_done(bool value) {
 
 // InstallSnapshotResponse
 
-// uint64 term = 1;
+// uint64 id = 1;
+inline void InstallSnapshotResponse::clear_id() {
+  _impl_.id_ = uint64_t{0u};
+}
+inline uint64_t InstallSnapshotResponse::_internal_id() const {
+  return _impl_.id_;
+}
+inline uint64_t InstallSnapshotResponse::id() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.InstallSnapshotResponse.id)
+  return _internal_id();
+}
+inline void InstallSnapshotResponse::_internal_set_id(uint64_t value) {
+  
+  _impl_.id_ = value;
+}
+inline void InstallSnapshotResponse::set_id(uint64_t value) {
+  _internal_set_id(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.InstallSnapshotResponse.id)
+}
+
+// uint64 term = 2;
 inline void InstallSnapshotResponse::clear_term() {
   _impl_.term_ = uint64_t{0u};
 }
@@ -1949,9 +2562,184 @@ inline void InstallSnapshotResponse::set_term(uint64_t value) {
   // @@protoc_insertion_point(field_set:vosfs.raft.InstallSnapshotResponse.term)
 }
 
+// -------------------------------------------------------------------
+
+// UploadFile
+
+// -------------------------------------------------------------------
+
+// DownloadFile
+
+// -------------------------------------------------------------------
+
+// ClientCommand
+
+// .vosfs.raft.UploadFile upload_file = 1;
+inline bool ClientCommand::_internal_has_upload_file() const {
+  return cmd_case() == kUploadFile;
+}
+inline bool ClientCommand::has_upload_file() const {
+  return _internal_has_upload_file();
+}
+inline void ClientCommand::set_has_upload_file() {
+  _impl_._oneof_case_[0] = kUploadFile;
+}
+inline void ClientCommand::clear_upload_file() {
+  if (_internal_has_upload_file()) {
+    if (GetArenaForAllocation() == nullptr) {
+      delete _impl_.cmd_.upload_file_;
+    }
+    clear_has_cmd();
+  }
+}
+inline ::vosfs::raft::UploadFile* ClientCommand::release_upload_file() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.ClientCommand.upload_file)
+  if (_internal_has_upload_file()) {
+    clear_has_cmd();
+    ::vosfs::raft::UploadFile* temp = _impl_.cmd_.upload_file_;
+    if (GetArenaForAllocation() != nullptr) {
+      temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.cmd_.upload_file_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::vosfs::raft::UploadFile& ClientCommand::_internal_upload_file() const {
+  return _internal_has_upload_file()
+      ? *_impl_.cmd_.upload_file_
+      : reinterpret_cast< ::vosfs::raft::UploadFile&>(::vosfs::raft::_UploadFile_default_instance_);
+}
+inline const ::vosfs::raft::UploadFile& ClientCommand::upload_file() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.ClientCommand.upload_file)
+  return _internal_upload_file();
+}
+inline ::vosfs::raft::UploadFile* ClientCommand::unsafe_arena_release_upload_file() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:vosfs.raft.ClientCommand.upload_file)
+  if (_internal_has_upload_file()) {
+    clear_has_cmd();
+    ::vosfs::raft::UploadFile* temp = _impl_.cmd_.upload_file_;
+    _impl_.cmd_.upload_file_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void ClientCommand::unsafe_arena_set_allocated_upload_file(::vosfs::raft::UploadFile* upload_file) {
+  clear_cmd();
+  if (upload_file) {
+    set_has_upload_file();
+    _impl_.cmd_.upload_file_ = upload_file;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:vosfs.raft.ClientCommand.upload_file)
+}
+inline ::vosfs::raft::UploadFile* ClientCommand::_internal_mutable_upload_file() {
+  if (!_internal_has_upload_file()) {
+    clear_cmd();
+    set_has_upload_file();
+    _impl_.cmd_.upload_file_ = CreateMaybeMessage< ::vosfs::raft::UploadFile >(GetArenaForAllocation());
+  }
+  return _impl_.cmd_.upload_file_;
+}
+inline ::vosfs::raft::UploadFile* ClientCommand::mutable_upload_file() {
+  ::vosfs::raft::UploadFile* _msg = _internal_mutable_upload_file();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.ClientCommand.upload_file)
+  return _msg;
+}
+
+// .vosfs.raft.DownloadFile download_file = 2;
+inline bool ClientCommand::_internal_has_download_file() const {
+  return cmd_case() == kDownloadFile;
+}
+inline bool ClientCommand::has_download_file() const {
+  return _internal_has_download_file();
+}
+inline void ClientCommand::set_has_download_file() {
+  _impl_._oneof_case_[0] = kDownloadFile;
+}
+inline void ClientCommand::clear_download_file() {
+  if (_internal_has_download_file()) {
+    if (GetArenaForAllocation() == nullptr) {
+      delete _impl_.cmd_.download_file_;
+    }
+    clear_has_cmd();
+  }
+}
+inline ::vosfs::raft::DownloadFile* ClientCommand::release_download_file() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.ClientCommand.download_file)
+  if (_internal_has_download_file()) {
+    clear_has_cmd();
+    ::vosfs::raft::DownloadFile* temp = _impl_.cmd_.download_file_;
+    if (GetArenaForAllocation() != nullptr) {
+      temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.cmd_.download_file_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::vosfs::raft::DownloadFile& ClientCommand::_internal_download_file() const {
+  return _internal_has_download_file()
+      ? *_impl_.cmd_.download_file_
+      : reinterpret_cast< ::vosfs::raft::DownloadFile&>(::vosfs::raft::_DownloadFile_default_instance_);
+}
+inline const ::vosfs::raft::DownloadFile& ClientCommand::download_file() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.ClientCommand.download_file)
+  return _internal_download_file();
+}
+inline ::vosfs::raft::DownloadFile* ClientCommand::unsafe_arena_release_download_file() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:vosfs.raft.ClientCommand.download_file)
+  if (_internal_has_download_file()) {
+    clear_has_cmd();
+    ::vosfs::raft::DownloadFile* temp = _impl_.cmd_.download_file_;
+    _impl_.cmd_.download_file_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void ClientCommand::unsafe_arena_set_allocated_download_file(::vosfs::raft::DownloadFile* download_file) {
+  clear_cmd();
+  if (download_file) {
+    set_has_download_file();
+    _impl_.cmd_.download_file_ = download_file;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:vosfs.raft.ClientCommand.download_file)
+}
+inline ::vosfs::raft::DownloadFile* ClientCommand::_internal_mutable_download_file() {
+  if (!_internal_has_download_file()) {
+    clear_cmd();
+    set_has_download_file();
+    _impl_.cmd_.download_file_ = CreateMaybeMessage< ::vosfs::raft::DownloadFile >(GetArenaForAllocation());
+  }
+  return _impl_.cmd_.download_file_;
+}
+inline ::vosfs::raft::DownloadFile* ClientCommand::mutable_download_file() {
+  ::vosfs::raft::DownloadFile* _msg = _internal_mutable_download_file();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.ClientCommand.download_file)
+  return _msg;
+}
+
+inline bool ClientCommand::has_cmd() const {
+  return cmd_case() != CMD_NOT_SET;
+}
+inline void ClientCommand::clear_has_cmd() {
+  _impl_._oneof_case_[0] = CMD_NOT_SET;
+}
+inline ClientCommand::CmdCase ClientCommand::cmd_case() const {
+  return ClientCommand::CmdCase(_impl_._oneof_case_[0]);
+}
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

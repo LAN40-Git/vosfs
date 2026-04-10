@@ -34,6 +34,8 @@ public:
 
     [[nodiscard]] auto get_entries(uint64_t index, std::size_t size) const -> Result<std::vector<LogEntry>>;
 
+    [[nodiscard]] auto get_entries_span(uint64_t index, std::size_t size) const -> Result<std::span<const LogEntry>>;
+
     [[nodiscard]] auto append_entry(LogEntry&& entry) -> Result<void>;
 
     [[nodiscard]] auto append_entries(const google::protobuf::RepeatedPtrField<LogEntry>& entries) -> Result<void>;

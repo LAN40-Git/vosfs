@@ -96,6 +96,16 @@ auto vosfs::raft::detail::RaftLog::get_entries(
     return std::unexpected{make_error(Error::kInvalidLogIndex)};
 }
 
+auto vosfs::raft::detail::RaftLog::get_entries_span(
+    uint64_t index, std::size_t size) const -> Result<std::span<const LogEntry>> {
+    if (index > last_included_index_ && index <= last_log_index()) {
+        auto arr_idx = index - last_included_index_ - 1;
+        return std::span{entries_.begin() + arr_idx, size};
+    }
+
+    return std::unexpected{make_error(Error::kInvalidLogIndex)};
+}
+
 auto vosfs::raft::detail::RaftLog::append_entry(LogEntry&& entry) -> Result<void> {
     auto key = LOG_ENTRY_PREFIX + std::to_string(entry.index());
     auto value = entry.SerializeAsString();

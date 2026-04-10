@@ -53,7 +53,7 @@ void vosfs::raft::RaftNode::persist_current_term() const {
         std::to_string(current_term_.load(std::memory_order_relaxed)));
     if (!ret) {
         LOG_FATAL("{}", ret.error());
-        std::abort();
+        // TODO: shutdown
     }
 }
 
@@ -63,13 +63,13 @@ void vosfs::raft::RaftNode::persist_voted_for() const {
         std::to_string(voted_for_.value()));
         if (!ret) {
             LOG_FATAL("{}", ret.error());
-
+            // TODO: shutdown
         }
     } else {
         auto ret = persister_.persist(detail::CURRENT_TERM_KEY, "");
         if (!ret) {
             LOG_FATAL("{}", ret.error());
-            std::abort();
+            // TODO: shutdown
         }
     }
 }
@@ -103,6 +103,10 @@ void vosfs::raft::RaftNode::do_heartbeat() {
     auto commit_index = commit_index_;
     auto last_log_index = logs_.last_log_index();
     for (auto& [member_id, next_index] : next_index_) {
+        if (member_id == leader_id) {
+            continue;
+        }
+
         std::vector<LogEntry> entries;
         if (next_index <= last_log_index) {
             if (next_index <= logs_.last_included_index()) {
@@ -187,7 +191,7 @@ auto vosfs::raft::RaftNode::handle_request_vote_request(
 
     auto current_term = current_term_.load(std::memory_order_relaxed);
     if (term < current_term) {
-        co_return detail::MessageFactory::make_request_vote_response(resp_payload, current_term, false);
+        co_return detail::MessageFactory::make_request_vote_response(resp_payload, transport_.member_id(), current_term, false);
     }
 
     if (term > current_term) {
@@ -203,13 +207,13 @@ auto vosfs::raft::RaftNode::handle_request_vote_request(
         up_to_date_log = true;
     }
 
-    bool can_vote = !voted_for_.has_value() && up_to_date_log;
+    bool can_vote = (!voted_for_.has_value() || voted_for_ == candidate_id) && up_to_date_log;
 
     if (can_vote) {
         voted_for_ = candidate_id;
     }
 
-    co_return detail::MessageFactory::make_request_vote_response(resp_payload, current_term, can_vote);
+    co_return detail::MessageFactory::make_request_vote_response(resp_payload, transport_.member_id(), current_term, can_vote);
 }
 
 auto vosfs::raft::RaftNode::handle_append_entries_request(
@@ -232,7 +236,8 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
 
     auto current_term = current_term_.load(std::memory_order_relaxed);
     if (term < current_term) {
-        co_return detail::MessageFactory::make_append_entries_response(resp_payload,  current_term, false);
+        co_return detail::MessageFactory::make_append_entries_response(
+            resp_payload, transport_.member_id(), current_term, false, logs_.last_log_index());
     }
 
     if (term > current_term) {
@@ -255,7 +260,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
 
     if (!log_ok) {
         co_return detail::MessageFactory::make_append_entries_response(
-            resp_payload, current_term, false);
+            resp_payload, transport_.member_id(),  current_term, false, logs_.last_log_index(), prev_log_index);
     }
 
     if (!entries.empty()) {
@@ -272,7 +277,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
                 if (!ret) {
                     LOG_WARN("{}", ret.error());
                     co_return detail::MessageFactory::make_append_entries_response(
-                        resp_payload, current_term, false);
+                        resp_payload, transport_.member_id(), current_term, false, logs_.last_log_index());
                 }
                 break;
             }
@@ -282,7 +287,8 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
         auto ret = logs_.append_entries(entries);
         if (!ret) {
             LOG_WARN("{}", ret.error());
-            co_return detail::MessageFactory::make_append_entries_response(resp_payload, current_term, false);
+            co_return detail::MessageFactory::make_append_entries_response(
+                resp_payload, transport_.member_id(), current_term, false, logs_.last_log_index());
         }
     }
 
@@ -291,7 +297,14 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
         // TODO: apply to statemachine and update commit_index
     }
 
-    co_return detail::MessageFactory::make_append_entries_response(resp_payload, current_term, true);
+    co_return detail::MessageFactory::make_append_entries_response(
+        resp_payload, transport_.member_id(), current_term, true, logs_.last_log_index());
+}
+
+auto vosfs::raft::RaftNode::handle_install_snapshot_request(
+    std::string_view req_payload,
+    std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
+
 }
 
 auto vosfs::raft::RaftNode::handle_request_vote_response(std::string_view resp_payload) -> kosio::async::Task<void> {
@@ -300,6 +313,7 @@ auto vosfs::raft::RaftNode::handle_request_vote_response(std::string_view resp_p
         co_return;
     }
 
+    [[maybe_unused]] auto id = response.id();
     auto term = response.term();
     auto vote_granted = response.vote_granted();
 
@@ -333,5 +347,63 @@ auto vosfs::raft::RaftNode::handle_request_vote_response(std::string_view resp_p
 }
 
 auto vosfs::raft::RaftNode::handle_append_entries_response(std::string_view resp_payload) -> kosio::async::Task<void> {
+    AppendEntriesResponse response;
+    if (!response.ParseFromArray(resp_payload.data(), static_cast<int>(resp_payload.size()))) [[unlikely]] {
+        LOG_ERROR("Failed to parse request vote response");
+        co_return;
+    }
+
+    auto id = response.id();
+    auto term = response.term();
+    auto success = response.success();
+    auto last_log_index = response.last_log_index();
+
+    if (term < current_term_.load(std::memory_order_acquire) ||
+        role_.load(std::memory_order_acquire) != kLeader) {
+        co_return;
+    }
+
+    co_await mutex_.lock();
+    std::lock_guard lock(mutex_, std::adopt_lock);
+
+    auto current_term = current_term_.load(std::memory_order_relaxed);
+    if (term < current_term ||
+        role_.load(std::memory_order_relaxed) != kLeader) {
+        co_return;
+    }
+
+    if (term > current_term) {
+        increase_term_to(term);
+        current_term = term;
+        co_return;
+    }
+
+    if (!success) {
+        if (response.has_conflict_index()) {
+            next_index_[id] = response.conflict_index();
+        }
+        co_return;
+    }
+
+    match_index_[id] = last_log_index;
+    std::vector<uint64_t> idxs;
+    idxs.reserve(transport_.peer_count());
+    for (auto idx: match_index_ | std::views::values) {
+        idxs.push_back(idx);
+    }
+    std::ranges::sort(idxs);
+    commit_index_ = idxs[idxs.size()/2];
+    // TODO: apply to state machine
+
+    last_applied_ = commit_index_;
+}
+
+auto vosfs::raft::RaftNode::handle_install_snapshot_response(std::string_view resp_payload) -> kosio::async::Task<void> {
+    InstallSnapshotResponse response;
+    if (!response.ParseFromArray(resp_payload.data(), static_cast<int>(resp_payload.size()))) [[unlikely]] {
+        LOG_ERROR("Failed to parse request vote response");
+        co_return;
+    }
+
 
 }

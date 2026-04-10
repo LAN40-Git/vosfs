@@ -27,6 +27,7 @@ public:
     [[nodiscard]]
     static auto make_request_vote_response(
         std::span<char> resp_payload,
+        uint64_t id,
         uint64_t term,
         bool vote_granted) -> rpc::RpcResult;
 
@@ -42,7 +43,10 @@ public:
     [[nodiscard]]
     static auto make_append_entries_response(
         std::span<char> resp_payload,
+        uint64_t id,
         uint64_t term,
-        bool success) -> rpc::RpcResult;
+        bool success,
+        uint64_t last_log_index,
+        std::optional<uint64_t> conflict_index = std::nullopt) -> rpc::RpcResult;
 };
 } // namespace vosfs::raft::detail
