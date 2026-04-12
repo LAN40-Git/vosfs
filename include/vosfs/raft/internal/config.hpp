@@ -13,12 +13,14 @@ constexpr std::size_t HEARTBEAT_INTERVAL = 100;
 
 constexpr std::size_t MAX_ENTRIES_PER_APPEND = 100;
 
+    constexpr std::size_t SNAPSHOT_INTERVAL = 10000;
+
 // ====== Path configuration ======
 constexpr std::string_view DATA_DIR = "/var/lib/vosfs";
 
 constexpr std::string_view DB_DIR = "raft/db";
 
-constexpr std::string_view SNAP_DIR = "raft/snapshot";
+constexpr std::string_view SNAP_DIR = "raft/snapshots";
 
 // ====== Key configuration ======
 constexpr std::string_view CURRENT_TERM_KEY = "raft/current_term";

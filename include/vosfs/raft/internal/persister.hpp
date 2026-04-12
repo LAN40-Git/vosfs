@@ -9,6 +9,7 @@ struct KV {
 };
 
 class Persister {
+
 private:
     explicit Persister(RocksDBEngine engine)
         : engine_(std::move(engine)) {}
@@ -38,6 +39,9 @@ public:
 
     [[nodiscard]]
     auto truncate_batch(const std::vector<std::string>& keys) const -> Result<void>;
+
+    [[nodiscard]]
+    auto create_snapshot(uint64_t last_included_index, uint64_t last_included_term) const -> Result<void>;
 
 private:
     RocksDBEngine engine_;

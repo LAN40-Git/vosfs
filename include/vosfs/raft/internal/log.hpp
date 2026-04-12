@@ -4,7 +4,6 @@
 
 namespace vosfs::raft::detail {
 class RaftLog {
-    static constexpr std::string LOG_ENTRY_PREFIX = "raft/log/";
 private:
     explicit RaftLog(
         uint64_t last_included_index,
@@ -43,6 +42,7 @@ public:
     [[nodiscard]] auto truncate_entries(uint64_t index) -> Result<void>;
 
 private:
+    std::string           log_entry_prefix_{"raft/log/"};
     uint64_t              last_included_index_;
     uint64_t              last_included_term_;
     std::vector<LogEntry> entries_;

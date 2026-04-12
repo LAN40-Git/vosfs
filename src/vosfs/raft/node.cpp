@@ -75,14 +75,15 @@ void vosfs::raft::RaftNode::persist_voted_for() const {
 }
 
 void vosfs::raft::RaftNode::do_election() {
+    // 进化为候选人
     role_.store(kCandidate, std::memory_order_relaxed);
     votes_ = 1;
-    // votes for myself at this term
+    // 为自己投票
     voted_for_ = transport_.member_id();
     persist_voted_for();
     current_term_.fetch_add(1, std::memory_order_relaxed);
     persist_current_term();
-    // broadcast reqeust vote request
+    // 广播选举请求
     auto request = detail::MessageFactory::make_request_vote_request(
         current_term_.load(std::memory_order_relaxed),
         transport_.member_id(),
@@ -102,6 +103,8 @@ void vosfs::raft::RaftNode::do_heartbeat() {
     auto leader_id  = transport_.member_id();
     auto commit_index = commit_index_;
     auto last_log_index = logs_.last_log_index();
+
+    // 发送心跳
     for (auto& [member_id, next_index] : next_index_) {
         if (member_id == leader_id) {
             continue;
@@ -141,11 +144,17 @@ void vosfs::raft::RaftNode::do_heartbeat() {
 }
 
 void vosfs::raft::RaftNode::increase_term_to(uint64_t term) {
+    // 获得的票数设置为0
     votes_ = 0;
+    // 重置投票对象
     voted_for_.reset();
+    // 持久化投票对象
     persist_voted_for();
+    // 更新当前任期
     current_term_.store(term, std::memory_order_release);
+    // 持久化当前任期
     persist_current_term();
+    // 退化为追随者
     role_.store(kFollower, std::memory_order_release);
 }
 
@@ -154,7 +163,7 @@ void vosfs::raft::RaftNode::become_leader() {
     voted_for_.reset();
     persist_voted_for();
     role_.store(kLeader, std::memory_order_release);
-    // update next_index
+    // 更新每个Raft节点的 next_index
     auto& peers = transport_.peers();
     for (const auto& peer : peers | std::views::values) {
         next_index_[peer.member_id()] = logs_.last_log_index() + 1;
@@ -194,6 +203,7 @@ auto vosfs::raft::RaftNode::handle_request_vote_request(
 
     bool up_to_date_log{false};
 
+    // 判断日志是否最新
     if (last_log_index > logs_.last_log_index() ||
         (last_log_index == logs_.last_log_index() &&
             last_log_term == logs_.last_log_term())) {
@@ -241,8 +251,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
     leader_id_ = leader_id;
     last_reset_time_.store(kosio::util::current_ms(), std::memory_order_relaxed);
 
-    // The previous log entry of the added log entries
-    // must exist in the local log entries
+    // 判断追加日志的上一条日志是否存在与本地日志中
     bool log_ok{false};
     if (prev_log_index <= logs_.last_log_index() &&
         prev_log_index >= logs_.last_included_index() &&
@@ -256,7 +265,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
     }
 
     if (!entries.empty()) {
-        // truncate conflict log entries
+        // 删除冲突的日志
         for (const auto& entry : entries) {
             auto idx = entry.index();
             if (idx > logs_.last_log_index()) {
@@ -274,7 +283,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
             }
         }
 
-        // append and persist entries
+        // 追加并持久化日志
         auto ret = logs_.append_entries(entries);
         if (!ret) {
             LOG_WARN("{}", ret.error());

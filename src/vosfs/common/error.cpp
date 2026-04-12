@@ -4,6 +4,8 @@ auto vosfs::Error::message() const noexcept -> std::string_view {
     switch (error_code_) {
         case kUnknown:
             return "Unknown error.";
+        case kCreateSnapshotFailed:
+            return "Failed to create snapshot.";
         case kInvalidLogIndex:
             return "Invalid log index.";
         case kProtoSerializeFailed:

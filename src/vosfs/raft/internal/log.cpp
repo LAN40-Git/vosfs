@@ -95,19 +95,21 @@ auto vosfs::raft::detail::RaftLog::get_entries_span(
 }
 
 auto vosfs::raft::detail::RaftLog::append_entry(LogEntry&& entry) -> Result<void> {
-    auto key = LOG_ENTRY_PREFIX + std::to_string(entry.index());
+    auto key = log_entry_prefix_ + std::to_string(entry.index());
     auto value = entry.SerializeAsString();
     auto ret = persister_.persist(key, value);
-    if (ret) {
-        entries_.emplace_back(std::move(entry));
+    if (!ret) {
+        return ret;
     }
+    entries_.emplace_back(std::move(entry));
+    // 尝试创建快照
     return ret;
 }
 
 auto vosfs::raft::detail::RaftLog::append_entries(const google::protobuf::RepeatedPtrField<LogEntry>& entries) -> Result<void> {
     std::vector<KV> kvs;
     for (const auto& entry : entries) {
-        kvs.emplace_back(LOG_ENTRY_PREFIX + std::to_string(entry.index()), entry.SerializeAsString());
+        kvs.emplace_back(log_entry_prefix_ + std::to_string(entry.index()), entry.SerializeAsString());
     }
     auto ret = persister_.persist_batch(kvs);
     if (ret) {
@@ -125,7 +127,7 @@ auto vosfs::raft::detail::RaftLog::truncate_entries(uint64_t index) -> Result<vo
 
     std::vector<std::string> keys;
     for (uint64_t i = index; i <= last_log_index(); ++i) {
-        keys.emplace_back(LOG_ENTRY_PREFIX + std::to_string(i));
+        keys.emplace_back(log_entry_prefix_ + std::to_string(i));
     }
 
     entries_.erase(entries_.begin() + index - last_included_index_ - 1, entries_.end());

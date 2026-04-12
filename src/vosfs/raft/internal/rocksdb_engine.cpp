@@ -7,13 +7,20 @@ vosfs::raft::detail::RocksDBEngine::~RocksDBEngine() {
         delete db_;
         db_ = nullptr;
     }
+
+    if (checkpoint_) {
+        delete checkpoint_;
+        checkpoint_ = nullptr;
+    }
 }
 
 vosfs::raft::detail::RocksDBEngine::RocksDBEngine(RocksDBEngine&& other) noexcept
     : db_(other.db_)
+    , checkpoint_(other.checkpoint_)
     , write_options_(other.write_options_)
     , read_options_(other.read_options_) {
     other.db_ = nullptr;
+    other.checkpoint_ = nullptr;
 }
 
 auto vosfs::raft::detail::RocksDBEngine::operator=(RocksDBEngine&& other) noexcept -> RocksDBEngine& {
@@ -27,10 +34,17 @@ auto vosfs::raft::detail::RocksDBEngine::operator=(RocksDBEngine&& other) noexce
         db_ = nullptr;
     }
 
+    if (checkpoint_) {
+        delete checkpoint_;
+        checkpoint_ = nullptr;
+    }
+
     db_ = other.db_;
-    write_options_ = std::move(other.write_options_);
-    read_options_  = std::move(other.read_options_);
+    checkpoint_ = other.checkpoint_;
+    write_options_ = other.write_options_;
+    read_options_  = other.read_options_;
     other.db_ = nullptr;
+    other.checkpoint_ = nullptr;
     return *this;
 }
 
@@ -40,14 +54,22 @@ auto vosfs::raft::detail::RocksDBEngine::create(
     const rocksdb::ReadOptions& read_options,
     const std::filesystem::path& db_path) -> Result<RocksDBEngine> {
     rocksdb::DB* db = nullptr;
-    rocksdb::Status status = rocksdb::DB::Open(db_options, db_path, &db);
+    rocksdb::Checkpoint* checkpoint = nullptr;
+    auto status = rocksdb::DB::Open(db_options, db_path, &db);
 
     if (!status.ok()) {
         LOG_ERROR("{}", status.ToString());
         return std::unexpected{make_error(Error::kRocksDBEngineCreateFailed)};
     }
 
-    return RocksDBEngine{db, write_options, read_options};
+    status = rocksdb::Checkpoint::Create(db, &checkpoint);
+
+    if (!status.ok()) {
+        LOG_ERROR("{}", status.ToString());
+        return std::unexpected{make_error(Error::kRocksDBEngineCreateFailed)};
+    }
+
+    return RocksDBEngine{db, checkpoint, write_options, read_options};
 }
 
 void vosfs::raft::detail::RocksDBEngine::set_write_options(
@@ -58,6 +80,10 @@ void vosfs::raft::detail::RocksDBEngine::set_write_options(
 void vosfs::raft::detail::RocksDBEngine::set_read_options(
     const rocksdb::ReadOptions& read_options) {
     read_options_ = read_options;
+}
+
+auto vosfs::raft::detail::RocksDBEngine::create_checkpoint(const std::filesystem::path& snap_path) const -> rocksdb::Status {
+    return checkpoint_->CreateCheckpoint(snap_path);
 }
 
 auto vosfs::raft::detail::RocksDBEngine::put(

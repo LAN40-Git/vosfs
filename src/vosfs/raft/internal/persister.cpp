@@ -84,3 +84,15 @@ auto vosfs::raft::detail::Persister::truncate_batch(
     }
     return Result<void>{};
 }
+
+auto vosfs::raft::detail::Persister::create_snapshot(
+    uint64_t last_included_index,
+    uint64_t last_included_term) const -> Result<void> {
+    auto snap_file_name = std::to_string(last_included_index) + "-" + std::to_string(last_included_term) + ".snap";
+    std::filesystem::path snap_dir = SNAP_DIR;
+    if (auto status = engine_.create_checkpoint(snap_dir / snap_file_name); !status.ok()) {
+        LOG_ERROR("create snapshot failed : {}", status.ToString());
+        return std::unexpected{make_error(Error::kCreateSnapshotFailed)};
+    }
+    return Result<void>{};
+}
