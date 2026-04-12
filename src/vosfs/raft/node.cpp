@@ -89,6 +89,7 @@ void vosfs::raft::RaftNode::do_election() {
         transport_.member_id(),
         logs_.last_log_index(),
         logs_.last_log_term());
+
     kosio::spawn(transport_.broadcast_request(
         rpc::ServiceType::kRaft,
         rpc::MethodType::kRaftRequestVote,
@@ -96,6 +97,11 @@ void vosfs::raft::RaftNode::do_election() {
         [this](std::string_view resp_payload) -> kosio::async::Task<void> {
             co_await this->handle_request_vote_response(resp_payload);
         }));
+
+    if (++votes_ > transport_.peer_count() / 2 &&
+            role_.load(std::memory_order_relaxed) == kCandidate) {
+        become_leader();
+    }
 }
 
 void vosfs::raft::RaftNode::do_heartbeat() {
@@ -163,6 +169,7 @@ void vosfs::raft::RaftNode::become_leader() {
     voted_for_.reset();
     persist_voted_for();
     role_.store(kLeader, std::memory_order_release);
+    leader_id_ = transport_.member_id();
     // 更新每个Raft节点的 next_index
     auto& peers = transport_.peers();
     for (const auto& peer : peers | std::views::values) {
@@ -304,7 +311,12 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
 auto vosfs::raft::RaftNode::handle_install_snapshot_request(
     std::string_view req_payload,
     std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
+    InstallSnapshotRequest request;
+    if (!request.ParseFromString(req_payload.data())) {
+        co_return rpc::make_result(rpc::RpcResult::kMessageParseFailed);
+    }
 
+    // TODO: 处理快照请求
 }
 
 auto vosfs::raft::RaftNode::handle_request_vote_response(std::string_view resp_payload) -> kosio::async::Task<void> {
@@ -404,5 +416,5 @@ auto vosfs::raft::RaftNode::handle_install_snapshot_response(std::string_view re
         co_return;
     }
 
-
+    // TODO: 处理快照回复
 }
