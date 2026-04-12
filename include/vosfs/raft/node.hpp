@@ -20,13 +20,12 @@ private:
     auto heartbeat_loop() -> kosio::async::Task<void>;
 
 private:
-    void persist_current_term() const;
-    void persist_voted_for() const;
     void do_election();
     void do_heartbeat();
     void increase_term_to(uint64_t term);
     void become_leader();
     void apply_to_state_machine();
+    void persist_hard_state();
 
 private:
     [[REMEMBER_CO_AWAIT]]
@@ -66,6 +65,7 @@ private:
 
     /* RaftState from https://raft.github.io/raft.pdf */
     // Persistent state on all servers
+    HardState                hard_state_;
     std::atomic<uint64_t>    current_term_;
     std::optional<uint64_t>  voted_for_;
     detail::RaftLog          logs_;

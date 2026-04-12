@@ -85,25 +85,3 @@ auto vosfs::raft::detail::Persister::truncate_batch(
     }
     return Result<void>{};
 }
-
-auto vosfs::raft::detail::Persister::create_snapshot(
-    uint64_t last_included_index,
-    uint64_t last_included_term,
-    const std::vector<std::string>& keys) const -> Result<void> {
-    auto snap_file_name = std::to_string(last_included_index) + "-" + std::to_string(last_included_term) + ".snap";
-    std::filesystem::path snap_dir = SNAP_DIR;
-    std::filesystem::path snap_path = snap_dir / snap_file_name;
-    if (auto status = engine_.create_checkpoint(snap_path); !status.ok()) {
-        LOG_ERROR("create snapshot failed : {}", status.ToString());
-        return std::unexpected{make_error(Error::kCreateSnapshotFailed)};
-    }
-
-    // 清理已经生成快照的持久化日志条目
-    if (auto ret = truncate_batch(keys, 0, SNAPSHOT_INTERVAL); !ret) {
-        // 清理失败，删除快照
-        std::filesystem::remove_all(snap_path);
-        return std::unexpected{make_error(Error::kCreateSnapshotFailed)};
-    }
-
-    return Result<void>{};
-}

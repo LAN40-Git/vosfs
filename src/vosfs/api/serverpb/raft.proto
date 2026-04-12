@@ -1,6 +1,12 @@
 syntax = "proto3";
 package vosfs.raft;
 
+message HardState {
+    uint64 current_term = 1;
+    optional uint64 voted_for = 2;
+    uint64 commit_index = 3;
+}
+
 message RequestVoteRequest {
     uint64 term = 1;
     uint64 candidate_id = 2;
@@ -35,6 +41,21 @@ message AppendEntriesResponse {
     bool success = 3;
     uint64 last_log_index = 4;
     optional uint64 conflict_index = 5;
+}
+
+message ConfState {
+    repeated uint64 nodes = 1;
+}
+
+message SnapshotMetadata {
+    ConfState conf_state = 1;
+    uint64 last_included_index = 2;
+    uint64 last_included_term = 3;
+}
+
+message Snapshot {
+    bytes data = 1;
+    SnapshotMetadata snapshot_metadata = 2;
 }
 
 message InstallSnapshotRequest {

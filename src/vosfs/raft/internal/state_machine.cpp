@@ -16,7 +16,7 @@ void vosfs::raft::detail::StateMachine::apply(std::span<const LogEntry> entries)
         if (!command.ParseFromString(entry.command())) {
             LOG_FATAL("Failed to parse command at entry {}", index);
             context.result = rpc::make_result(rpc::RpcResult::kMessageParseFailed);
-            context.handle.resume();
+            kosio::spawn(context.handle);
             continue;
         }
 
@@ -28,9 +28,9 @@ void vosfs::raft::detail::StateMachine::apply(std::span<const LogEntry> entries)
             default: {
                 LOG_FATAL("Failed to find command at entry {}", index);
                 context.result = rpc::make_result(rpc::RpcResult::kCommandNotFound);
-                context.handle.resume();
                 break;
             }
         }
+        kosio::spawn(context.handle);
     }
 }

@@ -48,41 +48,16 @@ auto vosfs::raft::RaftNode::heartbeat_loop() -> kosio::async::Task<void> {
     }
 }
 
-void vosfs::raft::RaftNode::persist_current_term() const {
-    auto ret = persister_.persist(detail::CURRENT_TERM_KEY,
-        std::to_string(current_term_.load(std::memory_order_relaxed)));
-    if (!ret) {
-        LOG_FATAL("{}", ret.error());
-        // TODO: shutdown
-    }
-}
-
-void vosfs::raft::RaftNode::persist_voted_for() const {
-    if (voted_for_.has_value()) {
-        auto ret = persister_.persist(detail::CURRENT_TERM_KEY,
-        std::to_string(voted_for_.value()));
-        if (!ret) {
-            LOG_FATAL("{}", ret.error());
-            // TODO: shutdown
-        }
-    } else {
-        auto ret = persister_.persist(detail::CURRENT_TERM_KEY, "");
-        if (!ret) {
-            LOG_FATAL("{}", ret.error());
-            // TODO: shutdown
-        }
-    }
-}
-
 void vosfs::raft::RaftNode::do_election() {
+    // 为自己投票
+    votes_ = 1;
+    voted_for_ = transport_.member_id();
+    // 更新任期
+    current_term_.fetch_add(1, std::memory_order_relaxed);
     // 进化为候选人
     role_.store(kCandidate, std::memory_order_relaxed);
-    votes_ = 1;
-    // 为自己投票
-    voted_for_ = transport_.member_id();
-    persist_voted_for();
-    current_term_.fetch_add(1, std::memory_order_relaxed);
-    persist_current_term();
+    // 持久化
+    persist_hard_state();
     // 广播选举请求
     auto request = detail::MessageFactory::make_request_vote_request(
         current_term_.load(std::memory_order_relaxed),
@@ -154,21 +129,19 @@ void vosfs::raft::RaftNode::increase_term_to(uint64_t term) {
     votes_ = 0;
     // 重置投票对象
     voted_for_.reset();
-    // 持久化投票对象
-    persist_voted_for();
     // 更新当前任期
     current_term_.store(term, std::memory_order_release);
-    // 持久化当前任期
-    persist_current_term();
     // 退化为追随者
     role_.store(kFollower, std::memory_order_release);
+    // 持久化
+    persist_hard_state();
 }
 
 void vosfs::raft::RaftNode::become_leader() {
     votes_ = 0;
     voted_for_.reset();
-    persist_voted_for();
     role_.store(kLeader, std::memory_order_release);
+    persist_hard_state();
     leader_id_ = transport_.member_id();
     // 更新每个Raft节点的 next_index
     auto& peers = transport_.peers();
@@ -181,6 +154,21 @@ void vosfs::raft::RaftNode::apply_to_state_machine() {
     auto size = commit_index_ - last_applied_;
     state_machine_.apply(logs_.get_entries_span(last_applied_ + 1, size));
     last_applied_ = commit_index_;
+}
+
+void vosfs::raft::RaftNode::persist_hard_state() {
+    hard_state_.set_current_term(current_term_.load(std::memory_order_relaxed));
+    if (voted_for_.has_value()) {
+        hard_state_.set_voted_for(voted_for_.value());
+    } else {
+        hard_state_.clear_voted_for();
+    }
+    hard_state_.set_commit_index(commit_index_);
+    auto ret = persister_.persist(detail::HARD_STATE_KEY, hard_state_.SerializeAsString());
+    if (!ret) {
+        LOG_FATAL("persist hard state failed : {}", ret.error());
+        // TODO: 关闭节点，标记为宕机，此时无法接收消息也无法发送消息
+    }
 }
 
 auto vosfs::raft::RaftNode::handle_request_vote_request(

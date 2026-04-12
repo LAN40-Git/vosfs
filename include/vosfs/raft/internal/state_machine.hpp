@@ -1,7 +1,6 @@
 #pragma once
 #include <span>
 #include <coroutine>
-#include <cstdint>
 #include <unordered_map>
 #include "vosfs/api/serverpb/raft.pb.h"
 #include "vosfs/rpc/result.hpp"
@@ -14,12 +13,11 @@ struct ResponseContext {
 };
 
 class StateMachine {
+    using PendingMap = std::unordered_map<uint64_t, ResponseContext>;
 public:
     void apply(std::span<const LogEntry> entries);
 
 private:
-
-private:
-    std::unordered_map<uint64_t, ResponseContext> pending_map_;
+    PendingMap pending_map_;
 };
 } // namespace vosfs::raft::detail

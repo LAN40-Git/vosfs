@@ -23,11 +23,7 @@ constexpr std::string_view DB_DIR = "raft/db";
 constexpr std::string_view SNAP_DIR = "raft/snapshots";
 
 // ====== Key configuration ======
-constexpr std::string_view CURRENT_TERM_KEY = "raft/current_term";
+constexpr std::string_view HARD_STATE_KEY = "raft/hard_state";
 
-constexpr std::string_view VOTED_FOR_KEY = "raft/voted_for";
-
-constexpr std::string_view SNAPSHOT_LAST_INCLUDED_INDEX_KEY = "raft/snapshot/last_included_index";
-
-constexpr std::string_view SNAPSHOT_LAST_INCLUDED_TERM_KEY = "raft/snapshot/last_included_term";
+constexpr std::string_view SNAPSHOT_METADATA_KEY = "raft/snapshots/metadata";
 } // namespace vosfs::raft::detail
