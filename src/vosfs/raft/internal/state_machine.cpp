@@ -14,7 +14,7 @@ void vosfs::raft::detail::StateMachine::apply(std::span<const LogEntry> entries)
 
         ClientCommand command;
         if (!command.ParseFromString(entry.command())) {
-            LOG_WARN("Failed to parse command at entry {}", index);
+            LOG_FATAL("Failed to parse command at entry {}", index);
             context.result = rpc::make_result(rpc::RpcResult::kMessageParseFailed);
             context.handle.resume();
             continue;
@@ -26,6 +26,7 @@ void vosfs::raft::detail::StateMachine::apply(std::span<const LogEntry> entries)
                 break;
             }
             default: {
+                LOG_FATAL("Failed to find command at entry {}", index);
                 context.result = rpc::make_result(rpc::RpcResult::kCommandNotFound);
                 context.handle.resume();
                 break;

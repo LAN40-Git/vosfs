@@ -1,4 +1,4 @@
-#include "vosfs/raft/raft.hpp"
+#include "vosfs/raft/node.hpp"
 
 auto vosfs::raft::RaftNode::shutdown() -> kosio::async::Task<void> {
     is_shutdown_.store(true, std::memory_order_release);
@@ -339,7 +339,7 @@ auto vosfs::raft::RaftNode::handle_request_vote_response(std::string_view resp_p
 
 auto vosfs::raft::RaftNode::handle_append_entries_response(std::string_view resp_payload) -> kosio::async::Task<void> {
     AppendEntriesResponse response;
-    if (!response.ParseFromArray(resp_payload.data(), static_cast<int>(resp_payload.size()))) [[unlikely]] {
+    if (!response.ParseFromArray(resp_payload.data(), static_cast<int>(resp_payload.size()))) {
         LOG_ERROR("Failed to parse request vote response");
         co_return;
     }
@@ -390,7 +390,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_response(std::string_view resp
 
 auto vosfs::raft::RaftNode::handle_install_snapshot_response(std::string_view resp_payload) -> kosio::async::Task<void> {
     InstallSnapshotResponse response;
-    if (!response.ParseFromArray(resp_payload.data(), static_cast<int>(resp_payload.size()))) [[unlikely]] {
+    if (!response.ParseFromArray(resp_payload.data(), static_cast<int>(resp_payload.size()))) {
         LOG_ERROR("Failed to parse request vote response");
         co_return;
     }
