@@ -38,10 +38,10 @@ public:
     auto truncate(std::string_view key) const -> Result<void>;
 
     [[nodiscard]]
-    auto truncate_batch(const std::vector<std::string>& keys) const -> Result<void>;
+    auto truncate_batch(const std::vector<std::string>& keys, uint64_t start_index, std::size_t size) const -> Result<void>;
 
     [[nodiscard]]
-    auto create_snapshot(uint64_t last_included_index, uint64_t last_included_term) const -> Result<void>;
+    auto create_snapshot(uint64_t last_included_index, uint64_t last_included_term, const std::vector<std::string>& keys) const -> Result<void>;
 
 private:
     RocksDBEngine engine_;

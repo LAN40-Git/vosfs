@@ -4,14 +4,17 @@
 
 namespace vosfs::raft::detail {
 class RaftLog {
+    static constexpr std::string LOG_ENTRY_PREFIX = "raft/log/";
 private:
     explicit RaftLog(
         uint64_t last_included_index,
         uint64_t last_included_term,
+        std::vector<std::string>&& keys,
         std::vector<LogEntry>&& entries,
         Persister& persister)
         : last_included_index_(last_included_index)
         , last_included_term_(last_included_term)
+        , keys_(std::move(keys))
         , entries_(std::move(entries))
         , persister_(persister) {}
 
@@ -42,10 +45,13 @@ public:
     [[nodiscard]] auto truncate_entries(uint64_t index) -> Result<void>;
 
 private:
-    std::string           log_entry_prefix_{"raft/log/"};
-    uint64_t              last_included_index_;
-    uint64_t              last_included_term_;
-    std::vector<LogEntry> entries_;
-    Persister&            persister_;
+    void try_create_snapshot();
+
+private:
+    uint64_t                 last_included_index_;
+    uint64_t                 last_included_term_;
+    std::vector<std::string> keys_;
+    std::vector<LogEntry>    entries_;
+    Persister&               persister_;
 };
 } // namespace vosfs::raft::detail

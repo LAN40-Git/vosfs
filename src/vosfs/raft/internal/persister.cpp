@@ -73,10 +73,11 @@ auto vosfs::raft::detail::Persister::truncate(
 }
 
 auto vosfs::raft::detail::Persister::truncate_batch(
-    const std::vector<std::string>& keys) const -> Result<void> {
+    const std::vector<std::string>& keys, uint64_t start_index, std::size_t size) const -> Result<void> {
     rocksdb::WriteBatch write_batch;
-    for (const auto& key : keys) {
-        write_batch.Delete(key);
+    while (size > 0) {
+        --size;
+        write_batch.Delete(keys[start_index++]);
     }
     if (auto status = engine_.batch_write(write_batch); !status.ok()) {
         LOG_ERROR("truncate batch failed : {}", status.ToString());
@@ -87,12 +88,22 @@ auto vosfs::raft::detail::Persister::truncate_batch(
 
 auto vosfs::raft::detail::Persister::create_snapshot(
     uint64_t last_included_index,
-    uint64_t last_included_term) const -> Result<void> {
+    uint64_t last_included_term,
+    const std::vector<std::string>& keys) const -> Result<void> {
     auto snap_file_name = std::to_string(last_included_index) + "-" + std::to_string(last_included_term) + ".snap";
     std::filesystem::path snap_dir = SNAP_DIR;
-    if (auto status = engine_.create_checkpoint(snap_dir / snap_file_name); !status.ok()) {
+    std::filesystem::path snap_path = snap_dir / snap_file_name;
+    if (auto status = engine_.create_checkpoint(snap_path); !status.ok()) {
         LOG_ERROR("create snapshot failed : {}", status.ToString());
         return std::unexpected{make_error(Error::kCreateSnapshotFailed)};
     }
+
+    // 清理已经生成快照的持久化日志条目
+    if (auto ret = truncate_batch(keys, 0, SNAPSHOT_INTERVAL); !ret) {
+        // 清理失败，删除快照
+        std::filesystem::remove_all(snap_path);
+        return std::unexpected{make_error(Error::kCreateSnapshotFailed)};
+    }
+
     return Result<void>{};
 }
