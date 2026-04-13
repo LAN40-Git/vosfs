@@ -25,8 +25,6 @@ public:
         kSendRpcRequestFailed,
         kJsonParseFailed,
         kRepeatedPeer,
-        kRaftConfigFileOpenFailed,
-        kRaftConfigFileWriteFailed,
         kLocalNodeNotFound,
         kBindFailed,
         kConnectionShutdown,

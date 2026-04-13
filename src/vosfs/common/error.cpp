@@ -36,10 +36,6 @@ auto vosfs::Error::message() const noexcept -> std::string_view {
             return "Failed to parse json object.";
         case kRepeatedPeer:
             return "Find repeated peer.";
-        case kRaftConfigFileOpenFailed:
-            return "Failed to open raft configuration file.";
-        case kRaftConfigFileWriteFailed:
-            return "Failed to write configuration file.";
         case kLocalNodeNotFound:
             return "Failed to find local node.";
         case kBindFailed:

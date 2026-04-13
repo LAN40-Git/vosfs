@@ -2,6 +2,19 @@
 #include <ranges>
 
 auto vosfs::raft::RaftNode::create(std::string_view data_dir) -> kosio::async::Task<Result<std::unique_ptr<RaftNode>>> {
+    // 创建 RPC 服务层
+    auto has_raft_rpc_server = co_await rpc::RpcProvider::create(RAFT_RPC_PORT, rpc::RpcProvider::AuthMode::NONE);
+    if (!has_raft_rpc_server) {
+        co_return std::unexpected{has_raft_rpc_server.error()};
+    }
+    auto raft_rpc_server = std::move(has_raft_rpc_server.value());
+
+    auto has_client_rpc_server = co_await rpc::RpcProvider::create(CLIENT_RPC_PORT, rpc::RpcProvider::AuthMode::REQUIRED);
+    if (!has_client_rpc_server) {
+        co_return std::unexpected{has_client_rpc_server.error()};
+    }
+    auto client_rpc_server = std::move(has_client_rpc_server.value());
+
     // 创建持久层
     auto has_persister = Persister::create(data_dir);
     if (!has_persister) {
@@ -9,13 +22,32 @@ auto vosfs::raft::RaftNode::create(std::string_view data_dir) -> kosio::async::T
     }
     auto persister = std::move(has_persister.value());
 
-    // 获得所有持久化数据
+    // 创建日志层
+    auto has_logs = detail::RaftLog::create(persister);
+    if (!has_logs) {
+        co_return std::unexpected{has_logs.error()};
+    }
+    auto logs = std::move(has_logs.value());
+
+    // 创建通信层
+    auto has_transport = co_await detail::Transport::create(persister);
+    if (!has_transport) {
+        co_return std::unexpected{has_transport.error()};
+    }
+
+    // 加载 HardState
+    auto has_hard_state = persister.load_hard_state();
+    if (!has_hard_state) {
+        co_return std::unexpected{has_hard_state.error()};
+    }
+    auto hard_state = std::move(has_hard_state.value());
+
+    // 创建节点
 
 }
 
 auto vosfs::raft::RaftNode::shutdown() -> kosio::async::Task<void> {
     is_shutdown_.store(true, std::memory_order_release);
-    auto ret = co_await client_provider_->shutdown();
 }
 
 auto vosfs::raft::RaftNode::election_loop() -> kosio::async::Task<void> {
@@ -62,18 +94,16 @@ auto vosfs::raft::RaftNode::heartbeat_loop() -> kosio::async::Task<void> {
 }
 
 void vosfs::raft::RaftNode::do_election() {
-    // 为自己投票
-    votes_ = 1;
-    voted_for_ = transport_.member_id();
-    // 更新任期
-    current_term_.fetch_add(1, std::memory_order_relaxed);
-    // 进化为候选人
+    votes_ = 0;
+    auto current_term = hard_state_.current_term();
+    hard_state_.set_current_term(current_term+1);
+    hard_state_.set_voted_for(transport_.member_id());
     role_.store(kCandidate, std::memory_order_relaxed);
-    // 持久化
     persist_hard_state();
+
     // 广播选举请求
     auto request = detail::MessageFactory::make_request_vote_request(
-        current_term_.load(std::memory_order_relaxed),
+        hard_state_.current_term(),
         transport_.member_id(),
         logs_.last_log_index(),
         logs_.last_log_term());
@@ -86,16 +116,18 @@ void vosfs::raft::RaftNode::do_election() {
             co_await this->handle_request_vote_response(resp_payload);
         }));
 
-    if (++votes_ > transport_.peer_count() / 2 &&
+    // 为自己投票并尝试成为 Leader（当只有一个节点时生效）
+    ++votes_;
+    if (votes_ > transport_.peer_count() / 2 &&
             role_.load(std::memory_order_relaxed) == kCandidate) {
         become_leader();
     }
 }
 
 void vosfs::raft::RaftNode::do_heartbeat() {
-    auto current_term = current_term_.load(std::memory_order_relaxed);
+    auto current_term = hard_state_.current_term();
     auto leader_id  = transport_.member_id();
-    auto commit_index = commit_index_;
+    auto commit_index = hard_state_.commit_index();
     auto last_log_index = logs_.last_log_index();
 
     // 发送心跳
@@ -138,21 +170,16 @@ void vosfs::raft::RaftNode::do_heartbeat() {
 }
 
 void vosfs::raft::RaftNode::increase_term_to(uint64_t term) {
-    // 获得的票数设置为0
     votes_ = 0;
-    // 重置投票对象
-    voted_for_.reset();
-    // 更新当前任期
-    current_term_.store(term, std::memory_order_release);
-    // 退化为追随者
+    hard_state_.clear_voted_for();
+    hard_state_.set_current_term(term);
     role_.store(kFollower, std::memory_order_release);
-    // 持久化
     persist_hard_state();
 }
 
 void vosfs::raft::RaftNode::become_leader() {
     votes_ = 0;
-    voted_for_.reset();
+    hard_state_.clear_voted_for();
     role_.store(kLeader, std::memory_order_release);
     persist_hard_state();
     leader_id_ = transport_.member_id();
@@ -164,23 +191,17 @@ void vosfs::raft::RaftNode::become_leader() {
 }
 
 void vosfs::raft::RaftNode::apply_to_state_machine() {
-    auto size = commit_index_ - last_applied_;
+    auto commit_index = hard_state_.commit_index();
+    auto size = commit_index - last_applied_;
     state_machine_.apply(logs_.get_entries_span(last_applied_ + 1, size));
-    last_applied_ = commit_index_;
+    last_applied_ = commit_index;
 }
 
-void vosfs::raft::RaftNode::persist_hard_state() {
-    hard_state_.set_current_term(current_term_.load(std::memory_order_relaxed));
-    if (voted_for_.has_value()) {
-        hard_state_.set_voted_for(voted_for_.value());
-    } else {
-        hard_state_.clear_voted_for();
-    }
-    hard_state_.set_commit_index(commit_index_);
-    auto ret = persister_.persist(HARD_STATE_KEY, hard_state_.SerializeAsString());
+void vosfs::raft::RaftNode::persist_hard_state() const {
+    auto ret = persister_.save_hard_state(hard_state_);
     if (!ret) {
-        LOG_FATAL("persist hard state failed : {}", ret.error());
-        // TODO: 关闭节点，标记为宕机，此时无法接收消息也无法发送消息
+        LOG_FATAL("{}", ret.error());
+        // TODO: 关闭所有通信，标记节点为宕机
     }
 }
 
@@ -199,7 +220,7 @@ auto vosfs::raft::RaftNode::handle_request_vote_request(
     co_await mutex_.lock();
     std::lock_guard lock(mutex_, std::adopt_lock);
 
-    auto current_term = current_term_.load(std::memory_order_relaxed);
+    auto current_term = hard_state_.current_term();
     if (term < current_term) {
         co_return detail::MessageFactory::make_request_vote_response(resp_payload, transport_.member_id(), current_term, false);
     }
@@ -218,10 +239,10 @@ auto vosfs::raft::RaftNode::handle_request_vote_request(
         up_to_date_log = true;
     }
 
-    bool can_vote = (!voted_for_.has_value() || voted_for_ == candidate_id) && up_to_date_log;
+    bool can_vote = (!hard_state_.has_voted_for() || hard_state_.voted_for() == candidate_id) && up_to_date_log;
 
     if (can_vote) {
-        voted_for_ = candidate_id;
+        hard_state_.set_voted_for(candidate_id);
     }
 
     co_return detail::MessageFactory::make_request_vote_response(resp_payload, transport_.member_id(), current_term, can_vote);
@@ -245,7 +266,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
     co_await mutex_.lock();
     std::lock_guard lock(mutex_, std::adopt_lock);
 
-    auto current_term = current_term_.load(std::memory_order_relaxed);
+    auto current_term = hard_state_.current_term();
     if (term < current_term) {
         co_return detail::MessageFactory::make_append_entries_response(
             resp_payload, transport_.member_id(), current_term, false, logs_.last_log_index());
@@ -281,27 +302,29 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
             }
 
             if (logs_.get_term(idx) != entry.term()) {
-                auto ret = logs_.truncate_entries(idx);
+                auto ret = persister_.truncate_entries(idx, logs_.last_log_index());
                 if (!ret) {
                     LOG_WARN("{}", ret.error());
                     co_return detail::MessageFactory::make_append_entries_response(
                         resp_payload, transport_.member_id(), current_term, false, logs_.last_log_index());
                 }
+                logs_.truncate_entries_before(idx);
                 break;
             }
         }
 
         // 追加并持久化日志
-        auto ret = logs_.append_entries(entries);
+        auto ret = persister_.save_entries(entries);
         if (!ret) {
             LOG_WARN("{}", ret.error());
             co_return detail::MessageFactory::make_append_entries_response(
                 resp_payload, transport_.member_id(), current_term, false, logs_.last_log_index());
         }
+        logs_.append_entries(entries);
     }
 
-    if (leader_commit > commit_index_) {
-        commit_index_ = std::min(logs_.last_log_index(), leader_commit);
+    if (leader_commit > hard_state_.commit_index()) {
+        hard_state_.set_commit_index(std::min(logs_.last_log_index(), leader_commit));
         apply_to_state_machine();
     }
 
@@ -330,14 +353,14 @@ auto vosfs::raft::RaftNode::handle_request_vote_response(std::string_view resp_p
     auto term = response.term();
     auto vote_granted = response.vote_granted();
 
-    if (term < current_term_.load(std::memory_order_acquire)) {
+    if (term < hard_state_.current_term()) {
         co_return;
     }
 
     co_await mutex_.lock();
     std::lock_guard lock(mutex_, std::adopt_lock);
 
-    auto current_term = current_term_.load(std::memory_order_relaxed);
+    auto current_term = hard_state_.current_term();
     if (term < current_term) {
         co_return;
     }
@@ -371,7 +394,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_response(std::string_view resp
     auto success = response.success();
     auto last_log_index = response.last_log_index();
 
-    if (term < current_term_.load(std::memory_order_acquire) ||
+    if (term < hard_state_.current_term() ||
         role_.load(std::memory_order_acquire) != kLeader) {
         co_return;
     }
@@ -379,7 +402,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_response(std::string_view resp
     co_await mutex_.lock();
     std::lock_guard lock(mutex_, std::adopt_lock);
 
-    auto current_term = current_term_.load(std::memory_order_relaxed);
+    auto current_term = hard_state_.current_term();
     if (term < current_term ||
         role_.load(std::memory_order_relaxed) != kLeader) {
         co_return;
@@ -406,8 +429,11 @@ auto vosfs::raft::RaftNode::handle_append_entries_response(std::string_view resp
         idxs.push_back(idx);
     }
     std::ranges::sort(idxs);
-    commit_index_ = idxs[idxs.size()/2];
-    apply_to_state_machine();
+    if (idxs[idxs.size()/2] != hard_state_.commit_index()) {
+        hard_state_.set_commit_index(idxs[idxs.size()/2]);
+        persist_hard_state();
+        apply_to_state_machine();
+    }
 }
 
 auto vosfs::raft::RaftNode::handle_install_snapshot_response(std::string_view resp_payload) -> kosio::async::Task<void> {

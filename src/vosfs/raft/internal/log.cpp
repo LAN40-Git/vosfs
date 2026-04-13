@@ -1,6 +1,23 @@
 #include "vosfs/raft/internal/log.hpp"
 #include <kosio/common/debug.hpp>
 
+auto vosfs::raft::detail::RaftLog::create(const Persister& persister) -> Result<RaftLog> {
+    // 恢复快照元数据
+    auto has_snapshot_metadata = persister.load_snapshot_metadata();
+    if (!has_snapshot_metadata) {
+        return std::unexpected{has_snapshot_metadata.error()};
+    }
+    auto snapshot_metadata = std::move(has_snapshot_metadata.value());
+
+    // 恢复日志
+    auto has_entries = persister.load_entries(snapshot_metadata.last_included_index());
+    if (!has_entries) {
+        return std::unexpected{has_entries.error()};
+    }
+    auto entries = std::move(has_entries.value());
+    return RaftLog{std::move(snapshot_metadata), std::move(entries)};
+}
+
 auto vosfs::raft::detail::RaftLog::last_included_index() const noexcept -> uint64_t {
     return snapshot_metadata_.last_included_index();
 }

@@ -1,15 +1,19 @@
 #pragma once
 #include <span>
 #include "raft.pb.h"
+#include "vosfs/raft/persister.hpp"
 
 namespace vosfs::raft::detail {
 class RaftLog {
-public:
+private:
     explicit RaftLog(
         SnapshotMetadata&& snapshot_metadata,
         std::vector<LogEntry>&& entries)
         : snapshot_metadata_(std::move(snapshot_metadata))
         , entries_(std::move(entries)) {}
+
+public:
+    static auto create(const Persister& persister) -> Result<RaftLog>;
 
 public:
     [[nodiscard]] auto last_included_index() const noexcept -> uint64_t;

@@ -1,9 +1,22 @@
 #include "vosfs/raft/internal/transport.hpp"
 #include <ranges>
 
-auto vosfs::raft::detail::Transport::create(ClusterInfo&& cluster_info, NodeInfo&& node_info) -> kosio::async::Task<Result<Transport>> {
-    auto node_infos = cluster_info.node_infos();
+auto vosfs::raft::detail::Transport::create(const Persister& persister) -> kosio::async::Task<Result<Transport>> {
+    // 恢复节点信息
+    auto has_node_info = persister.load_node_info();
+    if (!has_node_info) {
+        co_return std::unexpected{has_node_info.error()};
+    }
+    auto node_info = std::move(has_node_info.value());
 
+    // 恢复集群信息
+    auto has_cluster_info = persister.load_cluster_info();
+    if (!has_cluster_info) {
+        co_return std::unexpected{has_cluster_info.error()};
+    }
+    auto cluster_info = std::move(has_cluster_info.value());
+
+    auto& node_infos = cluster_info.node_infos();
     PeerMap peers;
     for (auto& info : node_infos) {
         if (info.id() == node_info.id()) {

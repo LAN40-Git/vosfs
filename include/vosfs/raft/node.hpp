@@ -7,7 +7,7 @@
 namespace vosfs::raft {
 class RaftNode {
 private:
-    //explicit RaftNode() {}
+    explicit RaftNode() {}
 
 public:
     static auto create(std::string_view data_dir) -> kosio::async::Task<Result<std::unique_ptr<RaftNode>>>;
@@ -25,7 +25,7 @@ private:
     void increase_term_to(uint64_t term);
     void become_leader();
     void apply_to_state_machine();
-    void persist_hard_state();
+    void persist_hard_state() const;
 
 private:
     [[REMEMBER_CO_AWAIT]]
@@ -52,29 +52,30 @@ private:
 
 private:
     enum Role { kLeader, kFollower, kCandidate };
+    using RpcServer = std::unique_ptr<rpc::RpcProvider>;
 
-    kosio::sync::Mutex                mutex_;
-    std::atomic<bool>                 is_shutdown_{false};
-    std::atomic<uint64_t>             last_reset_time_{0};
-    detail::Transport                 transport_;
-    std::atomic<Role>                 role_{kFollower};
-    std::size_t                       votes_{0};
-    std::optional<uint64_t>           leader_id_{std::nullopt};
-    std::unique_ptr<rpc::RpcProvider> raft_provider_;
-    std::unique_ptr<rpc::RpcProvider> client_provider_;
+    kosio::sync::Mutex    mutex_;
+    std::atomic<bool>     is_shutdown_{false};
+    std::atomic<uint64_t> last_reset_time_{0};
+    Persister             persister_;
+    detail::RaftLog       logs_;
+    detail::StateMachine  state_machine_;
+    detail::Transport     transport_;
+    RpcServer             raft_rpc_server_;
+    RpcServer             client_rpc_server_;
 
     /* RaftState from https://raft.github.io/raft.pdf */
     // Persistent state on all servers
     HardState               hard_state_;
     // std::atomic<uint64_t>   current_term_;
     // std::optional<uint64_t> voted_for_;
-    detail::RaftLog         logs_;
-    Persister               persister_;
-    detail::StateMachine    state_machine_;
+    //uint64_t commit_index_{0};
 
     // Volatile state on all servers
-    //uint64_t commit_index_{0};
-    uint64_t last_applied_{0};
+    std::size_t             votes_{0};
+    std::atomic<Role>       role_{kFollower};
+    uint64_t                last_applied_{0};
+    std::optional<uint64_t> leader_id_{std::nullopt};
 
     // Volatile state on leaders
     std::unordered_map<uint64_t, uint64_t> next_index_{};

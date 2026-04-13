@@ -20,7 +20,7 @@ private:
         , peers_(std::move(peers)) {}
 
 public:
-    static auto create(ClusterInfo&& cluster_info, NodeInfo&& node_info) -> kosio::async::Task<Result<Transport>>;
+    static auto create(const Persister& persister) -> kosio::async::Task<Result<Transport>>;
 
 public:
     [[REMEMBER_CO_AWAIT]]
