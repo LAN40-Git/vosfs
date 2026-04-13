@@ -1,21 +1,12 @@
 #include "vosfs/raft/internal/peer.hpp"
 
-vosfs::raft::detail::Peer::Peer(
-    uint64_t member_id, std::string_view name, std::string_view host,
-    std::unique_ptr<rpc::RpcConsumer> consumer)
-    : member_id_(member_id)
-    , name_(name)
-    , host_(host)
-    , consumer_(std::move(consumer)) {}
-
-auto vosfs::raft::detail::Peer::create(uint64_t member_id, std::string_view name,
-    std::string_view host) -> kosio::async::Task<Result<Peer>> {
-    // try to connect to the raft node at host:RAFT:PROVIDER_PORT
-    auto ret = co_await rpc::RpcConsumer::create(host, RAFT_PROVIDER_PORT);
+auto vosfs::raft::detail::Peer::create(const NodeInfo& node_info) -> kosio::async::Task<Result<Peer>> {
+    // try to connect to the raft node at host:RAFT_PROVIDER_PORT
+    auto ret = co_await rpc::RpcConsumer::create(node_info.host(), RAFT_PROVIDER_PORT);
     if (!ret) {
         co_return std::unexpected{make_error(Error::kCreatePeerFailed)};
     }
-    co_return Peer(member_id, name, host, std::move(ret.value()));
+    co_return Peer(node_info, std::move(ret.value()));
 }
 
 auto vosfs::raft::detail::Peer::check_status() const -> kosio::async::Task<Result<void>> {

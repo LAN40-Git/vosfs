@@ -43,19 +43,26 @@ message AppendEntriesResponse {
     optional uint64 conflict_index = 5;
 }
 
-message ConfState {
-    repeated uint64 nodes = 1;
+message NodeInfo {
+    uint64 id = 1;
+    string name = 2;
+    string host = 3;
+}
+
+message ClusterInfo {
+    uint64 id = 1;
+    repeated NodeInfo node_infos = 2;
 }
 
 message SnapshotMetadata {
-    ConfState conf_state = 1;
-    uint64 last_included_index = 2;
-    uint64 last_included_term = 3;
+    uint64 last_included_index = 1;
+    uint64 last_included_term = 2;
 }
 
 message Snapshot {
-    bytes data = 1;
+    bytes data = 1; // 状态机的二进制数据
     SnapshotMetadata snapshot_metadata = 2;
+    repeated NodeInfo node_infos = 3;
 }
 
 message InstallSnapshotRequest {

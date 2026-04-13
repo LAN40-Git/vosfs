@@ -1,13 +1,14 @@
 #pragma once
 #include <cstdint>
+#include "vosfs/api/serverpb/raft.pb.h"
 #include "vosfs/rpc/consumer.hpp"
-#include "vosfs/raft/internal/config.hpp"
+#include "vosfs/raft/config.hpp"
 
 namespace vosfs::raft::detail {
 class Peer {
 private:
-    explicit Peer(uint64_t member_id, std::string_view name,
-        std::string_view host, std::unique_ptr<rpc::RpcConsumer> consumer);
+    explicit Peer(const NodeInfo& node_info, std::unique_ptr<rpc::RpcConsumer> consumer)
+        : node_info_(node_info), consumer_(std::move(consumer)) {}
 
 public:
     Peer(const Peer&) = delete;
@@ -17,15 +18,15 @@ public:
 
 public:
     [[nodiscard]]
-    auto member_id() const noexcept -> uint64_t { return member_id_; }
+    auto member_id() const noexcept -> uint64_t { return node_info_.id(); }
     [[nodiscard]]
-    auto name() const noexcept -> std::string_view { return name_; }
+    auto name() const noexcept -> std::string_view { return node_info_.name(); }
     [[nodiscard]]
-    auto host() const noexcept -> std::string_view { return host_; }
+    auto host() const noexcept -> std::string_view { return node_info_.host(); }
 
 public:
     [[REMEMBER_CO_AWAIT]]
-    static auto create(uint64_t member_id, std::string_view name, std::string_view host) -> kosio::async::Task<Result<Peer>>;
+    static auto create(const NodeInfo& node_info) -> kosio::async::Task<Result<Peer>>;
 
 public:
     [[REMEMBER_CO_AWAIT]]
@@ -50,9 +51,7 @@ public:
         rpc::RpcCallback&& callback) const -> kosio::async::Task<Result<void>>;
 
 private:
-    uint64_t                          member_id_;
-    std::string                       name_;
-    std::string                       host_;
+    NodeInfo node_info_;
     // connection to this peer
     std::unique_ptr<rpc::RpcConsumer> consumer_;
 };

@@ -1,41 +1,6 @@
 #include "vosfs/raft/internal/log.hpp"
 #include <kosio/common/debug.hpp>
 
-auto vosfs::raft::detail::RaftLog::create(Persister& persister) -> Result<RaftLog> {
-    // recover snapshot metadata
-    std::string snapshot_metadata_payload;
-    SnapshotMetadata snapshot_metadata;
-    if (auto ret = persister.recover(SNAPSHOT_METADATA_KEY, &snapshot_metadata_payload); !ret) {
-        return std::unexpected{ret.error()};
-    }
-
-    if (!snapshot_metadata.ParseFromString(snapshot_metadata_payload)) {
-        return std::unexpected{make_error(Error::kProtoParseFailed)};
-    }
-    auto last_included_index = snapshot_metadata.last_included_index();
-    auto last_included_term = snapshot_metadata.last_included_term();
-
-    // recover entries
-    uint64_t i = last_included_index + 1;
-    std::vector<LogEntry> entries;
-    while (true) {
-        auto key = LOG_ENTRY_PREFIX + std::to_string(i++);
-        std::string entry_payload;
-        auto ret = persister.recover(key, &entry_payload);
-        if (!ret) {
-            break;
-        }
-
-        LogEntry entry;
-        if (!entry.ParseFromString(entry_payload)) {
-            return std::unexpected{make_error(Error::kProtoParseFailed)};
-        }
-        entries.emplace_back(std::move(entry));
-    }
-
-    return RaftLog{persister, std::move(snapshot_metadata),std::move(entries)};
-}
-
 auto vosfs::raft::detail::RaftLog::last_included_index() const noexcept -> uint64_t {
     return snapshot_metadata_.last_included_index();
 }
@@ -95,38 +60,18 @@ auto vosfs::raft::detail::RaftLog::get_entries_span(
     return std::span{entries_.begin() + arr_idx, size};
 }
 
-auto vosfs::raft::detail::RaftLog::append_entry(LogEntry&& entry) -> Result<void> {
-    auto key = LOG_ENTRY_PREFIX + std::to_string(entry.index());
-    auto value = entry.SerializeAsString();
-    auto ret = persister_.persist(key, value);
-    if (!ret) {
-        return ret;
-    }
+void vosfs::raft::detail::RaftLog::append_entry(LogEntry&& entry) {
     entries_.emplace_back(std::move(entry));
-    // 尝试创建快照
-    return ret;
 }
 
-auto vosfs::raft::detail::RaftLog::append_entries(const google::protobuf::RepeatedPtrField<LogEntry>& entries) -> Result<void> {
-    std::vector<KV> kvs;
+void vosfs::raft::detail::RaftLog::append_entries(const google::protobuf::RepeatedPtrField<LogEntry>& entries){
     for (const auto& entry : entries) {
-        kvs.emplace_back(LOG_ENTRY_PREFIX + std::to_string(entry.index()), entry.SerializeAsString());
+        entries_.push_back(entry);
     }
-    auto ret = persister_.persist_batch(kvs);
-    if (ret) {
-        for (const auto& entry : entries) {
-            entries_.push_back(entry);
-        }
-    }
-    return ret;
 }
 
-auto vosfs::raft::detail::RaftLog::truncate_entries(uint64_t index) -> Result<void> {
+void vosfs::raft::detail::RaftLog::truncate_entries_before(uint64_t index) {
     assert(index > last_included_index() && index <= last_log_index());
-    auto arr_idx = index - last_included_index() - 1;
-    auto ret = persister_.truncate_batch(keys_, arr_idx, entries_.size() - arr_idx + 1);
-    if (ret) {
-        entries_.erase(entries_.begin() + arr_idx, entries_.end());
-    }
-    return ret;
+    uint64_t arr_idx = index - last_included_index() - 1;
+    entries_.erase(entries_.begin() + arr_idx, entries_.end());
 }

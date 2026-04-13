@@ -1,44 +1,32 @@
 #include "vosfs/raft/internal/transport.hpp"
+#include <ranges>
 
-auto vosfs::raft::detail::Transport::create(RaftCluster&& cluster) -> kosio::async::Task<Result<Transport>> {
-    // // create raft provider
-    // auto ret = co_await rpc::RpcProvider::create(RAFT_PROVIDER_PORT, rpc::RpcProvider::AuthMode::NONE);
-    // if (!ret) {
-    //     LOG_ERROR("{}", ret.error());
-    //     co_return std::unexpected{make_error(Error::kCreateProviderFailed)};
-    // }
-    // auto raft_provider = std::move(ret.value());
-    // // create client provider
-    // ret = co_await rpc::RpcProvider::create(CLIENT_PROVIDER_PORT, rpc::RpcProvider::AuthMode::REQUIRED);
-    // if (!ret) {
-    //     LOG_ERROR("{}", ret.error());
-    //     co_return std::unexpected{make_error(Error::kCreateProviderFailed)};
-    // }
-    // auto client_provider = std::move(ret.value());
-    co_return Transport(std::move(cluster));
+auto vosfs::raft::detail::Transport::create(ClusterInfo&& cluster_info, NodeInfo&& node_info) -> kosio::async::Task<Result<Transport>> {
+    auto node_infos = cluster_info.node_infos();
+
+    PeerMap peers;
+    for (auto& info : node_infos) {
+        if (info.id() == node_info.id()) {
+            continue;
+        }
+
+        auto ret = co_await Peer::create(std::move(info));
+        if (!ret) {
+            co_return std::unexpected{ret.error()};
+        }
+        auto peer = std::move(ret.value());
+        peers.emplace(peer.member_id(), std::move(ret.value()));
+    }
+
+    co_return Transport{std::move(cluster_info), std::move(node_info), std::move(peers)};
 }
-
-// void vosfs::raft::detail::Transport::run() const {
-//     kosio::spawn(raft_provider_->run());
-//     kosio::spawn(client_provider_->run());
-// }
-//
-// auto vosfs::raft::detail::Transport::shutdown() const -> kosio::async::Task<Result<void>> {
-//     auto ret = co_await raft_provider_->shutdown();
-//     if (!ret) {
-//         co_return ret;
-//     }
-//     ret = co_await client_provider_->shutdown();
-//     co_return ret;
-// }
 
 auto vosfs::raft::detail::Transport::unicast_request(
     uint64_t peer_id, rpc::ServiceType service_type,
     rpc::MethodType method_type, std::string_view req_payload, const rpc::RpcCallback& callback)
     -> kosio::async::Task<void> {
-    auto& peers = cluster_.peers();
-    auto it = peers.find(peer_id);
-    if (it == peers.end()) {
+    auto it = peers_.find(peer_id);
+    if (it == peers_.end()) {
         LOG_ERROR("peer {} not found", peer_id);
         co_return;
     }
@@ -58,9 +46,8 @@ auto vosfs::raft::detail::Transport::unicast_request(
 auto vosfs::raft::detail::Transport::unicast_request(uint64_t peer_id, rpc::ServiceType service_type,
     rpc::MethodType method_type, std::string&& req_payload, rpc::RpcCallback&& callback)
     -> kosio::async::Task<void> {
-    auto& peers = cluster_.peers();
-    auto it = peers.find(peer_id);
-    if (it == peers.end()) {
+    auto it = peers_.find(peer_id);
+    if (it == peers_.end()) {
         LOG_ERROR("peer {} not found", peer_id);
         co_return;
     }
@@ -79,8 +66,7 @@ auto vosfs::raft::detail::Transport::unicast_request(uint64_t peer_id, rpc::Serv
 auto vosfs::raft::detail::Transport::broadcast_request(rpc::ServiceType service_type, rpc::MethodType method_type,
     std::string_view req_payload, const rpc::RpcCallback& callback)
     -> kosio::async::Task<void> {
-    auto& peers = cluster_.peers();
-    for (auto& peer : peers | std::views::values) {
+    for (auto& peer : peers_ | std::views::values) {
         if (auto ret = co_await peer.check_status(); !ret) {
             LOG_ERROR("{}", ret.error());
             continue;
@@ -96,8 +82,7 @@ auto vosfs::raft::detail::Transport::broadcast_request(
     rpc::ServiceType service_type, rpc::MethodType method_type,
     std::string&& req_payload, rpc::RpcCallback&& callback)
     -> kosio::async::Task<void> {
-    auto& peers = cluster_.peers();
-    for (auto& peer : peers | std::views::values) {
+    for (auto& peer : peers_ | std::views::values) {
         if (auto ret = co_await peer.check_status(); !ret) {
             LOG_ERROR("{}", ret.error());
             continue;

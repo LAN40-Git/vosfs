@@ -1,21 +1,15 @@
 #pragma once
-#include "vosfs/api/serverpb/raft.pb.h"
-#include "vosfs/raft/internal/persister.hpp"
+#include <span>
+#include "raft.pb.h"
 
 namespace vosfs::raft::detail {
 class RaftLog {
-    static constexpr std::string LOG_ENTRY_PREFIX = "raft/log/";
-private:
+public:
     explicit RaftLog(
-        Persister& persister,
         SnapshotMetadata&& snapshot_metadata,
         std::vector<LogEntry>&& entries)
-        : persister_(persister)
-        , snapshot_metadata_(std::move(snapshot_metadata))
+        : snapshot_metadata_(std::move(snapshot_metadata))
         , entries_(std::move(entries)) {}
-
-public:
-    static auto create(Persister& persister) -> Result<RaftLog>;
 
 public:
     [[nodiscard]] auto last_included_index() const noexcept -> uint64_t;
@@ -34,14 +28,13 @@ public:
 
     [[nodiscard]] auto get_entries_span(uint64_t index, std::size_t size) const -> std::span<const LogEntry>;
 
-    [[nodiscard]] auto append_entry(LogEntry&& entry) -> Result<void>;
+    void append_entry(LogEntry&& entry);
 
-    [[nodiscard]] auto append_entries(const google::protobuf::RepeatedPtrField<LogEntry>& entries) -> Result<void>;
+    void append_entries(const google::protobuf::RepeatedPtrField<LogEntry>& entries);
 
-    [[nodiscard]] auto truncate_entries(uint64_t index) -> Result<void>;
+    void truncate_entries_before(uint64_t index);
 
 private:
-    Persister&               persister_;
     SnapshotMetadata         snapshot_metadata_;
     std::vector<LogEntry>    entries_;
 };

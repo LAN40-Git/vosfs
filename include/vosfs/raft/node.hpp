@@ -7,10 +7,10 @@
 namespace vosfs::raft {
 class RaftNode {
 private:
-    // explicit RaftNode() {}
+    //explicit RaftNode() {}
 
 public:
-    static auto create() -> kosio::async::Task<Result<std::unique_ptr<RaftNode>>>;
+    static auto create(std::string_view data_dir) -> kosio::async::Task<Result<std::unique_ptr<RaftNode>>>;
 
 public:
     auto shutdown() -> kosio::async::Task<void>;
@@ -65,15 +65,15 @@ private:
 
     /* RaftState from https://raft.github.io/raft.pdf */
     // Persistent state on all servers
-    HardState                hard_state_;
-    std::atomic<uint64_t>    current_term_;
-    std::optional<uint64_t>  voted_for_;
-    detail::RaftLog          logs_;
-    detail::Persister        persister_;
-    detail::StateMachine     state_machine_;
+    HardState               hard_state_;
+    // std::atomic<uint64_t>   current_term_;
+    // std::optional<uint64_t> voted_for_;
+    detail::RaftLog         logs_;
+    Persister               persister_;
+    detail::StateMachine    state_machine_;
 
     // Volatile state on all servers
-    uint64_t commit_index_{0};
+    //uint64_t commit_index_{0};
     uint64_t last_applied_{0};
 
     // Volatile state on leaders

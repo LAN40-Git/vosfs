@@ -1,4 +1,17 @@
 #include "vosfs/raft/node.hpp"
+#include <ranges>
+
+auto vosfs::raft::RaftNode::create(std::string_view data_dir) -> kosio::async::Task<Result<std::unique_ptr<RaftNode>>> {
+    // 创建持久层
+    auto has_persister = Persister::create(data_dir);
+    if (!has_persister) {
+        co_return std::unexpected{has_persister.error()};
+    }
+    auto persister = std::move(has_persister.value());
+
+    // 获得所有持久化数据
+
+}
 
 auto vosfs::raft::RaftNode::shutdown() -> kosio::async::Task<void> {
     is_shutdown_.store(true, std::memory_order_release);
@@ -31,7 +44,7 @@ auto vosfs::raft::RaftNode::election_loop() -> kosio::async::Task<void> {
 
 auto vosfs::raft::RaftNode::heartbeat_loop() -> kosio::async::Task<void> {
     while (!is_shutdown_.load(std::memory_order_relaxed)) {
-        co_await kosio::time::sleep(detail::HEARTBEAT_INTERVAL);
+        co_await kosio::time::sleep(HEARTBEAT_INTERVAL);
 
         if (role_.load(std::memory_order_acquire) != kLeader) {
             continue;
@@ -98,7 +111,7 @@ void vosfs::raft::RaftNode::do_heartbeat() {
                 continue;
             }
 
-            auto batch_size = std::min(detail::MAX_ENTRIES_PER_APPEND, last_log_index - next_index + 1);
+            auto batch_size = std::min(MAX_ENTRIES_PER_APPEND, last_log_index - next_index + 1);
             entries = logs_.get_entries(next_index, batch_size);
         }
 
@@ -164,7 +177,7 @@ void vosfs::raft::RaftNode::persist_hard_state() {
         hard_state_.clear_voted_for();
     }
     hard_state_.set_commit_index(commit_index_);
-    auto ret = persister_.persist(detail::HARD_STATE_KEY, hard_state_.SerializeAsString());
+    auto ret = persister_.persist(HARD_STATE_KEY, hard_state_.SerializeAsString());
     if (!ret) {
         LOG_FATAL("persist hard state failed : {}", ret.error());
         // TODO: 关闭节点，标记为宕机，此时无法接收消息也无法发送消息
