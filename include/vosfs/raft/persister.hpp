@@ -8,7 +8,8 @@ class Persister {
     static constexpr std::string_view HARD_STATE_KEY = "raft/hard_state";
     static constexpr std::string_view NODE_INFO_KEY = "raft/node_info";
     static constexpr std::string_view CLUSTER_INFO_KEY = "raft/cluster_info";
-    static constexpr std::string_view SNAPSHOT_METADATA_KEY = "raft/snapshots/metadata";
+    static constexpr std::string_view SNAPSHOT_METADATA_KEY = "raft/snapshot_metadata";
+    static constexpr std::string_view SNAPSHOT_KEY = "raft/snapshot";
 
 private:
     explicit Persister(detail::RocksDBEngine engine)
@@ -45,6 +46,12 @@ public:
 
     [[nodiscard]]
     auto load_snapshot_metadata() const -> Result<SnapshotMetadata>;
+
+    [[nodiscard]]
+    auto save_snapshot(const std::string& snapshot_data) const -> Result<void>;
+
+    [[nodiscard]]
+    auto load_snapshot() const -> Result<Snapshot>;
 
     [[nodiscard]]
     auto save_entry(const LogEntry& entry) const -> Result<void>;

@@ -127,7 +127,7 @@ void vosfs::raft::RaftNode::do_election() {
 void vosfs::raft::RaftNode::do_heartbeat() {
     auto current_term = hard_state_.current_term();
     auto leader_id  = transport_.member_id();
-    auto commit_index = hard_state_.commit_index();
+    auto commit_index = commit_index_;
     auto last_log_index = logs_.last_log_index();
 
     // 发送心跳
@@ -183,18 +183,22 @@ void vosfs::raft::RaftNode::become_leader() {
     role_.store(kLeader, std::memory_order_release);
     persist_hard_state();
     leader_id_ = transport_.member_id();
-    // 更新每个Raft节点的 next_index
+    // 更新每个Raft节点的 next_index 和 match_index
     auto& peers = transport_.peers();
     for (const auto& peer : peers | std::views::values) {
         next_index_[peer.member_id()] = logs_.last_log_index() + 1;
+        match_index_[peer.member_id()] = 0;
     }
 }
 
 void vosfs::raft::RaftNode::apply_to_state_machine() {
-    auto commit_index = hard_state_.commit_index();
-    auto size = commit_index - last_applied_;
-    state_machine_.apply(logs_.get_entries_span(last_applied_ + 1, size));
-    last_applied_ = commit_index;
+    auto commit_index = commit_index_;
+    while (last_applied_ < commit_index) {
+        ++last_applied_;
+        state_machine_.apply(logs_.get_entry(last_applied_));
+        // TODO: 尝试创建快照
+
+    }
 }
 
 void vosfs::raft::RaftNode::persist_hard_state() const {
@@ -323,8 +327,8 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
         logs_.append_entries(entries);
     }
 
-    if (leader_commit > hard_state_.commit_index()) {
-        hard_state_.set_commit_index(std::min(logs_.last_log_index(), leader_commit));
+    if (leader_commit > commit_index_) {
+        commit_index_ = std::min(logs_.last_log_index(), leader_commit);
         apply_to_state_machine();
     }
 
@@ -340,7 +344,52 @@ auto vosfs::raft::RaftNode::handle_install_snapshot_request(
         co_return rpc::make_result(rpc::RpcResult::kMessageParseFailed);
     }
 
-    // TODO: 处理快照请求
+    auto term = request.term();
+    auto leader_id = request.leader_id();
+    auto last_included_index = request.last_included_index();
+    auto last_included_term = request.last_included_term();
+    auto offset = request.offset();
+    auto& data = request.data();
+    auto done = request.done();
+
+    co_await mutex_.lock();
+    std::lock_guard lock(mutex_, std::adopt_lock);
+
+    auto current_term = hard_state_.current_term();
+    if (term < current_term) {
+        co_return detail::MessageFactory::make_install_snapshot_response(resp_payload, current_term);
+    }
+
+    if (term > current_term) {
+        increase_term_to(term);
+        current_term = term;
+    }
+
+    leader_id_ = leader_id;
+    last_reset_time_.store(kosio::util::current_ms(), std::memory_order_relaxed);
+
+    if (offset == 0) {
+        snapshot_data_.clear();
+    }
+
+    snapshot_data_.append(data);
+
+    if (!done) {
+        co_return detail::MessageFactory::make_install_snapshot_response(resp_payload, current_term);
+    }
+
+    auto ret = persister_.save_snapshot(snapshot_data_);
+    if (!ret) {
+        LOG_WARN("{}", ret.error());
+    }
+
+    Snapshot snapshot;
+    if (!snapshot.ParseFromString(snapshot_data_)) {
+        LOG_WARN("failed to parse from snapshot data.");
+        co_return detail::MessageFactory::make_install_snapshot_response(resp_payload, current_term);
+    }
+
+    // TODO: 加载快照
 }
 
 auto vosfs::raft::RaftNode::handle_request_vote_response(std::string_view resp_payload) -> kosio::async::Task<void> {
@@ -429,9 +478,8 @@ auto vosfs::raft::RaftNode::handle_append_entries_response(std::string_view resp
         idxs.push_back(idx);
     }
     std::ranges::sort(idxs);
-    if (idxs[idxs.size()/2] != hard_state_.commit_index()) {
-        hard_state_.set_commit_index(idxs[idxs.size()/2]);
-        persist_hard_state();
+    if (idxs[idxs.size()/2] > commit_index_) {
+        commit_index_ = idxs[idxs.size()/2];
         apply_to_state_machine();
     }
 }

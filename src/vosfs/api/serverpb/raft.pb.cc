@@ -27,8 +27,7 @@ PROTOBUF_CONSTEXPR HardState::HardState(
     /*decltype(_impl_._has_bits_)*/{}
   , /*decltype(_impl_._cached_size_)*/{}
   , /*decltype(_impl_.current_term_)*/uint64_t{0u}
-  , /*decltype(_impl_.voted_for_)*/uint64_t{0u}
-  , /*decltype(_impl_.commit_index_)*/uint64_t{0u}} {}
+  , /*decltype(_impl_.voted_for_)*/uint64_t{0u}} {}
 struct HardStateDefaultTypeInternal {
   PROTOBUF_CONSTEXPR HardStateDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
@@ -149,35 +148,6 @@ struct ClusterInfoDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 ClusterInfoDefaultTypeInternal _ClusterInfo_default_instance_;
-PROTOBUF_CONSTEXPR SnapshotMetadata::SnapshotMetadata(
-    ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.last_included_index_)*/uint64_t{0u}
-  , /*decltype(_impl_.last_included_term_)*/uint64_t{0u}
-  , /*decltype(_impl_._cached_size_)*/{}} {}
-struct SnapshotMetadataDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR SnapshotMetadataDefaultTypeInternal()
-      : _instance(::_pbi::ConstantInitialized{}) {}
-  ~SnapshotMetadataDefaultTypeInternal() {}
-  union {
-    SnapshotMetadata _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 SnapshotMetadataDefaultTypeInternal _SnapshotMetadata_default_instance_;
-PROTOBUF_CONSTEXPR Snapshot::Snapshot(
-    ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.node_infos_)*/{}
-  , /*decltype(_impl_.data_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
-  , /*decltype(_impl_.snapshot_metadata_)*/nullptr
-  , /*decltype(_impl_._cached_size_)*/{}} {}
-struct SnapshotDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR SnapshotDefaultTypeInternal()
-      : _instance(::_pbi::ConstantInitialized{}) {}
-  ~SnapshotDefaultTypeInternal() {}
-  union {
-    Snapshot _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 SnapshotDefaultTypeInternal _Snapshot_default_instance_;
 PROTOBUF_CONSTEXPR InstallSnapshotRequest::InstallSnapshotRequest(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.data_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
@@ -211,137 +181,147 @@ struct InstallSnapshotResponseDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 InstallSnapshotResponseDefaultTypeInternal _InstallSnapshotResponse_default_instance_;
-PROTOBUF_CONSTEXPR ChunkInfo::ChunkInfo(
+PROTOBUF_CONSTEXPR SliceInfo::SliceInfo(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.offset_)*/uint64_t{0u}
-  , /*decltype(_impl_.size_)*/uint64_t{0u}
-  , /*decltype(_impl_.id_)*/0u
-  , /*decltype(_impl_._cached_size_)*/{}} {}
-struct ChunkInfoDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR ChunkInfoDefaultTypeInternal()
-      : _instance(::_pbi::ConstantInitialized{}) {}
-  ~ChunkInfoDefaultTypeInternal() {}
-  union {
-    ChunkInfo _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 ChunkInfoDefaultTypeInternal _ChunkInfo_default_instance_;
-PROTOBUF_CONSTEXPR FileInfo::FileInfo(
-    ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.path_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
-  , /*decltype(_impl_.name_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+    /*decltype(_impl_.address_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.id_)*/uint64_t{0u}
   , /*decltype(_impl_.size_)*/uint64_t{0u}
-  , /*decltype(_impl_.parent_id_)*/uint64_t{0u}
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct SliceInfoDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR SliceInfoDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~SliceInfoDefaultTypeInternal() {}
+  union {
+    SliceInfo _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 SliceInfoDefaultTypeInternal _SliceInfo_default_instance_;
+PROTOBUF_CONSTEXPR Inode::Inode(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.child_ino_)*/{}
+  , /*decltype(_impl_._child_ino_cached_byte_size_)*/{0}
+  , /*decltype(_impl_.slice_infos_)*/{}
+  , /*decltype(_impl_.name_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.ino_)*/uint64_t{0u}
+  , /*decltype(_impl_.parent_ino_)*/uint64_t{0u}
+  , /*decltype(_impl_.size_)*/uint64_t{0u}
+  , /*decltype(_impl_.ctime_)*/uint64_t{0u}
+  , /*decltype(_impl_.mtime_)*/uint64_t{0u}
   , /*decltype(_impl_.is_dir_)*/false
   , /*decltype(_impl_._cached_size_)*/{}} {}
-struct FileInfoDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR FileInfoDefaultTypeInternal()
+struct InodeDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR InodeDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
-  ~FileInfoDefaultTypeInternal() {}
+  ~InodeDefaultTypeInternal() {}
   union {
-    FileInfo _instance;
+    Inode _instance;
   };
 };
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 FileInfoDefaultTypeInternal _FileInfo_default_instance_;
-PROTOBUF_CONSTEXPR UploadFileRequest::UploadFileRequest(
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 InodeDefaultTypeInternal _Inode_default_instance_;
+PROTOBUF_CONSTEXPR SnapshotMetadata::SnapshotMetadata(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.chunk_infos_)*/{}
-  , /*decltype(_impl_.checksum_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
-  , /*decltype(_impl_.file_info_)*/nullptr
+    /*decltype(_impl_.last_included_index_)*/uint64_t{0u}
+  , /*decltype(_impl_.last_included_term_)*/uint64_t{0u}
   , /*decltype(_impl_._cached_size_)*/{}} {}
-struct UploadFileRequestDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR UploadFileRequestDefaultTypeInternal()
+struct SnapshotMetadataDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR SnapshotMetadataDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
-  ~UploadFileRequestDefaultTypeInternal() {}
+  ~SnapshotMetadataDefaultTypeInternal() {}
   union {
-    UploadFileRequest _instance;
+    SnapshotMetadata _instance;
   };
 };
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 UploadFileRequestDefaultTypeInternal _UploadFileRequest_default_instance_;
-PROTOBUF_CONSTEXPR DownloadFileRequest::DownloadFileRequest(
-    ::_pbi::ConstantInitialized) {}
-struct DownloadFileRequestDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR DownloadFileRequestDefaultTypeInternal()
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 SnapshotMetadataDefaultTypeInternal _SnapshotMetadata_default_instance_;
+PROTOBUF_CONSTEXPR Snapshot::Snapshot(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.inodes_)*/{}
+  , /*decltype(_impl_.node_infos_)*/{}
+  , /*decltype(_impl_.snapshot_metadata_)*/nullptr
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct SnapshotDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR SnapshotDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
-  ~DownloadFileRequestDefaultTypeInternal() {}
+  ~SnapshotDefaultTypeInternal() {}
   union {
-    DownloadFileRequest _instance;
+    Snapshot _instance;
   };
 };
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 DownloadFileRequestDefaultTypeInternal _DownloadFileRequest_default_instance_;
-PROTOBUF_CONSTEXPR DeleteFileRequest::DeleteFileRequest(
-    ::_pbi::ConstantInitialized) {}
-struct DeleteFileRequestDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR DeleteFileRequestDefaultTypeInternal()
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 SnapshotDefaultTypeInternal _Snapshot_default_instance_;
+PROTOBUF_CONSTEXPR CreateFilePrepareRequest::CreateFilePrepareRequest(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.slice_num_)*/uint64_t{0u}
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct CreateFilePrepareRequestDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CreateFilePrepareRequestDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
-  ~DeleteFileRequestDefaultTypeInternal() {}
+  ~CreateFilePrepareRequestDefaultTypeInternal() {}
   union {
-    DeleteFileRequest _instance;
+    CreateFilePrepareRequest _instance;
   };
 };
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 DeleteFileRequestDefaultTypeInternal _DeleteFileRequest_default_instance_;
-PROTOBUF_CONSTEXPR CreateFileRequest::CreateFileRequest(
-    ::_pbi::ConstantInitialized) {}
-struct CreateFileRequestDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR CreateFileRequestDefaultTypeInternal()
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CreateFilePrepareRequestDefaultTypeInternal _CreateFilePrepareRequest_default_instance_;
+PROTOBUF_CONSTEXPR CreateFilePrepareResponse::CreateFilePrepareResponse(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.slice_infos_)*/{}
+  , /*decltype(_impl_.ino_)*/uint64_t{0u}
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct CreateFilePrepareResponseDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CreateFilePrepareResponseDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
-  ~CreateFileRequestDefaultTypeInternal() {}
+  ~CreateFilePrepareResponseDefaultTypeInternal() {}
   union {
-    CreateFileRequest _instance;
+    CreateFilePrepareResponse _instance;
   };
 };
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CreateFileRequestDefaultTypeInternal _CreateFileRequest_default_instance_;
-PROTOBUF_CONSTEXPR CreateDirRequest::CreateDirRequest(
-    ::_pbi::ConstantInitialized) {}
-struct CreateDirRequestDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR CreateDirRequestDefaultTypeInternal()
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CreateFilePrepareResponseDefaultTypeInternal _CreateFilePrepareResponse_default_instance_;
+PROTOBUF_CONSTEXPR CreateFileCommitRequest::CreateFileCommitRequest(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.slice_infos_)*/{}
+  , /*decltype(_impl_.name_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.ino_)*/uint64_t{0u}
+  , /*decltype(_impl_.parent_ino_)*/uint64_t{0u}
+  , /*decltype(_impl_.size_)*/uint64_t{0u}
+  , /*decltype(_impl_.is_dir_)*/false
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct CreateFileCommitRequestDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CreateFileCommitRequestDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
-  ~CreateDirRequestDefaultTypeInternal() {}
+  ~CreateFileCommitRequestDefaultTypeInternal() {}
   union {
-    CreateDirRequest _instance;
+    CreateFileCommitRequest _instance;
   };
 };
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CreateDirRequestDefaultTypeInternal _CreateDirRequest_default_instance_;
-PROTOBUF_CONSTEXPR ListFileRequest::ListFileRequest(
-    ::_pbi::ConstantInitialized) {}
-struct ListFileRequestDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR ListFileRequestDefaultTypeInternal()
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CreateFileCommitRequestDefaultTypeInternal _CreateFileCommitRequest_default_instance_;
+PROTOBUF_CONSTEXPR CreateFileCommitResponse::CreateFileCommitResponse(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.success_)*/false
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct CreateFileCommitResponseDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CreateFileCommitResponseDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
-  ~ListFileRequestDefaultTypeInternal() {}
+  ~CreateFileCommitResponseDefaultTypeInternal() {}
   union {
-    ListFileRequest _instance;
+    CreateFileCommitResponse _instance;
   };
 };
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 ListFileRequestDefaultTypeInternal _ListFileRequest_default_instance_;
-PROTOBUF_CONSTEXPR ListDirRequest::ListDirRequest(
-    ::_pbi::ConstantInitialized) {}
-struct ListDirRequestDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR ListDirRequestDefaultTypeInternal()
-      : _instance(::_pbi::ConstantInitialized{}) {}
-  ~ListDirRequestDefaultTypeInternal() {}
-  union {
-    ListDirRequest _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 ListDirRequestDefaultTypeInternal _ListDirRequest_default_instance_;
-PROTOBUF_CONSTEXPR ClientCommand::ClientCommand(
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CreateFileCommitResponseDefaultTypeInternal _CreateFileCommitResponse_default_instance_;
+PROTOBUF_CONSTEXPR EntryCommand::EntryCommand(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.cmd_)*/{}
   , /*decltype(_impl_._cached_size_)*/{}
   , /*decltype(_impl_._oneof_case_)*/{}} {}
-struct ClientCommandDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR ClientCommandDefaultTypeInternal()
+struct EntryCommandDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR EntryCommandDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
-  ~ClientCommandDefaultTypeInternal() {}
+  ~EntryCommandDefaultTypeInternal() {}
   union {
-    ClientCommand _instance;
+    EntryCommand _instance;
   };
 };
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 ClientCommandDefaultTypeInternal _ClientCommand_default_instance_;
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 EntryCommandDefaultTypeInternal _EntryCommand_default_instance_;
 }  // namespace raft
 }  // namespace vosfs
-static ::_pb::Metadata file_level_metadata_raft_2eproto[22];
+static ::_pb::Metadata file_level_metadata_raft_2eproto[19];
 static constexpr ::_pb::EnumDescriptor const** file_level_enum_descriptors_raft_2eproto = nullptr;
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_raft_2eproto = nullptr;
 
@@ -354,10 +334,8 @@ const uint32_t TableStruct_raft_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pro
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::HardState, _impl_.current_term_),
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::HardState, _impl_.voted_for_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::HardState, _impl_.commit_index_),
   ~0u,
   0,
-  ~0u,
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::RequestVoteRequest, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -432,23 +410,6 @@ const uint32_t TableStruct_raft_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pro
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::ClusterInfo, _impl_.id_),
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::ClusterInfo, _impl_.node_infos_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::SnapshotMetadata, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::SnapshotMetadata, _impl_.last_included_index_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::SnapshotMetadata, _impl_.last_included_term_),
-  ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Snapshot, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Snapshot, _impl_.data_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Snapshot, _impl_.snapshot_metadata_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Snapshot, _impl_.node_infos_),
-  ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::InstallSnapshotRequest, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
@@ -470,103 +431,109 @@ const uint32_t TableStruct_raft_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pro
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::InstallSnapshotResponse, _impl_.id_),
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::InstallSnapshotResponse, _impl_.term_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::ChunkInfo, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::SliceInfo, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::ChunkInfo, _impl_.id_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::ChunkInfo, _impl_.offset_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::ChunkInfo, _impl_.size_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::SliceInfo, _impl_.id_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::SliceInfo, _impl_.size_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::SliceInfo, _impl_.address_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::FileInfo, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::FileInfo, _impl_.id_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::FileInfo, _impl_.path_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::FileInfo, _impl_.name_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::FileInfo, _impl_.size_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::FileInfo, _impl_.is_dir_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::FileInfo, _impl_.parent_id_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.ino_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.parent_ino_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.child_ino_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.size_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.name_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.ctime_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.mtime_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.is_dir_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.slice_infos_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::UploadFileRequest, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::SnapshotMetadata, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::UploadFileRequest, _impl_.file_info_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::UploadFileRequest, _impl_.chunk_infos_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::UploadFileRequest, _impl_.checksum_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::SnapshotMetadata, _impl_.last_included_index_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::SnapshotMetadata, _impl_.last_included_term_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::DownloadFileRequest, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Snapshot, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Snapshot, _impl_.inodes_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Snapshot, _impl_.snapshot_metadata_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Snapshot, _impl_.node_infos_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::DeleteFileRequest, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::CreateFilePrepareRequest, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::CreateFilePrepareRequest, _impl_.slice_num_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::CreateFileRequest, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::CreateFilePrepareResponse, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::CreateFilePrepareResponse, _impl_.ino_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::CreateFilePrepareResponse, _impl_.slice_infos_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::CreateDirRequest, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::CreateFileCommitRequest, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::CreateFileCommitRequest, _impl_.ino_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::CreateFileCommitRequest, _impl_.parent_ino_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::CreateFileCommitRequest, _impl_.size_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::CreateFileCommitRequest, _impl_.name_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::CreateFileCommitRequest, _impl_.is_dir_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::CreateFileCommitRequest, _impl_.slice_infos_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::ListFileRequest, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::CreateFileCommitResponse, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::CreateFileCommitResponse, _impl_.success_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::ListDirRequest, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::EntryCommand, _internal_metadata_),
   ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  ~0u,  // no _inlined_string_donated_
-  ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::ClientCommand, _internal_metadata_),
-  ~0u,  // no _extensions_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::ClientCommand, _impl_._oneof_case_[0]),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::EntryCommand, _impl_._oneof_case_[0]),
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   ::_pbi::kInvalidFieldOffsetTag,
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::ClientCommand, _impl_.cmd_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::EntryCommand, _impl_.cmd_),
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, 9, -1, sizeof(::vosfs::raft::HardState)},
-  { 12, -1, -1, sizeof(::vosfs::raft::RequestVoteRequest)},
-  { 22, -1, -1, sizeof(::vosfs::raft::RequestVoteResponse)},
-  { 31, -1, -1, sizeof(::vosfs::raft::LogEntry)},
-  { 40, -1, -1, sizeof(::vosfs::raft::AppendEntriesRequest)},
-  { 52, 63, -1, sizeof(::vosfs::raft::AppendEntriesResponse)},
-  { 68, -1, -1, sizeof(::vosfs::raft::NodeInfo)},
-  { 77, -1, -1, sizeof(::vosfs::raft::ClusterInfo)},
-  { 85, -1, -1, sizeof(::vosfs::raft::SnapshotMetadata)},
-  { 93, -1, -1, sizeof(::vosfs::raft::Snapshot)},
-  { 102, -1, -1, sizeof(::vosfs::raft::InstallSnapshotRequest)},
-  { 115, -1, -1, sizeof(::vosfs::raft::InstallSnapshotResponse)},
-  { 123, -1, -1, sizeof(::vosfs::raft::ChunkInfo)},
-  { 132, -1, -1, sizeof(::vosfs::raft::FileInfo)},
-  { 144, -1, -1, sizeof(::vosfs::raft::UploadFileRequest)},
-  { 153, -1, -1, sizeof(::vosfs::raft::DownloadFileRequest)},
-  { 159, -1, -1, sizeof(::vosfs::raft::DeleteFileRequest)},
-  { 165, -1, -1, sizeof(::vosfs::raft::CreateFileRequest)},
-  { 171, -1, -1, sizeof(::vosfs::raft::CreateDirRequest)},
-  { 177, -1, -1, sizeof(::vosfs::raft::ListFileRequest)},
-  { 183, -1, -1, sizeof(::vosfs::raft::ListDirRequest)},
-  { 189, -1, -1, sizeof(::vosfs::raft::ClientCommand)},
+  { 0, 8, -1, sizeof(::vosfs::raft::HardState)},
+  { 10, -1, -1, sizeof(::vosfs::raft::RequestVoteRequest)},
+  { 20, -1, -1, sizeof(::vosfs::raft::RequestVoteResponse)},
+  { 29, -1, -1, sizeof(::vosfs::raft::LogEntry)},
+  { 38, -1, -1, sizeof(::vosfs::raft::AppendEntriesRequest)},
+  { 50, 61, -1, sizeof(::vosfs::raft::AppendEntriesResponse)},
+  { 66, -1, -1, sizeof(::vosfs::raft::NodeInfo)},
+  { 75, -1, -1, sizeof(::vosfs::raft::ClusterInfo)},
+  { 83, -1, -1, sizeof(::vosfs::raft::InstallSnapshotRequest)},
+  { 96, -1, -1, sizeof(::vosfs::raft::InstallSnapshotResponse)},
+  { 104, -1, -1, sizeof(::vosfs::raft::SliceInfo)},
+  { 113, -1, -1, sizeof(::vosfs::raft::Inode)},
+  { 128, -1, -1, sizeof(::vosfs::raft::SnapshotMetadata)},
+  { 136, -1, -1, sizeof(::vosfs::raft::Snapshot)},
+  { 145, -1, -1, sizeof(::vosfs::raft::CreateFilePrepareRequest)},
+  { 152, -1, -1, sizeof(::vosfs::raft::CreateFilePrepareResponse)},
+  { 160, -1, -1, sizeof(::vosfs::raft::CreateFileCommitRequest)},
+  { 172, -1, -1, sizeof(::vosfs::raft::CreateFileCommitResponse)},
+  { 179, -1, -1, sizeof(::vosfs::raft::EntryCommand)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -578,72 +545,73 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::vosfs::raft::_AppendEntriesResponse_default_instance_._instance,
   &::vosfs::raft::_NodeInfo_default_instance_._instance,
   &::vosfs::raft::_ClusterInfo_default_instance_._instance,
-  &::vosfs::raft::_SnapshotMetadata_default_instance_._instance,
-  &::vosfs::raft::_Snapshot_default_instance_._instance,
   &::vosfs::raft::_InstallSnapshotRequest_default_instance_._instance,
   &::vosfs::raft::_InstallSnapshotResponse_default_instance_._instance,
-  &::vosfs::raft::_ChunkInfo_default_instance_._instance,
-  &::vosfs::raft::_FileInfo_default_instance_._instance,
-  &::vosfs::raft::_UploadFileRequest_default_instance_._instance,
-  &::vosfs::raft::_DownloadFileRequest_default_instance_._instance,
-  &::vosfs::raft::_DeleteFileRequest_default_instance_._instance,
-  &::vosfs::raft::_CreateFileRequest_default_instance_._instance,
-  &::vosfs::raft::_CreateDirRequest_default_instance_._instance,
-  &::vosfs::raft::_ListFileRequest_default_instance_._instance,
-  &::vosfs::raft::_ListDirRequest_default_instance_._instance,
-  &::vosfs::raft::_ClientCommand_default_instance_._instance,
+  &::vosfs::raft::_SliceInfo_default_instance_._instance,
+  &::vosfs::raft::_Inode_default_instance_._instance,
+  &::vosfs::raft::_SnapshotMetadata_default_instance_._instance,
+  &::vosfs::raft::_Snapshot_default_instance_._instance,
+  &::vosfs::raft::_CreateFilePrepareRequest_default_instance_._instance,
+  &::vosfs::raft::_CreateFilePrepareResponse_default_instance_._instance,
+  &::vosfs::raft::_CreateFileCommitRequest_default_instance_._instance,
+  &::vosfs::raft::_CreateFileCommitResponse_default_instance_._instance,
+  &::vosfs::raft::_EntryCommand_default_instance_._instance,
 };
 
 const char descriptor_table_protodef_raft_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\nraft.proto\022\nvosfs.raft\"]\n\tHardState\022\024\n"
+  "\n\nraft.proto\022\nvosfs.raft\"G\n\tHardState\022\024\n"
   "\014current_term\030\001 \001(\004\022\026\n\tvoted_for\030\002 \001(\004H\000"
-  "\210\001\001\022\024\n\014commit_index\030\003 \001(\004B\014\n\n_voted_for\""
-  "g\n\022RequestVoteRequest\022\014\n\004term\030\001 \001(\004\022\024\n\014c"
-  "andidate_id\030\002 \001(\004\022\026\n\016last_log_index\030\003 \001("
-  "\004\022\025\n\rlast_log_term\030\004 \001(\004\"E\n\023RequestVoteR"
-  "esponse\022\n\n\002id\030\001 \001(\004\022\014\n\004term\030\002 \001(\004\022\024\n\014vot"
-  "e_granted\030\003 \001(\010\"8\n\010LogEntry\022\014\n\004term\030\001 \001("
-  "\004\022\r\n\005index\030\002 \001(\004\022\017\n\007command\030\003 \001(\014\"\244\001\n\024Ap"
-  "pendEntriesRequest\022\014\n\004term\030\001 \001(\004\022\021\n\tlead"
-  "er_id\030\002 \001(\004\022\026\n\016prev_log_index\030\003 \001(\004\022\025\n\rp"
-  "rev_log_term\030\004 \001(\004\022%\n\007entries\030\005 \003(\0132\024.vo"
-  "sfs.raft.LogEntry\022\025\n\rleader_commit\030\006 \001(\004"
-  "\"\212\001\n\025AppendEntriesResponse\022\n\n\002id\030\001 \001(\004\022\014"
-  "\n\004term\030\002 \001(\004\022\017\n\007success\030\003 \001(\010\022\026\n\016last_lo"
-  "g_index\030\004 \001(\004\022\033\n\016conflict_index\030\005 \001(\004H\000\210"
-  "\001\001B\021\n\017_conflict_index\"2\n\010NodeInfo\022\n\n\002id\030"
-  "\001 \001(\004\022\014\n\004name\030\002 \001(\t\022\014\n\004host\030\003 \001(\t\"C\n\013Clu"
-  "sterInfo\022\n\n\002id\030\001 \001(\004\022(\n\nnode_infos\030\002 \003(\013"
-  "2\024.vosfs.raft.NodeInfo\"K\n\020SnapshotMetada"
-  "ta\022\033\n\023last_included_index\030\001 \001(\004\022\032\n\022last_"
-  "included_term\030\002 \001(\004\"{\n\010Snapshot\022\014\n\004data\030"
-  "\001 \001(\014\0227\n\021snapshot_metadata\030\002 \001(\0132\034.vosfs"
-  ".raft.SnapshotMetadata\022(\n\nnode_infos\030\003 \003"
-  "(\0132\024.vosfs.raft.NodeInfo\"\236\001\n\026InstallSnap"
-  "shotRequest\022\014\n\004term\030\001 \001(\004\022\021\n\tleader_id\030\002"
-  " \001(\004\022\033\n\023last_included_index\030\003 \001(\004\022\032\n\022las"
-  "t_included_term\030\004 \001(\004\022\016\n\006offset\030\005 \001(\004\022\014\n"
-  "\004data\030\006 \001(\014\022\014\n\004done\030\007 \001(\010\"3\n\027InstallSnap"
-  "shotResponse\022\n\n\002id\030\001 \001(\004\022\014\n\004term\030\002 \001(\004\"5"
-  "\n\tChunkInfo\022\n\n\002id\030\001 \001(\r\022\016\n\006offset\030\002 \001(\004\022"
-  "\014\n\004size\030\003 \001(\004\"c\n\010FileInfo\022\n\n\002id\030\001 \001(\004\022\014\n"
-  "\004path\030\002 \001(\t\022\014\n\004name\030\003 \001(\t\022\014\n\004size\030\004 \001(\004\022"
-  "\016\n\006is_dir\030\005 \001(\010\022\021\n\tparent_id\030\006 \001(\004\"z\n\021Up"
-  "loadFileRequest\022\'\n\tfile_info\030\001 \001(\0132\024.vos"
-  "fs.raft.FileInfo\022*\n\013chunk_infos\030\002 \003(\0132\025."
-  "vosfs.raft.ChunkInfo\022\020\n\010checksum\030\003 \001(\t\"\025"
-  "\n\023DownloadFileRequest\"\023\n\021DeleteFileReque"
-  "st\"\023\n\021CreateFileRequest\"\022\n\020CreateDirRequ"
-  "est\"\021\n\017ListFileRequest\"\020\n\016ListDirRequest"
-  "\"L\n\rClientCommand\0224\n\013upload_file\030\001 \001(\0132\035"
-  ".vosfs.raft.UploadFileRequestH\000B\005\n\003cmdb\006"
-  "proto3"
+  "\210\001\001B\014\n\n_voted_for\"g\n\022RequestVoteRequest\022"
+  "\014\n\004term\030\001 \001(\004\022\024\n\014candidate_id\030\002 \001(\004\022\026\n\016l"
+  "ast_log_index\030\003 \001(\004\022\025\n\rlast_log_term\030\004 \001"
+  "(\004\"E\n\023RequestVoteResponse\022\n\n\002id\030\001 \001(\004\022\014\n"
+  "\004term\030\002 \001(\004\022\024\n\014vote_granted\030\003 \001(\010\"8\n\010Log"
+  "Entry\022\014\n\004term\030\001 \001(\004\022\r\n\005index\030\002 \001(\004\022\017\n\007co"
+  "mmand\030\003 \001(\014\"\244\001\n\024AppendEntriesRequest\022\014\n\004"
+  "term\030\001 \001(\004\022\021\n\tleader_id\030\002 \001(\004\022\026\n\016prev_lo"
+  "g_index\030\003 \001(\004\022\025\n\rprev_log_term\030\004 \001(\004\022%\n\007"
+  "entries\030\005 \003(\0132\024.vosfs.raft.LogEntry\022\025\n\rl"
+  "eader_commit\030\006 \001(\004\"\212\001\n\025AppendEntriesResp"
+  "onse\022\n\n\002id\030\001 \001(\004\022\014\n\004term\030\002 \001(\004\022\017\n\007succes"
+  "s\030\003 \001(\010\022\026\n\016last_log_index\030\004 \001(\004\022\033\n\016confl"
+  "ict_index\030\005 \001(\004H\000\210\001\001B\021\n\017_conflict_index\""
+  "2\n\010NodeInfo\022\n\n\002id\030\001 \001(\004\022\014\n\004name\030\002 \001(\t\022\014\n"
+  "\004host\030\003 \001(\t\"C\n\013ClusterInfo\022\n\n\002id\030\001 \001(\004\022("
+  "\n\nnode_infos\030\002 \003(\0132\024.vosfs.raft.NodeInfo"
+  "\"\236\001\n\026InstallSnapshotRequest\022\014\n\004term\030\001 \001("
+  "\004\022\021\n\tleader_id\030\002 \001(\004\022\033\n\023last_included_in"
+  "dex\030\003 \001(\004\022\032\n\022last_included_term\030\004 \001(\004\022\016\n"
+  "\006offset\030\005 \001(\004\022\014\n\004data\030\006 \001(\014\022\014\n\004done\030\007 \001("
+  "\010\"3\n\027InstallSnapshotResponse\022\n\n\002id\030\001 \001(\004"
+  "\022\014\n\004term\030\002 \001(\004\"6\n\tSliceInfo\022\n\n\002id\030\001 \001(\004\022"
+  "\014\n\004size\030\002 \001(\004\022\017\n\007address\030\003 \001(\t\"\261\001\n\005Inode"
+  "\022\013\n\003ino\030\001 \001(\004\022\022\n\nparent_ino\030\002 \001(\004\022\021\n\tchi"
+  "ld_ino\030\003 \003(\004\022\014\n\004size\030\004 \001(\004\022\014\n\004name\030\005 \001(\t"
+  "\022\r\n\005ctime\030\006 \001(\004\022\r\n\005mtime\030\007 \001(\004\022\016\n\006is_dir"
+  "\030\010 \001(\010\022*\n\013slice_infos\030\t \003(\0132\025.vosfs.raft"
+  ".SliceInfo\"K\n\020SnapshotMetadata\022\033\n\023last_i"
+  "ncluded_index\030\001 \001(\004\022\032\n\022last_included_ter"
+  "m\030\002 \001(\004\"\220\001\n\010Snapshot\022!\n\006inodes\030\001 \003(\0132\021.v"
+  "osfs.raft.Inode\0227\n\021snapshot_metadata\030\002 \001"
+  "(\0132\034.vosfs.raft.SnapshotMetadata\022(\n\nnode"
+  "_infos\030\003 \003(\0132\024.vosfs.raft.NodeInfo\"-\n\030Cr"
+  "eateFilePrepareRequest\022\021\n\tslice_num\030\001 \001("
+  "\004\"T\n\031CreateFilePrepareResponse\022\013\n\003ino\030\001 "
+  "\001(\004\022*\n\013slice_infos\030\002 \003(\0132\025.vosfs.raft.Sl"
+  "iceInfo\"\222\001\n\027CreateFileCommitRequest\022\013\n\003i"
+  "no\030\001 \001(\004\022\022\n\nparent_ino\030\002 \001(\004\022\014\n\004size\030\003 \001"
+  "(\004\022\014\n\004name\030\004 \001(\t\022\016\n\006is_dir\030\005 \001(\010\022*\n\013slic"
+  "e_infos\030\006 \003(\0132\025.vosfs.raft.SliceInfo\"+\n\030"
+  "CreateFileCommitResponse\022\017\n\007success\030\001 \001("
+  "\010\"`\n\014EntryCommand\022I\n\032create_file_commit_"
+  "request\030\001 \001(\0132#.vosfs.raft.CreateFileCom"
+  "mitRequestH\000B\005\n\003cmdb\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_raft_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_raft_2eproto = {
-    false, false, 1686, descriptor_table_protodef_raft_2eproto,
+    false, false, 1867, descriptor_table_protodef_raft_2eproto,
     "raft.proto",
-    &descriptor_table_raft_2eproto_once, nullptr, 0, 22,
+    &descriptor_table_raft_2eproto_once, nullptr, 0, 19,
     schemas, file_default_instances, TableStruct_raft_2eproto::offsets,
     file_level_metadata_raft_2eproto, file_level_enum_descriptors_raft_2eproto,
     file_level_service_descriptors_raft_2eproto,
@@ -680,13 +648,12 @@ HardState::HardState(const HardState& from)
       decltype(_impl_._has_bits_){from._impl_._has_bits_}
     , /*decltype(_impl_._cached_size_)*/{}
     , decltype(_impl_.current_term_){}
-    , decltype(_impl_.voted_for_){}
-    , decltype(_impl_.commit_index_){}};
+    , decltype(_impl_.voted_for_){}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&_impl_.current_term_, &from._impl_.current_term_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.commit_index_) -
-    reinterpret_cast<char*>(&_impl_.current_term_)) + sizeof(_impl_.commit_index_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.voted_for_) -
+    reinterpret_cast<char*>(&_impl_.current_term_)) + sizeof(_impl_.voted_for_));
   // @@protoc_insertion_point(copy_constructor:vosfs.raft.HardState)
 }
 
@@ -699,7 +666,6 @@ inline void HardState::SharedCtor(
     , /*decltype(_impl_._cached_size_)*/{}
     , decltype(_impl_.current_term_){uint64_t{0u}}
     , decltype(_impl_.voted_for_){uint64_t{0u}}
-    , decltype(_impl_.commit_index_){uint64_t{0u}}
   };
 }
 
@@ -728,7 +694,6 @@ void HardState::Clear() {
 
   _impl_.current_term_ = uint64_t{0u};
   _impl_.voted_for_ = uint64_t{0u};
-  _impl_.commit_index_ = uint64_t{0u};
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
@@ -753,14 +718,6 @@ const char* HardState::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _Internal::set_has_voted_for(&has_bits);
           _impl_.voted_for_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // uint64 commit_index = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
-          _impl_.commit_index_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -807,12 +764,6 @@ uint8_t* HardState::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteUInt64ToArray(2, this->_internal_voted_for(), target);
   }
 
-  // uint64 commit_index = 3;
-  if (this->_internal_commit_index() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(3, this->_internal_commit_index(), target);
-  }
-
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -840,11 +791,6 @@ size_t HardState::ByteSizeLong() const {
     total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_voted_for());
   }
 
-  // uint64 commit_index = 3;
-  if (this->_internal_commit_index() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_commit_index());
-  }
-
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -869,9 +815,6 @@ void HardState::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROT
   if (from._internal_has_voted_for()) {
     _this->_internal_set_voted_for(from._internal_voted_for());
   }
-  if (from._internal_commit_index() != 0) {
-    _this->_internal_set_commit_index(from._internal_commit_index());
-  }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -891,8 +834,8 @@ void HardState::InternalSwap(HardState* other) {
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(HardState, _impl_.commit_index_)
-      + sizeof(HardState::_impl_.commit_index_)
+      PROTOBUF_FIELD_OFFSET(HardState, _impl_.voted_for_)
+      + sizeof(HardState::_impl_.voted_for_)
       - PROTOBUF_FIELD_OFFSET(HardState, _impl_.current_term_)>(
           reinterpret_cast<char*>(&_impl_.current_term_),
           reinterpret_cast<char*>(&other->_impl_.current_term_));
@@ -2764,491 +2707,6 @@ void ClusterInfo::InternalSwap(ClusterInfo* other) {
 
 // ===================================================================
 
-class SnapshotMetadata::_Internal {
- public:
-};
-
-SnapshotMetadata::SnapshotMetadata(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                         bool is_message_owned)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
-  SharedCtor(arena, is_message_owned);
-  // @@protoc_insertion_point(arena_constructor:vosfs.raft.SnapshotMetadata)
-}
-SnapshotMetadata::SnapshotMetadata(const SnapshotMetadata& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
-  SnapshotMetadata* const _this = this; (void)_this;
-  new (&_impl_) Impl_{
-      decltype(_impl_.last_included_index_){}
-    , decltype(_impl_.last_included_term_){}
-    , /*decltype(_impl_._cached_size_)*/{}};
-
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::memcpy(&_impl_.last_included_index_, &from._impl_.last_included_index_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.last_included_term_) -
-    reinterpret_cast<char*>(&_impl_.last_included_index_)) + sizeof(_impl_.last_included_term_));
-  // @@protoc_insertion_point(copy_constructor:vosfs.raft.SnapshotMetadata)
-}
-
-inline void SnapshotMetadata::SharedCtor(
-    ::_pb::Arena* arena, bool is_message_owned) {
-  (void)arena;
-  (void)is_message_owned;
-  new (&_impl_) Impl_{
-      decltype(_impl_.last_included_index_){uint64_t{0u}}
-    , decltype(_impl_.last_included_term_){uint64_t{0u}}
-    , /*decltype(_impl_._cached_size_)*/{}
-  };
-}
-
-SnapshotMetadata::~SnapshotMetadata() {
-  // @@protoc_insertion_point(destructor:vosfs.raft.SnapshotMetadata)
-  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
-  (void)arena;
-    return;
-  }
-  SharedDtor();
-}
-
-inline void SnapshotMetadata::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-}
-
-void SnapshotMetadata::SetCachedSize(int size) const {
-  _impl_._cached_size_.Set(size);
-}
-
-void SnapshotMetadata::Clear() {
-// @@protoc_insertion_point(message_clear_start:vosfs.raft.SnapshotMetadata)
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  ::memset(&_impl_.last_included_index_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.last_included_term_) -
-      reinterpret_cast<char*>(&_impl_.last_included_index_)) + sizeof(_impl_.last_included_term_));
-  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-const char* SnapshotMetadata::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
-#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  while (!ctx->Done(&ptr)) {
-    uint32_t tag;
-    ptr = ::_pbi::ReadTag(ptr, &tag);
-    switch (tag >> 3) {
-      // uint64 last_included_index = 1;
-      case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
-          _impl_.last_included_index_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // uint64 last_included_term = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
-          _impl_.last_included_term_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      default:
-        goto handle_unusual;
-    }  // switch
-  handle_unusual:
-    if ((tag == 0) || ((tag & 7) == 4)) {
-      CHK_(ptr);
-      ctx->SetLastTag(tag);
-      goto message_done;
-    }
-    ptr = UnknownFieldParse(
-        tag,
-        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-        ptr, ctx);
-    CHK_(ptr != nullptr);
-  }  // while
-message_done:
-  return ptr;
-failure:
-  ptr = nullptr;
-  goto message_done;
-#undef CHK_
-}
-
-uint8_t* SnapshotMetadata::_InternalSerialize(
-    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:vosfs.raft.SnapshotMetadata)
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // uint64 last_included_index = 1;
-  if (this->_internal_last_included_index() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_last_included_index(), target);
-  }
-
-  // uint64 last_included_term = 2;
-  if (this->_internal_last_included_term() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(2, this->_internal_last_included_term(), target);
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:vosfs.raft.SnapshotMetadata)
-  return target;
-}
-
-size_t SnapshotMetadata::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:vosfs.raft.SnapshotMetadata)
-  size_t total_size = 0;
-
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  // uint64 last_included_index = 1;
-  if (this->_internal_last_included_index() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_last_included_index());
-  }
-
-  // uint64 last_included_term = 2;
-  if (this->_internal_last_included_term() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_last_included_term());
-  }
-
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
-}
-
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData SnapshotMetadata::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
-    SnapshotMetadata::MergeImpl
-};
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*SnapshotMetadata::GetClassData() const { return &_class_data_; }
-
-
-void SnapshotMetadata::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
-  auto* const _this = static_cast<SnapshotMetadata*>(&to_msg);
-  auto& from = static_cast<const SnapshotMetadata&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:vosfs.raft.SnapshotMetadata)
-  GOOGLE_DCHECK_NE(&from, _this);
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  if (from._internal_last_included_index() != 0) {
-    _this->_internal_set_last_included_index(from._internal_last_included_index());
-  }
-  if (from._internal_last_included_term() != 0) {
-    _this->_internal_set_last_included_term(from._internal_last_included_term());
-  }
-  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-}
-
-void SnapshotMetadata::CopyFrom(const SnapshotMetadata& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:vosfs.raft.SnapshotMetadata)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool SnapshotMetadata::IsInitialized() const {
-  return true;
-}
-
-void SnapshotMetadata::InternalSwap(SnapshotMetadata* other) {
-  using std::swap;
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(SnapshotMetadata, _impl_.last_included_term_)
-      + sizeof(SnapshotMetadata::_impl_.last_included_term_)
-      - PROTOBUF_FIELD_OFFSET(SnapshotMetadata, _impl_.last_included_index_)>(
-          reinterpret_cast<char*>(&_impl_.last_included_index_),
-          reinterpret_cast<char*>(&other->_impl_.last_included_index_));
-}
-
-::PROTOBUF_NAMESPACE_ID::Metadata SnapshotMetadata::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
-      file_level_metadata_raft_2eproto[8]);
-}
-
-// ===================================================================
-
-class Snapshot::_Internal {
- public:
-  static const ::vosfs::raft::SnapshotMetadata& snapshot_metadata(const Snapshot* msg);
-};
-
-const ::vosfs::raft::SnapshotMetadata&
-Snapshot::_Internal::snapshot_metadata(const Snapshot* msg) {
-  return *msg->_impl_.snapshot_metadata_;
-}
-Snapshot::Snapshot(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                         bool is_message_owned)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
-  SharedCtor(arena, is_message_owned);
-  // @@protoc_insertion_point(arena_constructor:vosfs.raft.Snapshot)
-}
-Snapshot::Snapshot(const Snapshot& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
-  Snapshot* const _this = this; (void)_this;
-  new (&_impl_) Impl_{
-      decltype(_impl_.node_infos_){from._impl_.node_infos_}
-    , decltype(_impl_.data_){}
-    , decltype(_impl_.snapshot_metadata_){nullptr}
-    , /*decltype(_impl_._cached_size_)*/{}};
-
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  _impl_.data_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.data_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (!from._internal_data().empty()) {
-    _this->_impl_.data_.Set(from._internal_data(), 
-      _this->GetArenaForAllocation());
-  }
-  if (from._internal_has_snapshot_metadata()) {
-    _this->_impl_.snapshot_metadata_ = new ::vosfs::raft::SnapshotMetadata(*from._impl_.snapshot_metadata_);
-  }
-  // @@protoc_insertion_point(copy_constructor:vosfs.raft.Snapshot)
-}
-
-inline void Snapshot::SharedCtor(
-    ::_pb::Arena* arena, bool is_message_owned) {
-  (void)arena;
-  (void)is_message_owned;
-  new (&_impl_) Impl_{
-      decltype(_impl_.node_infos_){arena}
-    , decltype(_impl_.data_){}
-    , decltype(_impl_.snapshot_metadata_){nullptr}
-    , /*decltype(_impl_._cached_size_)*/{}
-  };
-  _impl_.data_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.data_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-}
-
-Snapshot::~Snapshot() {
-  // @@protoc_insertion_point(destructor:vosfs.raft.Snapshot)
-  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
-  (void)arena;
-    return;
-  }
-  SharedDtor();
-}
-
-inline void Snapshot::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.node_infos_.~RepeatedPtrField();
-  _impl_.data_.Destroy();
-  if (this != internal_default_instance()) delete _impl_.snapshot_metadata_;
-}
-
-void Snapshot::SetCachedSize(int size) const {
-  _impl_._cached_size_.Set(size);
-}
-
-void Snapshot::Clear() {
-// @@protoc_insertion_point(message_clear_start:vosfs.raft.Snapshot)
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  _impl_.node_infos_.Clear();
-  _impl_.data_.ClearToEmpty();
-  if (GetArenaForAllocation() == nullptr && _impl_.snapshot_metadata_ != nullptr) {
-    delete _impl_.snapshot_metadata_;
-  }
-  _impl_.snapshot_metadata_ = nullptr;
-  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-const char* Snapshot::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
-#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  while (!ctx->Done(&ptr)) {
-    uint32_t tag;
-    ptr = ::_pbi::ReadTag(ptr, &tag);
-    switch (tag >> 3) {
-      // bytes data = 1;
-      case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
-          auto str = _internal_mutable_data();
-          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // .vosfs.raft.SnapshotMetadata snapshot_metadata = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
-          ptr = ctx->ParseMessage(_internal_mutable_snapshot_metadata(), ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // repeated .vosfs.raft.NodeInfo node_infos = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
-          ptr -= 1;
-          do {
-            ptr += 1;
-            ptr = ctx->ParseMessage(_internal_add_node_infos(), ptr);
-            CHK_(ptr);
-            if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<26>(ptr));
-        } else
-          goto handle_unusual;
-        continue;
-      default:
-        goto handle_unusual;
-    }  // switch
-  handle_unusual:
-    if ((tag == 0) || ((tag & 7) == 4)) {
-      CHK_(ptr);
-      ctx->SetLastTag(tag);
-      goto message_done;
-    }
-    ptr = UnknownFieldParse(
-        tag,
-        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-        ptr, ctx);
-    CHK_(ptr != nullptr);
-  }  // while
-message_done:
-  return ptr;
-failure:
-  ptr = nullptr;
-  goto message_done;
-#undef CHK_
-}
-
-uint8_t* Snapshot::_InternalSerialize(
-    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:vosfs.raft.Snapshot)
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // bytes data = 1;
-  if (!this->_internal_data().empty()) {
-    target = stream->WriteBytesMaybeAliased(
-        1, this->_internal_data(), target);
-  }
-
-  // .vosfs.raft.SnapshotMetadata snapshot_metadata = 2;
-  if (this->_internal_has_snapshot_metadata()) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(2, _Internal::snapshot_metadata(this),
-        _Internal::snapshot_metadata(this).GetCachedSize(), target, stream);
-  }
-
-  // repeated .vosfs.raft.NodeInfo node_infos = 3;
-  for (unsigned i = 0,
-      n = static_cast<unsigned>(this->_internal_node_infos_size()); i < n; i++) {
-    const auto& repfield = this->_internal_node_infos(i);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-        InternalWriteMessage(3, repfield, repfield.GetCachedSize(), target, stream);
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:vosfs.raft.Snapshot)
-  return target;
-}
-
-size_t Snapshot::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:vosfs.raft.Snapshot)
-  size_t total_size = 0;
-
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  // repeated .vosfs.raft.NodeInfo node_infos = 3;
-  total_size += 1UL * this->_internal_node_infos_size();
-  for (const auto& msg : this->_impl_.node_infos_) {
-    total_size +=
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
-  }
-
-  // bytes data = 1;
-  if (!this->_internal_data().empty()) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
-        this->_internal_data());
-  }
-
-  // .vosfs.raft.SnapshotMetadata snapshot_metadata = 2;
-  if (this->_internal_has_snapshot_metadata()) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-        *_impl_.snapshot_metadata_);
-  }
-
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
-}
-
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData Snapshot::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
-    Snapshot::MergeImpl
-};
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*Snapshot::GetClassData() const { return &_class_data_; }
-
-
-void Snapshot::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
-  auto* const _this = static_cast<Snapshot*>(&to_msg);
-  auto& from = static_cast<const Snapshot&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:vosfs.raft.Snapshot)
-  GOOGLE_DCHECK_NE(&from, _this);
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  _this->_impl_.node_infos_.MergeFrom(from._impl_.node_infos_);
-  if (!from._internal_data().empty()) {
-    _this->_internal_set_data(from._internal_data());
-  }
-  if (from._internal_has_snapshot_metadata()) {
-    _this->_internal_mutable_snapshot_metadata()->::vosfs::raft::SnapshotMetadata::MergeFrom(
-        from._internal_snapshot_metadata());
-  }
-  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-}
-
-void Snapshot::CopyFrom(const Snapshot& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:vosfs.raft.Snapshot)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool Snapshot::IsInitialized() const {
-  return true;
-}
-
-void Snapshot::InternalSwap(Snapshot* other) {
-  using std::swap;
-  auto* lhs_arena = GetArenaForAllocation();
-  auto* rhs_arena = other->GetArenaForAllocation();
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  _impl_.node_infos_.InternalSwap(&other->_impl_.node_infos_);
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &_impl_.data_, lhs_arena,
-      &other->_impl_.data_, rhs_arena
-  );
-  swap(_impl_.snapshot_metadata_, other->_impl_.snapshot_metadata_);
-}
-
-::PROTOBUF_NAMESPACE_ID::Metadata Snapshot::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
-      file_level_metadata_raft_2eproto[9]);
-}
-
-// ===================================================================
-
 class InstallSnapshotRequest::_Internal {
  public:
 };
@@ -3598,7 +3056,7 @@ void InstallSnapshotRequest::InternalSwap(InstallSnapshotRequest* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata InstallSnapshotRequest::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
-      file_level_metadata_raft_2eproto[10]);
+      file_level_metadata_raft_2eproto[8]);
 }
 
 // ===================================================================
@@ -3809,316 +3267,63 @@ void InstallSnapshotResponse::InternalSwap(InstallSnapshotResponse* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata InstallSnapshotResponse::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
-      file_level_metadata_raft_2eproto[11]);
+      file_level_metadata_raft_2eproto[9]);
 }
 
 // ===================================================================
 
-class ChunkInfo::_Internal {
+class SliceInfo::_Internal {
  public:
 };
 
-ChunkInfo::ChunkInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+SliceInfo::SliceInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor(arena, is_message_owned);
-  // @@protoc_insertion_point(arena_constructor:vosfs.raft.ChunkInfo)
+  // @@protoc_insertion_point(arena_constructor:vosfs.raft.SliceInfo)
 }
-ChunkInfo::ChunkInfo(const ChunkInfo& from)
+SliceInfo::SliceInfo(const SliceInfo& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
-  ChunkInfo* const _this = this; (void)_this;
+  SliceInfo* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.offset_){}
-    , decltype(_impl_.size_){}
+      decltype(_impl_.address_){}
     , decltype(_impl_.id_){}
+    , decltype(_impl_.size_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::memcpy(&_impl_.offset_, &from._impl_.offset_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.id_) -
-    reinterpret_cast<char*>(&_impl_.offset_)) + sizeof(_impl_.id_));
-  // @@protoc_insertion_point(copy_constructor:vosfs.raft.ChunkInfo)
-}
-
-inline void ChunkInfo::SharedCtor(
-    ::_pb::Arena* arena, bool is_message_owned) {
-  (void)arena;
-  (void)is_message_owned;
-  new (&_impl_) Impl_{
-      decltype(_impl_.offset_){uint64_t{0u}}
-    , decltype(_impl_.size_){uint64_t{0u}}
-    , decltype(_impl_.id_){0u}
-    , /*decltype(_impl_._cached_size_)*/{}
-  };
-}
-
-ChunkInfo::~ChunkInfo() {
-  // @@protoc_insertion_point(destructor:vosfs.raft.ChunkInfo)
-  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
-  (void)arena;
-    return;
-  }
-  SharedDtor();
-}
-
-inline void ChunkInfo::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-}
-
-void ChunkInfo::SetCachedSize(int size) const {
-  _impl_._cached_size_.Set(size);
-}
-
-void ChunkInfo::Clear() {
-// @@protoc_insertion_point(message_clear_start:vosfs.raft.ChunkInfo)
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  ::memset(&_impl_.offset_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.id_) -
-      reinterpret_cast<char*>(&_impl_.offset_)) + sizeof(_impl_.id_));
-  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-const char* ChunkInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
-#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  while (!ctx->Done(&ptr)) {
-    uint32_t tag;
-    ptr = ::_pbi::ReadTag(ptr, &tag);
-    switch (tag >> 3) {
-      // uint32 id = 1;
-      case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
-          _impl_.id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // uint64 offset = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
-          _impl_.offset_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // uint64 size = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
-          _impl_.size_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      default:
-        goto handle_unusual;
-    }  // switch
-  handle_unusual:
-    if ((tag == 0) || ((tag & 7) == 4)) {
-      CHK_(ptr);
-      ctx->SetLastTag(tag);
-      goto message_done;
-    }
-    ptr = UnknownFieldParse(
-        tag,
-        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-        ptr, ctx);
-    CHK_(ptr != nullptr);
-  }  // while
-message_done:
-  return ptr;
-failure:
-  ptr = nullptr;
-  goto message_done;
-#undef CHK_
-}
-
-uint8_t* ChunkInfo::_InternalSerialize(
-    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:vosfs.raft.ChunkInfo)
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // uint32 id = 1;
-  if (this->_internal_id() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(1, this->_internal_id(), target);
-  }
-
-  // uint64 offset = 2;
-  if (this->_internal_offset() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(2, this->_internal_offset(), target);
-  }
-
-  // uint64 size = 3;
-  if (this->_internal_size() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(3, this->_internal_size(), target);
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:vosfs.raft.ChunkInfo)
-  return target;
-}
-
-size_t ChunkInfo::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:vosfs.raft.ChunkInfo)
-  size_t total_size = 0;
-
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  // uint64 offset = 2;
-  if (this->_internal_offset() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_offset());
-  }
-
-  // uint64 size = 3;
-  if (this->_internal_size() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_size());
-  }
-
-  // uint32 id = 1;
-  if (this->_internal_id() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_id());
-  }
-
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
-}
-
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData ChunkInfo::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
-    ChunkInfo::MergeImpl
-};
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*ChunkInfo::GetClassData() const { return &_class_data_; }
-
-
-void ChunkInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
-  auto* const _this = static_cast<ChunkInfo*>(&to_msg);
-  auto& from = static_cast<const ChunkInfo&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:vosfs.raft.ChunkInfo)
-  GOOGLE_DCHECK_NE(&from, _this);
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  if (from._internal_offset() != 0) {
-    _this->_internal_set_offset(from._internal_offset());
-  }
-  if (from._internal_size() != 0) {
-    _this->_internal_set_size(from._internal_size());
-  }
-  if (from._internal_id() != 0) {
-    _this->_internal_set_id(from._internal_id());
-  }
-  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-}
-
-void ChunkInfo::CopyFrom(const ChunkInfo& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:vosfs.raft.ChunkInfo)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool ChunkInfo::IsInitialized() const {
-  return true;
-}
-
-void ChunkInfo::InternalSwap(ChunkInfo* other) {
-  using std::swap;
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(ChunkInfo, _impl_.id_)
-      + sizeof(ChunkInfo::_impl_.id_)
-      - PROTOBUF_FIELD_OFFSET(ChunkInfo, _impl_.offset_)>(
-          reinterpret_cast<char*>(&_impl_.offset_),
-          reinterpret_cast<char*>(&other->_impl_.offset_));
-}
-
-::PROTOBUF_NAMESPACE_ID::Metadata ChunkInfo::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
-      file_level_metadata_raft_2eproto[12]);
-}
-
-// ===================================================================
-
-class FileInfo::_Internal {
- public:
-};
-
-FileInfo::FileInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                         bool is_message_owned)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
-  SharedCtor(arena, is_message_owned);
-  // @@protoc_insertion_point(arena_constructor:vosfs.raft.FileInfo)
-}
-FileInfo::FileInfo(const FileInfo& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
-  FileInfo* const _this = this; (void)_this;
-  new (&_impl_) Impl_{
-      decltype(_impl_.path_){}
-    , decltype(_impl_.name_){}
-    , decltype(_impl_.id_){}
-    , decltype(_impl_.size_){}
-    , decltype(_impl_.parent_id_){}
-    , decltype(_impl_.is_dir_){}
-    , /*decltype(_impl_._cached_size_)*/{}};
-
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  _impl_.path_.InitDefault();
+  _impl_.address_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.path_.Set("", GetArenaForAllocation());
+    _impl_.address_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (!from._internal_path().empty()) {
-    _this->_impl_.path_.Set(from._internal_path(), 
-      _this->GetArenaForAllocation());
-  }
-  _impl_.name_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.name_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (!from._internal_name().empty()) {
-    _this->_impl_.name_.Set(from._internal_name(), 
+  if (!from._internal_address().empty()) {
+    _this->_impl_.address_.Set(from._internal_address(), 
       _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.id_, &from._impl_.id_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.is_dir_) -
-    reinterpret_cast<char*>(&_impl_.id_)) + sizeof(_impl_.is_dir_));
-  // @@protoc_insertion_point(copy_constructor:vosfs.raft.FileInfo)
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.size_) -
+    reinterpret_cast<char*>(&_impl_.id_)) + sizeof(_impl_.size_));
+  // @@protoc_insertion_point(copy_constructor:vosfs.raft.SliceInfo)
 }
 
-inline void FileInfo::SharedCtor(
+inline void SliceInfo::SharedCtor(
     ::_pb::Arena* arena, bool is_message_owned) {
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.path_){}
-    , decltype(_impl_.name_){}
+      decltype(_impl_.address_){}
     , decltype(_impl_.id_){uint64_t{0u}}
     , decltype(_impl_.size_){uint64_t{0u}}
-    , decltype(_impl_.parent_id_){uint64_t{0u}}
-    , decltype(_impl_.is_dir_){false}
     , /*decltype(_impl_._cached_size_)*/{}
   };
-  _impl_.path_.InitDefault();
+  _impl_.address_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.path_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  _impl_.name_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.name_.Set("", GetArenaForAllocation());
+    _impl_.address_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
-FileInfo::~FileInfo() {
-  // @@protoc_insertion_point(destructor:vosfs.raft.FileInfo)
+SliceInfo::~SliceInfo() {
+  // @@protoc_insertion_point(destructor:vosfs.raft.SliceInfo)
   if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
   (void)arena;
     return;
@@ -4126,31 +3331,29 @@ FileInfo::~FileInfo() {
   SharedDtor();
 }
 
-inline void FileInfo::SharedDtor() {
+inline void SliceInfo::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.path_.Destroy();
-  _impl_.name_.Destroy();
+  _impl_.address_.Destroy();
 }
 
-void FileInfo::SetCachedSize(int size) const {
+void SliceInfo::SetCachedSize(int size) const {
   _impl_._cached_size_.Set(size);
 }
 
-void FileInfo::Clear() {
-// @@protoc_insertion_point(message_clear_start:vosfs.raft.FileInfo)
+void SliceInfo::Clear() {
+// @@protoc_insertion_point(message_clear_start:vosfs.raft.SliceInfo)
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  _impl_.path_.ClearToEmpty();
-  _impl_.name_.ClearToEmpty();
+  _impl_.address_.ClearToEmpty();
   ::memset(&_impl_.id_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.is_dir_) -
-      reinterpret_cast<char*>(&_impl_.id_)) + sizeof(_impl_.is_dir_));
+      reinterpret_cast<char*>(&_impl_.size_) -
+      reinterpret_cast<char*>(&_impl_.id_)) + sizeof(_impl_.size_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-const char* FileInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+const char* SliceInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   while (!ctx->Done(&ptr)) {
     uint32_t tag;
@@ -4164,23 +3367,303 @@ const char* FileInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx)
         } else
           goto handle_unusual;
         continue;
-      // string path = 2;
+      // uint64 size = 2;
       case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
-          auto str = _internal_mutable_path();
-          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
+          _impl_.size_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
-          CHK_(::_pbi::VerifyUTF8(str, "vosfs.raft.FileInfo.path"));
         } else
           goto handle_unusual;
         continue;
-      // string name = 3;
+      // string address = 3;
       case 3:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
-          auto str = _internal_mutable_name();
+          auto str = _internal_mutable_address();
           ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
-          CHK_(::_pbi::VerifyUTF8(str, "vosfs.raft.FileInfo.name"));
+          CHK_(::_pbi::VerifyUTF8(str, "vosfs.raft.SliceInfo.address"));
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* SliceInfo::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:vosfs.raft.SliceInfo)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint64 id = 1;
+  if (this->_internal_id() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_id(), target);
+  }
+
+  // uint64 size = 2;
+  if (this->_internal_size() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(2, this->_internal_size(), target);
+  }
+
+  // string address = 3;
+  if (!this->_internal_address().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_address().data(), static_cast<int>(this->_internal_address().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "vosfs.raft.SliceInfo.address");
+    target = stream->WriteStringMaybeAliased(
+        3, this->_internal_address(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:vosfs.raft.SliceInfo)
+  return target;
+}
+
+size_t SliceInfo::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:vosfs.raft.SliceInfo)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string address = 3;
+  if (!this->_internal_address().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_address());
+  }
+
+  // uint64 id = 1;
+  if (this->_internal_id() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_id());
+  }
+
+  // uint64 size = 2;
+  if (this->_internal_size() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_size());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData SliceInfo::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    SliceInfo::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*SliceInfo::GetClassData() const { return &_class_data_; }
+
+
+void SliceInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<SliceInfo*>(&to_msg);
+  auto& from = static_cast<const SliceInfo&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:vosfs.raft.SliceInfo)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_address().empty()) {
+    _this->_internal_set_address(from._internal_address());
+  }
+  if (from._internal_id() != 0) {
+    _this->_internal_set_id(from._internal_id());
+  }
+  if (from._internal_size() != 0) {
+    _this->_internal_set_size(from._internal_size());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void SliceInfo::CopyFrom(const SliceInfo& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:vosfs.raft.SliceInfo)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SliceInfo::IsInitialized() const {
+  return true;
+}
+
+void SliceInfo::InternalSwap(SliceInfo* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.address_, lhs_arena,
+      &other->_impl_.address_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(SliceInfo, _impl_.size_)
+      + sizeof(SliceInfo::_impl_.size_)
+      - PROTOBUF_FIELD_OFFSET(SliceInfo, _impl_.id_)>(
+          reinterpret_cast<char*>(&_impl_.id_),
+          reinterpret_cast<char*>(&other->_impl_.id_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata SliceInfo::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
+      file_level_metadata_raft_2eproto[10]);
+}
+
+// ===================================================================
+
+class Inode::_Internal {
+ public:
+};
+
+Inode::Inode(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:vosfs.raft.Inode)
+}
+Inode::Inode(const Inode& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  Inode* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.child_ino_){from._impl_.child_ino_}
+    , /*decltype(_impl_._child_ino_cached_byte_size_)*/{0}
+    , decltype(_impl_.slice_infos_){from._impl_.slice_infos_}
+    , decltype(_impl_.name_){}
+    , decltype(_impl_.ino_){}
+    , decltype(_impl_.parent_ino_){}
+    , decltype(_impl_.size_){}
+    , decltype(_impl_.ctime_){}
+    , decltype(_impl_.mtime_){}
+    , decltype(_impl_.is_dir_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.name_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.name_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_name().empty()) {
+    _this->_impl_.name_.Set(from._internal_name(), 
+      _this->GetArenaForAllocation());
+  }
+  ::memcpy(&_impl_.ino_, &from._impl_.ino_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.is_dir_) -
+    reinterpret_cast<char*>(&_impl_.ino_)) + sizeof(_impl_.is_dir_));
+  // @@protoc_insertion_point(copy_constructor:vosfs.raft.Inode)
+}
+
+inline void Inode::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.child_ino_){arena}
+    , /*decltype(_impl_._child_ino_cached_byte_size_)*/{0}
+    , decltype(_impl_.slice_infos_){arena}
+    , decltype(_impl_.name_){}
+    , decltype(_impl_.ino_){uint64_t{0u}}
+    , decltype(_impl_.parent_ino_){uint64_t{0u}}
+    , decltype(_impl_.size_){uint64_t{0u}}
+    , decltype(_impl_.ctime_){uint64_t{0u}}
+    , decltype(_impl_.mtime_){uint64_t{0u}}
+    , decltype(_impl_.is_dir_){false}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+  _impl_.name_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.name_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+
+Inode::~Inode() {
+  // @@protoc_insertion_point(destructor:vosfs.raft.Inode)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void Inode::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.child_ino_.~RepeatedField();
+  _impl_.slice_infos_.~RepeatedPtrField();
+  _impl_.name_.Destroy();
+}
+
+void Inode::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void Inode::Clear() {
+// @@protoc_insertion_point(message_clear_start:vosfs.raft.Inode)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.child_ino_.Clear();
+  _impl_.slice_infos_.Clear();
+  _impl_.name_.ClearToEmpty();
+  ::memset(&_impl_.ino_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&_impl_.is_dir_) -
+      reinterpret_cast<char*>(&_impl_.ino_)) + sizeof(_impl_.is_dir_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* Inode::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // uint64 ino = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.ino_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // uint64 parent_ino = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
+          _impl_.parent_ino_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated uint64 child_ino = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedUInt64Parser(_internal_mutable_child_ino(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<uint8_t>(tag) == 24) {
+          _internal_add_child_ino(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr));
+          CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
@@ -4192,18 +3675,384 @@ const char* FileInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx)
         } else
           goto handle_unusual;
         continue;
-      // bool is_dir = 5;
+      // string name = 5;
       case 5:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 40)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 42)) {
+          auto str = _internal_mutable_name();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "vosfs.raft.Inode.name"));
+        } else
+          goto handle_unusual;
+        continue;
+      // uint64 ctime = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 48)) {
+          _impl_.ctime_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // uint64 mtime = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 56)) {
+          _impl_.mtime_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // bool is_dir = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 64)) {
           _impl_.is_dir_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // uint64 parent_id = 6;
-      case 6:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 48)) {
-          _impl_.parent_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+      // repeated .vosfs.raft.SliceInfo slice_infos = 9;
+      case 9:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 74)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_slice_infos(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<74>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* Inode::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:vosfs.raft.Inode)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint64 ino = 1;
+  if (this->_internal_ino() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_ino(), target);
+  }
+
+  // uint64 parent_ino = 2;
+  if (this->_internal_parent_ino() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(2, this->_internal_parent_ino(), target);
+  }
+
+  // repeated uint64 child_ino = 3;
+  {
+    int byte_size = _impl_._child_ino_cached_byte_size_.load(std::memory_order_relaxed);
+    if (byte_size > 0) {
+      target = stream->WriteUInt64Packed(
+          3, _internal_child_ino(), byte_size, target);
+    }
+  }
+
+  // uint64 size = 4;
+  if (this->_internal_size() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(4, this->_internal_size(), target);
+  }
+
+  // string name = 5;
+  if (!this->_internal_name().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "vosfs.raft.Inode.name");
+    target = stream->WriteStringMaybeAliased(
+        5, this->_internal_name(), target);
+  }
+
+  // uint64 ctime = 6;
+  if (this->_internal_ctime() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(6, this->_internal_ctime(), target);
+  }
+
+  // uint64 mtime = 7;
+  if (this->_internal_mtime() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(7, this->_internal_mtime(), target);
+  }
+
+  // bool is_dir = 8;
+  if (this->_internal_is_dir() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(8, this->_internal_is_dir(), target);
+  }
+
+  // repeated .vosfs.raft.SliceInfo slice_infos = 9;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_slice_infos_size()); i < n; i++) {
+    const auto& repfield = this->_internal_slice_infos(i);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+        InternalWriteMessage(9, repfield, repfield.GetCachedSize(), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:vosfs.raft.Inode)
+  return target;
+}
+
+size_t Inode::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:vosfs.raft.Inode)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated uint64 child_ino = 3;
+  {
+    size_t data_size = ::_pbi::WireFormatLite::
+      UInt64Size(this->_impl_.child_ino_);
+    if (data_size > 0) {
+      total_size += 1 +
+        ::_pbi::WireFormatLite::Int32Size(static_cast<int32_t>(data_size));
+    }
+    int cached_size = ::_pbi::ToCachedSize(data_size);
+    _impl_._child_ino_cached_byte_size_.store(cached_size,
+                                    std::memory_order_relaxed);
+    total_size += data_size;
+  }
+
+  // repeated .vosfs.raft.SliceInfo slice_infos = 9;
+  total_size += 1UL * this->_internal_slice_infos_size();
+  for (const auto& msg : this->_impl_.slice_infos_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // string name = 5;
+  if (!this->_internal_name().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_name());
+  }
+
+  // uint64 ino = 1;
+  if (this->_internal_ino() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_ino());
+  }
+
+  // uint64 parent_ino = 2;
+  if (this->_internal_parent_ino() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_parent_ino());
+  }
+
+  // uint64 size = 4;
+  if (this->_internal_size() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_size());
+  }
+
+  // uint64 ctime = 6;
+  if (this->_internal_ctime() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_ctime());
+  }
+
+  // uint64 mtime = 7;
+  if (this->_internal_mtime() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_mtime());
+  }
+
+  // bool is_dir = 8;
+  if (this->_internal_is_dir() != 0) {
+    total_size += 1 + 1;
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData Inode::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    Inode::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*Inode::GetClassData() const { return &_class_data_; }
+
+
+void Inode::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<Inode*>(&to_msg);
+  auto& from = static_cast<const Inode&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:vosfs.raft.Inode)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  _this->_impl_.child_ino_.MergeFrom(from._impl_.child_ino_);
+  _this->_impl_.slice_infos_.MergeFrom(from._impl_.slice_infos_);
+  if (!from._internal_name().empty()) {
+    _this->_internal_set_name(from._internal_name());
+  }
+  if (from._internal_ino() != 0) {
+    _this->_internal_set_ino(from._internal_ino());
+  }
+  if (from._internal_parent_ino() != 0) {
+    _this->_internal_set_parent_ino(from._internal_parent_ino());
+  }
+  if (from._internal_size() != 0) {
+    _this->_internal_set_size(from._internal_size());
+  }
+  if (from._internal_ctime() != 0) {
+    _this->_internal_set_ctime(from._internal_ctime());
+  }
+  if (from._internal_mtime() != 0) {
+    _this->_internal_set_mtime(from._internal_mtime());
+  }
+  if (from._internal_is_dir() != 0) {
+    _this->_internal_set_is_dir(from._internal_is_dir());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void Inode::CopyFrom(const Inode& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:vosfs.raft.Inode)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool Inode::IsInitialized() const {
+  return true;
+}
+
+void Inode::InternalSwap(Inode* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _impl_.child_ino_.InternalSwap(&other->_impl_.child_ino_);
+  _impl_.slice_infos_.InternalSwap(&other->_impl_.slice_infos_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.name_, lhs_arena,
+      &other->_impl_.name_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(Inode, _impl_.is_dir_)
+      + sizeof(Inode::_impl_.is_dir_)
+      - PROTOBUF_FIELD_OFFSET(Inode, _impl_.ino_)>(
+          reinterpret_cast<char*>(&_impl_.ino_),
+          reinterpret_cast<char*>(&other->_impl_.ino_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata Inode::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
+      file_level_metadata_raft_2eproto[11]);
+}
+
+// ===================================================================
+
+class SnapshotMetadata::_Internal {
+ public:
+};
+
+SnapshotMetadata::SnapshotMetadata(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:vosfs.raft.SnapshotMetadata)
+}
+SnapshotMetadata::SnapshotMetadata(const SnapshotMetadata& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  SnapshotMetadata* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.last_included_index_){}
+    , decltype(_impl_.last_included_term_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::memcpy(&_impl_.last_included_index_, &from._impl_.last_included_index_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.last_included_term_) -
+    reinterpret_cast<char*>(&_impl_.last_included_index_)) + sizeof(_impl_.last_included_term_));
+  // @@protoc_insertion_point(copy_constructor:vosfs.raft.SnapshotMetadata)
+}
+
+inline void SnapshotMetadata::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.last_included_index_){uint64_t{0u}}
+    , decltype(_impl_.last_included_term_){uint64_t{0u}}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+}
+
+SnapshotMetadata::~SnapshotMetadata() {
+  // @@protoc_insertion_point(destructor:vosfs.raft.SnapshotMetadata)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void SnapshotMetadata::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void SnapshotMetadata::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void SnapshotMetadata::Clear() {
+// @@protoc_insertion_point(message_clear_start:vosfs.raft.SnapshotMetadata)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  ::memset(&_impl_.last_included_index_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&_impl_.last_included_term_) -
+      reinterpret_cast<char*>(&_impl_.last_included_index_)) + sizeof(_impl_.last_included_term_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* SnapshotMetadata::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // uint64 last_included_index = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.last_included_index_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // uint64 last_included_term = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
+          _impl_.last_included_term_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -4231,42 +4080,963 @@ failure:
 #undef CHK_
 }
 
-uint8_t* FileInfo::_InternalSerialize(
+uint8_t* SnapshotMetadata::_InternalSerialize(
     uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:vosfs.raft.FileInfo)
+  // @@protoc_insertion_point(serialize_to_array_start:vosfs.raft.SnapshotMetadata)
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // uint64 id = 1;
-  if (this->_internal_id() != 0) {
+  // uint64 last_included_index = 1;
+  if (this->_internal_last_included_index() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_id(), target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_last_included_index(), target);
   }
 
-  // string path = 2;
-  if (!this->_internal_path().empty()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_path().data(), static_cast<int>(this->_internal_path().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "vosfs.raft.FileInfo.path");
-    target = stream->WriteStringMaybeAliased(
-        2, this->_internal_path(), target);
+  // uint64 last_included_term = 2;
+  if (this->_internal_last_included_term() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(2, this->_internal_last_included_term(), target);
   }
 
-  // string name = 3;
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:vosfs.raft.SnapshotMetadata)
+  return target;
+}
+
+size_t SnapshotMetadata::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:vosfs.raft.SnapshotMetadata)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // uint64 last_included_index = 1;
+  if (this->_internal_last_included_index() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_last_included_index());
+  }
+
+  // uint64 last_included_term = 2;
+  if (this->_internal_last_included_term() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_last_included_term());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData SnapshotMetadata::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    SnapshotMetadata::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*SnapshotMetadata::GetClassData() const { return &_class_data_; }
+
+
+void SnapshotMetadata::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<SnapshotMetadata*>(&to_msg);
+  auto& from = static_cast<const SnapshotMetadata&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:vosfs.raft.SnapshotMetadata)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_last_included_index() != 0) {
+    _this->_internal_set_last_included_index(from._internal_last_included_index());
+  }
+  if (from._internal_last_included_term() != 0) {
+    _this->_internal_set_last_included_term(from._internal_last_included_term());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void SnapshotMetadata::CopyFrom(const SnapshotMetadata& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:vosfs.raft.SnapshotMetadata)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SnapshotMetadata::IsInitialized() const {
+  return true;
+}
+
+void SnapshotMetadata::InternalSwap(SnapshotMetadata* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(SnapshotMetadata, _impl_.last_included_term_)
+      + sizeof(SnapshotMetadata::_impl_.last_included_term_)
+      - PROTOBUF_FIELD_OFFSET(SnapshotMetadata, _impl_.last_included_index_)>(
+          reinterpret_cast<char*>(&_impl_.last_included_index_),
+          reinterpret_cast<char*>(&other->_impl_.last_included_index_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata SnapshotMetadata::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
+      file_level_metadata_raft_2eproto[12]);
+}
+
+// ===================================================================
+
+class Snapshot::_Internal {
+ public:
+  static const ::vosfs::raft::SnapshotMetadata& snapshot_metadata(const Snapshot* msg);
+};
+
+const ::vosfs::raft::SnapshotMetadata&
+Snapshot::_Internal::snapshot_metadata(const Snapshot* msg) {
+  return *msg->_impl_.snapshot_metadata_;
+}
+Snapshot::Snapshot(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:vosfs.raft.Snapshot)
+}
+Snapshot::Snapshot(const Snapshot& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  Snapshot* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.inodes_){from._impl_.inodes_}
+    , decltype(_impl_.node_infos_){from._impl_.node_infos_}
+    , decltype(_impl_.snapshot_metadata_){nullptr}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  if (from._internal_has_snapshot_metadata()) {
+    _this->_impl_.snapshot_metadata_ = new ::vosfs::raft::SnapshotMetadata(*from._impl_.snapshot_metadata_);
+  }
+  // @@protoc_insertion_point(copy_constructor:vosfs.raft.Snapshot)
+}
+
+inline void Snapshot::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.inodes_){arena}
+    , decltype(_impl_.node_infos_){arena}
+    , decltype(_impl_.snapshot_metadata_){nullptr}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+}
+
+Snapshot::~Snapshot() {
+  // @@protoc_insertion_point(destructor:vosfs.raft.Snapshot)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void Snapshot::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.inodes_.~RepeatedPtrField();
+  _impl_.node_infos_.~RepeatedPtrField();
+  if (this != internal_default_instance()) delete _impl_.snapshot_metadata_;
+}
+
+void Snapshot::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void Snapshot::Clear() {
+// @@protoc_insertion_point(message_clear_start:vosfs.raft.Snapshot)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.inodes_.Clear();
+  _impl_.node_infos_.Clear();
+  if (GetArenaForAllocation() == nullptr && _impl_.snapshot_metadata_ != nullptr) {
+    delete _impl_.snapshot_metadata_;
+  }
+  _impl_.snapshot_metadata_ = nullptr;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* Snapshot::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // repeated .vosfs.raft.Inode inodes = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_inodes(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<10>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // .vosfs.raft.SnapshotMetadata snapshot_metadata = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          ptr = ctx->ParseMessage(_internal_mutable_snapshot_metadata(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated .vosfs.raft.NodeInfo node_infos = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_node_infos(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<26>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* Snapshot::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:vosfs.raft.Snapshot)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated .vosfs.raft.Inode inodes = 1;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_inodes_size()); i < n; i++) {
+    const auto& repfield = this->_internal_inodes(i);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+        InternalWriteMessage(1, repfield, repfield.GetCachedSize(), target, stream);
+  }
+
+  // .vosfs.raft.SnapshotMetadata snapshot_metadata = 2;
+  if (this->_internal_has_snapshot_metadata()) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(2, _Internal::snapshot_metadata(this),
+        _Internal::snapshot_metadata(this).GetCachedSize(), target, stream);
+  }
+
+  // repeated .vosfs.raft.NodeInfo node_infos = 3;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_node_infos_size()); i < n; i++) {
+    const auto& repfield = this->_internal_node_infos(i);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+        InternalWriteMessage(3, repfield, repfield.GetCachedSize(), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:vosfs.raft.Snapshot)
+  return target;
+}
+
+size_t Snapshot::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:vosfs.raft.Snapshot)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated .vosfs.raft.Inode inodes = 1;
+  total_size += 1UL * this->_internal_inodes_size();
+  for (const auto& msg : this->_impl_.inodes_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // repeated .vosfs.raft.NodeInfo node_infos = 3;
+  total_size += 1UL * this->_internal_node_infos_size();
+  for (const auto& msg : this->_impl_.node_infos_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // .vosfs.raft.SnapshotMetadata snapshot_metadata = 2;
+  if (this->_internal_has_snapshot_metadata()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *_impl_.snapshot_metadata_);
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData Snapshot::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    Snapshot::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*Snapshot::GetClassData() const { return &_class_data_; }
+
+
+void Snapshot::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<Snapshot*>(&to_msg);
+  auto& from = static_cast<const Snapshot&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:vosfs.raft.Snapshot)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  _this->_impl_.inodes_.MergeFrom(from._impl_.inodes_);
+  _this->_impl_.node_infos_.MergeFrom(from._impl_.node_infos_);
+  if (from._internal_has_snapshot_metadata()) {
+    _this->_internal_mutable_snapshot_metadata()->::vosfs::raft::SnapshotMetadata::MergeFrom(
+        from._internal_snapshot_metadata());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void Snapshot::CopyFrom(const Snapshot& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:vosfs.raft.Snapshot)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool Snapshot::IsInitialized() const {
+  return true;
+}
+
+void Snapshot::InternalSwap(Snapshot* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _impl_.inodes_.InternalSwap(&other->_impl_.inodes_);
+  _impl_.node_infos_.InternalSwap(&other->_impl_.node_infos_);
+  swap(_impl_.snapshot_metadata_, other->_impl_.snapshot_metadata_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata Snapshot::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
+      file_level_metadata_raft_2eproto[13]);
+}
+
+// ===================================================================
+
+class CreateFilePrepareRequest::_Internal {
+ public:
+};
+
+CreateFilePrepareRequest::CreateFilePrepareRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:vosfs.raft.CreateFilePrepareRequest)
+}
+CreateFilePrepareRequest::CreateFilePrepareRequest(const CreateFilePrepareRequest& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  CreateFilePrepareRequest* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.slice_num_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _this->_impl_.slice_num_ = from._impl_.slice_num_;
+  // @@protoc_insertion_point(copy_constructor:vosfs.raft.CreateFilePrepareRequest)
+}
+
+inline void CreateFilePrepareRequest::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.slice_num_){uint64_t{0u}}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+}
+
+CreateFilePrepareRequest::~CreateFilePrepareRequest() {
+  // @@protoc_insertion_point(destructor:vosfs.raft.CreateFilePrepareRequest)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void CreateFilePrepareRequest::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void CreateFilePrepareRequest::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void CreateFilePrepareRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:vosfs.raft.CreateFilePrepareRequest)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.slice_num_ = uint64_t{0u};
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* CreateFilePrepareRequest::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // uint64 slice_num = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.slice_num_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* CreateFilePrepareRequest::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:vosfs.raft.CreateFilePrepareRequest)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint64 slice_num = 1;
+  if (this->_internal_slice_num() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_slice_num(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:vosfs.raft.CreateFilePrepareRequest)
+  return target;
+}
+
+size_t CreateFilePrepareRequest::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:vosfs.raft.CreateFilePrepareRequest)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // uint64 slice_num = 1;
+  if (this->_internal_slice_num() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_slice_num());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CreateFilePrepareRequest::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    CreateFilePrepareRequest::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CreateFilePrepareRequest::GetClassData() const { return &_class_data_; }
+
+
+void CreateFilePrepareRequest::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<CreateFilePrepareRequest*>(&to_msg);
+  auto& from = static_cast<const CreateFilePrepareRequest&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:vosfs.raft.CreateFilePrepareRequest)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_slice_num() != 0) {
+    _this->_internal_set_slice_num(from._internal_slice_num());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void CreateFilePrepareRequest::CopyFrom(const CreateFilePrepareRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:vosfs.raft.CreateFilePrepareRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CreateFilePrepareRequest::IsInitialized() const {
+  return true;
+}
+
+void CreateFilePrepareRequest::InternalSwap(CreateFilePrepareRequest* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_.slice_num_, other->_impl_.slice_num_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata CreateFilePrepareRequest::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
+      file_level_metadata_raft_2eproto[14]);
+}
+
+// ===================================================================
+
+class CreateFilePrepareResponse::_Internal {
+ public:
+};
+
+CreateFilePrepareResponse::CreateFilePrepareResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:vosfs.raft.CreateFilePrepareResponse)
+}
+CreateFilePrepareResponse::CreateFilePrepareResponse(const CreateFilePrepareResponse& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  CreateFilePrepareResponse* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.slice_infos_){from._impl_.slice_infos_}
+    , decltype(_impl_.ino_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _this->_impl_.ino_ = from._impl_.ino_;
+  // @@protoc_insertion_point(copy_constructor:vosfs.raft.CreateFilePrepareResponse)
+}
+
+inline void CreateFilePrepareResponse::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.slice_infos_){arena}
+    , decltype(_impl_.ino_){uint64_t{0u}}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+}
+
+CreateFilePrepareResponse::~CreateFilePrepareResponse() {
+  // @@protoc_insertion_point(destructor:vosfs.raft.CreateFilePrepareResponse)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void CreateFilePrepareResponse::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.slice_infos_.~RepeatedPtrField();
+}
+
+void CreateFilePrepareResponse::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void CreateFilePrepareResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:vosfs.raft.CreateFilePrepareResponse)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.slice_infos_.Clear();
+  _impl_.ino_ = uint64_t{0u};
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* CreateFilePrepareResponse::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // uint64 ino = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.ino_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated .vosfs.raft.SliceInfo slice_infos = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_slice_infos(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* CreateFilePrepareResponse::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:vosfs.raft.CreateFilePrepareResponse)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint64 ino = 1;
+  if (this->_internal_ino() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_ino(), target);
+  }
+
+  // repeated .vosfs.raft.SliceInfo slice_infos = 2;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_slice_infos_size()); i < n; i++) {
+    const auto& repfield = this->_internal_slice_infos(i);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+        InternalWriteMessage(2, repfield, repfield.GetCachedSize(), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:vosfs.raft.CreateFilePrepareResponse)
+  return target;
+}
+
+size_t CreateFilePrepareResponse::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:vosfs.raft.CreateFilePrepareResponse)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated .vosfs.raft.SliceInfo slice_infos = 2;
+  total_size += 1UL * this->_internal_slice_infos_size();
+  for (const auto& msg : this->_impl_.slice_infos_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // uint64 ino = 1;
+  if (this->_internal_ino() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_ino());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CreateFilePrepareResponse::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    CreateFilePrepareResponse::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CreateFilePrepareResponse::GetClassData() const { return &_class_data_; }
+
+
+void CreateFilePrepareResponse::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<CreateFilePrepareResponse*>(&to_msg);
+  auto& from = static_cast<const CreateFilePrepareResponse&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:vosfs.raft.CreateFilePrepareResponse)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  _this->_impl_.slice_infos_.MergeFrom(from._impl_.slice_infos_);
+  if (from._internal_ino() != 0) {
+    _this->_internal_set_ino(from._internal_ino());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void CreateFilePrepareResponse::CopyFrom(const CreateFilePrepareResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:vosfs.raft.CreateFilePrepareResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CreateFilePrepareResponse::IsInitialized() const {
+  return true;
+}
+
+void CreateFilePrepareResponse::InternalSwap(CreateFilePrepareResponse* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _impl_.slice_infos_.InternalSwap(&other->_impl_.slice_infos_);
+  swap(_impl_.ino_, other->_impl_.ino_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata CreateFilePrepareResponse::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
+      file_level_metadata_raft_2eproto[15]);
+}
+
+// ===================================================================
+
+class CreateFileCommitRequest::_Internal {
+ public:
+};
+
+CreateFileCommitRequest::CreateFileCommitRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:vosfs.raft.CreateFileCommitRequest)
+}
+CreateFileCommitRequest::CreateFileCommitRequest(const CreateFileCommitRequest& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  CreateFileCommitRequest* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.slice_infos_){from._impl_.slice_infos_}
+    , decltype(_impl_.name_){}
+    , decltype(_impl_.ino_){}
+    , decltype(_impl_.parent_ino_){}
+    , decltype(_impl_.size_){}
+    , decltype(_impl_.is_dir_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.name_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.name_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_name().empty()) {
+    _this->_impl_.name_.Set(from._internal_name(), 
+      _this->GetArenaForAllocation());
+  }
+  ::memcpy(&_impl_.ino_, &from._impl_.ino_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.is_dir_) -
+    reinterpret_cast<char*>(&_impl_.ino_)) + sizeof(_impl_.is_dir_));
+  // @@protoc_insertion_point(copy_constructor:vosfs.raft.CreateFileCommitRequest)
+}
+
+inline void CreateFileCommitRequest::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.slice_infos_){arena}
+    , decltype(_impl_.name_){}
+    , decltype(_impl_.ino_){uint64_t{0u}}
+    , decltype(_impl_.parent_ino_){uint64_t{0u}}
+    , decltype(_impl_.size_){uint64_t{0u}}
+    , decltype(_impl_.is_dir_){false}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+  _impl_.name_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.name_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+
+CreateFileCommitRequest::~CreateFileCommitRequest() {
+  // @@protoc_insertion_point(destructor:vosfs.raft.CreateFileCommitRequest)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void CreateFileCommitRequest::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.slice_infos_.~RepeatedPtrField();
+  _impl_.name_.Destroy();
+}
+
+void CreateFileCommitRequest::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void CreateFileCommitRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:vosfs.raft.CreateFileCommitRequest)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.slice_infos_.Clear();
+  _impl_.name_.ClearToEmpty();
+  ::memset(&_impl_.ino_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&_impl_.is_dir_) -
+      reinterpret_cast<char*>(&_impl_.ino_)) + sizeof(_impl_.is_dir_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* CreateFileCommitRequest::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // uint64 ino = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.ino_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // uint64 parent_ino = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
+          _impl_.parent_ino_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // uint64 size = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+          _impl_.size_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string name = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 34)) {
+          auto str = _internal_mutable_name();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "vosfs.raft.CreateFileCommitRequest.name"));
+        } else
+          goto handle_unusual;
+        continue;
+      // bool is_dir = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 40)) {
+          _impl_.is_dir_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated .vosfs.raft.SliceInfo slice_infos = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 50)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_slice_infos(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<50>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* CreateFileCommitRequest::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:vosfs.raft.CreateFileCommitRequest)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint64 ino = 1;
+  if (this->_internal_ino() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_ino(), target);
+  }
+
+  // uint64 parent_ino = 2;
+  if (this->_internal_parent_ino() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(2, this->_internal_parent_ino(), target);
+  }
+
+  // uint64 size = 3;
+  if (this->_internal_size() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(3, this->_internal_size(), target);
+  }
+
+  // string name = 4;
   if (!this->_internal_name().empty()) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "vosfs.raft.FileInfo.name");
+      "vosfs.raft.CreateFileCommitRequest.name");
     target = stream->WriteStringMaybeAliased(
-        3, this->_internal_name(), target);
-  }
-
-  // uint64 size = 4;
-  if (this->_internal_size() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(4, this->_internal_size(), target);
+        4, this->_internal_name(), target);
   }
 
   // bool is_dir = 5;
@@ -4275,55 +5045,57 @@ uint8_t* FileInfo::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteBoolToArray(5, this->_internal_is_dir(), target);
   }
 
-  // uint64 parent_id = 6;
-  if (this->_internal_parent_id() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(6, this->_internal_parent_id(), target);
+  // repeated .vosfs.raft.SliceInfo slice_infos = 6;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_slice_infos_size()); i < n; i++) {
+    const auto& repfield = this->_internal_slice_infos(i);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+        InternalWriteMessage(6, repfield, repfield.GetCachedSize(), target, stream);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:vosfs.raft.FileInfo)
+  // @@protoc_insertion_point(serialize_to_array_end:vosfs.raft.CreateFileCommitRequest)
   return target;
 }
 
-size_t FileInfo::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:vosfs.raft.FileInfo)
+size_t CreateFileCommitRequest::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:vosfs.raft.CreateFileCommitRequest)
   size_t total_size = 0;
 
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // string path = 2;
-  if (!this->_internal_path().empty()) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->_internal_path());
+  // repeated .vosfs.raft.SliceInfo slice_infos = 6;
+  total_size += 1UL * this->_internal_slice_infos_size();
+  for (const auto& msg : this->_impl_.slice_infos_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
 
-  // string name = 3;
+  // string name = 4;
   if (!this->_internal_name().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_name());
   }
 
-  // uint64 id = 1;
-  if (this->_internal_id() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_id());
+  // uint64 ino = 1;
+  if (this->_internal_ino() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_ino());
   }
 
-  // uint64 size = 4;
+  // uint64 parent_ino = 2;
+  if (this->_internal_parent_ino() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_parent_ino());
+  }
+
+  // uint64 size = 3;
   if (this->_internal_size() != 0) {
     total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_size());
-  }
-
-  // uint64 parent_id = 6;
-  if (this->_internal_parent_id() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_parent_id());
   }
 
   // bool is_dir = 5;
@@ -4334,35 +5106,33 @@ size_t FileInfo::ByteSizeLong() const {
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData FileInfo::_class_data_ = {
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CreateFileCommitRequest::_class_data_ = {
     ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
-    FileInfo::MergeImpl
+    CreateFileCommitRequest::MergeImpl
 };
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*FileInfo::GetClassData() const { return &_class_data_; }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CreateFileCommitRequest::GetClassData() const { return &_class_data_; }
 
 
-void FileInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
-  auto* const _this = static_cast<FileInfo*>(&to_msg);
-  auto& from = static_cast<const FileInfo&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:vosfs.raft.FileInfo)
+void CreateFileCommitRequest::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<CreateFileCommitRequest*>(&to_msg);
+  auto& from = static_cast<const CreateFileCommitRequest&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:vosfs.raft.CreateFileCommitRequest)
   GOOGLE_DCHECK_NE(&from, _this);
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (!from._internal_path().empty()) {
-    _this->_internal_set_path(from._internal_path());
-  }
+  _this->_impl_.slice_infos_.MergeFrom(from._impl_.slice_infos_);
   if (!from._internal_name().empty()) {
     _this->_internal_set_name(from._internal_name());
   }
-  if (from._internal_id() != 0) {
-    _this->_internal_set_id(from._internal_id());
+  if (from._internal_ino() != 0) {
+    _this->_internal_set_ino(from._internal_ino());
+  }
+  if (from._internal_parent_ino() != 0) {
+    _this->_internal_set_parent_ino(from._internal_parent_ino());
   }
   if (from._internal_size() != 0) {
     _this->_internal_set_size(from._internal_size());
-  }
-  if (from._internal_parent_id() != 0) {
-    _this->_internal_set_parent_id(from._internal_parent_id());
   }
   if (from._internal_is_dir() != 0) {
     _this->_internal_set_is_dir(from._internal_is_dir());
@@ -4370,103 +5140,77 @@ void FileInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTO
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
-void FileInfo::CopyFrom(const FileInfo& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:vosfs.raft.FileInfo)
+void CreateFileCommitRequest::CopyFrom(const CreateFileCommitRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:vosfs.raft.CreateFileCommitRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool FileInfo::IsInitialized() const {
+bool CreateFileCommitRequest::IsInitialized() const {
   return true;
 }
 
-void FileInfo::InternalSwap(FileInfo* other) {
+void CreateFileCommitRequest::InternalSwap(CreateFileCommitRequest* other) {
   using std::swap;
   auto* lhs_arena = GetArenaForAllocation();
   auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &_impl_.path_, lhs_arena,
-      &other->_impl_.path_, rhs_arena
-  );
+  _impl_.slice_infos_.InternalSwap(&other->_impl_.slice_infos_);
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
       &_impl_.name_, lhs_arena,
       &other->_impl_.name_, rhs_arena
   );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(FileInfo, _impl_.is_dir_)
-      + sizeof(FileInfo::_impl_.is_dir_)
-      - PROTOBUF_FIELD_OFFSET(FileInfo, _impl_.id_)>(
-          reinterpret_cast<char*>(&_impl_.id_),
-          reinterpret_cast<char*>(&other->_impl_.id_));
+      PROTOBUF_FIELD_OFFSET(CreateFileCommitRequest, _impl_.is_dir_)
+      + sizeof(CreateFileCommitRequest::_impl_.is_dir_)
+      - PROTOBUF_FIELD_OFFSET(CreateFileCommitRequest, _impl_.ino_)>(
+          reinterpret_cast<char*>(&_impl_.ino_),
+          reinterpret_cast<char*>(&other->_impl_.ino_));
 }
 
-::PROTOBUF_NAMESPACE_ID::Metadata FileInfo::GetMetadata() const {
+::PROTOBUF_NAMESPACE_ID::Metadata CreateFileCommitRequest::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
-      file_level_metadata_raft_2eproto[13]);
+      file_level_metadata_raft_2eproto[16]);
 }
 
 // ===================================================================
 
-class UploadFileRequest::_Internal {
+class CreateFileCommitResponse::_Internal {
  public:
-  static const ::vosfs::raft::FileInfo& file_info(const UploadFileRequest* msg);
 };
 
-const ::vosfs::raft::FileInfo&
-UploadFileRequest::_Internal::file_info(const UploadFileRequest* msg) {
-  return *msg->_impl_.file_info_;
-}
-UploadFileRequest::UploadFileRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+CreateFileCommitResponse::CreateFileCommitResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor(arena, is_message_owned);
-  // @@protoc_insertion_point(arena_constructor:vosfs.raft.UploadFileRequest)
+  // @@protoc_insertion_point(arena_constructor:vosfs.raft.CreateFileCommitResponse)
 }
-UploadFileRequest::UploadFileRequest(const UploadFileRequest& from)
+CreateFileCommitResponse::CreateFileCommitResponse(const CreateFileCommitResponse& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
-  UploadFileRequest* const _this = this; (void)_this;
+  CreateFileCommitResponse* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.chunk_infos_){from._impl_.chunk_infos_}
-    , decltype(_impl_.checksum_){}
-    , decltype(_impl_.file_info_){nullptr}
+      decltype(_impl_.success_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  _impl_.checksum_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.checksum_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (!from._internal_checksum().empty()) {
-    _this->_impl_.checksum_.Set(from._internal_checksum(), 
-      _this->GetArenaForAllocation());
-  }
-  if (from._internal_has_file_info()) {
-    _this->_impl_.file_info_ = new ::vosfs::raft::FileInfo(*from._impl_.file_info_);
-  }
-  // @@protoc_insertion_point(copy_constructor:vosfs.raft.UploadFileRequest)
+  _this->_impl_.success_ = from._impl_.success_;
+  // @@protoc_insertion_point(copy_constructor:vosfs.raft.CreateFileCommitResponse)
 }
 
-inline void UploadFileRequest::SharedCtor(
+inline void CreateFileCommitResponse::SharedCtor(
     ::_pb::Arena* arena, bool is_message_owned) {
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.chunk_infos_){arena}
-    , decltype(_impl_.checksum_){}
-    , decltype(_impl_.file_info_){nullptr}
+      decltype(_impl_.success_){false}
     , /*decltype(_impl_._cached_size_)*/{}
   };
-  _impl_.checksum_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.checksum_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
-UploadFileRequest::~UploadFileRequest() {
-  // @@protoc_insertion_point(destructor:vosfs.raft.UploadFileRequest)
+CreateFileCommitResponse::~CreateFileCommitResponse() {
+  // @@protoc_insertion_point(destructor:vosfs.raft.CreateFileCommitResponse)
   if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
   (void)arena;
     return;
@@ -4474,66 +5218,35 @@ UploadFileRequest::~UploadFileRequest() {
   SharedDtor();
 }
 
-inline void UploadFileRequest::SharedDtor() {
+inline void CreateFileCommitResponse::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.chunk_infos_.~RepeatedPtrField();
-  _impl_.checksum_.Destroy();
-  if (this != internal_default_instance()) delete _impl_.file_info_;
 }
 
-void UploadFileRequest::SetCachedSize(int size) const {
+void CreateFileCommitResponse::SetCachedSize(int size) const {
   _impl_._cached_size_.Set(size);
 }
 
-void UploadFileRequest::Clear() {
-// @@protoc_insertion_point(message_clear_start:vosfs.raft.UploadFileRequest)
+void CreateFileCommitResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:vosfs.raft.CreateFileCommitResponse)
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  _impl_.chunk_infos_.Clear();
-  _impl_.checksum_.ClearToEmpty();
-  if (GetArenaForAllocation() == nullptr && _impl_.file_info_ != nullptr) {
-    delete _impl_.file_info_;
-  }
-  _impl_.file_info_ = nullptr;
+  _impl_.success_ = false;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-const char* UploadFileRequest::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+const char* CreateFileCommitResponse::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   while (!ctx->Done(&ptr)) {
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // .vosfs.raft.FileInfo file_info = 1;
+      // bool success = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
-          ptr = ctx->ParseMessage(_internal_mutable_file_info(), ptr);
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.success_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // repeated .vosfs.raft.ChunkInfo chunk_infos = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
-          ptr -= 1;
-          do {
-            ptr += 1;
-            ptr = ctx->ParseMessage(_internal_add_chunk_infos(), ptr);
-            CHK_(ptr);
-            if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
-        } else
-          goto handle_unusual;
-        continue;
-      // string checksum = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
-          auto str = _internal_mutable_checksum();
-          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(ptr);
-          CHK_(::_pbi::VerifyUTF8(str, "vosfs.raft.UploadFileRequest.checksum"));
         } else
           goto handle_unusual;
         continue;
@@ -4560,248 +5273,81 @@ failure:
 #undef CHK_
 }
 
-uint8_t* UploadFileRequest::_InternalSerialize(
+uint8_t* CreateFileCommitResponse::_InternalSerialize(
     uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:vosfs.raft.UploadFileRequest)
+  // @@protoc_insertion_point(serialize_to_array_start:vosfs.raft.CreateFileCommitResponse)
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .vosfs.raft.FileInfo file_info = 1;
-  if (this->_internal_has_file_info()) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(1, _Internal::file_info(this),
-        _Internal::file_info(this).GetCachedSize(), target, stream);
-  }
-
-  // repeated .vosfs.raft.ChunkInfo chunk_infos = 2;
-  for (unsigned i = 0,
-      n = static_cast<unsigned>(this->_internal_chunk_infos_size()); i < n; i++) {
-    const auto& repfield = this->_internal_chunk_infos(i);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-        InternalWriteMessage(2, repfield, repfield.GetCachedSize(), target, stream);
-  }
-
-  // string checksum = 3;
-  if (!this->_internal_checksum().empty()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_checksum().data(), static_cast<int>(this->_internal_checksum().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "vosfs.raft.UploadFileRequest.checksum");
-    target = stream->WriteStringMaybeAliased(
-        3, this->_internal_checksum(), target);
+  // bool success = 1;
+  if (this->_internal_success() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(1, this->_internal_success(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:vosfs.raft.UploadFileRequest)
+  // @@protoc_insertion_point(serialize_to_array_end:vosfs.raft.CreateFileCommitResponse)
   return target;
 }
 
-size_t UploadFileRequest::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:vosfs.raft.UploadFileRequest)
+size_t CreateFileCommitResponse::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:vosfs.raft.CreateFileCommitResponse)
   size_t total_size = 0;
 
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated .vosfs.raft.ChunkInfo chunk_infos = 2;
-  total_size += 1UL * this->_internal_chunk_infos_size();
-  for (const auto& msg : this->_impl_.chunk_infos_) {
-    total_size +=
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
-  }
-
-  // string checksum = 3;
-  if (!this->_internal_checksum().empty()) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->_internal_checksum());
-  }
-
-  // .vosfs.raft.FileInfo file_info = 1;
-  if (this->_internal_has_file_info()) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-        *_impl_.file_info_);
+  // bool success = 1;
+  if (this->_internal_success() != 0) {
+    total_size += 1 + 1;
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData UploadFileRequest::_class_data_ = {
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CreateFileCommitResponse::_class_data_ = {
     ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
-    UploadFileRequest::MergeImpl
+    CreateFileCommitResponse::MergeImpl
 };
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*UploadFileRequest::GetClassData() const { return &_class_data_; }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CreateFileCommitResponse::GetClassData() const { return &_class_data_; }
 
 
-void UploadFileRequest::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
-  auto* const _this = static_cast<UploadFileRequest*>(&to_msg);
-  auto& from = static_cast<const UploadFileRequest&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:vosfs.raft.UploadFileRequest)
+void CreateFileCommitResponse::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<CreateFileCommitResponse*>(&to_msg);
+  auto& from = static_cast<const CreateFileCommitResponse&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:vosfs.raft.CreateFileCommitResponse)
   GOOGLE_DCHECK_NE(&from, _this);
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  _this->_impl_.chunk_infos_.MergeFrom(from._impl_.chunk_infos_);
-  if (!from._internal_checksum().empty()) {
-    _this->_internal_set_checksum(from._internal_checksum());
-  }
-  if (from._internal_has_file_info()) {
-    _this->_internal_mutable_file_info()->::vosfs::raft::FileInfo::MergeFrom(
-        from._internal_file_info());
+  if (from._internal_success() != 0) {
+    _this->_internal_set_success(from._internal_success());
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
-void UploadFileRequest::CopyFrom(const UploadFileRequest& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:vosfs.raft.UploadFileRequest)
+void CreateFileCommitResponse::CopyFrom(const CreateFileCommitResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:vosfs.raft.CreateFileCommitResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool UploadFileRequest::IsInitialized() const {
+bool CreateFileCommitResponse::IsInitialized() const {
   return true;
 }
 
-void UploadFileRequest::InternalSwap(UploadFileRequest* other) {
+void CreateFileCommitResponse::InternalSwap(CreateFileCommitResponse* other) {
   using std::swap;
-  auto* lhs_arena = GetArenaForAllocation();
-  auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  _impl_.chunk_infos_.InternalSwap(&other->_impl_.chunk_infos_);
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &_impl_.checksum_, lhs_arena,
-      &other->_impl_.checksum_, rhs_arena
-  );
-  swap(_impl_.file_info_, other->_impl_.file_info_);
+  swap(_impl_.success_, other->_impl_.success_);
 }
 
-::PROTOBUF_NAMESPACE_ID::Metadata UploadFileRequest::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
-      file_level_metadata_raft_2eproto[14]);
-}
-
-// ===================================================================
-
-class DownloadFileRequest::_Internal {
- public:
-};
-
-DownloadFileRequest::DownloadFileRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                         bool is_message_owned)
-  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase(arena, is_message_owned) {
-  // @@protoc_insertion_point(arena_constructor:vosfs.raft.DownloadFileRequest)
-}
-DownloadFileRequest::DownloadFileRequest(const DownloadFileRequest& from)
-  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase() {
-  DownloadFileRequest* const _this = this; (void)_this;
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  // @@protoc_insertion_point(copy_constructor:vosfs.raft.DownloadFileRequest)
-}
-
-
-
-
-
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData DownloadFileRequest::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl,
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl,
-};
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*DownloadFileRequest::GetClassData() const { return &_class_data_; }
-
-
-
-
-
-
-
-::PROTOBUF_NAMESPACE_ID::Metadata DownloadFileRequest::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
-      file_level_metadata_raft_2eproto[15]);
-}
-
-// ===================================================================
-
-class DeleteFileRequest::_Internal {
- public:
-};
-
-DeleteFileRequest::DeleteFileRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                         bool is_message_owned)
-  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase(arena, is_message_owned) {
-  // @@protoc_insertion_point(arena_constructor:vosfs.raft.DeleteFileRequest)
-}
-DeleteFileRequest::DeleteFileRequest(const DeleteFileRequest& from)
-  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase() {
-  DeleteFileRequest* const _this = this; (void)_this;
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  // @@protoc_insertion_point(copy_constructor:vosfs.raft.DeleteFileRequest)
-}
-
-
-
-
-
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData DeleteFileRequest::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl,
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl,
-};
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*DeleteFileRequest::GetClassData() const { return &_class_data_; }
-
-
-
-
-
-
-
-::PROTOBUF_NAMESPACE_ID::Metadata DeleteFileRequest::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
-      file_level_metadata_raft_2eproto[16]);
-}
-
-// ===================================================================
-
-class CreateFileRequest::_Internal {
- public:
-};
-
-CreateFileRequest::CreateFileRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                         bool is_message_owned)
-  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase(arena, is_message_owned) {
-  // @@protoc_insertion_point(arena_constructor:vosfs.raft.CreateFileRequest)
-}
-CreateFileRequest::CreateFileRequest(const CreateFileRequest& from)
-  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase() {
-  CreateFileRequest* const _this = this; (void)_this;
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  // @@protoc_insertion_point(copy_constructor:vosfs.raft.CreateFileRequest)
-}
-
-
-
-
-
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CreateFileRequest::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl,
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl,
-};
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CreateFileRequest::GetClassData() const { return &_class_data_; }
-
-
-
-
-
-
-
-::PROTOBUF_NAMESPACE_ID::Metadata CreateFileRequest::GetMetadata() const {
+::PROTOBUF_NAMESPACE_ID::Metadata CreateFileCommitResponse::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
       file_level_metadata_raft_2eproto[17]);
@@ -4809,159 +5355,39 @@ const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CreateFileRequest::GetClassDat
 
 // ===================================================================
 
-class CreateDirRequest::_Internal {
+class EntryCommand::_Internal {
  public:
+  static const ::vosfs::raft::CreateFileCommitRequest& create_file_commit_request(const EntryCommand* msg);
 };
 
-CreateDirRequest::CreateDirRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                         bool is_message_owned)
-  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase(arena, is_message_owned) {
-  // @@protoc_insertion_point(arena_constructor:vosfs.raft.CreateDirRequest)
+const ::vosfs::raft::CreateFileCommitRequest&
+EntryCommand::_Internal::create_file_commit_request(const EntryCommand* msg) {
+  return *msg->_impl_.cmd_.create_file_commit_request_;
 }
-CreateDirRequest::CreateDirRequest(const CreateDirRequest& from)
-  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase() {
-  CreateDirRequest* const _this = this; (void)_this;
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  // @@protoc_insertion_point(copy_constructor:vosfs.raft.CreateDirRequest)
-}
-
-
-
-
-
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CreateDirRequest::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl,
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl,
-};
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CreateDirRequest::GetClassData() const { return &_class_data_; }
-
-
-
-
-
-
-
-::PROTOBUF_NAMESPACE_ID::Metadata CreateDirRequest::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
-      file_level_metadata_raft_2eproto[18]);
-}
-
-// ===================================================================
-
-class ListFileRequest::_Internal {
- public:
-};
-
-ListFileRequest::ListFileRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                         bool is_message_owned)
-  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase(arena, is_message_owned) {
-  // @@protoc_insertion_point(arena_constructor:vosfs.raft.ListFileRequest)
-}
-ListFileRequest::ListFileRequest(const ListFileRequest& from)
-  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase() {
-  ListFileRequest* const _this = this; (void)_this;
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  // @@protoc_insertion_point(copy_constructor:vosfs.raft.ListFileRequest)
-}
-
-
-
-
-
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData ListFileRequest::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl,
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl,
-};
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*ListFileRequest::GetClassData() const { return &_class_data_; }
-
-
-
-
-
-
-
-::PROTOBUF_NAMESPACE_ID::Metadata ListFileRequest::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
-      file_level_metadata_raft_2eproto[19]);
-}
-
-// ===================================================================
-
-class ListDirRequest::_Internal {
- public:
-};
-
-ListDirRequest::ListDirRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                         bool is_message_owned)
-  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase(arena, is_message_owned) {
-  // @@protoc_insertion_point(arena_constructor:vosfs.raft.ListDirRequest)
-}
-ListDirRequest::ListDirRequest(const ListDirRequest& from)
-  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase() {
-  ListDirRequest* const _this = this; (void)_this;
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  // @@protoc_insertion_point(copy_constructor:vosfs.raft.ListDirRequest)
-}
-
-
-
-
-
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData ListDirRequest::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl,
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl,
-};
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*ListDirRequest::GetClassData() const { return &_class_data_; }
-
-
-
-
-
-
-
-::PROTOBUF_NAMESPACE_ID::Metadata ListDirRequest::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
-      file_level_metadata_raft_2eproto[20]);
-}
-
-// ===================================================================
-
-class ClientCommand::_Internal {
- public:
-  static const ::vosfs::raft::UploadFileRequest& upload_file(const ClientCommand* msg);
-};
-
-const ::vosfs::raft::UploadFileRequest&
-ClientCommand::_Internal::upload_file(const ClientCommand* msg) {
-  return *msg->_impl_.cmd_.upload_file_;
-}
-void ClientCommand::set_allocated_upload_file(::vosfs::raft::UploadFileRequest* upload_file) {
+void EntryCommand::set_allocated_create_file_commit_request(::vosfs::raft::CreateFileCommitRequest* create_file_commit_request) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   clear_cmd();
-  if (upload_file) {
+  if (create_file_commit_request) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-      ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(upload_file);
+      ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(create_file_commit_request);
     if (message_arena != submessage_arena) {
-      upload_file = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, upload_file, submessage_arena);
+      create_file_commit_request = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, create_file_commit_request, submessage_arena);
     }
-    set_has_upload_file();
-    _impl_.cmd_.upload_file_ = upload_file;
+    set_has_create_file_commit_request();
+    _impl_.cmd_.create_file_commit_request_ = create_file_commit_request;
   }
-  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.ClientCommand.upload_file)
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.EntryCommand.create_file_commit_request)
 }
-ClientCommand::ClientCommand(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+EntryCommand::EntryCommand(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor(arena, is_message_owned);
-  // @@protoc_insertion_point(arena_constructor:vosfs.raft.ClientCommand)
+  // @@protoc_insertion_point(arena_constructor:vosfs.raft.EntryCommand)
 }
-ClientCommand::ClientCommand(const ClientCommand& from)
+EntryCommand::EntryCommand(const EntryCommand& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
-  ClientCommand* const _this = this; (void)_this;
+  EntryCommand* const _this = this; (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.cmd_){}
     , /*decltype(_impl_._cached_size_)*/{}
@@ -4970,19 +5396,19 @@ ClientCommand::ClientCommand(const ClientCommand& from)
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   clear_has_cmd();
   switch (from.cmd_case()) {
-    case kUploadFile: {
-      _this->_internal_mutable_upload_file()->::vosfs::raft::UploadFileRequest::MergeFrom(
-          from._internal_upload_file());
+    case kCreateFileCommitRequest: {
+      _this->_internal_mutable_create_file_commit_request()->::vosfs::raft::CreateFileCommitRequest::MergeFrom(
+          from._internal_create_file_commit_request());
       break;
     }
     case CMD_NOT_SET: {
       break;
     }
   }
-  // @@protoc_insertion_point(copy_constructor:vosfs.raft.ClientCommand)
+  // @@protoc_insertion_point(copy_constructor:vosfs.raft.EntryCommand)
 }
 
-inline void ClientCommand::SharedCtor(
+inline void EntryCommand::SharedCtor(
     ::_pb::Arena* arena, bool is_message_owned) {
   (void)arena;
   (void)is_message_owned;
@@ -4994,8 +5420,8 @@ inline void ClientCommand::SharedCtor(
   clear_has_cmd();
 }
 
-ClientCommand::~ClientCommand() {
-  // @@protoc_insertion_point(destructor:vosfs.raft.ClientCommand)
+EntryCommand::~EntryCommand() {
+  // @@protoc_insertion_point(destructor:vosfs.raft.EntryCommand)
   if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
   (void)arena;
     return;
@@ -5003,23 +5429,23 @@ ClientCommand::~ClientCommand() {
   SharedDtor();
 }
 
-inline void ClientCommand::SharedDtor() {
+inline void EntryCommand::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   if (has_cmd()) {
     clear_cmd();
   }
 }
 
-void ClientCommand::SetCachedSize(int size) const {
+void EntryCommand::SetCachedSize(int size) const {
   _impl_._cached_size_.Set(size);
 }
 
-void ClientCommand::clear_cmd() {
-// @@protoc_insertion_point(one_of_clear_start:vosfs.raft.ClientCommand)
+void EntryCommand::clear_cmd() {
+// @@protoc_insertion_point(one_of_clear_start:vosfs.raft.EntryCommand)
   switch (cmd_case()) {
-    case kUploadFile: {
+    case kCreateFileCommitRequest: {
       if (GetArenaForAllocation() == nullptr) {
-        delete _impl_.cmd_.upload_file_;
+        delete _impl_.cmd_.create_file_commit_request_;
       }
       break;
     }
@@ -5031,8 +5457,8 @@ void ClientCommand::clear_cmd() {
 }
 
 
-void ClientCommand::Clear() {
-// @@protoc_insertion_point(message_clear_start:vosfs.raft.ClientCommand)
+void EntryCommand::Clear() {
+// @@protoc_insertion_point(message_clear_start:vosfs.raft.EntryCommand)
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -5041,16 +5467,16 @@ void ClientCommand::Clear() {
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-const char* ClientCommand::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+const char* EntryCommand::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   while (!ctx->Done(&ptr)) {
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // .vosfs.raft.UploadFileRequest upload_file = 1;
+      // .vosfs.raft.CreateFileCommitRequest create_file_commit_request = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
-          ptr = ctx->ParseMessage(_internal_mutable_upload_file(), ptr);
+          ptr = ctx->ParseMessage(_internal_mutable_create_file_commit_request(), ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -5078,29 +5504,29 @@ failure:
 #undef CHK_
 }
 
-uint8_t* ClientCommand::_InternalSerialize(
+uint8_t* EntryCommand::_InternalSerialize(
     uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:vosfs.raft.ClientCommand)
+  // @@protoc_insertion_point(serialize_to_array_start:vosfs.raft.EntryCommand)
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .vosfs.raft.UploadFileRequest upload_file = 1;
-  if (_internal_has_upload_file()) {
+  // .vosfs.raft.CreateFileCommitRequest create_file_commit_request = 1;
+  if (_internal_has_create_file_commit_request()) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(1, _Internal::upload_file(this),
-        _Internal::upload_file(this).GetCachedSize(), target, stream);
+      InternalWriteMessage(1, _Internal::create_file_commit_request(this),
+        _Internal::create_file_commit_request(this).GetCachedSize(), target, stream);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:vosfs.raft.ClientCommand)
+  // @@protoc_insertion_point(serialize_to_array_end:vosfs.raft.EntryCommand)
   return target;
 }
 
-size_t ClientCommand::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:vosfs.raft.ClientCommand)
+size_t EntryCommand::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:vosfs.raft.EntryCommand)
   size_t total_size = 0;
 
   uint32_t cached_has_bits = 0;
@@ -5108,11 +5534,11 @@ size_t ClientCommand::ByteSizeLong() const {
   (void) cached_has_bits;
 
   switch (cmd_case()) {
-    // .vosfs.raft.UploadFileRequest upload_file = 1;
-    case kUploadFile: {
+    // .vosfs.raft.CreateFileCommitRequest create_file_commit_request = 1;
+    case kCreateFileCommitRequest: {
       total_size += 1 +
         ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-          *_impl_.cmd_.upload_file_);
+          *_impl_.cmd_.create_file_commit_request_);
       break;
     }
     case CMD_NOT_SET: {
@@ -5122,25 +5548,25 @@ size_t ClientCommand::ByteSizeLong() const {
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData ClientCommand::_class_data_ = {
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData EntryCommand::_class_data_ = {
     ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
-    ClientCommand::MergeImpl
+    EntryCommand::MergeImpl
 };
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*ClientCommand::GetClassData() const { return &_class_data_; }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*EntryCommand::GetClassData() const { return &_class_data_; }
 
 
-void ClientCommand::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
-  auto* const _this = static_cast<ClientCommand*>(&to_msg);
-  auto& from = static_cast<const ClientCommand&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:vosfs.raft.ClientCommand)
+void EntryCommand::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<EntryCommand*>(&to_msg);
+  auto& from = static_cast<const EntryCommand&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:vosfs.raft.EntryCommand)
   GOOGLE_DCHECK_NE(&from, _this);
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   switch (from.cmd_case()) {
-    case kUploadFile: {
-      _this->_internal_mutable_upload_file()->::vosfs::raft::UploadFileRequest::MergeFrom(
-          from._internal_upload_file());
+    case kCreateFileCommitRequest: {
+      _this->_internal_mutable_create_file_commit_request()->::vosfs::raft::CreateFileCommitRequest::MergeFrom(
+          from._internal_create_file_commit_request());
       break;
     }
     case CMD_NOT_SET: {
@@ -5150,28 +5576,28 @@ void ClientCommand::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
-void ClientCommand::CopyFrom(const ClientCommand& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:vosfs.raft.ClientCommand)
+void EntryCommand::CopyFrom(const EntryCommand& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:vosfs.raft.EntryCommand)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool ClientCommand::IsInitialized() const {
+bool EntryCommand::IsInitialized() const {
   return true;
 }
 
-void ClientCommand::InternalSwap(ClientCommand* other) {
+void EntryCommand::InternalSwap(EntryCommand* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_.cmd_, other->_impl_.cmd_);
   swap(_impl_._oneof_case_[0], other->_impl_._oneof_case_[0]);
 }
 
-::PROTOBUF_NAMESPACE_ID::Metadata ClientCommand::GetMetadata() const {
+::PROTOBUF_NAMESPACE_ID::Metadata EntryCommand::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
-      file_level_metadata_raft_2eproto[21]);
+      file_level_metadata_raft_2eproto[18]);
 }
 
 // @@protoc_insertion_point(namespace_scope)
@@ -5210,14 +5636,6 @@ template<> PROTOBUF_NOINLINE ::vosfs::raft::ClusterInfo*
 Arena::CreateMaybeMessage< ::vosfs::raft::ClusterInfo >(Arena* arena) {
   return Arena::CreateMessageInternal< ::vosfs::raft::ClusterInfo >(arena);
 }
-template<> PROTOBUF_NOINLINE ::vosfs::raft::SnapshotMetadata*
-Arena::CreateMaybeMessage< ::vosfs::raft::SnapshotMetadata >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::vosfs::raft::SnapshotMetadata >(arena);
-}
-template<> PROTOBUF_NOINLINE ::vosfs::raft::Snapshot*
-Arena::CreateMaybeMessage< ::vosfs::raft::Snapshot >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::vosfs::raft::Snapshot >(arena);
-}
 template<> PROTOBUF_NOINLINE ::vosfs::raft::InstallSnapshotRequest*
 Arena::CreateMaybeMessage< ::vosfs::raft::InstallSnapshotRequest >(Arena* arena) {
   return Arena::CreateMessageInternal< ::vosfs::raft::InstallSnapshotRequest >(arena);
@@ -5226,45 +5644,41 @@ template<> PROTOBUF_NOINLINE ::vosfs::raft::InstallSnapshotResponse*
 Arena::CreateMaybeMessage< ::vosfs::raft::InstallSnapshotResponse >(Arena* arena) {
   return Arena::CreateMessageInternal< ::vosfs::raft::InstallSnapshotResponse >(arena);
 }
-template<> PROTOBUF_NOINLINE ::vosfs::raft::ChunkInfo*
-Arena::CreateMaybeMessage< ::vosfs::raft::ChunkInfo >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::vosfs::raft::ChunkInfo >(arena);
+template<> PROTOBUF_NOINLINE ::vosfs::raft::SliceInfo*
+Arena::CreateMaybeMessage< ::vosfs::raft::SliceInfo >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::vosfs::raft::SliceInfo >(arena);
 }
-template<> PROTOBUF_NOINLINE ::vosfs::raft::FileInfo*
-Arena::CreateMaybeMessage< ::vosfs::raft::FileInfo >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::vosfs::raft::FileInfo >(arena);
+template<> PROTOBUF_NOINLINE ::vosfs::raft::Inode*
+Arena::CreateMaybeMessage< ::vosfs::raft::Inode >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::vosfs::raft::Inode >(arena);
 }
-template<> PROTOBUF_NOINLINE ::vosfs::raft::UploadFileRequest*
-Arena::CreateMaybeMessage< ::vosfs::raft::UploadFileRequest >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::vosfs::raft::UploadFileRequest >(arena);
+template<> PROTOBUF_NOINLINE ::vosfs::raft::SnapshotMetadata*
+Arena::CreateMaybeMessage< ::vosfs::raft::SnapshotMetadata >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::vosfs::raft::SnapshotMetadata >(arena);
 }
-template<> PROTOBUF_NOINLINE ::vosfs::raft::DownloadFileRequest*
-Arena::CreateMaybeMessage< ::vosfs::raft::DownloadFileRequest >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::vosfs::raft::DownloadFileRequest >(arena);
+template<> PROTOBUF_NOINLINE ::vosfs::raft::Snapshot*
+Arena::CreateMaybeMessage< ::vosfs::raft::Snapshot >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::vosfs::raft::Snapshot >(arena);
 }
-template<> PROTOBUF_NOINLINE ::vosfs::raft::DeleteFileRequest*
-Arena::CreateMaybeMessage< ::vosfs::raft::DeleteFileRequest >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::vosfs::raft::DeleteFileRequest >(arena);
+template<> PROTOBUF_NOINLINE ::vosfs::raft::CreateFilePrepareRequest*
+Arena::CreateMaybeMessage< ::vosfs::raft::CreateFilePrepareRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::vosfs::raft::CreateFilePrepareRequest >(arena);
 }
-template<> PROTOBUF_NOINLINE ::vosfs::raft::CreateFileRequest*
-Arena::CreateMaybeMessage< ::vosfs::raft::CreateFileRequest >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::vosfs::raft::CreateFileRequest >(arena);
+template<> PROTOBUF_NOINLINE ::vosfs::raft::CreateFilePrepareResponse*
+Arena::CreateMaybeMessage< ::vosfs::raft::CreateFilePrepareResponse >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::vosfs::raft::CreateFilePrepareResponse >(arena);
 }
-template<> PROTOBUF_NOINLINE ::vosfs::raft::CreateDirRequest*
-Arena::CreateMaybeMessage< ::vosfs::raft::CreateDirRequest >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::vosfs::raft::CreateDirRequest >(arena);
+template<> PROTOBUF_NOINLINE ::vosfs::raft::CreateFileCommitRequest*
+Arena::CreateMaybeMessage< ::vosfs::raft::CreateFileCommitRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::vosfs::raft::CreateFileCommitRequest >(arena);
 }
-template<> PROTOBUF_NOINLINE ::vosfs::raft::ListFileRequest*
-Arena::CreateMaybeMessage< ::vosfs::raft::ListFileRequest >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::vosfs::raft::ListFileRequest >(arena);
+template<> PROTOBUF_NOINLINE ::vosfs::raft::CreateFileCommitResponse*
+Arena::CreateMaybeMessage< ::vosfs::raft::CreateFileCommitResponse >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::vosfs::raft::CreateFileCommitResponse >(arena);
 }
-template<> PROTOBUF_NOINLINE ::vosfs::raft::ListDirRequest*
-Arena::CreateMaybeMessage< ::vosfs::raft::ListDirRequest >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::vosfs::raft::ListDirRequest >(arena);
-}
-template<> PROTOBUF_NOINLINE ::vosfs::raft::ClientCommand*
-Arena::CreateMaybeMessage< ::vosfs::raft::ClientCommand >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::vosfs::raft::ClientCommand >(arena);
+template<> PROTOBUF_NOINLINE ::vosfs::raft::EntryCommand*
+Arena::CreateMaybeMessage< ::vosfs::raft::EntryCommand >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::vosfs::raft::EntryCommand >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

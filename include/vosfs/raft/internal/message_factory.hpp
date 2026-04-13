@@ -48,5 +48,13 @@ public:
         bool success,
         uint64_t last_log_index,
         std::optional<uint64_t> conflict_index = std::nullopt) -> rpc::RpcResult;
+
+    [[nodiscard]]
+    static auto make_install_snapshot_request();
+
+    [[nodiscard]]
+    static auto make_install_snapshot_response(
+        std::span<char> resp_payload,
+        uint64_t term) -> rpc::RpcResult;
 };
 } // namespace vosfs::raft::detail

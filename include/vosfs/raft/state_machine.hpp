@@ -8,6 +8,6 @@
 namespace vosfs::raft {
 class StateMachine {
 public:
-    void apply(std::span<const LogEntry> entries);
+    void apply(const LogEntry& entry);
 };
 } // namespace vosfs::raft

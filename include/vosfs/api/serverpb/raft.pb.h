@@ -23,7 +23,6 @@
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/arena.h>
 #include <google/protobuf/arenastring.h>
-#include <google/protobuf/generated_message_bases.h>
 #include <google/protobuf/generated_message_util.h>
 #include <google/protobuf/metadata_lite.h>
 #include <google/protobuf/generated_message_reflection.h>
@@ -53,45 +52,36 @@ extern AppendEntriesRequestDefaultTypeInternal _AppendEntriesRequest_default_ins
 class AppendEntriesResponse;
 struct AppendEntriesResponseDefaultTypeInternal;
 extern AppendEntriesResponseDefaultTypeInternal _AppendEntriesResponse_default_instance_;
-class ChunkInfo;
-struct ChunkInfoDefaultTypeInternal;
-extern ChunkInfoDefaultTypeInternal _ChunkInfo_default_instance_;
-class ClientCommand;
-struct ClientCommandDefaultTypeInternal;
-extern ClientCommandDefaultTypeInternal _ClientCommand_default_instance_;
 class ClusterInfo;
 struct ClusterInfoDefaultTypeInternal;
 extern ClusterInfoDefaultTypeInternal _ClusterInfo_default_instance_;
-class CreateDirRequest;
-struct CreateDirRequestDefaultTypeInternal;
-extern CreateDirRequestDefaultTypeInternal _CreateDirRequest_default_instance_;
-class CreateFileRequest;
-struct CreateFileRequestDefaultTypeInternal;
-extern CreateFileRequestDefaultTypeInternal _CreateFileRequest_default_instance_;
-class DeleteFileRequest;
-struct DeleteFileRequestDefaultTypeInternal;
-extern DeleteFileRequestDefaultTypeInternal _DeleteFileRequest_default_instance_;
-class DownloadFileRequest;
-struct DownloadFileRequestDefaultTypeInternal;
-extern DownloadFileRequestDefaultTypeInternal _DownloadFileRequest_default_instance_;
-class FileInfo;
-struct FileInfoDefaultTypeInternal;
-extern FileInfoDefaultTypeInternal _FileInfo_default_instance_;
+class CreateFileCommitRequest;
+struct CreateFileCommitRequestDefaultTypeInternal;
+extern CreateFileCommitRequestDefaultTypeInternal _CreateFileCommitRequest_default_instance_;
+class CreateFileCommitResponse;
+struct CreateFileCommitResponseDefaultTypeInternal;
+extern CreateFileCommitResponseDefaultTypeInternal _CreateFileCommitResponse_default_instance_;
+class CreateFilePrepareRequest;
+struct CreateFilePrepareRequestDefaultTypeInternal;
+extern CreateFilePrepareRequestDefaultTypeInternal _CreateFilePrepareRequest_default_instance_;
+class CreateFilePrepareResponse;
+struct CreateFilePrepareResponseDefaultTypeInternal;
+extern CreateFilePrepareResponseDefaultTypeInternal _CreateFilePrepareResponse_default_instance_;
+class EntryCommand;
+struct EntryCommandDefaultTypeInternal;
+extern EntryCommandDefaultTypeInternal _EntryCommand_default_instance_;
 class HardState;
 struct HardStateDefaultTypeInternal;
 extern HardStateDefaultTypeInternal _HardState_default_instance_;
+class Inode;
+struct InodeDefaultTypeInternal;
+extern InodeDefaultTypeInternal _Inode_default_instance_;
 class InstallSnapshotRequest;
 struct InstallSnapshotRequestDefaultTypeInternal;
 extern InstallSnapshotRequestDefaultTypeInternal _InstallSnapshotRequest_default_instance_;
 class InstallSnapshotResponse;
 struct InstallSnapshotResponseDefaultTypeInternal;
 extern InstallSnapshotResponseDefaultTypeInternal _InstallSnapshotResponse_default_instance_;
-class ListDirRequest;
-struct ListDirRequestDefaultTypeInternal;
-extern ListDirRequestDefaultTypeInternal _ListDirRequest_default_instance_;
-class ListFileRequest;
-struct ListFileRequestDefaultTypeInternal;
-extern ListFileRequestDefaultTypeInternal _ListFileRequest_default_instance_;
 class LogEntry;
 struct LogEntryDefaultTypeInternal;
 extern LogEntryDefaultTypeInternal _LogEntry_default_instance_;
@@ -104,40 +94,37 @@ extern RequestVoteRequestDefaultTypeInternal _RequestVoteRequest_default_instanc
 class RequestVoteResponse;
 struct RequestVoteResponseDefaultTypeInternal;
 extern RequestVoteResponseDefaultTypeInternal _RequestVoteResponse_default_instance_;
+class SliceInfo;
+struct SliceInfoDefaultTypeInternal;
+extern SliceInfoDefaultTypeInternal _SliceInfo_default_instance_;
 class Snapshot;
 struct SnapshotDefaultTypeInternal;
 extern SnapshotDefaultTypeInternal _Snapshot_default_instance_;
 class SnapshotMetadata;
 struct SnapshotMetadataDefaultTypeInternal;
 extern SnapshotMetadataDefaultTypeInternal _SnapshotMetadata_default_instance_;
-class UploadFileRequest;
-struct UploadFileRequestDefaultTypeInternal;
-extern UploadFileRequestDefaultTypeInternal _UploadFileRequest_default_instance_;
 }  // namespace raft
 }  // namespace vosfs
 PROTOBUF_NAMESPACE_OPEN
 template<> ::vosfs::raft::AppendEntriesRequest* Arena::CreateMaybeMessage<::vosfs::raft::AppendEntriesRequest>(Arena*);
 template<> ::vosfs::raft::AppendEntriesResponse* Arena::CreateMaybeMessage<::vosfs::raft::AppendEntriesResponse>(Arena*);
-template<> ::vosfs::raft::ChunkInfo* Arena::CreateMaybeMessage<::vosfs::raft::ChunkInfo>(Arena*);
-template<> ::vosfs::raft::ClientCommand* Arena::CreateMaybeMessage<::vosfs::raft::ClientCommand>(Arena*);
 template<> ::vosfs::raft::ClusterInfo* Arena::CreateMaybeMessage<::vosfs::raft::ClusterInfo>(Arena*);
-template<> ::vosfs::raft::CreateDirRequest* Arena::CreateMaybeMessage<::vosfs::raft::CreateDirRequest>(Arena*);
-template<> ::vosfs::raft::CreateFileRequest* Arena::CreateMaybeMessage<::vosfs::raft::CreateFileRequest>(Arena*);
-template<> ::vosfs::raft::DeleteFileRequest* Arena::CreateMaybeMessage<::vosfs::raft::DeleteFileRequest>(Arena*);
-template<> ::vosfs::raft::DownloadFileRequest* Arena::CreateMaybeMessage<::vosfs::raft::DownloadFileRequest>(Arena*);
-template<> ::vosfs::raft::FileInfo* Arena::CreateMaybeMessage<::vosfs::raft::FileInfo>(Arena*);
+template<> ::vosfs::raft::CreateFileCommitRequest* Arena::CreateMaybeMessage<::vosfs::raft::CreateFileCommitRequest>(Arena*);
+template<> ::vosfs::raft::CreateFileCommitResponse* Arena::CreateMaybeMessage<::vosfs::raft::CreateFileCommitResponse>(Arena*);
+template<> ::vosfs::raft::CreateFilePrepareRequest* Arena::CreateMaybeMessage<::vosfs::raft::CreateFilePrepareRequest>(Arena*);
+template<> ::vosfs::raft::CreateFilePrepareResponse* Arena::CreateMaybeMessage<::vosfs::raft::CreateFilePrepareResponse>(Arena*);
+template<> ::vosfs::raft::EntryCommand* Arena::CreateMaybeMessage<::vosfs::raft::EntryCommand>(Arena*);
 template<> ::vosfs::raft::HardState* Arena::CreateMaybeMessage<::vosfs::raft::HardState>(Arena*);
+template<> ::vosfs::raft::Inode* Arena::CreateMaybeMessage<::vosfs::raft::Inode>(Arena*);
 template<> ::vosfs::raft::InstallSnapshotRequest* Arena::CreateMaybeMessage<::vosfs::raft::InstallSnapshotRequest>(Arena*);
 template<> ::vosfs::raft::InstallSnapshotResponse* Arena::CreateMaybeMessage<::vosfs::raft::InstallSnapshotResponse>(Arena*);
-template<> ::vosfs::raft::ListDirRequest* Arena::CreateMaybeMessage<::vosfs::raft::ListDirRequest>(Arena*);
-template<> ::vosfs::raft::ListFileRequest* Arena::CreateMaybeMessage<::vosfs::raft::ListFileRequest>(Arena*);
 template<> ::vosfs::raft::LogEntry* Arena::CreateMaybeMessage<::vosfs::raft::LogEntry>(Arena*);
 template<> ::vosfs::raft::NodeInfo* Arena::CreateMaybeMessage<::vosfs::raft::NodeInfo>(Arena*);
 template<> ::vosfs::raft::RequestVoteRequest* Arena::CreateMaybeMessage<::vosfs::raft::RequestVoteRequest>(Arena*);
 template<> ::vosfs::raft::RequestVoteResponse* Arena::CreateMaybeMessage<::vosfs::raft::RequestVoteResponse>(Arena*);
+template<> ::vosfs::raft::SliceInfo* Arena::CreateMaybeMessage<::vosfs::raft::SliceInfo>(Arena*);
 template<> ::vosfs::raft::Snapshot* Arena::CreateMaybeMessage<::vosfs::raft::Snapshot>(Arena*);
 template<> ::vosfs::raft::SnapshotMetadata* Arena::CreateMaybeMessage<::vosfs::raft::SnapshotMetadata>(Arena*);
-template<> ::vosfs::raft::UploadFileRequest* Arena::CreateMaybeMessage<::vosfs::raft::UploadFileRequest>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace vosfs {
 namespace raft {
@@ -267,7 +254,6 @@ class HardState final :
   enum : int {
     kCurrentTermFieldNumber = 1,
     kVotedForFieldNumber = 2,
-    kCommitIndexFieldNumber = 3,
   };
   // uint64 current_term = 1;
   void clear_current_term();
@@ -291,15 +277,6 @@ class HardState final :
   void _internal_set_voted_for(uint64_t value);
   public:
 
-  // uint64 commit_index = 3;
-  void clear_commit_index();
-  uint64_t commit_index() const;
-  void set_commit_index(uint64_t value);
-  private:
-  uint64_t _internal_commit_index() const;
-  void _internal_set_commit_index(uint64_t value);
-  public:
-
   // @@protoc_insertion_point(class_scope:vosfs.raft.HardState)
  private:
   class _Internal;
@@ -312,7 +289,6 @@ class HardState final :
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     uint64_t current_term_;
     uint64_t voted_for_;
-    uint64_t commit_index_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_raft_2eproto;
@@ -1602,358 +1578,6 @@ class ClusterInfo final :
 };
 // -------------------------------------------------------------------
 
-class SnapshotMetadata final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.SnapshotMetadata) */ {
- public:
-  inline SnapshotMetadata() : SnapshotMetadata(nullptr) {}
-  ~SnapshotMetadata() override;
-  explicit PROTOBUF_CONSTEXPR SnapshotMetadata(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  SnapshotMetadata(const SnapshotMetadata& from);
-  SnapshotMetadata(SnapshotMetadata&& from) noexcept
-    : SnapshotMetadata() {
-    *this = ::std::move(from);
-  }
-
-  inline SnapshotMetadata& operator=(const SnapshotMetadata& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline SnapshotMetadata& operator=(SnapshotMetadata&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const SnapshotMetadata& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const SnapshotMetadata* internal_default_instance() {
-    return reinterpret_cast<const SnapshotMetadata*>(
-               &_SnapshotMetadata_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    8;
-
-  friend void swap(SnapshotMetadata& a, SnapshotMetadata& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(SnapshotMetadata* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(SnapshotMetadata* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  SnapshotMetadata* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<SnapshotMetadata>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const SnapshotMetadata& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const SnapshotMetadata& from) {
-    SnapshotMetadata::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
-
-  private:
-  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(SnapshotMetadata* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "vosfs.raft.SnapshotMetadata";
-  }
-  protected:
-  explicit SnapshotMetadata(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kLastIncludedIndexFieldNumber = 1,
-    kLastIncludedTermFieldNumber = 2,
-  };
-  // uint64 last_included_index = 1;
-  void clear_last_included_index();
-  uint64_t last_included_index() const;
-  void set_last_included_index(uint64_t value);
-  private:
-  uint64_t _internal_last_included_index() const;
-  void _internal_set_last_included_index(uint64_t value);
-  public:
-
-  // uint64 last_included_term = 2;
-  void clear_last_included_term();
-  uint64_t last_included_term() const;
-  void set_last_included_term(uint64_t value);
-  private:
-  uint64_t _internal_last_included_term() const;
-  void _internal_set_last_included_term(uint64_t value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:vosfs.raft.SnapshotMetadata)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-    uint64_t last_included_index_;
-    uint64_t last_included_term_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  };
-  union { Impl_ _impl_; };
-  friend struct ::TableStruct_raft_2eproto;
-};
-// -------------------------------------------------------------------
-
-class Snapshot final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.Snapshot) */ {
- public:
-  inline Snapshot() : Snapshot(nullptr) {}
-  ~Snapshot() override;
-  explicit PROTOBUF_CONSTEXPR Snapshot(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  Snapshot(const Snapshot& from);
-  Snapshot(Snapshot&& from) noexcept
-    : Snapshot() {
-    *this = ::std::move(from);
-  }
-
-  inline Snapshot& operator=(const Snapshot& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline Snapshot& operator=(Snapshot&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const Snapshot& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const Snapshot* internal_default_instance() {
-    return reinterpret_cast<const Snapshot*>(
-               &_Snapshot_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    9;
-
-  friend void swap(Snapshot& a, Snapshot& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(Snapshot* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(Snapshot* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  Snapshot* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<Snapshot>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const Snapshot& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const Snapshot& from) {
-    Snapshot::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
-
-  private:
-  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(Snapshot* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "vosfs.raft.Snapshot";
-  }
-  protected:
-  explicit Snapshot(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kNodeInfosFieldNumber = 3,
-    kDataFieldNumber = 1,
-    kSnapshotMetadataFieldNumber = 2,
-  };
-  // repeated .vosfs.raft.NodeInfo node_infos = 3;
-  int node_infos_size() const;
-  private:
-  int _internal_node_infos_size() const;
-  public:
-  void clear_node_infos();
-  ::vosfs::raft::NodeInfo* mutable_node_infos(int index);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::NodeInfo >*
-      mutable_node_infos();
-  private:
-  const ::vosfs::raft::NodeInfo& _internal_node_infos(int index) const;
-  ::vosfs::raft::NodeInfo* _internal_add_node_infos();
-  public:
-  const ::vosfs::raft::NodeInfo& node_infos(int index) const;
-  ::vosfs::raft::NodeInfo* add_node_infos();
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::NodeInfo >&
-      node_infos() const;
-
-  // bytes data = 1;
-  void clear_data();
-  const std::string& data() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_data(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_data();
-  PROTOBUF_NODISCARD std::string* release_data();
-  void set_allocated_data(std::string* data);
-  private:
-  const std::string& _internal_data() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_data(const std::string& value);
-  std::string* _internal_mutable_data();
-  public:
-
-  // .vosfs.raft.SnapshotMetadata snapshot_metadata = 2;
-  bool has_snapshot_metadata() const;
-  private:
-  bool _internal_has_snapshot_metadata() const;
-  public:
-  void clear_snapshot_metadata();
-  const ::vosfs::raft::SnapshotMetadata& snapshot_metadata() const;
-  PROTOBUF_NODISCARD ::vosfs::raft::SnapshotMetadata* release_snapshot_metadata();
-  ::vosfs::raft::SnapshotMetadata* mutable_snapshot_metadata();
-  void set_allocated_snapshot_metadata(::vosfs::raft::SnapshotMetadata* snapshot_metadata);
-  private:
-  const ::vosfs::raft::SnapshotMetadata& _internal_snapshot_metadata() const;
-  ::vosfs::raft::SnapshotMetadata* _internal_mutable_snapshot_metadata();
-  public:
-  void unsafe_arena_set_allocated_snapshot_metadata(
-      ::vosfs::raft::SnapshotMetadata* snapshot_metadata);
-  ::vosfs::raft::SnapshotMetadata* unsafe_arena_release_snapshot_metadata();
-
-  // @@protoc_insertion_point(class_scope:vosfs.raft.Snapshot)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::NodeInfo > node_infos_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr data_;
-    ::vosfs::raft::SnapshotMetadata* snapshot_metadata_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  };
-  union { Impl_ _impl_; };
-  friend struct ::TableStruct_raft_2eproto;
-};
-// -------------------------------------------------------------------
-
 class InstallSnapshotRequest final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.InstallSnapshotRequest) */ {
  public:
@@ -2002,7 +1626,7 @@ class InstallSnapshotRequest final :
                &_InstallSnapshotRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    10;
+    8;
 
   friend void swap(InstallSnapshotRequest& a, InstallSnapshotRequest& b) {
     a.Swap(&b);
@@ -2221,7 +1845,7 @@ class InstallSnapshotResponse final :
                &_InstallSnapshotResponse_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    11;
+    9;
 
   friend void swap(InstallSnapshotResponse& a, InstallSnapshotResponse& b) {
     a.Swap(&b);
@@ -2332,24 +1956,24 @@ class InstallSnapshotResponse final :
 };
 // -------------------------------------------------------------------
 
-class ChunkInfo final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.ChunkInfo) */ {
+class SliceInfo final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.SliceInfo) */ {
  public:
-  inline ChunkInfo() : ChunkInfo(nullptr) {}
-  ~ChunkInfo() override;
-  explicit PROTOBUF_CONSTEXPR ChunkInfo(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline SliceInfo() : SliceInfo(nullptr) {}
+  ~SliceInfo() override;
+  explicit PROTOBUF_CONSTEXPR SliceInfo(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  ChunkInfo(const ChunkInfo& from);
-  ChunkInfo(ChunkInfo&& from) noexcept
-    : ChunkInfo() {
+  SliceInfo(const SliceInfo& from);
+  SliceInfo(SliceInfo&& from) noexcept
+    : SliceInfo() {
     *this = ::std::move(from);
   }
 
-  inline ChunkInfo& operator=(const ChunkInfo& from) {
+  inline SliceInfo& operator=(const SliceInfo& from) {
     CopyFrom(from);
     return *this;
   }
-  inline ChunkInfo& operator=(ChunkInfo&& from) noexcept {
+  inline SliceInfo& operator=(SliceInfo&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -2372,20 +1996,20 @@ class ChunkInfo final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const ChunkInfo& default_instance() {
+  static const SliceInfo& default_instance() {
     return *internal_default_instance();
   }
-  static inline const ChunkInfo* internal_default_instance() {
-    return reinterpret_cast<const ChunkInfo*>(
-               &_ChunkInfo_default_instance_);
+  static inline const SliceInfo* internal_default_instance() {
+    return reinterpret_cast<const SliceInfo*>(
+               &_SliceInfo_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    12;
+    10;
 
-  friend void swap(ChunkInfo& a, ChunkInfo& b) {
+  friend void swap(SliceInfo& a, SliceInfo& b) {
     a.Swap(&b);
   }
-  inline void Swap(ChunkInfo* other) {
+  inline void Swap(SliceInfo* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -2398,7 +2022,7 @@ class ChunkInfo final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(ChunkInfo* other) {
+  void UnsafeArenaSwap(SliceInfo* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -2406,14 +2030,14 @@ class ChunkInfo final :
 
   // implements Message ----------------------------------------------
 
-  ChunkInfo* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<ChunkInfo>(arena);
+  SliceInfo* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<SliceInfo>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const ChunkInfo& from);
+  void CopyFrom(const SliceInfo& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const ChunkInfo& from) {
-    ChunkInfo::MergeImpl(*this, from);
+  void MergeFrom( const SliceInfo& from) {
+    SliceInfo::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -2431,15 +2055,15 @@ class ChunkInfo final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(ChunkInfo* other);
+  void InternalSwap(SliceInfo* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "vosfs.raft.ChunkInfo";
+    return "vosfs.raft.SliceInfo";
   }
   protected:
-  explicit ChunkInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit SliceInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -2453,20 +2077,34 @@ class ChunkInfo final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kOffsetFieldNumber = 2,
-    kSizeFieldNumber = 3,
+    kAddressFieldNumber = 3,
     kIdFieldNumber = 1,
+    kSizeFieldNumber = 2,
   };
-  // uint64 offset = 2;
-  void clear_offset();
-  uint64_t offset() const;
-  void set_offset(uint64_t value);
+  // string address = 3;
+  void clear_address();
+  const std::string& address() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_address(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_address();
+  PROTOBUF_NODISCARD std::string* release_address();
+  void set_allocated_address(std::string* address);
   private:
-  uint64_t _internal_offset() const;
-  void _internal_set_offset(uint64_t value);
+  const std::string& _internal_address() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_address(const std::string& value);
+  std::string* _internal_mutable_address();
   public:
 
-  // uint64 size = 3;
+  // uint64 id = 1;
+  void clear_id();
+  uint64_t id() const;
+  void set_id(uint64_t value);
+  private:
+  uint64_t _internal_id() const;
+  void _internal_set_id(uint64_t value);
+  public:
+
+  // uint64 size = 2;
   void clear_size();
   uint64_t size() const;
   void set_size(uint64_t value);
@@ -2475,16 +2113,7 @@ class ChunkInfo final :
   void _internal_set_size(uint64_t value);
   public:
 
-  // uint32 id = 1;
-  void clear_id();
-  uint32_t id() const;
-  void set_id(uint32_t value);
-  private:
-  uint32_t _internal_id() const;
-  void _internal_set_id(uint32_t value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:vosfs.raft.ChunkInfo)
+  // @@protoc_insertion_point(class_scope:vosfs.raft.SliceInfo)
  private:
   class _Internal;
 
@@ -2492,9 +2121,9 @@ class ChunkInfo final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    uint64_t offset_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr address_;
+    uint64_t id_;
     uint64_t size_;
-    uint32_t id_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2502,24 +2131,24 @@ class ChunkInfo final :
 };
 // -------------------------------------------------------------------
 
-class FileInfo final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.FileInfo) */ {
+class Inode final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.Inode) */ {
  public:
-  inline FileInfo() : FileInfo(nullptr) {}
-  ~FileInfo() override;
-  explicit PROTOBUF_CONSTEXPR FileInfo(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline Inode() : Inode(nullptr) {}
+  ~Inode() override;
+  explicit PROTOBUF_CONSTEXPR Inode(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  FileInfo(const FileInfo& from);
-  FileInfo(FileInfo&& from) noexcept
-    : FileInfo() {
+  Inode(const Inode& from);
+  Inode(Inode&& from) noexcept
+    : Inode() {
     *this = ::std::move(from);
   }
 
-  inline FileInfo& operator=(const FileInfo& from) {
+  inline Inode& operator=(const Inode& from) {
     CopyFrom(from);
     return *this;
   }
-  inline FileInfo& operator=(FileInfo&& from) noexcept {
+  inline Inode& operator=(Inode&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -2542,20 +2171,20 @@ class FileInfo final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const FileInfo& default_instance() {
+  static const Inode& default_instance() {
     return *internal_default_instance();
   }
-  static inline const FileInfo* internal_default_instance() {
-    return reinterpret_cast<const FileInfo*>(
-               &_FileInfo_default_instance_);
+  static inline const Inode* internal_default_instance() {
+    return reinterpret_cast<const Inode*>(
+               &_Inode_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    13;
+    11;
 
-  friend void swap(FileInfo& a, FileInfo& b) {
+  friend void swap(Inode& a, Inode& b) {
     a.Swap(&b);
   }
-  inline void Swap(FileInfo* other) {
+  inline void Swap(Inode* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -2568,7 +2197,7 @@ class FileInfo final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(FileInfo* other) {
+  void UnsafeArenaSwap(Inode* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -2576,14 +2205,14 @@ class FileInfo final :
 
   // implements Message ----------------------------------------------
 
-  FileInfo* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<FileInfo>(arena);
+  Inode* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<Inode>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const FileInfo& from);
+  void CopyFrom(const Inode& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const FileInfo& from) {
-    FileInfo::MergeImpl(*this, from);
+  void MergeFrom( const Inode& from) {
+    Inode::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -2601,15 +2230,15 @@ class FileInfo final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(FileInfo* other);
+  void InternalSwap(Inode* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "vosfs.raft.FileInfo";
+    return "vosfs.raft.Inode";
   }
   protected:
-  explicit FileInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit Inode(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -2623,28 +2252,57 @@ class FileInfo final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kPathFieldNumber = 2,
-    kNameFieldNumber = 3,
-    kIdFieldNumber = 1,
+    kChildInoFieldNumber = 3,
+    kSliceInfosFieldNumber = 9,
+    kNameFieldNumber = 5,
+    kInoFieldNumber = 1,
+    kParentInoFieldNumber = 2,
     kSizeFieldNumber = 4,
-    kParentIdFieldNumber = 6,
-    kIsDirFieldNumber = 5,
+    kCtimeFieldNumber = 6,
+    kMtimeFieldNumber = 7,
+    kIsDirFieldNumber = 8,
   };
-  // string path = 2;
-  void clear_path();
-  const std::string& path() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_path(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_path();
-  PROTOBUF_NODISCARD std::string* release_path();
-  void set_allocated_path(std::string* path);
+  // repeated uint64 child_ino = 3;
+  int child_ino_size() const;
   private:
-  const std::string& _internal_path() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_path(const std::string& value);
-  std::string* _internal_mutable_path();
+  int _internal_child_ino_size() const;
   public:
+  void clear_child_ino();
+  private:
+  uint64_t _internal_child_ino(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+      _internal_child_ino() const;
+  void _internal_add_child_ino(uint64_t value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+      _internal_mutable_child_ino();
+  public:
+  uint64_t child_ino(int index) const;
+  void set_child_ino(int index, uint64_t value);
+  void add_child_ino(uint64_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+      child_ino() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+      mutable_child_ino();
 
-  // string name = 3;
+  // repeated .vosfs.raft.SliceInfo slice_infos = 9;
+  int slice_infos_size() const;
+  private:
+  int _internal_slice_infos_size() const;
+  public:
+  void clear_slice_infos();
+  ::vosfs::raft::SliceInfo* mutable_slice_infos(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::SliceInfo >*
+      mutable_slice_infos();
+  private:
+  const ::vosfs::raft::SliceInfo& _internal_slice_infos(int index) const;
+  ::vosfs::raft::SliceInfo* _internal_add_slice_infos();
+  public:
+  const ::vosfs::raft::SliceInfo& slice_infos(int index) const;
+  ::vosfs::raft::SliceInfo* add_slice_infos();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::SliceInfo >&
+      slice_infos() const;
+
+  // string name = 5;
   void clear_name();
   const std::string& name() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -2658,13 +2316,22 @@ class FileInfo final :
   std::string* _internal_mutable_name();
   public:
 
-  // uint64 id = 1;
-  void clear_id();
-  uint64_t id() const;
-  void set_id(uint64_t value);
+  // uint64 ino = 1;
+  void clear_ino();
+  uint64_t ino() const;
+  void set_ino(uint64_t value);
   private:
-  uint64_t _internal_id() const;
-  void _internal_set_id(uint64_t value);
+  uint64_t _internal_ino() const;
+  void _internal_set_ino(uint64_t value);
+  public:
+
+  // uint64 parent_ino = 2;
+  void clear_parent_ino();
+  uint64_t parent_ino() const;
+  void set_parent_ino(uint64_t value);
+  private:
+  uint64_t _internal_parent_ino() const;
+  void _internal_set_parent_ino(uint64_t value);
   public:
 
   // uint64 size = 4;
@@ -2676,13 +2343,915 @@ class FileInfo final :
   void _internal_set_size(uint64_t value);
   public:
 
-  // uint64 parent_id = 6;
-  void clear_parent_id();
-  uint64_t parent_id() const;
-  void set_parent_id(uint64_t value);
+  // uint64 ctime = 6;
+  void clear_ctime();
+  uint64_t ctime() const;
+  void set_ctime(uint64_t value);
   private:
-  uint64_t _internal_parent_id() const;
-  void _internal_set_parent_id(uint64_t value);
+  uint64_t _internal_ctime() const;
+  void _internal_set_ctime(uint64_t value);
+  public:
+
+  // uint64 mtime = 7;
+  void clear_mtime();
+  uint64_t mtime() const;
+  void set_mtime(uint64_t value);
+  private:
+  uint64_t _internal_mtime() const;
+  void _internal_set_mtime(uint64_t value);
+  public:
+
+  // bool is_dir = 8;
+  void clear_is_dir();
+  bool is_dir() const;
+  void set_is_dir(bool value);
+  private:
+  bool _internal_is_dir() const;
+  void _internal_set_is_dir(bool value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:vosfs.raft.Inode)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t > child_ino_;
+    mutable std::atomic<int> _child_ino_cached_byte_size_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::SliceInfo > slice_infos_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
+    uint64_t ino_;
+    uint64_t parent_ino_;
+    uint64_t size_;
+    uint64_t ctime_;
+    uint64_t mtime_;
+    bool is_dir_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_raft_2eproto;
+};
+// -------------------------------------------------------------------
+
+class SnapshotMetadata final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.SnapshotMetadata) */ {
+ public:
+  inline SnapshotMetadata() : SnapshotMetadata(nullptr) {}
+  ~SnapshotMetadata() override;
+  explicit PROTOBUF_CONSTEXPR SnapshotMetadata(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  SnapshotMetadata(const SnapshotMetadata& from);
+  SnapshotMetadata(SnapshotMetadata&& from) noexcept
+    : SnapshotMetadata() {
+    *this = ::std::move(from);
+  }
+
+  inline SnapshotMetadata& operator=(const SnapshotMetadata& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline SnapshotMetadata& operator=(SnapshotMetadata&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const SnapshotMetadata& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const SnapshotMetadata* internal_default_instance() {
+    return reinterpret_cast<const SnapshotMetadata*>(
+               &_SnapshotMetadata_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    12;
+
+  friend void swap(SnapshotMetadata& a, SnapshotMetadata& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(SnapshotMetadata* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(SnapshotMetadata* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  SnapshotMetadata* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<SnapshotMetadata>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const SnapshotMetadata& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const SnapshotMetadata& from) {
+    SnapshotMetadata::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(SnapshotMetadata* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "vosfs.raft.SnapshotMetadata";
+  }
+  protected:
+  explicit SnapshotMetadata(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kLastIncludedIndexFieldNumber = 1,
+    kLastIncludedTermFieldNumber = 2,
+  };
+  // uint64 last_included_index = 1;
+  void clear_last_included_index();
+  uint64_t last_included_index() const;
+  void set_last_included_index(uint64_t value);
+  private:
+  uint64_t _internal_last_included_index() const;
+  void _internal_set_last_included_index(uint64_t value);
+  public:
+
+  // uint64 last_included_term = 2;
+  void clear_last_included_term();
+  uint64_t last_included_term() const;
+  void set_last_included_term(uint64_t value);
+  private:
+  uint64_t _internal_last_included_term() const;
+  void _internal_set_last_included_term(uint64_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:vosfs.raft.SnapshotMetadata)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    uint64_t last_included_index_;
+    uint64_t last_included_term_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_raft_2eproto;
+};
+// -------------------------------------------------------------------
+
+class Snapshot final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.Snapshot) */ {
+ public:
+  inline Snapshot() : Snapshot(nullptr) {}
+  ~Snapshot() override;
+  explicit PROTOBUF_CONSTEXPR Snapshot(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  Snapshot(const Snapshot& from);
+  Snapshot(Snapshot&& from) noexcept
+    : Snapshot() {
+    *this = ::std::move(from);
+  }
+
+  inline Snapshot& operator=(const Snapshot& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline Snapshot& operator=(Snapshot&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const Snapshot& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const Snapshot* internal_default_instance() {
+    return reinterpret_cast<const Snapshot*>(
+               &_Snapshot_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    13;
+
+  friend void swap(Snapshot& a, Snapshot& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(Snapshot* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(Snapshot* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  Snapshot* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<Snapshot>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const Snapshot& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const Snapshot& from) {
+    Snapshot::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(Snapshot* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "vosfs.raft.Snapshot";
+  }
+  protected:
+  explicit Snapshot(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kInodesFieldNumber = 1,
+    kNodeInfosFieldNumber = 3,
+    kSnapshotMetadataFieldNumber = 2,
+  };
+  // repeated .vosfs.raft.Inode inodes = 1;
+  int inodes_size() const;
+  private:
+  int _internal_inodes_size() const;
+  public:
+  void clear_inodes();
+  ::vosfs::raft::Inode* mutable_inodes(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::Inode >*
+      mutable_inodes();
+  private:
+  const ::vosfs::raft::Inode& _internal_inodes(int index) const;
+  ::vosfs::raft::Inode* _internal_add_inodes();
+  public:
+  const ::vosfs::raft::Inode& inodes(int index) const;
+  ::vosfs::raft::Inode* add_inodes();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::Inode >&
+      inodes() const;
+
+  // repeated .vosfs.raft.NodeInfo node_infos = 3;
+  int node_infos_size() const;
+  private:
+  int _internal_node_infos_size() const;
+  public:
+  void clear_node_infos();
+  ::vosfs::raft::NodeInfo* mutable_node_infos(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::NodeInfo >*
+      mutable_node_infos();
+  private:
+  const ::vosfs::raft::NodeInfo& _internal_node_infos(int index) const;
+  ::vosfs::raft::NodeInfo* _internal_add_node_infos();
+  public:
+  const ::vosfs::raft::NodeInfo& node_infos(int index) const;
+  ::vosfs::raft::NodeInfo* add_node_infos();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::NodeInfo >&
+      node_infos() const;
+
+  // .vosfs.raft.SnapshotMetadata snapshot_metadata = 2;
+  bool has_snapshot_metadata() const;
+  private:
+  bool _internal_has_snapshot_metadata() const;
+  public:
+  void clear_snapshot_metadata();
+  const ::vosfs::raft::SnapshotMetadata& snapshot_metadata() const;
+  PROTOBUF_NODISCARD ::vosfs::raft::SnapshotMetadata* release_snapshot_metadata();
+  ::vosfs::raft::SnapshotMetadata* mutable_snapshot_metadata();
+  void set_allocated_snapshot_metadata(::vosfs::raft::SnapshotMetadata* snapshot_metadata);
+  private:
+  const ::vosfs::raft::SnapshotMetadata& _internal_snapshot_metadata() const;
+  ::vosfs::raft::SnapshotMetadata* _internal_mutable_snapshot_metadata();
+  public:
+  void unsafe_arena_set_allocated_snapshot_metadata(
+      ::vosfs::raft::SnapshotMetadata* snapshot_metadata);
+  ::vosfs::raft::SnapshotMetadata* unsafe_arena_release_snapshot_metadata();
+
+  // @@protoc_insertion_point(class_scope:vosfs.raft.Snapshot)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::Inode > inodes_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::NodeInfo > node_infos_;
+    ::vosfs::raft::SnapshotMetadata* snapshot_metadata_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_raft_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CreateFilePrepareRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.CreateFilePrepareRequest) */ {
+ public:
+  inline CreateFilePrepareRequest() : CreateFilePrepareRequest(nullptr) {}
+  ~CreateFilePrepareRequest() override;
+  explicit PROTOBUF_CONSTEXPR CreateFilePrepareRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CreateFilePrepareRequest(const CreateFilePrepareRequest& from);
+  CreateFilePrepareRequest(CreateFilePrepareRequest&& from) noexcept
+    : CreateFilePrepareRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline CreateFilePrepareRequest& operator=(const CreateFilePrepareRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CreateFilePrepareRequest& operator=(CreateFilePrepareRequest&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CreateFilePrepareRequest& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CreateFilePrepareRequest* internal_default_instance() {
+    return reinterpret_cast<const CreateFilePrepareRequest*>(
+               &_CreateFilePrepareRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    14;
+
+  friend void swap(CreateFilePrepareRequest& a, CreateFilePrepareRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CreateFilePrepareRequest* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CreateFilePrepareRequest* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CreateFilePrepareRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CreateFilePrepareRequest>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CreateFilePrepareRequest& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CreateFilePrepareRequest& from) {
+    CreateFilePrepareRequest::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CreateFilePrepareRequest* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "vosfs.raft.CreateFilePrepareRequest";
+  }
+  protected:
+  explicit CreateFilePrepareRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kSliceNumFieldNumber = 1,
+  };
+  // uint64 slice_num = 1;
+  void clear_slice_num();
+  uint64_t slice_num() const;
+  void set_slice_num(uint64_t value);
+  private:
+  uint64_t _internal_slice_num() const;
+  void _internal_set_slice_num(uint64_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:vosfs.raft.CreateFilePrepareRequest)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    uint64_t slice_num_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_raft_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CreateFilePrepareResponse final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.CreateFilePrepareResponse) */ {
+ public:
+  inline CreateFilePrepareResponse() : CreateFilePrepareResponse(nullptr) {}
+  ~CreateFilePrepareResponse() override;
+  explicit PROTOBUF_CONSTEXPR CreateFilePrepareResponse(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CreateFilePrepareResponse(const CreateFilePrepareResponse& from);
+  CreateFilePrepareResponse(CreateFilePrepareResponse&& from) noexcept
+    : CreateFilePrepareResponse() {
+    *this = ::std::move(from);
+  }
+
+  inline CreateFilePrepareResponse& operator=(const CreateFilePrepareResponse& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CreateFilePrepareResponse& operator=(CreateFilePrepareResponse&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CreateFilePrepareResponse& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CreateFilePrepareResponse* internal_default_instance() {
+    return reinterpret_cast<const CreateFilePrepareResponse*>(
+               &_CreateFilePrepareResponse_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    15;
+
+  friend void swap(CreateFilePrepareResponse& a, CreateFilePrepareResponse& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CreateFilePrepareResponse* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CreateFilePrepareResponse* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CreateFilePrepareResponse* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CreateFilePrepareResponse>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CreateFilePrepareResponse& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CreateFilePrepareResponse& from) {
+    CreateFilePrepareResponse::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CreateFilePrepareResponse* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "vosfs.raft.CreateFilePrepareResponse";
+  }
+  protected:
+  explicit CreateFilePrepareResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kSliceInfosFieldNumber = 2,
+    kInoFieldNumber = 1,
+  };
+  // repeated .vosfs.raft.SliceInfo slice_infos = 2;
+  int slice_infos_size() const;
+  private:
+  int _internal_slice_infos_size() const;
+  public:
+  void clear_slice_infos();
+  ::vosfs::raft::SliceInfo* mutable_slice_infos(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::SliceInfo >*
+      mutable_slice_infos();
+  private:
+  const ::vosfs::raft::SliceInfo& _internal_slice_infos(int index) const;
+  ::vosfs::raft::SliceInfo* _internal_add_slice_infos();
+  public:
+  const ::vosfs::raft::SliceInfo& slice_infos(int index) const;
+  ::vosfs::raft::SliceInfo* add_slice_infos();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::SliceInfo >&
+      slice_infos() const;
+
+  // uint64 ino = 1;
+  void clear_ino();
+  uint64_t ino() const;
+  void set_ino(uint64_t value);
+  private:
+  uint64_t _internal_ino() const;
+  void _internal_set_ino(uint64_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:vosfs.raft.CreateFilePrepareResponse)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::SliceInfo > slice_infos_;
+    uint64_t ino_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_raft_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CreateFileCommitRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.CreateFileCommitRequest) */ {
+ public:
+  inline CreateFileCommitRequest() : CreateFileCommitRequest(nullptr) {}
+  ~CreateFileCommitRequest() override;
+  explicit PROTOBUF_CONSTEXPR CreateFileCommitRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CreateFileCommitRequest(const CreateFileCommitRequest& from);
+  CreateFileCommitRequest(CreateFileCommitRequest&& from) noexcept
+    : CreateFileCommitRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline CreateFileCommitRequest& operator=(const CreateFileCommitRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CreateFileCommitRequest& operator=(CreateFileCommitRequest&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CreateFileCommitRequest& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CreateFileCommitRequest* internal_default_instance() {
+    return reinterpret_cast<const CreateFileCommitRequest*>(
+               &_CreateFileCommitRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    16;
+
+  friend void swap(CreateFileCommitRequest& a, CreateFileCommitRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CreateFileCommitRequest* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CreateFileCommitRequest* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CreateFileCommitRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CreateFileCommitRequest>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CreateFileCommitRequest& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CreateFileCommitRequest& from) {
+    CreateFileCommitRequest::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CreateFileCommitRequest* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "vosfs.raft.CreateFileCommitRequest";
+  }
+  protected:
+  explicit CreateFileCommitRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kSliceInfosFieldNumber = 6,
+    kNameFieldNumber = 4,
+    kInoFieldNumber = 1,
+    kParentInoFieldNumber = 2,
+    kSizeFieldNumber = 3,
+    kIsDirFieldNumber = 5,
+  };
+  // repeated .vosfs.raft.SliceInfo slice_infos = 6;
+  int slice_infos_size() const;
+  private:
+  int _internal_slice_infos_size() const;
+  public:
+  void clear_slice_infos();
+  ::vosfs::raft::SliceInfo* mutable_slice_infos(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::SliceInfo >*
+      mutable_slice_infos();
+  private:
+  const ::vosfs::raft::SliceInfo& _internal_slice_infos(int index) const;
+  ::vosfs::raft::SliceInfo* _internal_add_slice_infos();
+  public:
+  const ::vosfs::raft::SliceInfo& slice_infos(int index) const;
+  ::vosfs::raft::SliceInfo* add_slice_infos();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::SliceInfo >&
+      slice_infos() const;
+
+  // string name = 4;
+  void clear_name();
+  const std::string& name() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_name();
+  PROTOBUF_NODISCARD std::string* release_name();
+  void set_allocated_name(std::string* name);
+  private:
+  const std::string& _internal_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_name(const std::string& value);
+  std::string* _internal_mutable_name();
+  public:
+
+  // uint64 ino = 1;
+  void clear_ino();
+  uint64_t ino() const;
+  void set_ino(uint64_t value);
+  private:
+  uint64_t _internal_ino() const;
+  void _internal_set_ino(uint64_t value);
+  public:
+
+  // uint64 parent_ino = 2;
+  void clear_parent_ino();
+  uint64_t parent_ino() const;
+  void set_parent_ino(uint64_t value);
+  private:
+  uint64_t _internal_parent_ino() const;
+  void _internal_set_parent_ino(uint64_t value);
+  public:
+
+  // uint64 size = 3;
+  void clear_size();
+  uint64_t size() const;
+  void set_size(uint64_t value);
+  private:
+  uint64_t _internal_size() const;
+  void _internal_set_size(uint64_t value);
   public:
 
   // bool is_dir = 5;
@@ -2694,7 +3263,7 @@ class FileInfo final :
   void _internal_set_is_dir(bool value);
   public:
 
-  // @@protoc_insertion_point(class_scope:vosfs.raft.FileInfo)
+  // @@protoc_insertion_point(class_scope:vosfs.raft.CreateFileCommitRequest)
  private:
   class _Internal;
 
@@ -2702,11 +3271,11 @@ class FileInfo final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr path_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::SliceInfo > slice_infos_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
-    uint64_t id_;
+    uint64_t ino_;
+    uint64_t parent_ino_;
     uint64_t size_;
-    uint64_t parent_id_;
     bool is_dir_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -2715,24 +3284,24 @@ class FileInfo final :
 };
 // -------------------------------------------------------------------
 
-class UploadFileRequest final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.UploadFileRequest) */ {
+class CreateFileCommitResponse final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.CreateFileCommitResponse) */ {
  public:
-  inline UploadFileRequest() : UploadFileRequest(nullptr) {}
-  ~UploadFileRequest() override;
-  explicit PROTOBUF_CONSTEXPR UploadFileRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline CreateFileCommitResponse() : CreateFileCommitResponse(nullptr) {}
+  ~CreateFileCommitResponse() override;
+  explicit PROTOBUF_CONSTEXPR CreateFileCommitResponse(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  UploadFileRequest(const UploadFileRequest& from);
-  UploadFileRequest(UploadFileRequest&& from) noexcept
-    : UploadFileRequest() {
+  CreateFileCommitResponse(const CreateFileCommitResponse& from);
+  CreateFileCommitResponse(CreateFileCommitResponse&& from) noexcept
+    : CreateFileCommitResponse() {
     *this = ::std::move(from);
   }
 
-  inline UploadFileRequest& operator=(const UploadFileRequest& from) {
+  inline CreateFileCommitResponse& operator=(const CreateFileCommitResponse& from) {
     CopyFrom(from);
     return *this;
   }
-  inline UploadFileRequest& operator=(UploadFileRequest&& from) noexcept {
+  inline CreateFileCommitResponse& operator=(CreateFileCommitResponse&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -2755,20 +3324,20 @@ class UploadFileRequest final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const UploadFileRequest& default_instance() {
+  static const CreateFileCommitResponse& default_instance() {
     return *internal_default_instance();
   }
-  static inline const UploadFileRequest* internal_default_instance() {
-    return reinterpret_cast<const UploadFileRequest*>(
-               &_UploadFileRequest_default_instance_);
+  static inline const CreateFileCommitResponse* internal_default_instance() {
+    return reinterpret_cast<const CreateFileCommitResponse*>(
+               &_CreateFileCommitResponse_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    14;
+    17;
 
-  friend void swap(UploadFileRequest& a, UploadFileRequest& b) {
+  friend void swap(CreateFileCommitResponse& a, CreateFileCommitResponse& b) {
     a.Swap(&b);
   }
-  inline void Swap(UploadFileRequest* other) {
+  inline void Swap(CreateFileCommitResponse* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -2781,7 +3350,7 @@ class UploadFileRequest final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(UploadFileRequest* other) {
+  void UnsafeArenaSwap(CreateFileCommitResponse* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -2789,14 +3358,14 @@ class UploadFileRequest final :
 
   // implements Message ----------------------------------------------
 
-  UploadFileRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<UploadFileRequest>(arena);
+  CreateFileCommitResponse* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CreateFileCommitResponse>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const UploadFileRequest& from);
+  void CopyFrom(const CreateFileCommitResponse& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const UploadFileRequest& from) {
-    UploadFileRequest::MergeImpl(*this, from);
+  void MergeFrom( const CreateFileCommitResponse& from) {
+    CreateFileCommitResponse::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -2814,15 +3383,15 @@ class UploadFileRequest final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(UploadFileRequest* other);
+  void InternalSwap(CreateFileCommitResponse* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "vosfs.raft.UploadFileRequest";
+    return "vosfs.raft.CreateFileCommitResponse";
   }
   protected:
-  explicit UploadFileRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit CreateFileCommitResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -2836,61 +3405,18 @@ class UploadFileRequest final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kChunkInfosFieldNumber = 2,
-    kChecksumFieldNumber = 3,
-    kFileInfoFieldNumber = 1,
+    kSuccessFieldNumber = 1,
   };
-  // repeated .vosfs.raft.ChunkInfo chunk_infos = 2;
-  int chunk_infos_size() const;
+  // bool success = 1;
+  void clear_success();
+  bool success() const;
+  void set_success(bool value);
   private:
-  int _internal_chunk_infos_size() const;
-  public:
-  void clear_chunk_infos();
-  ::vosfs::raft::ChunkInfo* mutable_chunk_infos(int index);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::ChunkInfo >*
-      mutable_chunk_infos();
-  private:
-  const ::vosfs::raft::ChunkInfo& _internal_chunk_infos(int index) const;
-  ::vosfs::raft::ChunkInfo* _internal_add_chunk_infos();
-  public:
-  const ::vosfs::raft::ChunkInfo& chunk_infos(int index) const;
-  ::vosfs::raft::ChunkInfo* add_chunk_infos();
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::ChunkInfo >&
-      chunk_infos() const;
-
-  // string checksum = 3;
-  void clear_checksum();
-  const std::string& checksum() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_checksum(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_checksum();
-  PROTOBUF_NODISCARD std::string* release_checksum();
-  void set_allocated_checksum(std::string* checksum);
-  private:
-  const std::string& _internal_checksum() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_checksum(const std::string& value);
-  std::string* _internal_mutable_checksum();
+  bool _internal_success() const;
+  void _internal_set_success(bool value);
   public:
 
-  // .vosfs.raft.FileInfo file_info = 1;
-  bool has_file_info() const;
-  private:
-  bool _internal_has_file_info() const;
-  public:
-  void clear_file_info();
-  const ::vosfs::raft::FileInfo& file_info() const;
-  PROTOBUF_NODISCARD ::vosfs::raft::FileInfo* release_file_info();
-  ::vosfs::raft::FileInfo* mutable_file_info();
-  void set_allocated_file_info(::vosfs::raft::FileInfo* file_info);
-  private:
-  const ::vosfs::raft::FileInfo& _internal_file_info() const;
-  ::vosfs::raft::FileInfo* _internal_mutable_file_info();
-  public:
-  void unsafe_arena_set_allocated_file_info(
-      ::vosfs::raft::FileInfo* file_info);
-  ::vosfs::raft::FileInfo* unsafe_arena_release_file_info();
-
-  // @@protoc_insertion_point(class_scope:vosfs.raft.UploadFileRequest)
+  // @@protoc_insertion_point(class_scope:vosfs.raft.CreateFileCommitResponse)
  private:
   class _Internal;
 
@@ -2898,9 +3424,7 @@ class UploadFileRequest final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::ChunkInfo > chunk_infos_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr checksum_;
-    ::vosfs::raft::FileInfo* file_info_;
+    bool success_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2908,23 +3432,24 @@ class UploadFileRequest final :
 };
 // -------------------------------------------------------------------
 
-class DownloadFileRequest final :
-    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:vosfs.raft.DownloadFileRequest) */ {
+class EntryCommand final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.EntryCommand) */ {
  public:
-  inline DownloadFileRequest() : DownloadFileRequest(nullptr) {}
-  explicit PROTOBUF_CONSTEXPR DownloadFileRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline EntryCommand() : EntryCommand(nullptr) {}
+  ~EntryCommand() override;
+  explicit PROTOBUF_CONSTEXPR EntryCommand(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  DownloadFileRequest(const DownloadFileRequest& from);
-  DownloadFileRequest(DownloadFileRequest&& from) noexcept
-    : DownloadFileRequest() {
+  EntryCommand(const EntryCommand& from);
+  EntryCommand(EntryCommand&& from) noexcept
+    : EntryCommand() {
     *this = ::std::move(from);
   }
 
-  inline DownloadFileRequest& operator=(const DownloadFileRequest& from) {
+  inline EntryCommand& operator=(const EntryCommand& from) {
     CopyFrom(from);
     return *this;
   }
-  inline DownloadFileRequest& operator=(DownloadFileRequest&& from) noexcept {
+  inline EntryCommand& operator=(EntryCommand&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -2947,374 +3472,25 @@ class DownloadFileRequest final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const DownloadFileRequest& default_instance() {
+  static const EntryCommand& default_instance() {
     return *internal_default_instance();
   }
-  static inline const DownloadFileRequest* internal_default_instance() {
-    return reinterpret_cast<const DownloadFileRequest*>(
-               &_DownloadFileRequest_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    15;
-
-  friend void swap(DownloadFileRequest& a, DownloadFileRequest& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(DownloadFileRequest* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(DownloadFileRequest* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  DownloadFileRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<DownloadFileRequest>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
-  inline void CopyFrom(const DownloadFileRequest& from) {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
-  void MergeFrom(const DownloadFileRequest& from) {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
-  }
-  public:
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "vosfs.raft.DownloadFileRequest";
-  }
-  protected:
-  explicit DownloadFileRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // @@protoc_insertion_point(class_scope:vosfs.raft.DownloadFileRequest)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
+  enum CmdCase {
+    kCreateFileCommitRequest = 1,
+    CMD_NOT_SET = 0,
   };
-  friend struct ::TableStruct_raft_2eproto;
-};
-// -------------------------------------------------------------------
 
-class DeleteFileRequest final :
-    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:vosfs.raft.DeleteFileRequest) */ {
- public:
-  inline DeleteFileRequest() : DeleteFileRequest(nullptr) {}
-  explicit PROTOBUF_CONSTEXPR DeleteFileRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  DeleteFileRequest(const DeleteFileRequest& from);
-  DeleteFileRequest(DeleteFileRequest&& from) noexcept
-    : DeleteFileRequest() {
-    *this = ::std::move(from);
-  }
-
-  inline DeleteFileRequest& operator=(const DeleteFileRequest& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline DeleteFileRequest& operator=(DeleteFileRequest&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const DeleteFileRequest& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const DeleteFileRequest* internal_default_instance() {
-    return reinterpret_cast<const DeleteFileRequest*>(
-               &_DeleteFileRequest_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    16;
-
-  friend void swap(DeleteFileRequest& a, DeleteFileRequest& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(DeleteFileRequest* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(DeleteFileRequest* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  DeleteFileRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<DeleteFileRequest>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
-  inline void CopyFrom(const DeleteFileRequest& from) {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
-  void MergeFrom(const DeleteFileRequest& from) {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
-  }
-  public:
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "vosfs.raft.DeleteFileRequest";
-  }
-  protected:
-  explicit DeleteFileRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // @@protoc_insertion_point(class_scope:vosfs.raft.DeleteFileRequest)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-  };
-  friend struct ::TableStruct_raft_2eproto;
-};
-// -------------------------------------------------------------------
-
-class CreateFileRequest final :
-    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:vosfs.raft.CreateFileRequest) */ {
- public:
-  inline CreateFileRequest() : CreateFileRequest(nullptr) {}
-  explicit PROTOBUF_CONSTEXPR CreateFileRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  CreateFileRequest(const CreateFileRequest& from);
-  CreateFileRequest(CreateFileRequest&& from) noexcept
-    : CreateFileRequest() {
-    *this = ::std::move(from);
-  }
-
-  inline CreateFileRequest& operator=(const CreateFileRequest& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline CreateFileRequest& operator=(CreateFileRequest&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const CreateFileRequest& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const CreateFileRequest* internal_default_instance() {
-    return reinterpret_cast<const CreateFileRequest*>(
-               &_CreateFileRequest_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    17;
-
-  friend void swap(CreateFileRequest& a, CreateFileRequest& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(CreateFileRequest* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(CreateFileRequest* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  CreateFileRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<CreateFileRequest>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
-  inline void CopyFrom(const CreateFileRequest& from) {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
-  void MergeFrom(const CreateFileRequest& from) {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
-  }
-  public:
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "vosfs.raft.CreateFileRequest";
-  }
-  protected:
-  explicit CreateFileRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // @@protoc_insertion_point(class_scope:vosfs.raft.CreateFileRequest)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-  };
-  friend struct ::TableStruct_raft_2eproto;
-};
-// -------------------------------------------------------------------
-
-class CreateDirRequest final :
-    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:vosfs.raft.CreateDirRequest) */ {
- public:
-  inline CreateDirRequest() : CreateDirRequest(nullptr) {}
-  explicit PROTOBUF_CONSTEXPR CreateDirRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  CreateDirRequest(const CreateDirRequest& from);
-  CreateDirRequest(CreateDirRequest&& from) noexcept
-    : CreateDirRequest() {
-    *this = ::std::move(from);
-  }
-
-  inline CreateDirRequest& operator=(const CreateDirRequest& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline CreateDirRequest& operator=(CreateDirRequest&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const CreateDirRequest& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const CreateDirRequest* internal_default_instance() {
-    return reinterpret_cast<const CreateDirRequest*>(
-               &_CreateDirRequest_default_instance_);
+  static inline const EntryCommand* internal_default_instance() {
+    return reinterpret_cast<const EntryCommand*>(
+               &_EntryCommand_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     18;
 
-  friend void swap(CreateDirRequest& a, CreateDirRequest& b) {
+  friend void swap(EntryCommand& a, EntryCommand& b) {
     a.Swap(&b);
   }
-  inline void Swap(CreateDirRequest* other) {
+  inline void Swap(EntryCommand* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -3327,7 +3503,7 @@ class CreateDirRequest final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(CreateDirRequest* other) {
+  void UnsafeArenaSwap(EntryCommand* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -3335,374 +3511,14 @@ class CreateDirRequest final :
 
   // implements Message ----------------------------------------------
 
-  CreateDirRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<CreateDirRequest>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
-  inline void CopyFrom(const CreateDirRequest& from) {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
-  void MergeFrom(const CreateDirRequest& from) {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
-  }
-  public:
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "vosfs.raft.CreateDirRequest";
-  }
-  protected:
-  explicit CreateDirRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // @@protoc_insertion_point(class_scope:vosfs.raft.CreateDirRequest)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-  };
-  friend struct ::TableStruct_raft_2eproto;
-};
-// -------------------------------------------------------------------
-
-class ListFileRequest final :
-    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:vosfs.raft.ListFileRequest) */ {
- public:
-  inline ListFileRequest() : ListFileRequest(nullptr) {}
-  explicit PROTOBUF_CONSTEXPR ListFileRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  ListFileRequest(const ListFileRequest& from);
-  ListFileRequest(ListFileRequest&& from) noexcept
-    : ListFileRequest() {
-    *this = ::std::move(from);
-  }
-
-  inline ListFileRequest& operator=(const ListFileRequest& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline ListFileRequest& operator=(ListFileRequest&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const ListFileRequest& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const ListFileRequest* internal_default_instance() {
-    return reinterpret_cast<const ListFileRequest*>(
-               &_ListFileRequest_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    19;
-
-  friend void swap(ListFileRequest& a, ListFileRequest& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(ListFileRequest* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(ListFileRequest* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  ListFileRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<ListFileRequest>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
-  inline void CopyFrom(const ListFileRequest& from) {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
-  void MergeFrom(const ListFileRequest& from) {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
-  }
-  public:
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "vosfs.raft.ListFileRequest";
-  }
-  protected:
-  explicit ListFileRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // @@protoc_insertion_point(class_scope:vosfs.raft.ListFileRequest)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-  };
-  friend struct ::TableStruct_raft_2eproto;
-};
-// -------------------------------------------------------------------
-
-class ListDirRequest final :
-    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:vosfs.raft.ListDirRequest) */ {
- public:
-  inline ListDirRequest() : ListDirRequest(nullptr) {}
-  explicit PROTOBUF_CONSTEXPR ListDirRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  ListDirRequest(const ListDirRequest& from);
-  ListDirRequest(ListDirRequest&& from) noexcept
-    : ListDirRequest() {
-    *this = ::std::move(from);
-  }
-
-  inline ListDirRequest& operator=(const ListDirRequest& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline ListDirRequest& operator=(ListDirRequest&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const ListDirRequest& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const ListDirRequest* internal_default_instance() {
-    return reinterpret_cast<const ListDirRequest*>(
-               &_ListDirRequest_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    20;
-
-  friend void swap(ListDirRequest& a, ListDirRequest& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(ListDirRequest* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(ListDirRequest* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  ListDirRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<ListDirRequest>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
-  inline void CopyFrom(const ListDirRequest& from) {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
-  void MergeFrom(const ListDirRequest& from) {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
-  }
-  public:
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "vosfs.raft.ListDirRequest";
-  }
-  protected:
-  explicit ListDirRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // @@protoc_insertion_point(class_scope:vosfs.raft.ListDirRequest)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-  };
-  friend struct ::TableStruct_raft_2eproto;
-};
-// -------------------------------------------------------------------
-
-class ClientCommand final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.ClientCommand) */ {
- public:
-  inline ClientCommand() : ClientCommand(nullptr) {}
-  ~ClientCommand() override;
-  explicit PROTOBUF_CONSTEXPR ClientCommand(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  ClientCommand(const ClientCommand& from);
-  ClientCommand(ClientCommand&& from) noexcept
-    : ClientCommand() {
-    *this = ::std::move(from);
-  }
-
-  inline ClientCommand& operator=(const ClientCommand& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline ClientCommand& operator=(ClientCommand&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const ClientCommand& default_instance() {
-    return *internal_default_instance();
-  }
-  enum CmdCase {
-    kUploadFile = 1,
-    CMD_NOT_SET = 0,
-  };
-
-  static inline const ClientCommand* internal_default_instance() {
-    return reinterpret_cast<const ClientCommand*>(
-               &_ClientCommand_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    21;
-
-  friend void swap(ClientCommand& a, ClientCommand& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(ClientCommand* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(ClientCommand* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  ClientCommand* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<ClientCommand>(arena);
+  EntryCommand* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<EntryCommand>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const ClientCommand& from);
+  void CopyFrom(const EntryCommand& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const ClientCommand& from) {
-    ClientCommand::MergeImpl(*this, from);
+  void MergeFrom( const EntryCommand& from) {
+    EntryCommand::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -3720,15 +3536,15 @@ class ClientCommand final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(ClientCommand* other);
+  void InternalSwap(EntryCommand* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "vosfs.raft.ClientCommand";
+    return "vosfs.raft.EntryCommand";
   }
   protected:
-  explicit ClientCommand(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit EntryCommand(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -3742,32 +3558,32 @@ class ClientCommand final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kUploadFileFieldNumber = 1,
+    kCreateFileCommitRequestFieldNumber = 1,
   };
-  // .vosfs.raft.UploadFileRequest upload_file = 1;
-  bool has_upload_file() const;
+  // .vosfs.raft.CreateFileCommitRequest create_file_commit_request = 1;
+  bool has_create_file_commit_request() const;
   private:
-  bool _internal_has_upload_file() const;
+  bool _internal_has_create_file_commit_request() const;
   public:
-  void clear_upload_file();
-  const ::vosfs::raft::UploadFileRequest& upload_file() const;
-  PROTOBUF_NODISCARD ::vosfs::raft::UploadFileRequest* release_upload_file();
-  ::vosfs::raft::UploadFileRequest* mutable_upload_file();
-  void set_allocated_upload_file(::vosfs::raft::UploadFileRequest* upload_file);
+  void clear_create_file_commit_request();
+  const ::vosfs::raft::CreateFileCommitRequest& create_file_commit_request() const;
+  PROTOBUF_NODISCARD ::vosfs::raft::CreateFileCommitRequest* release_create_file_commit_request();
+  ::vosfs::raft::CreateFileCommitRequest* mutable_create_file_commit_request();
+  void set_allocated_create_file_commit_request(::vosfs::raft::CreateFileCommitRequest* create_file_commit_request);
   private:
-  const ::vosfs::raft::UploadFileRequest& _internal_upload_file() const;
-  ::vosfs::raft::UploadFileRequest* _internal_mutable_upload_file();
+  const ::vosfs::raft::CreateFileCommitRequest& _internal_create_file_commit_request() const;
+  ::vosfs::raft::CreateFileCommitRequest* _internal_mutable_create_file_commit_request();
   public:
-  void unsafe_arena_set_allocated_upload_file(
-      ::vosfs::raft::UploadFileRequest* upload_file);
-  ::vosfs::raft::UploadFileRequest* unsafe_arena_release_upload_file();
+  void unsafe_arena_set_allocated_create_file_commit_request(
+      ::vosfs::raft::CreateFileCommitRequest* create_file_commit_request);
+  ::vosfs::raft::CreateFileCommitRequest* unsafe_arena_release_create_file_commit_request();
 
   void clear_cmd();
   CmdCase cmd_case() const;
-  // @@protoc_insertion_point(class_scope:vosfs.raft.ClientCommand)
+  // @@protoc_insertion_point(class_scope:vosfs.raft.EntryCommand)
  private:
   class _Internal;
-  void set_has_upload_file();
+  void set_has_create_file_commit_request();
 
   inline bool has_cmd() const;
   inline void clear_has_cmd();
@@ -3779,7 +3595,7 @@ class ClientCommand final :
     union CmdUnion {
       constexpr CmdUnion() : _constinit_{} {}
         ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized _constinit_;
-      ::vosfs::raft::UploadFileRequest* upload_file_;
+      ::vosfs::raft::CreateFileCommitRequest* create_file_commit_request_;
     } cmd_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     uint32_t _oneof_case_[1];
@@ -3845,26 +3661,6 @@ inline void HardState::_internal_set_voted_for(uint64_t value) {
 inline void HardState::set_voted_for(uint64_t value) {
   _internal_set_voted_for(value);
   // @@protoc_insertion_point(field_set:vosfs.raft.HardState.voted_for)
-}
-
-// uint64 commit_index = 3;
-inline void HardState::clear_commit_index() {
-  _impl_.commit_index_ = uint64_t{0u};
-}
-inline uint64_t HardState::_internal_commit_index() const {
-  return _impl_.commit_index_;
-}
-inline uint64_t HardState::commit_index() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.HardState.commit_index)
-  return _internal_commit_index();
-}
-inline void HardState::_internal_set_commit_index(uint64_t value) {
-  
-  _impl_.commit_index_ = value;
-}
-inline void HardState::set_commit_index(uint64_t value) {
-  _internal_set_commit_index(value);
-  // @@protoc_insertion_point(field_set:vosfs.raft.HardState.commit_index)
 }
 
 // -------------------------------------------------------------------
@@ -4555,234 +4351,6 @@ ClusterInfo::node_infos() const {
 
 // -------------------------------------------------------------------
 
-// SnapshotMetadata
-
-// uint64 last_included_index = 1;
-inline void SnapshotMetadata::clear_last_included_index() {
-  _impl_.last_included_index_ = uint64_t{0u};
-}
-inline uint64_t SnapshotMetadata::_internal_last_included_index() const {
-  return _impl_.last_included_index_;
-}
-inline uint64_t SnapshotMetadata::last_included_index() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.SnapshotMetadata.last_included_index)
-  return _internal_last_included_index();
-}
-inline void SnapshotMetadata::_internal_set_last_included_index(uint64_t value) {
-  
-  _impl_.last_included_index_ = value;
-}
-inline void SnapshotMetadata::set_last_included_index(uint64_t value) {
-  _internal_set_last_included_index(value);
-  // @@protoc_insertion_point(field_set:vosfs.raft.SnapshotMetadata.last_included_index)
-}
-
-// uint64 last_included_term = 2;
-inline void SnapshotMetadata::clear_last_included_term() {
-  _impl_.last_included_term_ = uint64_t{0u};
-}
-inline uint64_t SnapshotMetadata::_internal_last_included_term() const {
-  return _impl_.last_included_term_;
-}
-inline uint64_t SnapshotMetadata::last_included_term() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.SnapshotMetadata.last_included_term)
-  return _internal_last_included_term();
-}
-inline void SnapshotMetadata::_internal_set_last_included_term(uint64_t value) {
-  
-  _impl_.last_included_term_ = value;
-}
-inline void SnapshotMetadata::set_last_included_term(uint64_t value) {
-  _internal_set_last_included_term(value);
-  // @@protoc_insertion_point(field_set:vosfs.raft.SnapshotMetadata.last_included_term)
-}
-
-// -------------------------------------------------------------------
-
-// Snapshot
-
-// bytes data = 1;
-inline void Snapshot::clear_data() {
-  _impl_.data_.ClearToEmpty();
-}
-inline const std::string& Snapshot::data() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.Snapshot.data)
-  return _internal_data();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void Snapshot::set_data(ArgT0&& arg0, ArgT... args) {
- 
- _impl_.data_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:vosfs.raft.Snapshot.data)
-}
-inline std::string* Snapshot::mutable_data() {
-  std::string* _s = _internal_mutable_data();
-  // @@protoc_insertion_point(field_mutable:vosfs.raft.Snapshot.data)
-  return _s;
-}
-inline const std::string& Snapshot::_internal_data() const {
-  return _impl_.data_.Get();
-}
-inline void Snapshot::_internal_set_data(const std::string& value) {
-  
-  _impl_.data_.Set(value, GetArenaForAllocation());
-}
-inline std::string* Snapshot::_internal_mutable_data() {
-  
-  return _impl_.data_.Mutable(GetArenaForAllocation());
-}
-inline std::string* Snapshot::release_data() {
-  // @@protoc_insertion_point(field_release:vosfs.raft.Snapshot.data)
-  return _impl_.data_.Release();
-}
-inline void Snapshot::set_allocated_data(std::string* data) {
-  if (data != nullptr) {
-    
-  } else {
-    
-  }
-  _impl_.data_.SetAllocated(data, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.data_.IsDefault()) {
-    _impl_.data_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.Snapshot.data)
-}
-
-// .vosfs.raft.SnapshotMetadata snapshot_metadata = 2;
-inline bool Snapshot::_internal_has_snapshot_metadata() const {
-  return this != internal_default_instance() && _impl_.snapshot_metadata_ != nullptr;
-}
-inline bool Snapshot::has_snapshot_metadata() const {
-  return _internal_has_snapshot_metadata();
-}
-inline void Snapshot::clear_snapshot_metadata() {
-  if (GetArenaForAllocation() == nullptr && _impl_.snapshot_metadata_ != nullptr) {
-    delete _impl_.snapshot_metadata_;
-  }
-  _impl_.snapshot_metadata_ = nullptr;
-}
-inline const ::vosfs::raft::SnapshotMetadata& Snapshot::_internal_snapshot_metadata() const {
-  const ::vosfs::raft::SnapshotMetadata* p = _impl_.snapshot_metadata_;
-  return p != nullptr ? *p : reinterpret_cast<const ::vosfs::raft::SnapshotMetadata&>(
-      ::vosfs::raft::_SnapshotMetadata_default_instance_);
-}
-inline const ::vosfs::raft::SnapshotMetadata& Snapshot::snapshot_metadata() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.Snapshot.snapshot_metadata)
-  return _internal_snapshot_metadata();
-}
-inline void Snapshot::unsafe_arena_set_allocated_snapshot_metadata(
-    ::vosfs::raft::SnapshotMetadata* snapshot_metadata) {
-  if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.snapshot_metadata_);
-  }
-  _impl_.snapshot_metadata_ = snapshot_metadata;
-  if (snapshot_metadata) {
-    
-  } else {
-    
-  }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:vosfs.raft.Snapshot.snapshot_metadata)
-}
-inline ::vosfs::raft::SnapshotMetadata* Snapshot::release_snapshot_metadata() {
-  
-  ::vosfs::raft::SnapshotMetadata* temp = _impl_.snapshot_metadata_;
-  _impl_.snapshot_metadata_ = nullptr;
-#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
-  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
-  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  if (GetArenaForAllocation() == nullptr) { delete old; }
-#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
-  if (GetArenaForAllocation() != nullptr) {
-    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  }
-#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
-  return temp;
-}
-inline ::vosfs::raft::SnapshotMetadata* Snapshot::unsafe_arena_release_snapshot_metadata() {
-  // @@protoc_insertion_point(field_release:vosfs.raft.Snapshot.snapshot_metadata)
-  
-  ::vosfs::raft::SnapshotMetadata* temp = _impl_.snapshot_metadata_;
-  _impl_.snapshot_metadata_ = nullptr;
-  return temp;
-}
-inline ::vosfs::raft::SnapshotMetadata* Snapshot::_internal_mutable_snapshot_metadata() {
-  
-  if (_impl_.snapshot_metadata_ == nullptr) {
-    auto* p = CreateMaybeMessage<::vosfs::raft::SnapshotMetadata>(GetArenaForAllocation());
-    _impl_.snapshot_metadata_ = p;
-  }
-  return _impl_.snapshot_metadata_;
-}
-inline ::vosfs::raft::SnapshotMetadata* Snapshot::mutable_snapshot_metadata() {
-  ::vosfs::raft::SnapshotMetadata* _msg = _internal_mutable_snapshot_metadata();
-  // @@protoc_insertion_point(field_mutable:vosfs.raft.Snapshot.snapshot_metadata)
-  return _msg;
-}
-inline void Snapshot::set_allocated_snapshot_metadata(::vosfs::raft::SnapshotMetadata* snapshot_metadata) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  if (message_arena == nullptr) {
-    delete _impl_.snapshot_metadata_;
-  }
-  if (snapshot_metadata) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(snapshot_metadata);
-    if (message_arena != submessage_arena) {
-      snapshot_metadata = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, snapshot_metadata, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  _impl_.snapshot_metadata_ = snapshot_metadata;
-  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.Snapshot.snapshot_metadata)
-}
-
-// repeated .vosfs.raft.NodeInfo node_infos = 3;
-inline int Snapshot::_internal_node_infos_size() const {
-  return _impl_.node_infos_.size();
-}
-inline int Snapshot::node_infos_size() const {
-  return _internal_node_infos_size();
-}
-inline void Snapshot::clear_node_infos() {
-  _impl_.node_infos_.Clear();
-}
-inline ::vosfs::raft::NodeInfo* Snapshot::mutable_node_infos(int index) {
-  // @@protoc_insertion_point(field_mutable:vosfs.raft.Snapshot.node_infos)
-  return _impl_.node_infos_.Mutable(index);
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::NodeInfo >*
-Snapshot::mutable_node_infos() {
-  // @@protoc_insertion_point(field_mutable_list:vosfs.raft.Snapshot.node_infos)
-  return &_impl_.node_infos_;
-}
-inline const ::vosfs::raft::NodeInfo& Snapshot::_internal_node_infos(int index) const {
-  return _impl_.node_infos_.Get(index);
-}
-inline const ::vosfs::raft::NodeInfo& Snapshot::node_infos(int index) const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.Snapshot.node_infos)
-  return _internal_node_infos(index);
-}
-inline ::vosfs::raft::NodeInfo* Snapshot::_internal_add_node_infos() {
-  return _impl_.node_infos_.Add();
-}
-inline ::vosfs::raft::NodeInfo* Snapshot::add_node_infos() {
-  ::vosfs::raft::NodeInfo* _add = _internal_add_node_infos();
-  // @@protoc_insertion_point(field_add:vosfs.raft.Snapshot.node_infos)
-  return _add;
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::NodeInfo >&
-Snapshot::node_infos() const {
-  // @@protoc_insertion_point(field_list:vosfs.raft.Snapshot.node_infos)
-  return _impl_.node_infos_;
-}
-
-// -------------------------------------------------------------------
-
 // InstallSnapshotRequest
 
 // uint64 term = 1;
@@ -5001,178 +4569,245 @@ inline void InstallSnapshotResponse::set_term(uint64_t value) {
 
 // -------------------------------------------------------------------
 
-// ChunkInfo
+// SliceInfo
 
-// uint32 id = 1;
-inline void ChunkInfo::clear_id() {
-  _impl_.id_ = 0u;
+// uint64 id = 1;
+inline void SliceInfo::clear_id() {
+  _impl_.id_ = uint64_t{0u};
 }
-inline uint32_t ChunkInfo::_internal_id() const {
+inline uint64_t SliceInfo::_internal_id() const {
   return _impl_.id_;
 }
-inline uint32_t ChunkInfo::id() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.ChunkInfo.id)
+inline uint64_t SliceInfo::id() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.SliceInfo.id)
   return _internal_id();
 }
-inline void ChunkInfo::_internal_set_id(uint32_t value) {
+inline void SliceInfo::_internal_set_id(uint64_t value) {
   
   _impl_.id_ = value;
 }
-inline void ChunkInfo::set_id(uint32_t value) {
+inline void SliceInfo::set_id(uint64_t value) {
   _internal_set_id(value);
-  // @@protoc_insertion_point(field_set:vosfs.raft.ChunkInfo.id)
+  // @@protoc_insertion_point(field_set:vosfs.raft.SliceInfo.id)
 }
 
-// uint64 offset = 2;
-inline void ChunkInfo::clear_offset() {
-  _impl_.offset_ = uint64_t{0u};
-}
-inline uint64_t ChunkInfo::_internal_offset() const {
-  return _impl_.offset_;
-}
-inline uint64_t ChunkInfo::offset() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.ChunkInfo.offset)
-  return _internal_offset();
-}
-inline void ChunkInfo::_internal_set_offset(uint64_t value) {
-  
-  _impl_.offset_ = value;
-}
-inline void ChunkInfo::set_offset(uint64_t value) {
-  _internal_set_offset(value);
-  // @@protoc_insertion_point(field_set:vosfs.raft.ChunkInfo.offset)
-}
-
-// uint64 size = 3;
-inline void ChunkInfo::clear_size() {
+// uint64 size = 2;
+inline void SliceInfo::clear_size() {
   _impl_.size_ = uint64_t{0u};
 }
-inline uint64_t ChunkInfo::_internal_size() const {
+inline uint64_t SliceInfo::_internal_size() const {
   return _impl_.size_;
 }
-inline uint64_t ChunkInfo::size() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.ChunkInfo.size)
+inline uint64_t SliceInfo::size() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.SliceInfo.size)
   return _internal_size();
 }
-inline void ChunkInfo::_internal_set_size(uint64_t value) {
+inline void SliceInfo::_internal_set_size(uint64_t value) {
   
   _impl_.size_ = value;
 }
-inline void ChunkInfo::set_size(uint64_t value) {
+inline void SliceInfo::set_size(uint64_t value) {
   _internal_set_size(value);
-  // @@protoc_insertion_point(field_set:vosfs.raft.ChunkInfo.size)
+  // @@protoc_insertion_point(field_set:vosfs.raft.SliceInfo.size)
 }
 
-// -------------------------------------------------------------------
-
-// FileInfo
-
-// uint64 id = 1;
-inline void FileInfo::clear_id() {
-  _impl_.id_ = uint64_t{0u};
+// string address = 3;
+inline void SliceInfo::clear_address() {
+  _impl_.address_.ClearToEmpty();
 }
-inline uint64_t FileInfo::_internal_id() const {
-  return _impl_.id_;
-}
-inline uint64_t FileInfo::id() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.FileInfo.id)
-  return _internal_id();
-}
-inline void FileInfo::_internal_set_id(uint64_t value) {
-  
-  _impl_.id_ = value;
-}
-inline void FileInfo::set_id(uint64_t value) {
-  _internal_set_id(value);
-  // @@protoc_insertion_point(field_set:vosfs.raft.FileInfo.id)
-}
-
-// string path = 2;
-inline void FileInfo::clear_path() {
-  _impl_.path_.ClearToEmpty();
-}
-inline const std::string& FileInfo::path() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.FileInfo.path)
-  return _internal_path();
+inline const std::string& SliceInfo::address() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.SliceInfo.address)
+  return _internal_address();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void FileInfo::set_path(ArgT0&& arg0, ArgT... args) {
+void SliceInfo::set_address(ArgT0&& arg0, ArgT... args) {
  
- _impl_.path_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:vosfs.raft.FileInfo.path)
+ _impl_.address_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.raft.SliceInfo.address)
 }
-inline std::string* FileInfo::mutable_path() {
-  std::string* _s = _internal_mutable_path();
-  // @@protoc_insertion_point(field_mutable:vosfs.raft.FileInfo.path)
+inline std::string* SliceInfo::mutable_address() {
+  std::string* _s = _internal_mutable_address();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.SliceInfo.address)
   return _s;
 }
-inline const std::string& FileInfo::_internal_path() const {
-  return _impl_.path_.Get();
+inline const std::string& SliceInfo::_internal_address() const {
+  return _impl_.address_.Get();
 }
-inline void FileInfo::_internal_set_path(const std::string& value) {
+inline void SliceInfo::_internal_set_address(const std::string& value) {
   
-  _impl_.path_.Set(value, GetArenaForAllocation());
+  _impl_.address_.Set(value, GetArenaForAllocation());
 }
-inline std::string* FileInfo::_internal_mutable_path() {
+inline std::string* SliceInfo::_internal_mutable_address() {
   
-  return _impl_.path_.Mutable(GetArenaForAllocation());
+  return _impl_.address_.Mutable(GetArenaForAllocation());
 }
-inline std::string* FileInfo::release_path() {
-  // @@protoc_insertion_point(field_release:vosfs.raft.FileInfo.path)
-  return _impl_.path_.Release();
+inline std::string* SliceInfo::release_address() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.SliceInfo.address)
+  return _impl_.address_.Release();
 }
-inline void FileInfo::set_allocated_path(std::string* path) {
-  if (path != nullptr) {
+inline void SliceInfo::set_allocated_address(std::string* address) {
+  if (address != nullptr) {
     
   } else {
     
   }
-  _impl_.path_.SetAllocated(path, GetArenaForAllocation());
+  _impl_.address_.SetAllocated(address, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.path_.IsDefault()) {
-    _impl_.path_.Set("", GetArenaForAllocation());
+  if (_impl_.address_.IsDefault()) {
+    _impl_.address_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.FileInfo.path)
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.SliceInfo.address)
 }
 
-// string name = 3;
-inline void FileInfo::clear_name() {
+// -------------------------------------------------------------------
+
+// Inode
+
+// uint64 ino = 1;
+inline void Inode::clear_ino() {
+  _impl_.ino_ = uint64_t{0u};
+}
+inline uint64_t Inode::_internal_ino() const {
+  return _impl_.ino_;
+}
+inline uint64_t Inode::ino() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.Inode.ino)
+  return _internal_ino();
+}
+inline void Inode::_internal_set_ino(uint64_t value) {
+  
+  _impl_.ino_ = value;
+}
+inline void Inode::set_ino(uint64_t value) {
+  _internal_set_ino(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.Inode.ino)
+}
+
+// uint64 parent_ino = 2;
+inline void Inode::clear_parent_ino() {
+  _impl_.parent_ino_ = uint64_t{0u};
+}
+inline uint64_t Inode::_internal_parent_ino() const {
+  return _impl_.parent_ino_;
+}
+inline uint64_t Inode::parent_ino() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.Inode.parent_ino)
+  return _internal_parent_ino();
+}
+inline void Inode::_internal_set_parent_ino(uint64_t value) {
+  
+  _impl_.parent_ino_ = value;
+}
+inline void Inode::set_parent_ino(uint64_t value) {
+  _internal_set_parent_ino(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.Inode.parent_ino)
+}
+
+// repeated uint64 child_ino = 3;
+inline int Inode::_internal_child_ino_size() const {
+  return _impl_.child_ino_.size();
+}
+inline int Inode::child_ino_size() const {
+  return _internal_child_ino_size();
+}
+inline void Inode::clear_child_ino() {
+  _impl_.child_ino_.Clear();
+}
+inline uint64_t Inode::_internal_child_ino(int index) const {
+  return _impl_.child_ino_.Get(index);
+}
+inline uint64_t Inode::child_ino(int index) const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.Inode.child_ino)
+  return _internal_child_ino(index);
+}
+inline void Inode::set_child_ino(int index, uint64_t value) {
+  _impl_.child_ino_.Set(index, value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.Inode.child_ino)
+}
+inline void Inode::_internal_add_child_ino(uint64_t value) {
+  _impl_.child_ino_.Add(value);
+}
+inline void Inode::add_child_ino(uint64_t value) {
+  _internal_add_child_ino(value);
+  // @@protoc_insertion_point(field_add:vosfs.raft.Inode.child_ino)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+Inode::_internal_child_ino() const {
+  return _impl_.child_ino_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+Inode::child_ino() const {
+  // @@protoc_insertion_point(field_list:vosfs.raft.Inode.child_ino)
+  return _internal_child_ino();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+Inode::_internal_mutable_child_ino() {
+  return &_impl_.child_ino_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+Inode::mutable_child_ino() {
+  // @@protoc_insertion_point(field_mutable_list:vosfs.raft.Inode.child_ino)
+  return _internal_mutable_child_ino();
+}
+
+// uint64 size = 4;
+inline void Inode::clear_size() {
+  _impl_.size_ = uint64_t{0u};
+}
+inline uint64_t Inode::_internal_size() const {
+  return _impl_.size_;
+}
+inline uint64_t Inode::size() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.Inode.size)
+  return _internal_size();
+}
+inline void Inode::_internal_set_size(uint64_t value) {
+  
+  _impl_.size_ = value;
+}
+inline void Inode::set_size(uint64_t value) {
+  _internal_set_size(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.Inode.size)
+}
+
+// string name = 5;
+inline void Inode::clear_name() {
   _impl_.name_.ClearToEmpty();
 }
-inline const std::string& FileInfo::name() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.FileInfo.name)
+inline const std::string& Inode::name() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.Inode.name)
   return _internal_name();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void FileInfo::set_name(ArgT0&& arg0, ArgT... args) {
+void Inode::set_name(ArgT0&& arg0, ArgT... args) {
  
  _impl_.name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:vosfs.raft.FileInfo.name)
+  // @@protoc_insertion_point(field_set:vosfs.raft.Inode.name)
 }
-inline std::string* FileInfo::mutable_name() {
+inline std::string* Inode::mutable_name() {
   std::string* _s = _internal_mutable_name();
-  // @@protoc_insertion_point(field_mutable:vosfs.raft.FileInfo.name)
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.Inode.name)
   return _s;
 }
-inline const std::string& FileInfo::_internal_name() const {
+inline const std::string& Inode::_internal_name() const {
   return _impl_.name_.Get();
 }
-inline void FileInfo::_internal_set_name(const std::string& value) {
+inline void Inode::_internal_set_name(const std::string& value) {
   
   _impl_.name_.Set(value, GetArenaForAllocation());
 }
-inline std::string* FileInfo::_internal_mutable_name() {
+inline std::string* Inode::_internal_mutable_name() {
   
   return _impl_.name_.Mutable(GetArenaForAllocation());
 }
-inline std::string* FileInfo::release_name() {
-  // @@protoc_insertion_point(field_release:vosfs.raft.FileInfo.name)
+inline std::string* Inode::release_name() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.Inode.name)
   return _impl_.name_.Release();
 }
-inline void FileInfo::set_allocated_name(std::string* name) {
+inline void Inode::set_allocated_name(std::string* name) {
   if (name != nullptr) {
     
   } else {
@@ -5184,112 +4819,236 @@ inline void FileInfo::set_allocated_name(std::string* name) {
     _impl_.name_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.FileInfo.name)
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.Inode.name)
 }
 
-// uint64 size = 4;
-inline void FileInfo::clear_size() {
-  _impl_.size_ = uint64_t{0u};
+// uint64 ctime = 6;
+inline void Inode::clear_ctime() {
+  _impl_.ctime_ = uint64_t{0u};
 }
-inline uint64_t FileInfo::_internal_size() const {
-  return _impl_.size_;
+inline uint64_t Inode::_internal_ctime() const {
+  return _impl_.ctime_;
 }
-inline uint64_t FileInfo::size() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.FileInfo.size)
-  return _internal_size();
+inline uint64_t Inode::ctime() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.Inode.ctime)
+  return _internal_ctime();
 }
-inline void FileInfo::_internal_set_size(uint64_t value) {
+inline void Inode::_internal_set_ctime(uint64_t value) {
   
-  _impl_.size_ = value;
+  _impl_.ctime_ = value;
 }
-inline void FileInfo::set_size(uint64_t value) {
-  _internal_set_size(value);
-  // @@protoc_insertion_point(field_set:vosfs.raft.FileInfo.size)
+inline void Inode::set_ctime(uint64_t value) {
+  _internal_set_ctime(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.Inode.ctime)
 }
 
-// bool is_dir = 5;
-inline void FileInfo::clear_is_dir() {
+// uint64 mtime = 7;
+inline void Inode::clear_mtime() {
+  _impl_.mtime_ = uint64_t{0u};
+}
+inline uint64_t Inode::_internal_mtime() const {
+  return _impl_.mtime_;
+}
+inline uint64_t Inode::mtime() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.Inode.mtime)
+  return _internal_mtime();
+}
+inline void Inode::_internal_set_mtime(uint64_t value) {
+  
+  _impl_.mtime_ = value;
+}
+inline void Inode::set_mtime(uint64_t value) {
+  _internal_set_mtime(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.Inode.mtime)
+}
+
+// bool is_dir = 8;
+inline void Inode::clear_is_dir() {
   _impl_.is_dir_ = false;
 }
-inline bool FileInfo::_internal_is_dir() const {
+inline bool Inode::_internal_is_dir() const {
   return _impl_.is_dir_;
 }
-inline bool FileInfo::is_dir() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.FileInfo.is_dir)
+inline bool Inode::is_dir() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.Inode.is_dir)
   return _internal_is_dir();
 }
-inline void FileInfo::_internal_set_is_dir(bool value) {
+inline void Inode::_internal_set_is_dir(bool value) {
   
   _impl_.is_dir_ = value;
 }
-inline void FileInfo::set_is_dir(bool value) {
+inline void Inode::set_is_dir(bool value) {
   _internal_set_is_dir(value);
-  // @@protoc_insertion_point(field_set:vosfs.raft.FileInfo.is_dir)
+  // @@protoc_insertion_point(field_set:vosfs.raft.Inode.is_dir)
 }
 
-// uint64 parent_id = 6;
-inline void FileInfo::clear_parent_id() {
-  _impl_.parent_id_ = uint64_t{0u};
+// repeated .vosfs.raft.SliceInfo slice_infos = 9;
+inline int Inode::_internal_slice_infos_size() const {
+  return _impl_.slice_infos_.size();
 }
-inline uint64_t FileInfo::_internal_parent_id() const {
-  return _impl_.parent_id_;
+inline int Inode::slice_infos_size() const {
+  return _internal_slice_infos_size();
 }
-inline uint64_t FileInfo::parent_id() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.FileInfo.parent_id)
-  return _internal_parent_id();
+inline void Inode::clear_slice_infos() {
+  _impl_.slice_infos_.Clear();
 }
-inline void FileInfo::_internal_set_parent_id(uint64_t value) {
-  
-  _impl_.parent_id_ = value;
+inline ::vosfs::raft::SliceInfo* Inode::mutable_slice_infos(int index) {
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.Inode.slice_infos)
+  return _impl_.slice_infos_.Mutable(index);
 }
-inline void FileInfo::set_parent_id(uint64_t value) {
-  _internal_set_parent_id(value);
-  // @@protoc_insertion_point(field_set:vosfs.raft.FileInfo.parent_id)
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::SliceInfo >*
+Inode::mutable_slice_infos() {
+  // @@protoc_insertion_point(field_mutable_list:vosfs.raft.Inode.slice_infos)
+  return &_impl_.slice_infos_;
+}
+inline const ::vosfs::raft::SliceInfo& Inode::_internal_slice_infos(int index) const {
+  return _impl_.slice_infos_.Get(index);
+}
+inline const ::vosfs::raft::SliceInfo& Inode::slice_infos(int index) const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.Inode.slice_infos)
+  return _internal_slice_infos(index);
+}
+inline ::vosfs::raft::SliceInfo* Inode::_internal_add_slice_infos() {
+  return _impl_.slice_infos_.Add();
+}
+inline ::vosfs::raft::SliceInfo* Inode::add_slice_infos() {
+  ::vosfs::raft::SliceInfo* _add = _internal_add_slice_infos();
+  // @@protoc_insertion_point(field_add:vosfs.raft.Inode.slice_infos)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::SliceInfo >&
+Inode::slice_infos() const {
+  // @@protoc_insertion_point(field_list:vosfs.raft.Inode.slice_infos)
+  return _impl_.slice_infos_;
 }
 
 // -------------------------------------------------------------------
 
-// UploadFileRequest
+// SnapshotMetadata
 
-// .vosfs.raft.FileInfo file_info = 1;
-inline bool UploadFileRequest::_internal_has_file_info() const {
-  return this != internal_default_instance() && _impl_.file_info_ != nullptr;
+// uint64 last_included_index = 1;
+inline void SnapshotMetadata::clear_last_included_index() {
+  _impl_.last_included_index_ = uint64_t{0u};
 }
-inline bool UploadFileRequest::has_file_info() const {
-  return _internal_has_file_info();
+inline uint64_t SnapshotMetadata::_internal_last_included_index() const {
+  return _impl_.last_included_index_;
 }
-inline void UploadFileRequest::clear_file_info() {
-  if (GetArenaForAllocation() == nullptr && _impl_.file_info_ != nullptr) {
-    delete _impl_.file_info_;
+inline uint64_t SnapshotMetadata::last_included_index() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.SnapshotMetadata.last_included_index)
+  return _internal_last_included_index();
+}
+inline void SnapshotMetadata::_internal_set_last_included_index(uint64_t value) {
+  
+  _impl_.last_included_index_ = value;
+}
+inline void SnapshotMetadata::set_last_included_index(uint64_t value) {
+  _internal_set_last_included_index(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.SnapshotMetadata.last_included_index)
+}
+
+// uint64 last_included_term = 2;
+inline void SnapshotMetadata::clear_last_included_term() {
+  _impl_.last_included_term_ = uint64_t{0u};
+}
+inline uint64_t SnapshotMetadata::_internal_last_included_term() const {
+  return _impl_.last_included_term_;
+}
+inline uint64_t SnapshotMetadata::last_included_term() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.SnapshotMetadata.last_included_term)
+  return _internal_last_included_term();
+}
+inline void SnapshotMetadata::_internal_set_last_included_term(uint64_t value) {
+  
+  _impl_.last_included_term_ = value;
+}
+inline void SnapshotMetadata::set_last_included_term(uint64_t value) {
+  _internal_set_last_included_term(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.SnapshotMetadata.last_included_term)
+}
+
+// -------------------------------------------------------------------
+
+// Snapshot
+
+// repeated .vosfs.raft.Inode inodes = 1;
+inline int Snapshot::_internal_inodes_size() const {
+  return _impl_.inodes_.size();
+}
+inline int Snapshot::inodes_size() const {
+  return _internal_inodes_size();
+}
+inline void Snapshot::clear_inodes() {
+  _impl_.inodes_.Clear();
+}
+inline ::vosfs::raft::Inode* Snapshot::mutable_inodes(int index) {
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.Snapshot.inodes)
+  return _impl_.inodes_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::Inode >*
+Snapshot::mutable_inodes() {
+  // @@protoc_insertion_point(field_mutable_list:vosfs.raft.Snapshot.inodes)
+  return &_impl_.inodes_;
+}
+inline const ::vosfs::raft::Inode& Snapshot::_internal_inodes(int index) const {
+  return _impl_.inodes_.Get(index);
+}
+inline const ::vosfs::raft::Inode& Snapshot::inodes(int index) const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.Snapshot.inodes)
+  return _internal_inodes(index);
+}
+inline ::vosfs::raft::Inode* Snapshot::_internal_add_inodes() {
+  return _impl_.inodes_.Add();
+}
+inline ::vosfs::raft::Inode* Snapshot::add_inodes() {
+  ::vosfs::raft::Inode* _add = _internal_add_inodes();
+  // @@protoc_insertion_point(field_add:vosfs.raft.Snapshot.inodes)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::Inode >&
+Snapshot::inodes() const {
+  // @@protoc_insertion_point(field_list:vosfs.raft.Snapshot.inodes)
+  return _impl_.inodes_;
+}
+
+// .vosfs.raft.SnapshotMetadata snapshot_metadata = 2;
+inline bool Snapshot::_internal_has_snapshot_metadata() const {
+  return this != internal_default_instance() && _impl_.snapshot_metadata_ != nullptr;
+}
+inline bool Snapshot::has_snapshot_metadata() const {
+  return _internal_has_snapshot_metadata();
+}
+inline void Snapshot::clear_snapshot_metadata() {
+  if (GetArenaForAllocation() == nullptr && _impl_.snapshot_metadata_ != nullptr) {
+    delete _impl_.snapshot_metadata_;
   }
-  _impl_.file_info_ = nullptr;
+  _impl_.snapshot_metadata_ = nullptr;
 }
-inline const ::vosfs::raft::FileInfo& UploadFileRequest::_internal_file_info() const {
-  const ::vosfs::raft::FileInfo* p = _impl_.file_info_;
-  return p != nullptr ? *p : reinterpret_cast<const ::vosfs::raft::FileInfo&>(
-      ::vosfs::raft::_FileInfo_default_instance_);
+inline const ::vosfs::raft::SnapshotMetadata& Snapshot::_internal_snapshot_metadata() const {
+  const ::vosfs::raft::SnapshotMetadata* p = _impl_.snapshot_metadata_;
+  return p != nullptr ? *p : reinterpret_cast<const ::vosfs::raft::SnapshotMetadata&>(
+      ::vosfs::raft::_SnapshotMetadata_default_instance_);
 }
-inline const ::vosfs::raft::FileInfo& UploadFileRequest::file_info() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.UploadFileRequest.file_info)
-  return _internal_file_info();
+inline const ::vosfs::raft::SnapshotMetadata& Snapshot::snapshot_metadata() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.Snapshot.snapshot_metadata)
+  return _internal_snapshot_metadata();
 }
-inline void UploadFileRequest::unsafe_arena_set_allocated_file_info(
-    ::vosfs::raft::FileInfo* file_info) {
+inline void Snapshot::unsafe_arena_set_allocated_snapshot_metadata(
+    ::vosfs::raft::SnapshotMetadata* snapshot_metadata) {
   if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.file_info_);
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.snapshot_metadata_);
   }
-  _impl_.file_info_ = file_info;
-  if (file_info) {
+  _impl_.snapshot_metadata_ = snapshot_metadata;
+  if (snapshot_metadata) {
     
   } else {
     
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:vosfs.raft.UploadFileRequest.file_info)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:vosfs.raft.Snapshot.snapshot_metadata)
 }
-inline ::vosfs::raft::FileInfo* UploadFileRequest::release_file_info() {
+inline ::vosfs::raft::SnapshotMetadata* Snapshot::release_snapshot_metadata() {
   
-  ::vosfs::raft::FileInfo* temp = _impl_.file_info_;
-  _impl_.file_info_ = nullptr;
+  ::vosfs::raft::SnapshotMetadata* temp = _impl_.snapshot_metadata_;
+  _impl_.snapshot_metadata_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
   auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
   temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
@@ -5301,256 +5060,462 @@ inline ::vosfs::raft::FileInfo* UploadFileRequest::release_file_info() {
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::vosfs::raft::FileInfo* UploadFileRequest::unsafe_arena_release_file_info() {
-  // @@protoc_insertion_point(field_release:vosfs.raft.UploadFileRequest.file_info)
+inline ::vosfs::raft::SnapshotMetadata* Snapshot::unsafe_arena_release_snapshot_metadata() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.Snapshot.snapshot_metadata)
   
-  ::vosfs::raft::FileInfo* temp = _impl_.file_info_;
-  _impl_.file_info_ = nullptr;
+  ::vosfs::raft::SnapshotMetadata* temp = _impl_.snapshot_metadata_;
+  _impl_.snapshot_metadata_ = nullptr;
   return temp;
 }
-inline ::vosfs::raft::FileInfo* UploadFileRequest::_internal_mutable_file_info() {
+inline ::vosfs::raft::SnapshotMetadata* Snapshot::_internal_mutable_snapshot_metadata() {
   
-  if (_impl_.file_info_ == nullptr) {
-    auto* p = CreateMaybeMessage<::vosfs::raft::FileInfo>(GetArenaForAllocation());
-    _impl_.file_info_ = p;
+  if (_impl_.snapshot_metadata_ == nullptr) {
+    auto* p = CreateMaybeMessage<::vosfs::raft::SnapshotMetadata>(GetArenaForAllocation());
+    _impl_.snapshot_metadata_ = p;
   }
-  return _impl_.file_info_;
+  return _impl_.snapshot_metadata_;
 }
-inline ::vosfs::raft::FileInfo* UploadFileRequest::mutable_file_info() {
-  ::vosfs::raft::FileInfo* _msg = _internal_mutable_file_info();
-  // @@protoc_insertion_point(field_mutable:vosfs.raft.UploadFileRequest.file_info)
+inline ::vosfs::raft::SnapshotMetadata* Snapshot::mutable_snapshot_metadata() {
+  ::vosfs::raft::SnapshotMetadata* _msg = _internal_mutable_snapshot_metadata();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.Snapshot.snapshot_metadata)
   return _msg;
 }
-inline void UploadFileRequest::set_allocated_file_info(::vosfs::raft::FileInfo* file_info) {
+inline void Snapshot::set_allocated_snapshot_metadata(::vosfs::raft::SnapshotMetadata* snapshot_metadata) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
-    delete _impl_.file_info_;
+    delete _impl_.snapshot_metadata_;
   }
-  if (file_info) {
+  if (snapshot_metadata) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(file_info);
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(snapshot_metadata);
     if (message_arena != submessage_arena) {
-      file_info = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, file_info, submessage_arena);
+      snapshot_metadata = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, snapshot_metadata, submessage_arena);
     }
     
   } else {
     
   }
-  _impl_.file_info_ = file_info;
-  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.UploadFileRequest.file_info)
+  _impl_.snapshot_metadata_ = snapshot_metadata;
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.Snapshot.snapshot_metadata)
 }
 
-// repeated .vosfs.raft.ChunkInfo chunk_infos = 2;
-inline int UploadFileRequest::_internal_chunk_infos_size() const {
-  return _impl_.chunk_infos_.size();
+// repeated .vosfs.raft.NodeInfo node_infos = 3;
+inline int Snapshot::_internal_node_infos_size() const {
+  return _impl_.node_infos_.size();
 }
-inline int UploadFileRequest::chunk_infos_size() const {
-  return _internal_chunk_infos_size();
+inline int Snapshot::node_infos_size() const {
+  return _internal_node_infos_size();
 }
-inline void UploadFileRequest::clear_chunk_infos() {
-  _impl_.chunk_infos_.Clear();
+inline void Snapshot::clear_node_infos() {
+  _impl_.node_infos_.Clear();
 }
-inline ::vosfs::raft::ChunkInfo* UploadFileRequest::mutable_chunk_infos(int index) {
-  // @@protoc_insertion_point(field_mutable:vosfs.raft.UploadFileRequest.chunk_infos)
-  return _impl_.chunk_infos_.Mutable(index);
+inline ::vosfs::raft::NodeInfo* Snapshot::mutable_node_infos(int index) {
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.Snapshot.node_infos)
+  return _impl_.node_infos_.Mutable(index);
 }
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::ChunkInfo >*
-UploadFileRequest::mutable_chunk_infos() {
-  // @@protoc_insertion_point(field_mutable_list:vosfs.raft.UploadFileRequest.chunk_infos)
-  return &_impl_.chunk_infos_;
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::NodeInfo >*
+Snapshot::mutable_node_infos() {
+  // @@protoc_insertion_point(field_mutable_list:vosfs.raft.Snapshot.node_infos)
+  return &_impl_.node_infos_;
 }
-inline const ::vosfs::raft::ChunkInfo& UploadFileRequest::_internal_chunk_infos(int index) const {
-  return _impl_.chunk_infos_.Get(index);
+inline const ::vosfs::raft::NodeInfo& Snapshot::_internal_node_infos(int index) const {
+  return _impl_.node_infos_.Get(index);
 }
-inline const ::vosfs::raft::ChunkInfo& UploadFileRequest::chunk_infos(int index) const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.UploadFileRequest.chunk_infos)
-  return _internal_chunk_infos(index);
+inline const ::vosfs::raft::NodeInfo& Snapshot::node_infos(int index) const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.Snapshot.node_infos)
+  return _internal_node_infos(index);
 }
-inline ::vosfs::raft::ChunkInfo* UploadFileRequest::_internal_add_chunk_infos() {
-  return _impl_.chunk_infos_.Add();
+inline ::vosfs::raft::NodeInfo* Snapshot::_internal_add_node_infos() {
+  return _impl_.node_infos_.Add();
 }
-inline ::vosfs::raft::ChunkInfo* UploadFileRequest::add_chunk_infos() {
-  ::vosfs::raft::ChunkInfo* _add = _internal_add_chunk_infos();
-  // @@protoc_insertion_point(field_add:vosfs.raft.UploadFileRequest.chunk_infos)
+inline ::vosfs::raft::NodeInfo* Snapshot::add_node_infos() {
+  ::vosfs::raft::NodeInfo* _add = _internal_add_node_infos();
+  // @@protoc_insertion_point(field_add:vosfs.raft.Snapshot.node_infos)
   return _add;
 }
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::ChunkInfo >&
-UploadFileRequest::chunk_infos() const {
-  // @@protoc_insertion_point(field_list:vosfs.raft.UploadFileRequest.chunk_infos)
-  return _impl_.chunk_infos_;
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::NodeInfo >&
+Snapshot::node_infos() const {
+  // @@protoc_insertion_point(field_list:vosfs.raft.Snapshot.node_infos)
+  return _impl_.node_infos_;
 }
 
-// string checksum = 3;
-inline void UploadFileRequest::clear_checksum() {
-  _impl_.checksum_.ClearToEmpty();
+// -------------------------------------------------------------------
+
+// CreateFilePrepareRequest
+
+// uint64 slice_num = 1;
+inline void CreateFilePrepareRequest::clear_slice_num() {
+  _impl_.slice_num_ = uint64_t{0u};
 }
-inline const std::string& UploadFileRequest::checksum() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.UploadFileRequest.checksum)
-  return _internal_checksum();
+inline uint64_t CreateFilePrepareRequest::_internal_slice_num() const {
+  return _impl_.slice_num_;
+}
+inline uint64_t CreateFilePrepareRequest::slice_num() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.CreateFilePrepareRequest.slice_num)
+  return _internal_slice_num();
+}
+inline void CreateFilePrepareRequest::_internal_set_slice_num(uint64_t value) {
+  
+  _impl_.slice_num_ = value;
+}
+inline void CreateFilePrepareRequest::set_slice_num(uint64_t value) {
+  _internal_set_slice_num(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.CreateFilePrepareRequest.slice_num)
+}
+
+// -------------------------------------------------------------------
+
+// CreateFilePrepareResponse
+
+// uint64 ino = 1;
+inline void CreateFilePrepareResponse::clear_ino() {
+  _impl_.ino_ = uint64_t{0u};
+}
+inline uint64_t CreateFilePrepareResponse::_internal_ino() const {
+  return _impl_.ino_;
+}
+inline uint64_t CreateFilePrepareResponse::ino() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.CreateFilePrepareResponse.ino)
+  return _internal_ino();
+}
+inline void CreateFilePrepareResponse::_internal_set_ino(uint64_t value) {
+  
+  _impl_.ino_ = value;
+}
+inline void CreateFilePrepareResponse::set_ino(uint64_t value) {
+  _internal_set_ino(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.CreateFilePrepareResponse.ino)
+}
+
+// repeated .vosfs.raft.SliceInfo slice_infos = 2;
+inline int CreateFilePrepareResponse::_internal_slice_infos_size() const {
+  return _impl_.slice_infos_.size();
+}
+inline int CreateFilePrepareResponse::slice_infos_size() const {
+  return _internal_slice_infos_size();
+}
+inline void CreateFilePrepareResponse::clear_slice_infos() {
+  _impl_.slice_infos_.Clear();
+}
+inline ::vosfs::raft::SliceInfo* CreateFilePrepareResponse::mutable_slice_infos(int index) {
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.CreateFilePrepareResponse.slice_infos)
+  return _impl_.slice_infos_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::SliceInfo >*
+CreateFilePrepareResponse::mutable_slice_infos() {
+  // @@protoc_insertion_point(field_mutable_list:vosfs.raft.CreateFilePrepareResponse.slice_infos)
+  return &_impl_.slice_infos_;
+}
+inline const ::vosfs::raft::SliceInfo& CreateFilePrepareResponse::_internal_slice_infos(int index) const {
+  return _impl_.slice_infos_.Get(index);
+}
+inline const ::vosfs::raft::SliceInfo& CreateFilePrepareResponse::slice_infos(int index) const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.CreateFilePrepareResponse.slice_infos)
+  return _internal_slice_infos(index);
+}
+inline ::vosfs::raft::SliceInfo* CreateFilePrepareResponse::_internal_add_slice_infos() {
+  return _impl_.slice_infos_.Add();
+}
+inline ::vosfs::raft::SliceInfo* CreateFilePrepareResponse::add_slice_infos() {
+  ::vosfs::raft::SliceInfo* _add = _internal_add_slice_infos();
+  // @@protoc_insertion_point(field_add:vosfs.raft.CreateFilePrepareResponse.slice_infos)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::SliceInfo >&
+CreateFilePrepareResponse::slice_infos() const {
+  // @@protoc_insertion_point(field_list:vosfs.raft.CreateFilePrepareResponse.slice_infos)
+  return _impl_.slice_infos_;
+}
+
+// -------------------------------------------------------------------
+
+// CreateFileCommitRequest
+
+// uint64 ino = 1;
+inline void CreateFileCommitRequest::clear_ino() {
+  _impl_.ino_ = uint64_t{0u};
+}
+inline uint64_t CreateFileCommitRequest::_internal_ino() const {
+  return _impl_.ino_;
+}
+inline uint64_t CreateFileCommitRequest::ino() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.CreateFileCommitRequest.ino)
+  return _internal_ino();
+}
+inline void CreateFileCommitRequest::_internal_set_ino(uint64_t value) {
+  
+  _impl_.ino_ = value;
+}
+inline void CreateFileCommitRequest::set_ino(uint64_t value) {
+  _internal_set_ino(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.CreateFileCommitRequest.ino)
+}
+
+// uint64 parent_ino = 2;
+inline void CreateFileCommitRequest::clear_parent_ino() {
+  _impl_.parent_ino_ = uint64_t{0u};
+}
+inline uint64_t CreateFileCommitRequest::_internal_parent_ino() const {
+  return _impl_.parent_ino_;
+}
+inline uint64_t CreateFileCommitRequest::parent_ino() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.CreateFileCommitRequest.parent_ino)
+  return _internal_parent_ino();
+}
+inline void CreateFileCommitRequest::_internal_set_parent_ino(uint64_t value) {
+  
+  _impl_.parent_ino_ = value;
+}
+inline void CreateFileCommitRequest::set_parent_ino(uint64_t value) {
+  _internal_set_parent_ino(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.CreateFileCommitRequest.parent_ino)
+}
+
+// uint64 size = 3;
+inline void CreateFileCommitRequest::clear_size() {
+  _impl_.size_ = uint64_t{0u};
+}
+inline uint64_t CreateFileCommitRequest::_internal_size() const {
+  return _impl_.size_;
+}
+inline uint64_t CreateFileCommitRequest::size() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.CreateFileCommitRequest.size)
+  return _internal_size();
+}
+inline void CreateFileCommitRequest::_internal_set_size(uint64_t value) {
+  
+  _impl_.size_ = value;
+}
+inline void CreateFileCommitRequest::set_size(uint64_t value) {
+  _internal_set_size(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.CreateFileCommitRequest.size)
+}
+
+// string name = 4;
+inline void CreateFileCommitRequest::clear_name() {
+  _impl_.name_.ClearToEmpty();
+}
+inline const std::string& CreateFileCommitRequest::name() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.CreateFileCommitRequest.name)
+  return _internal_name();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void UploadFileRequest::set_checksum(ArgT0&& arg0, ArgT... args) {
+void CreateFileCommitRequest::set_name(ArgT0&& arg0, ArgT... args) {
  
- _impl_.checksum_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:vosfs.raft.UploadFileRequest.checksum)
+ _impl_.name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.raft.CreateFileCommitRequest.name)
 }
-inline std::string* UploadFileRequest::mutable_checksum() {
-  std::string* _s = _internal_mutable_checksum();
-  // @@protoc_insertion_point(field_mutable:vosfs.raft.UploadFileRequest.checksum)
+inline std::string* CreateFileCommitRequest::mutable_name() {
+  std::string* _s = _internal_mutable_name();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.CreateFileCommitRequest.name)
   return _s;
 }
-inline const std::string& UploadFileRequest::_internal_checksum() const {
-  return _impl_.checksum_.Get();
+inline const std::string& CreateFileCommitRequest::_internal_name() const {
+  return _impl_.name_.Get();
 }
-inline void UploadFileRequest::_internal_set_checksum(const std::string& value) {
+inline void CreateFileCommitRequest::_internal_set_name(const std::string& value) {
   
-  _impl_.checksum_.Set(value, GetArenaForAllocation());
+  _impl_.name_.Set(value, GetArenaForAllocation());
 }
-inline std::string* UploadFileRequest::_internal_mutable_checksum() {
+inline std::string* CreateFileCommitRequest::_internal_mutable_name() {
   
-  return _impl_.checksum_.Mutable(GetArenaForAllocation());
+  return _impl_.name_.Mutable(GetArenaForAllocation());
 }
-inline std::string* UploadFileRequest::release_checksum() {
-  // @@protoc_insertion_point(field_release:vosfs.raft.UploadFileRequest.checksum)
-  return _impl_.checksum_.Release();
+inline std::string* CreateFileCommitRequest::release_name() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.CreateFileCommitRequest.name)
+  return _impl_.name_.Release();
 }
-inline void UploadFileRequest::set_allocated_checksum(std::string* checksum) {
-  if (checksum != nullptr) {
+inline void CreateFileCommitRequest::set_allocated_name(std::string* name) {
+  if (name != nullptr) {
     
   } else {
     
   }
-  _impl_.checksum_.SetAllocated(checksum, GetArenaForAllocation());
+  _impl_.name_.SetAllocated(name, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.checksum_.IsDefault()) {
-    _impl_.checksum_.Set("", GetArenaForAllocation());
+  if (_impl_.name_.IsDefault()) {
+    _impl_.name_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.UploadFileRequest.checksum)
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.CreateFileCommitRequest.name)
+}
+
+// bool is_dir = 5;
+inline void CreateFileCommitRequest::clear_is_dir() {
+  _impl_.is_dir_ = false;
+}
+inline bool CreateFileCommitRequest::_internal_is_dir() const {
+  return _impl_.is_dir_;
+}
+inline bool CreateFileCommitRequest::is_dir() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.CreateFileCommitRequest.is_dir)
+  return _internal_is_dir();
+}
+inline void CreateFileCommitRequest::_internal_set_is_dir(bool value) {
+  
+  _impl_.is_dir_ = value;
+}
+inline void CreateFileCommitRequest::set_is_dir(bool value) {
+  _internal_set_is_dir(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.CreateFileCommitRequest.is_dir)
+}
+
+// repeated .vosfs.raft.SliceInfo slice_infos = 6;
+inline int CreateFileCommitRequest::_internal_slice_infos_size() const {
+  return _impl_.slice_infos_.size();
+}
+inline int CreateFileCommitRequest::slice_infos_size() const {
+  return _internal_slice_infos_size();
+}
+inline void CreateFileCommitRequest::clear_slice_infos() {
+  _impl_.slice_infos_.Clear();
+}
+inline ::vosfs::raft::SliceInfo* CreateFileCommitRequest::mutable_slice_infos(int index) {
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.CreateFileCommitRequest.slice_infos)
+  return _impl_.slice_infos_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::SliceInfo >*
+CreateFileCommitRequest::mutable_slice_infos() {
+  // @@protoc_insertion_point(field_mutable_list:vosfs.raft.CreateFileCommitRequest.slice_infos)
+  return &_impl_.slice_infos_;
+}
+inline const ::vosfs::raft::SliceInfo& CreateFileCommitRequest::_internal_slice_infos(int index) const {
+  return _impl_.slice_infos_.Get(index);
+}
+inline const ::vosfs::raft::SliceInfo& CreateFileCommitRequest::slice_infos(int index) const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.CreateFileCommitRequest.slice_infos)
+  return _internal_slice_infos(index);
+}
+inline ::vosfs::raft::SliceInfo* CreateFileCommitRequest::_internal_add_slice_infos() {
+  return _impl_.slice_infos_.Add();
+}
+inline ::vosfs::raft::SliceInfo* CreateFileCommitRequest::add_slice_infos() {
+  ::vosfs::raft::SliceInfo* _add = _internal_add_slice_infos();
+  // @@protoc_insertion_point(field_add:vosfs.raft.CreateFileCommitRequest.slice_infos)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::SliceInfo >&
+CreateFileCommitRequest::slice_infos() const {
+  // @@protoc_insertion_point(field_list:vosfs.raft.CreateFileCommitRequest.slice_infos)
+  return _impl_.slice_infos_;
 }
 
 // -------------------------------------------------------------------
 
-// DownloadFileRequest
+// CreateFileCommitResponse
 
-// -------------------------------------------------------------------
-
-// DeleteFileRequest
-
-// -------------------------------------------------------------------
-
-// CreateFileRequest
-
-// -------------------------------------------------------------------
-
-// CreateDirRequest
-
-// -------------------------------------------------------------------
-
-// ListFileRequest
-
-// -------------------------------------------------------------------
-
-// ListDirRequest
-
-// -------------------------------------------------------------------
-
-// ClientCommand
-
-// .vosfs.raft.UploadFileRequest upload_file = 1;
-inline bool ClientCommand::_internal_has_upload_file() const {
-  return cmd_case() == kUploadFile;
+// bool success = 1;
+inline void CreateFileCommitResponse::clear_success() {
+  _impl_.success_ = false;
 }
-inline bool ClientCommand::has_upload_file() const {
-  return _internal_has_upload_file();
+inline bool CreateFileCommitResponse::_internal_success() const {
+  return _impl_.success_;
 }
-inline void ClientCommand::set_has_upload_file() {
-  _impl_._oneof_case_[0] = kUploadFile;
+inline bool CreateFileCommitResponse::success() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.CreateFileCommitResponse.success)
+  return _internal_success();
 }
-inline void ClientCommand::clear_upload_file() {
-  if (_internal_has_upload_file()) {
+inline void CreateFileCommitResponse::_internal_set_success(bool value) {
+  
+  _impl_.success_ = value;
+}
+inline void CreateFileCommitResponse::set_success(bool value) {
+  _internal_set_success(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.CreateFileCommitResponse.success)
+}
+
+// -------------------------------------------------------------------
+
+// EntryCommand
+
+// .vosfs.raft.CreateFileCommitRequest create_file_commit_request = 1;
+inline bool EntryCommand::_internal_has_create_file_commit_request() const {
+  return cmd_case() == kCreateFileCommitRequest;
+}
+inline bool EntryCommand::has_create_file_commit_request() const {
+  return _internal_has_create_file_commit_request();
+}
+inline void EntryCommand::set_has_create_file_commit_request() {
+  _impl_._oneof_case_[0] = kCreateFileCommitRequest;
+}
+inline void EntryCommand::clear_create_file_commit_request() {
+  if (_internal_has_create_file_commit_request()) {
     if (GetArenaForAllocation() == nullptr) {
-      delete _impl_.cmd_.upload_file_;
+      delete _impl_.cmd_.create_file_commit_request_;
     }
     clear_has_cmd();
   }
 }
-inline ::vosfs::raft::UploadFileRequest* ClientCommand::release_upload_file() {
-  // @@protoc_insertion_point(field_release:vosfs.raft.ClientCommand.upload_file)
-  if (_internal_has_upload_file()) {
+inline ::vosfs::raft::CreateFileCommitRequest* EntryCommand::release_create_file_commit_request() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.EntryCommand.create_file_commit_request)
+  if (_internal_has_create_file_commit_request()) {
     clear_has_cmd();
-    ::vosfs::raft::UploadFileRequest* temp = _impl_.cmd_.upload_file_;
+    ::vosfs::raft::CreateFileCommitRequest* temp = _impl_.cmd_.create_file_commit_request_;
     if (GetArenaForAllocation() != nullptr) {
       temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
     }
-    _impl_.cmd_.upload_file_ = nullptr;
+    _impl_.cmd_.create_file_commit_request_ = nullptr;
     return temp;
   } else {
     return nullptr;
   }
 }
-inline const ::vosfs::raft::UploadFileRequest& ClientCommand::_internal_upload_file() const {
-  return _internal_has_upload_file()
-      ? *_impl_.cmd_.upload_file_
-      : reinterpret_cast< ::vosfs::raft::UploadFileRequest&>(::vosfs::raft::_UploadFileRequest_default_instance_);
+inline const ::vosfs::raft::CreateFileCommitRequest& EntryCommand::_internal_create_file_commit_request() const {
+  return _internal_has_create_file_commit_request()
+      ? *_impl_.cmd_.create_file_commit_request_
+      : reinterpret_cast< ::vosfs::raft::CreateFileCommitRequest&>(::vosfs::raft::_CreateFileCommitRequest_default_instance_);
 }
-inline const ::vosfs::raft::UploadFileRequest& ClientCommand::upload_file() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.ClientCommand.upload_file)
-  return _internal_upload_file();
+inline const ::vosfs::raft::CreateFileCommitRequest& EntryCommand::create_file_commit_request() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.EntryCommand.create_file_commit_request)
+  return _internal_create_file_commit_request();
 }
-inline ::vosfs::raft::UploadFileRequest* ClientCommand::unsafe_arena_release_upload_file() {
-  // @@protoc_insertion_point(field_unsafe_arena_release:vosfs.raft.ClientCommand.upload_file)
-  if (_internal_has_upload_file()) {
+inline ::vosfs::raft::CreateFileCommitRequest* EntryCommand::unsafe_arena_release_create_file_commit_request() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:vosfs.raft.EntryCommand.create_file_commit_request)
+  if (_internal_has_create_file_commit_request()) {
     clear_has_cmd();
-    ::vosfs::raft::UploadFileRequest* temp = _impl_.cmd_.upload_file_;
-    _impl_.cmd_.upload_file_ = nullptr;
+    ::vosfs::raft::CreateFileCommitRequest* temp = _impl_.cmd_.create_file_commit_request_;
+    _impl_.cmd_.create_file_commit_request_ = nullptr;
     return temp;
   } else {
     return nullptr;
   }
 }
-inline void ClientCommand::unsafe_arena_set_allocated_upload_file(::vosfs::raft::UploadFileRequest* upload_file) {
+inline void EntryCommand::unsafe_arena_set_allocated_create_file_commit_request(::vosfs::raft::CreateFileCommitRequest* create_file_commit_request) {
   clear_cmd();
-  if (upload_file) {
-    set_has_upload_file();
-    _impl_.cmd_.upload_file_ = upload_file;
+  if (create_file_commit_request) {
+    set_has_create_file_commit_request();
+    _impl_.cmd_.create_file_commit_request_ = create_file_commit_request;
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:vosfs.raft.ClientCommand.upload_file)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:vosfs.raft.EntryCommand.create_file_commit_request)
 }
-inline ::vosfs::raft::UploadFileRequest* ClientCommand::_internal_mutable_upload_file() {
-  if (!_internal_has_upload_file()) {
+inline ::vosfs::raft::CreateFileCommitRequest* EntryCommand::_internal_mutable_create_file_commit_request() {
+  if (!_internal_has_create_file_commit_request()) {
     clear_cmd();
-    set_has_upload_file();
-    _impl_.cmd_.upload_file_ = CreateMaybeMessage< ::vosfs::raft::UploadFileRequest >(GetArenaForAllocation());
+    set_has_create_file_commit_request();
+    _impl_.cmd_.create_file_commit_request_ = CreateMaybeMessage< ::vosfs::raft::CreateFileCommitRequest >(GetArenaForAllocation());
   }
-  return _impl_.cmd_.upload_file_;
+  return _impl_.cmd_.create_file_commit_request_;
 }
-inline ::vosfs::raft::UploadFileRequest* ClientCommand::mutable_upload_file() {
-  ::vosfs::raft::UploadFileRequest* _msg = _internal_mutable_upload_file();
-  // @@protoc_insertion_point(field_mutable:vosfs.raft.ClientCommand.upload_file)
+inline ::vosfs::raft::CreateFileCommitRequest* EntryCommand::mutable_create_file_commit_request() {
+  ::vosfs::raft::CreateFileCommitRequest* _msg = _internal_mutable_create_file_commit_request();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.EntryCommand.create_file_commit_request)
   return _msg;
 }
 
-inline bool ClientCommand::has_cmd() const {
+inline bool EntryCommand::has_cmd() const {
   return cmd_case() != CMD_NOT_SET;
 }
-inline void ClientCommand::clear_has_cmd() {
+inline void EntryCommand::clear_has_cmd() {
   _impl_._oneof_case_[0] = CMD_NOT_SET;
 }
-inline ClientCommand::CmdCase ClientCommand::cmd_case() const {
-  return ClientCommand::CmdCase(_impl_._oneof_case_[0]);
+inline EntryCommand::CmdCase EntryCommand::cmd_case() const {
+  return EntryCommand::CmdCase(_impl_._oneof_case_[0]);
 }
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
-// -------------------------------------------------------------------
-
-// -------------------------------------------------------------------
-
-// -------------------------------------------------------------------
-
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

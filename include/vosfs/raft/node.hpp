@@ -57,9 +57,10 @@ private:
     kosio::sync::Mutex    mutex_;
     std::atomic<bool>     is_shutdown_{false};
     std::atomic<uint64_t> last_reset_time_{0};
+    std::string           snapshot_data_{};
     Persister             persister_;
+    StateMachine          state_machine_;
     detail::RaftLog       logs_;
-    StateMachine  state_machine_;
     detail::Transport     transport_;
     RpcServer             raft_rpc_server_;
     RpcServer             client_rpc_server_;
@@ -71,6 +72,7 @@ private:
     // Volatile state on all servers
     std::size_t             votes_{0};
     std::atomic<Role>       role_{kFollower};
+    uint64_t                commit_index_{0};
     uint64_t                last_applied_{0};
     std::optional<uint64_t> leader_id_{std::nullopt};
 

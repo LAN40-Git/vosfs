@@ -164,14 +164,23 @@ auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> ses
             }
         }
 
-        auto ret = co_await stream.write_vectored(
-            std::span<const char>(reinterpret_cast<char*>(&resp_header), sizeof(resp_header)),
-            std::span<const char>(buf.data(), be32toh(resp_header.payload_size))
-        );
+        if (be32toh(resp_header.payload_size) <= detail::MAX_RPC_MESSAGE_SIZE) [[likely]] {
+            auto ret = co_await stream.write_vectored(
+                std::span<const char>(reinterpret_cast<char*>(&resp_header), sizeof(resp_header)),
+                std::span<const char>(buf.data(), be32toh(resp_header.payload_size))
+            );
 
-        if (!ret) {
-            LOG_ERROR("Failed to send response to Session {} : {}", session->id, ret.error());
-            break;
+            if (!ret) {
+                LOG_ERROR("Failed to send response to Session {} : {}", session->id, ret.error());
+                break;
+            }
+        } else {
+            resp_header.status = RpcResult::kMessageTooLarge;
+            auto ret = co_await stream.write_all({buf.data(), be32toh(resp_header.payload_size)});
+            if (!ret) {
+                LOG_ERROR("Failed to send response to Session {} : {}", session->id, ret.error());
+                break;
+            }
         }
     }
 
