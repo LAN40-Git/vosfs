@@ -3,10 +3,6 @@
 #include "vosfs/raft/internal/peer.hpp"
 #include "vosfs/raft/persister.hpp"
 
-namespace vosfs::raft {
-class RaftNode;
-} // namespace vosfs::raft
-
 namespace vosfs::raft::detail {
 class Transport {
     using PeerMap = std::unordered_map<uint64_t, Peer>;

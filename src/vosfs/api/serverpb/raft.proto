@@ -54,17 +54,6 @@ message ClusterInfo {
     repeated NodeInfo node_infos = 2;
 }
 
-message SnapshotMetadata {
-    uint64 last_included_index = 1;
-    uint64 last_included_term = 2;
-}
-
-message Snapshot {
-    bytes data = 1; // 状态机的二进制数据
-    SnapshotMetadata snapshot_metadata = 2;
-    repeated NodeInfo node_infos = 3;
-}
-
 message InstallSnapshotRequest {
     uint64 term = 1;
     uint64 leader_id = 2;
@@ -80,53 +69,59 @@ message InstallSnapshotResponse {
     uint64 term = 2;
 }
 
-message ChunkInfo {
-    uint32 id = 1;
-    uint64 offset = 2;
-    uint64 size = 3;
-}
-
-message FileInfo {
+message SliceInfo {
     uint64 id = 1;
-    string path = 2;
-    string name = 3;
+    uint64 size = 2;
+    string address = 3; // 分片存储地址
+}
+
+message Inode {
+    uint64 ino = 1;
+    uint64 parent_ino = 2;
+    repeated uint64 child_ino = 3;
     uint64 size = 4;
-    bool is_dir = 5;
-    uint64 parent_id = 6;
+    string name = 5;
+    uint64 ctime = 6;
+    uint64 mtime = 7;
+    bool   is_dir = 8;
+    repeated SliceInfo slice_infos = 9;
 }
 
-message UploadFileRequest {
-    FileInfo file_info = 1;
-    repeated ChunkInfo chunk_infos = 2;
-    string checksum = 3; // MD5
+message SnapshotMetadata {
+    uint64 last_included_index = 1;
+    uint64 last_included_term = 2;
 }
 
-message DownloadFileRequest {
-
+message Snapshot {
+    repeated Inode inodes = 1;
+    SnapshotMetadata snapshot_metadata = 2;
+    repeated NodeInfo node_infos = 3;
 }
 
-message DeleteFileRequest {
-
+message CreateFilePrepareRequest {
+    uint64 slice_num = 1;
 }
 
-message CreateFileRequest {
-
+message CreateFilePrepareResponse {
+    uint64 ino = 1;
+    repeated SliceInfo slice_infos = 2;
 }
 
-message CreateDirRequest {
-
+message CreateFileCommitRequest {
+    uint64 ino = 1;
+    uint64 parent_ino = 2;
+    uint64 size = 3;
+    string name = 4;
+    bool   is_dir = 5;
+    repeated SliceInfo slice_infos = 6;
 }
 
-message ListFileRequest {
-
+message CreateFileCommitResponse {
+    bool success = 1;
 }
 
-message ListDirRequest {
-
-}
-
-message ClientCommand {
+message EntryCommand {
     oneof cmd {
-        UploadFileRequest upload_file = 1;
+        CreateFileCommitRequest create_file_commit_request = 1;
     }
 }

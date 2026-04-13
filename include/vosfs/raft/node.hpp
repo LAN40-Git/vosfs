@@ -2,12 +2,12 @@
 #include "vosfs/raft/internal/message_factory.hpp"
 #include "vosfs/raft/internal/log.hpp"
 #include "vosfs/raft/internal/transport.hpp"
-#include "vosfs/raft/internal/state_machine.hpp"
+#include "state_machine.hpp"
 
 namespace vosfs::raft {
 class RaftNode {
 private:
-    explicit RaftNode() {}
+    // explicit RaftNode() {}
 
 public:
     static auto create(std::string_view data_dir) -> kosio::async::Task<Result<std::unique_ptr<RaftNode>>>;
@@ -59,7 +59,7 @@ private:
     std::atomic<uint64_t> last_reset_time_{0};
     Persister             persister_;
     detail::RaftLog       logs_;
-    detail::StateMachine  state_machine_;
+    StateMachine  state_machine_;
     detail::Transport     transport_;
     RpcServer             raft_rpc_server_;
     RpcServer             client_rpc_server_;
@@ -67,9 +67,6 @@ private:
     /* RaftState from https://raft.github.io/raft.pdf */
     // Persistent state on all servers
     HardState               hard_state_;
-    // std::atomic<uint64_t>   current_term_;
-    // std::optional<uint64_t> voted_for_;
-    //uint64_t commit_index_{0};
 
     // Volatile state on all servers
     std::size_t             votes_{0};
