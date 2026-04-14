@@ -35,7 +35,7 @@ public:
 
 public:
     [[REMEMBER_CO_AWAIT]]
-    static auto create(std::string_view server_host, uint16_t server_port) -> kosio::async::Task<Result<std::unique_ptr<RpcConsumer>>>;
+    static auto create(std::string_view server_host, uint16_t server_port) -> kosio::async::Task<kosio::Result<std::unique_ptr<RpcConsumer>>>;
 
 public:
     [[REMEMBER_CO_AWAIT]]
@@ -43,14 +43,14 @@ public:
         ServiceType service_type,
         MethodType method_type,
         std::string_view req_payload,
-        const RpcCallback& callback) -> kosio::async::Task<Result<void>>;
+        const RpcCallback& callback) -> kosio::async::Task<void>;
 
     [[REMEMBER_CO_AWAIT]]
     auto send_request(
         ServiceType service_type,
         MethodType method_type,
         std::string&& req_payload,
-        RpcCallback&& callback) -> kosio::async::Task<Result<void>>;
+        RpcCallback&& callback) -> kosio::async::Task<void>;
 
     [[REMEMBER_CO_AWAIT]]
     auto run() -> kosio::async::Task<void>;
@@ -67,7 +67,7 @@ private:
         ServiceType service_type,
         MethodType method_type,
         std::string&& req_payload,
-        RpcCallback&& callback) -> kosio::async::Task<Result<void>>;
+        RpcCallback&& callback) -> kosio::async::Task<void>;
 
     [[REMEMBER_CO_AWAIT]]
     auto trigger_callback(uint64_t request_id, std::string_view resp_payload) -> kosio::async::Task<void>;

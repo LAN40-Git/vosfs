@@ -59,14 +59,14 @@ auto vosfs::raft::detail::RocksDBEngine::create(
 
     if (!status.ok()) {
         LOG_ERROR("{}", status.ToString());
-        return std::unexpected{make_error(Error::kRocksDBEngineCreateFailed)};
+        return std::unexpected{make_error(Error::kCreateRocksDBEngineFailed)};
     }
 
     status = rocksdb::Checkpoint::Create(db, &checkpoint);
 
     if (!status.ok()) {
         LOG_ERROR("{}", status.ToString());
-        return std::unexpected{make_error(Error::kRocksDBEngineCreateFailed)};
+        return std::unexpected{make_error(Error::kCreateRocksDBEngineFailed)};
     }
 
     return RocksDBEngine{db, checkpoint, write_options, read_options};

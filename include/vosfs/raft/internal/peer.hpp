@@ -32,23 +32,20 @@ public:
     [[REMEMBER_CO_AWAIT]]
     auto shutdown() const -> kosio::async::Task<void>;
 
-    [[REMEMBER_CO_AWAIT]]
-    auto check_status() const -> kosio::async::Task<void>;
-
 public:
     [[REMEMBER_CO_AWAIT]]
     auto send_request(
         rpc::ServiceType service_type,
         rpc::MethodType method_type,
         std::string_view req_payload,
-        const rpc::RpcCallback& callback) const -> kosio::async::Task<Result<void>>;
+        const rpc::RpcCallback& callback) const -> kosio::async::Task<void>;
 
     [[REMEMBER_CO_AWAIT]]
     auto send_request(
         rpc::ServiceType service_type,
         rpc::MethodType method_type,
         std::string&& req_payload,
-        rpc::RpcCallback&& callback) const -> kosio::async::Task<Result<void>>;
+        rpc::RpcCallback&& callback) const -> kosio::async::Task<void>;
 
 private:
     NodeInfo node_info_;

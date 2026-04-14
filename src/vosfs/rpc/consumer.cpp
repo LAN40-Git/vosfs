@@ -1,16 +1,14 @@
 #include "vosfs/rpc/consumer.hpp"
 
 auto vosfs::rpc::RpcConsumer::create(std::string_view server_host, uint16_t server_port)
--> kosio::async::Task<Result<std::unique_ptr<RpcConsumer>>> {
+-> kosio::async::Task<kosio::Result<std::unique_ptr<RpcConsumer>>> {
     auto has_addr = kosio::net::SocketAddr::parse(server_host, server_port);
     if (!has_addr) {
-        LOG_ERROR("Failed to create rpc consumer : {}", has_addr.error());
-        co_return std::unexpected{make_error(Error::kInvalidAddress)};
+        co_return std::unexpected{has_addr.error()};
     }
     auto has_stream = co_await kosio::net::TcpStream::connect(has_addr.value());
     if (!has_stream) {
-        LOG_ERROR("{}", has_stream.error());
-        co_return std::unexpected{make_error(Error::kConnectToServerFailed)};
+        co_return std::unexpected{has_stream.error()};
     }
 
     auto consumer = std::unique_ptr<RpcConsumer>(new RpcConsumer(server_host, server_port, std::move(has_stream.value())));
@@ -22,16 +20,16 @@ auto vosfs::rpc::RpcConsumer::send_request(
     ServiceType service_type,
     MethodType method_type,
     std::string_view req_payload,
-    const RpcCallback& callback) -> kosio::async::Task<Result<void>> {
-    co_return co_await send_request_impl(service_type, method_type, std::string{req_payload}, RpcCallback{callback});
+    const RpcCallback& callback) -> kosio::async::Task<void> {
+    co_await send_request_impl(service_type, method_type, std::string{req_payload}, RpcCallback{callback});
 }
 
 auto vosfs::rpc::RpcConsumer::send_request(
     ServiceType service_type,
     MethodType method_type,
     std::string&& req_payload,
-    RpcCallback&& callback) -> kosio::async::Task<Result<void>> {
-    co_return co_await send_request_impl(service_type, method_type, std::move(req_payload), std::move(callback));
+    RpcCallback&& callback) -> kosio::async::Task<void> {
+    co_await send_request_impl(service_type, method_type, std::move(req_payload), std::move(callback));
 }
 
 auto vosfs::rpc::RpcConsumer::run() -> kosio::async::Task<void> {
@@ -73,12 +71,13 @@ auto vosfs::rpc::RpcConsumer::send_request_impl(
     ServiceType service_type,
     MethodType method_type,
     std::string&& req_payload,
-    RpcCallback&& callback) -> kosio::async::Task<Result<void>> {
+    RpcCallback&& callback) -> kosio::async::Task<void> {
     co_await mutex_.lock();
     std::lock_guard lock(mutex_, std::adopt_lock);
 
     if (is_shutdown_.load(std::memory_order_relaxed)) {
-        co_return std::unexpected{make_error(Error::kConsumerShutdown)};
+        LOG_ERROR("failed to send rpc request: consumer has shutdown");
+        co_return;
     }
 
     // Make fixed request header
@@ -93,14 +92,12 @@ auto vosfs::rpc::RpcConsumer::send_request_impl(
         std::span<const char>(req_payload.data(), be32toh(req_header.payload_size))
     );
 
-    requests_.emplace(request_id_++, RpcRequest{service_type, method_type, std::move(req_payload), std::move(callback)});
-
     if (!ret) {
-        LOG_ERROR("{}", ret.error());
-        co_return std::unexpected{make_error(Error::kSendRpcRequestFailed)};
+        LOG_ERROR("failed to send rpc request: {}", ret.error());
+        co_return;
     }
 
-    co_return Result<void>{};
+    requests_.emplace(request_id_++, RpcRequest{service_type, method_type, std::move(req_payload), std::move(callback)});
 }
 
 auto vosfs::rpc::RpcConsumer::trigger_callback(uint64_t request_id, std::string_view resp_payload) -> kosio::async::Task<void> {
@@ -138,7 +135,7 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
         auto payload_size = be32toh(resp_header.payload_size);
         auto status = resp_header.status;
         if (payload_size > detail::MAX_RPC_MESSAGE_SIZE) {
-            LOG_ERROR("Receive unusual rpc message, request_id : {}, payload_size : {}.", request_id, payload_size);
+            LOG_ERROR("receive unusual rpc message, request_id : {}, payload_size : {}.", request_id, payload_size);
             co_await remove_request(request_id);
             break;
         }
@@ -147,7 +144,7 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
             // receive response payload
             ret = co_await stream_.read_exact({buf.data(), payload_size});
             if (!ret) [[unlikely]] {
-                LOG_ERROR("Failed to receive response payload : {}", ret.error());
+                LOG_ERROR("failed to receive response payload : {}", ret.error());
                 break;
             }
         }
@@ -163,7 +160,7 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
                 break;
             }
             default: {
-                LOG_ERROR("Rpc result : {}", make_result(status));
+                LOG_ERROR("rpc result : {}", make_result(status));
                 break;
             }
         }

@@ -10,25 +10,13 @@ class Error {
 public:
     enum ErrorCode {
         kUnknown = 8000,
-        kCreateSnapshotFailed,
-        kInvalidLogIndex,
         kProtoSerializeFailed,
         kProtoParseFailed,
         kTruncateFailed,
         kRecoverFailed,
-        kRocksDBEngineCreateFailed,
-        kConnectToPeerFailed,
-        kCreateProviderFailed,
+        kCreateRocksDBEngineFailed,
         kCreatePeerFailed,
-        kConnectToServerFailed,
-        kSendRpcRequestFailed,
-        kJsonParseFailed,
-        kRepeatedPeer,
-        kLocalNodeNotFound,
-        kConnectionShutdown,
-        kQueueEmpty,
         kQueueShutdown,
-        kProviderHasShutdown,
         kConsumerShutdown,
         kConsumerRunning,
     };
@@ -38,9 +26,37 @@ public:
 
 public:
     [[nodiscard]]
-    auto message() const noexcept -> std::string_view;
+    auto message() const noexcept -> std::string_view {
+        switch (error_code_) {
+            case kUnknown:
+                return "Unknown error.";
+            case kProtoSerializeFailed:
+                return "Failed to serialize proto.";
+            case kProtoParseFailed:
+                return "Failed to parse proto.";
+            case kTruncateFailed:
+                return "Failed to truncate data.";
+            case kRecoverFailed:
+                return "Failed to recover data.";
+            case kCreateRocksDBEngineFailed:
+                return "Failed to create rocksdb engine.";
+            case kCreatePeerFailed:
+                return "Failed to create peer.";
+            case kQueueShutdown:
+                return "Shutdown queue.";
+            case kConsumerShutdown:
+                return "Consumer has shutdown.";
+            case kConsumerRunning:
+                return "Consumer is running.";
+            default:
+                return strerror(error_code_);
+        }
+    }
+
     [[nodiscard]]
-    auto value() const noexcept -> int;
+    auto value() const noexcept -> int {
+        return error_code_;
+    }
 
 private:
     int error_code_;

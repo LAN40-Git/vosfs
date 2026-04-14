@@ -59,12 +59,7 @@ auto vosfs::raft::detail::Transport::unicast_request(
     }
 
     auto& peer = it->second;
-    co_await peer.check_status();
-
-    if (auto ret = co_await peer.send_request(service_type, method_type, req_payload, callback)) {
-        LOG_ERROR("{}", ret.error());
-        co_return;
-    }
+    co_await peer.send_request(service_type, method_type, req_payload, callback);
 }
 
 auto vosfs::raft::detail::Transport::unicast_request(uint64_t peer_id, rpc::ServiceType service_type,
@@ -77,22 +72,14 @@ auto vosfs::raft::detail::Transport::unicast_request(uint64_t peer_id, rpc::Serv
     }
 
     auto& peer = it->second;
-    co_await peer.check_status();
-
-    if (auto ret = co_await peer.send_request(service_type, method_type, std::move(req_payload), callback)) {
-        LOG_ERROR("{}", ret.error());
-    }
+    co_await peer.send_request(service_type, method_type, std::move(req_payload), callback);
 }
 
 auto vosfs::raft::detail::Transport::broadcast_request(rpc::ServiceType service_type, rpc::MethodType method_type,
     std::string_view req_payload, const rpc::RpcCallback& callback)
     -> kosio::async::Task<void> {
     for (auto& peer : peers_ | std::views::values) {
-        co_await peer.check_status();
-
-        if (auto ret = co_await peer.send_request(service_type, method_type, req_payload, callback)) {
-            LOG_ERROR("{}", ret.error());
-        }
+        co_await peer.send_request(service_type, method_type, req_payload, callback);
     }
 }
 
@@ -101,11 +88,7 @@ auto vosfs::raft::detail::Transport::broadcast_request(
     std::string&& req_payload, rpc::RpcCallback&& callback)
     -> kosio::async::Task<void> {
     for (auto& peer : peers_ | std::views::values) {
-        co_await peer.check_status();
-
-        if (auto ret = co_await peer.send_request(service_type, method_type, std::move(req_payload), callback)) {
-            LOG_ERROR("{}", ret.error());
-        }
+        co_await peer.send_request(service_type, method_type, std::move(req_payload), callback);
     }
 }
 

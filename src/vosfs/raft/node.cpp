@@ -275,8 +275,10 @@ void vosfs::raft::RaftNode::apply_to_state_machine() {
     while (last_applied_ < commit_index) {
         ++last_applied_;
         state_machine_.apply(logs_.get_entry(last_applied_));
-        // TODO: 尝试创建快照
+        if (last_applied_ % SNAPSHOT_INTERVAL == 0) {
+            // TODO: 创建快照
 
+        }
     }
 }
 
