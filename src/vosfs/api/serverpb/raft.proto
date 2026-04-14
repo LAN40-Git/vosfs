@@ -98,7 +98,7 @@ message Snapshot {
 }
 
 message CreateFilePrepareRequest {
-    uint64 slice_num = 1;
+    repeated SliceInfo slice_infos = 1;
 }
 
 message CreateFilePrepareResponse {

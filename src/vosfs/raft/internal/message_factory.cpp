@@ -69,6 +69,25 @@ auto vosfs::raft::detail::MessageFactory::make_append_entries_response(
     return rpc::make_result(rpc::RpcResult::kSuccess, size);
 }
 
+auto vosfs::raft::detail::MessageFactory::make_install_snapshot_request(
+    uint64_t term,
+    uint64_t leader_id,
+    uint64_t last_included_index,
+    uint64_t last_included_term,
+    uint64_t offset,
+    std::string&& data,
+    bool done) -> InstallSnapshotRequest {
+    InstallSnapshotRequest request;
+    request.set_term(term);
+    request.set_leader_id(leader_id);
+    request.set_last_included_index(last_included_index);
+    request.set_last_included_term(last_included_term);
+    request.set_offset(offset);
+    request.set_data(std::move(data));
+    request.set_done(done);
+    return request;
+}
+
 auto vosfs::raft::detail::MessageFactory::make_install_snapshot_response(
     std::span<char> resp_payload,
     uint64_t term) -> rpc::RpcResult {

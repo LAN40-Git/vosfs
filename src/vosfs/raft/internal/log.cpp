@@ -92,3 +92,8 @@ void vosfs::raft::detail::RaftLog::truncate_entries_before(uint64_t index) {
     uint64_t arr_idx = index - last_included_index() - 1;
     entries_.erase(entries_.begin() + arr_idx, entries_.end());
 }
+
+void vosfs::raft::detail::RaftLog::apply_snapshot(const Snapshot& snapshot) {
+    snapshot_metadata_ = snapshot.snapshot_metadata();
+    entries_.clear();
+}

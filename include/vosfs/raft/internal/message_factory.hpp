@@ -50,7 +50,14 @@ public:
         std::optional<uint64_t> conflict_index = std::nullopt) -> rpc::RpcResult;
 
     [[nodiscard]]
-    static auto make_install_snapshot_request();
+    static auto make_install_snapshot_request(
+        uint64_t term,
+        uint64_t leader_id,
+        uint64_t last_included_index,
+        uint64_t last_included_term,
+        uint64_t offset,
+        std::string&& data,
+        bool done = false) -> InstallSnapshotRequest;
 
     [[nodiscard]]
     static auto make_install_snapshot_response(

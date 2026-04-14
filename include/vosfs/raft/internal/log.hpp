@@ -38,6 +38,8 @@ public:
 
     void truncate_entries_before(uint64_t index);
 
+    void apply_snapshot(const Snapshot& snapshot);
+
 private:
     SnapshotMetadata         snapshot_metadata_;
     std::vector<LogEntry>    entries_;

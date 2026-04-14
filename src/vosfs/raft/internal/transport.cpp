@@ -15,23 +15,40 @@ auto vosfs::raft::detail::Transport::create(const Persister& persister) -> kosio
         co_return std::unexpected{has_cluster_info.error()};
     }
     auto cluster_info = std::move(has_cluster_info.value());
-
-    auto& node_infos = cluster_info.node_infos();
-    PeerMap peers;
-    for (auto& info : node_infos) {
-        if (info.id() == node_info.id()) {
-            continue;
-        }
-
-        auto ret = co_await Peer::create(std::move(info));
-        if (!ret) {
-            co_return std::unexpected{ret.error()};
-        }
-        auto peer = std::move(ret.value());
-        peers.emplace(peer.member_id(), std::move(ret.value()));
+    auto has_peers = co_await build_cluster(cluster_info, node_info);
+    if (!has_peers) {
+        co_return std::unexpected{has_peers.error()};
     }
+    auto peers = std::move(has_peers.value());
 
     co_return Transport{std::move(cluster_info), std::move(node_info), std::move(peers)};
+}
+
+auto vosfs::raft::detail::Transport::shutdown() const -> kosio::async::Task<void> {
+    for (const auto& peer : peers_ | std::views::values) {
+        auto ret = co_await peer.shutdown();
+        if (!ret) {
+            LOG_WARN("{}", ret.error());
+        }
+    }
+}
+
+auto vosfs::raft::detail::Transport::apply_snapshot(Snapshot& snapshot) -> kosio::async::Task<Result<void>> {
+    co_await shutdown();
+    peers_.clear();
+    auto& node_infos = snapshot.node_infos();
+    cluster_info_.mutable_node_infos()->Clear();
+    while (!node_infos.empty()) {
+        auto* node_info = snapshot.mutable_node_infos()->ReleaseLast();
+        cluster_info_.mutable_node_infos()->AddAllocated(node_info);
+    }
+
+    auto ret = co_await build_cluster(cluster_info_, node_info_);
+    if (!ret) {
+        co_return std::unexpected{ret.error()};
+    }
+    peers_ = std::move(ret.value());
+    co_return Result<void>{};
 }
 
 auto vosfs::raft::detail::Transport::unicast_request(
@@ -105,5 +122,23 @@ auto vosfs::raft::detail::Transport::broadcast_request(
             LOG_ERROR("{}", ret.error());
         }
     }
+}
+
+auto vosfs::raft::detail::Transport::build_cluster(const ClusterInfo& cluster_info, const NodeInfo& node_info) -> kosio::async::Task<Result<PeerMap>> {
+    auto& node_infos = cluster_info.node_infos();
+    PeerMap peers;
+    for (auto& info : node_infos) {
+        if (info.id() == node_info.id()) {
+            continue;
+        }
+
+        auto ret = co_await Peer::create(std::move(info));
+        if (!ret) {
+            co_return std::unexpected{ret.error()};
+        }
+        auto peer = std::move(ret.value());
+        peers.emplace(peer.member_id(), std::move(ret.value()));
+    }
+    co_return peers;
 }
 

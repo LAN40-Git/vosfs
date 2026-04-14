@@ -1,5 +1,4 @@
 #pragma once
-#include "vosfs/raft/internal/message_factory.hpp"
 #include "vosfs/raft/internal/log.hpp"
 #include "vosfs/raft/internal/transport.hpp"
 #include "state_machine.hpp"
@@ -17,15 +16,27 @@ public:
 
 private:
     auto election_loop() -> kosio::async::Task<void>;
+
     auto heartbeat_loop() -> kosio::async::Task<void>;
 
 private:
-    void do_election();
+    [[REMEMBER_CO_AWAIT]]
+    auto do_election() -> kosio::async::Task<void>;
+
     void do_heartbeat();
-    void increase_term_to(uint64_t term);
-    void become_leader();
+
+    [[REMEMBER_CO_AWAIT]]
+    auto increase_term_to(uint64_t term) -> kosio::async::Task<void>;
+
+    [[REMEMBER_CO_AWAIT]]
+    auto become_leader() -> kosio::async::Task<void>;
+
     void apply_to_state_machine();
-    void persist_hard_state() const;
+
+    [[REMEMBER_CO_AWAIT]]
+    auto persist_hard_state() -> kosio::async::Task<void>;
+
+    void send_snapshot(uint64_t member_id, uint64_t offset);
 
 private:
     [[REMEMBER_CO_AWAIT]]
@@ -53,11 +64,13 @@ private:
 private:
     enum Role { kLeader, kFollower, kCandidate };
     using RpcServer = std::unique_ptr<rpc::RpcProvider>;
+    using SnapshotContextMap = std::unordered_map<uint64_t, uint64_t>;
 
     kosio::sync::Mutex    mutex_;
     std::atomic<bool>     is_shutdown_{false};
     std::atomic<uint64_t> last_reset_time_{0};
     std::string           snapshot_data_{};
+    SnapshotContextMap    snapshot_context_{};
     Persister             persister_;
     StateMachine          state_machine_;
     detail::RaftLog       logs_;

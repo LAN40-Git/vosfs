@@ -1,4 +1,5 @@
 #include "vosfs/raft/node.hpp"
+#include "vosfs/raft/internal/message_factory.hpp"
 #include <ranges>
 
 auto vosfs::raft::RaftNode::create(std::string_view data_dir) -> kosio::async::Task<Result<std::unique_ptr<RaftNode>>> {
@@ -70,7 +71,7 @@ auto vosfs::raft::RaftNode::election_loop() -> kosio::async::Task<void> {
             continue;
         }
 
-        do_election();
+        co_await do_election();
     }
 }
 
@@ -93,13 +94,13 @@ auto vosfs::raft::RaftNode::heartbeat_loop() -> kosio::async::Task<void> {
     }
 }
 
-void vosfs::raft::RaftNode::do_election() {
+auto vosfs::raft::RaftNode::do_election() -> kosio::async::Task<void> {
     votes_ = 0;
     auto current_term = hard_state_.current_term();
     hard_state_.set_current_term(current_term+1);
     hard_state_.set_voted_for(transport_.member_id());
     role_.store(kCandidate, std::memory_order_relaxed);
-    persist_hard_state();
+    co_await persist_hard_state();
 
     // 广播选举请求
     auto request = detail::MessageFactory::make_request_vote_request(
@@ -120,7 +121,7 @@ void vosfs::raft::RaftNode::do_election() {
     ++votes_;
     if (votes_ > transport_.peer_count() / 2 &&
             role_.load(std::memory_order_relaxed) == kCandidate) {
-        become_leader();
+        co_await become_leader();
     }
 }
 
@@ -139,7 +140,10 @@ void vosfs::raft::RaftNode::do_heartbeat() {
         std::vector<LogEntry> entries;
         if (next_index <= last_log_index) {
             if (next_index <= logs_.last_included_index()) {
-                // TODO: send snapshot
+                // 若该节点此时未接收快照，则开始发送快照
+                if (snapshot_context_[member_id] == 0) {
+                    send_snapshot(member_id, 0);
+                }
                 continue;
             }
 
@@ -169,19 +173,19 @@ void vosfs::raft::RaftNode::do_heartbeat() {
     }
 }
 
-void vosfs::raft::RaftNode::increase_term_to(uint64_t term) {
+auto vosfs::raft::RaftNode::increase_term_to(uint64_t term) -> kosio::async::Task<void> {
     votes_ = 0;
     hard_state_.clear_voted_for();
     hard_state_.set_current_term(term);
     role_.store(kFollower, std::memory_order_release);
-    persist_hard_state();
+    co_await persist_hard_state();
 }
 
-void vosfs::raft::RaftNode::become_leader() {
+auto vosfs::raft::RaftNode::become_leader() -> kosio::async::Task<void> {
     votes_ = 0;
     hard_state_.clear_voted_for();
     role_.store(kLeader, std::memory_order_release);
-    persist_hard_state();
+    co_await persist_hard_state();
     leader_id_ = transport_.member_id();
     // 更新每个Raft节点的 next_index 和 match_index
     auto& peers = transport_.peers();
@@ -201,12 +205,41 @@ void vosfs::raft::RaftNode::apply_to_state_machine() {
     }
 }
 
-void vosfs::raft::RaftNode::persist_hard_state() const {
+auto vosfs::raft::RaftNode::persist_hard_state() -> kosio::async::Task<void> {
     auto ret = persister_.save_hard_state(hard_state_);
     if (!ret) {
         LOG_FATAL("{}", ret.error());
-        // TODO: 关闭所有通信，标记节点为宕机
+        co_await shutdown();
     }
+}
+
+void vosfs::raft::RaftNode::send_snapshot(uint64_t member_id, uint64_t offset) {
+    auto current_term = hard_state_.current_term();
+    auto leader_id = transport_.member_id();
+    auto last_included_index = logs_.last_included_index();
+    auto last_included_term = logs_.last_included_term();
+    auto size = std::min(MAX_SNAPSHOT_CHUNK_SIZE, snapshot_data_.size() - offset);
+    auto data = snapshot_data_.substr(offset, size);
+    snapshot_context_[member_id] += size;
+    auto done = snapshot_context_[member_id] >= snapshot_data_.size();
+
+    auto request = detail::MessageFactory::make_install_snapshot_request(
+        current_term,
+        leader_id,
+        last_included_index,
+        last_included_term,
+        offset,
+        std::move(data),
+        done);
+
+    kosio::spawn(transport_.unicast_request(
+        member_id,
+        rpc::ServiceType::kRaft,
+        rpc::MethodType::kRaftInstallSnapshot,
+        request.SerializeAsString(),
+        [this](std::string_view resp_payload) -> kosio::async::Task<void> {
+            co_await this->handle_install_snapshot_response(resp_payload);
+        }));
 }
 
 auto vosfs::raft::RaftNode::handle_request_vote_request(
@@ -230,7 +263,7 @@ auto vosfs::raft::RaftNode::handle_request_vote_request(
     }
 
     if (term > current_term) {
-        increase_term_to(term);
+        co_await increase_term_to(term);
         current_term = term;
     }
 
@@ -277,7 +310,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
     }
 
     if (term > current_term) {
-        increase_term_to(term);
+        co_await increase_term_to(term);
         current_term = term;
     }
 
@@ -346,8 +379,8 @@ auto vosfs::raft::RaftNode::handle_install_snapshot_request(
 
     auto term = request.term();
     auto leader_id = request.leader_id();
-    auto last_included_index = request.last_included_index();
-    auto last_included_term = request.last_included_term();
+    [[maybe_unused]] auto last_included_index = request.last_included_index();
+    [[maybe_unused]] auto last_included_term = request.last_included_term();
     auto offset = request.offset();
     auto& data = request.data();
     auto done = request.done();
@@ -361,7 +394,7 @@ auto vosfs::raft::RaftNode::handle_install_snapshot_request(
     }
 
     if (term > current_term) {
-        increase_term_to(term);
+        co_await increase_term_to(term);
         current_term = term;
     }
 
@@ -378,8 +411,7 @@ auto vosfs::raft::RaftNode::handle_install_snapshot_request(
         co_return detail::MessageFactory::make_install_snapshot_response(resp_payload, current_term);
     }
 
-    auto ret = persister_.save_snapshot(snapshot_data_);
-    if (!ret) {
+    if (auto ret = persister_.save_snapshot(snapshot_data_); !ret) {
         LOG_WARN("{}", ret.error());
     }
 
@@ -389,7 +421,17 @@ auto vosfs::raft::RaftNode::handle_install_snapshot_request(
         co_return detail::MessageFactory::make_install_snapshot_response(resp_payload, current_term);
     }
 
-    // TODO: 加载快照
+    // 状态机应用快照-更新 Inode 信息
+    state_machine_.apply_snapshot(snapshot);
+    // 日志层应用快照-更新快照元数据
+    logs_.apply_snapshot(snapshot);
+    // 通信层应用快照-集群配置
+    if (auto ret = co_await transport_.apply_snapshot(snapshot); !ret) {
+        // 关闭节点
+        co_await shutdown();
+    }
+
+    co_return detail::MessageFactory::make_install_snapshot_response(resp_payload, current_term);
 }
 
 auto vosfs::raft::RaftNode::handle_request_vote_response(std::string_view resp_payload) -> kosio::async::Task<void> {
@@ -415,7 +457,7 @@ auto vosfs::raft::RaftNode::handle_request_vote_response(std::string_view resp_p
     }
 
     if (term > current_term) {
-        increase_term_to(term);
+        co_await increase_term_to(term);
         co_return;
     }
 
@@ -426,7 +468,7 @@ auto vosfs::raft::RaftNode::handle_request_vote_response(std::string_view resp_p
     if (vote_granted) {
         if (++votes_ > transport_.peer_count() / 2 &&
             role_.load(std::memory_order_relaxed) == kCandidate) {
-            become_leader();
+            co_await become_leader();
         }
     }
 }
@@ -458,8 +500,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_response(std::string_view resp
     }
 
     if (term > current_term) {
-        increase_term_to(term);
-        current_term = term;
+        co_await increase_term_to(term);
         co_return;
     }
 
@@ -487,9 +528,29 @@ auto vosfs::raft::RaftNode::handle_append_entries_response(std::string_view resp
 auto vosfs::raft::RaftNode::handle_install_snapshot_response(std::string_view resp_payload) -> kosio::async::Task<void> {
     InstallSnapshotResponse response;
     if (!response.ParseFromArray(resp_payload.data(), static_cast<int>(resp_payload.size()))) {
-        LOG_ERROR("Failed to parse request vote response");
+        LOG_ERROR("failed to parse request vote response");
         co_return;
     }
 
-    // TODO: 处理快照回复
+    auto id = response.id();
+    auto term = response.term();
+
+    co_await mutex_.lock();
+    std::lock_guard lock(mutex_, std::adopt_lock);
+
+    auto current_term = hard_state_.current_term();
+    if (term > current_term) {
+        co_await increase_term_to(term);
+        co_return;
+    }
+
+    auto offset = snapshot_context_[id];
+
+    // 检查快照是否传送完毕
+    if (offset >= snapshot_data_.size()) {
+        snapshot_context_[id] = 0;
+        co_return;
+    }
+
+    send_snapshot(id, offset);
 }

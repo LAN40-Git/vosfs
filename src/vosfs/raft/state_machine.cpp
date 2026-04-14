@@ -19,3 +19,11 @@ void vosfs::raft::StateMachine::apply(const LogEntry& entry) {
         }
     }
 }
+
+void vosfs::raft::StateMachine::apply_snapshot(const Snapshot& snapshot) {
+    inodes_.clear();
+    auto& inodes = snapshot.inodes();
+    for (const auto& inode : inodes) {
+        inodes_.emplace(inode.ino(), inode);
+    }
+}

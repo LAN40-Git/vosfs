@@ -19,6 +19,11 @@ public:
     static auto create(const Persister& persister) -> kosio::async::Task<Result<Transport>>;
 
 public:
+    auto shutdown() const -> kosio::async::Task<void>;
+
+    auto apply_snapshot(Snapshot& snapshot) -> kosio::async::Task<Result<void>>;
+
+public:
     [[REMEMBER_CO_AWAIT]]
     auto unicast_request(
         uint64_t peer_id,
@@ -62,6 +67,9 @@ public:
     auto peers() -> PeerMap& { return peers_; }
     [[nodiscard]]
     auto peer_count() const noexcept -> uint64_t { return peers_.size(); }
+
+private:
+    static auto build_cluster(const ClusterInfo& cluster_info, const NodeInfo& node_info) -> kosio::async::Task<Result<PeerMap>>;
 
 private:
     ClusterInfo cluster_info_;

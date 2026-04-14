@@ -14,7 +14,9 @@ constexpr std::size_t HEARTBEAT_INTERVAL = 100;
 
 constexpr std::size_t MAX_ENTRIES_PER_APPEND = 100;
 
-constexpr std::size_t SNAPSHOT_INTERVAL = 10000;
+constexpr std::size_t SNAPSHOT_INTERVAL = 10;
+
+constexpr std::size_t MAX_SNAPSHOT_CHUNK_SIZE = 1 * 1024 * 1024;
 
 // ====== Path configuration ======
 constexpr std::string_view DATA_DIR = "/var/lib/vosfs";
