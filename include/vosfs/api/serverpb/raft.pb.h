@@ -46,6 +46,9 @@ struct TableStruct_raft_2eproto {
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_raft_2eproto;
 namespace vosfs {
 namespace raft {
+class AccountInfo;
+struct AccountInfoDefaultTypeInternal;
+extern AccountInfoDefaultTypeInternal _AccountInfo_default_instance_;
 class AppendEntriesRequest;
 struct AppendEntriesRequestDefaultTypeInternal;
 extern AppendEntriesRequestDefaultTypeInternal _AppendEntriesRequest_default_instance_;
@@ -55,21 +58,21 @@ extern AppendEntriesResponseDefaultTypeInternal _AppendEntriesResponse_default_i
 class ClusterInfo;
 struct ClusterInfoDefaultTypeInternal;
 extern ClusterInfoDefaultTypeInternal _ClusterInfo_default_instance_;
-class CreateFileCommitRequest;
-struct CreateFileCommitRequestDefaultTypeInternal;
-extern CreateFileCommitRequestDefaultTypeInternal _CreateFileCommitRequest_default_instance_;
-class CreateFileCommitResponse;
-struct CreateFileCommitResponseDefaultTypeInternal;
-extern CreateFileCommitResponseDefaultTypeInternal _CreateFileCommitResponse_default_instance_;
-class CreateFilePrepareRequest;
-struct CreateFilePrepareRequestDefaultTypeInternal;
-extern CreateFilePrepareRequestDefaultTypeInternal _CreateFilePrepareRequest_default_instance_;
-class CreateFilePrepareResponse;
-struct CreateFilePrepareResponseDefaultTypeInternal;
-extern CreateFilePrepareResponseDefaultTypeInternal _CreateFilePrepareResponse_default_instance_;
+class DeleteAccountRequest;
+struct DeleteAccountRequestDefaultTypeInternal;
+extern DeleteAccountRequestDefaultTypeInternal _DeleteAccountRequest_default_instance_;
+class DeleteAccountResponse;
+struct DeleteAccountResponseDefaultTypeInternal;
+extern DeleteAccountResponseDefaultTypeInternal _DeleteAccountResponse_default_instance_;
 class EntryCommand;
 struct EntryCommandDefaultTypeInternal;
 extern EntryCommandDefaultTypeInternal _EntryCommand_default_instance_;
+class GetAccountRequest;
+struct GetAccountRequestDefaultTypeInternal;
+extern GetAccountRequestDefaultTypeInternal _GetAccountRequest_default_instance_;
+class GetAccountResponse;
+struct GetAccountResponseDefaultTypeInternal;
+extern GetAccountResponseDefaultTypeInternal _GetAccountResponse_default_instance_;
 class HardState;
 struct HardStateDefaultTypeInternal;
 extern HardStateDefaultTypeInternal _HardState_default_instance_;
@@ -88,6 +91,18 @@ extern LogEntryDefaultTypeInternal _LogEntry_default_instance_;
 class NodeInfo;
 struct NodeInfoDefaultTypeInternal;
 extern NodeInfoDefaultTypeInternal _NodeInfo_default_instance_;
+class PutAccountRequest;
+struct PutAccountRequestDefaultTypeInternal;
+extern PutAccountRequestDefaultTypeInternal _PutAccountRequest_default_instance_;
+class PutAccountResponse;
+struct PutAccountResponseDefaultTypeInternal;
+extern PutAccountResponseDefaultTypeInternal _PutAccountResponse_default_instance_;
+class PutFileRequest;
+struct PutFileRequestDefaultTypeInternal;
+extern PutFileRequestDefaultTypeInternal _PutFileRequest_default_instance_;
+class PutFileResponse;
+struct PutFileResponseDefaultTypeInternal;
+extern PutFileResponseDefaultTypeInternal _PutFileResponse_default_instance_;
 class RequestVoteRequest;
 struct RequestVoteRequestDefaultTypeInternal;
 extern RequestVoteRequestDefaultTypeInternal _RequestVoteRequest_default_instance_;
@@ -103,28 +118,49 @@ extern SnapshotDefaultTypeInternal _Snapshot_default_instance_;
 class SnapshotMetadata;
 struct SnapshotMetadataDefaultTypeInternal;
 extern SnapshotMetadataDefaultTypeInternal _SnapshotMetadata_default_instance_;
+class TransmitFileRequest;
+struct TransmitFileRequestDefaultTypeInternal;
+extern TransmitFileRequestDefaultTypeInternal _TransmitFileRequest_default_instance_;
+class TransmitFileResponse;
+struct TransmitFileResponseDefaultTypeInternal;
+extern TransmitFileResponseDefaultTypeInternal _TransmitFileResponse_default_instance_;
+class UpdateAccountRequest;
+struct UpdateAccountRequestDefaultTypeInternal;
+extern UpdateAccountRequestDefaultTypeInternal _UpdateAccountRequest_default_instance_;
+class UpdateAccountResponse;
+struct UpdateAccountResponseDefaultTypeInternal;
+extern UpdateAccountResponseDefaultTypeInternal _UpdateAccountResponse_default_instance_;
 }  // namespace raft
 }  // namespace vosfs
 PROTOBUF_NAMESPACE_OPEN
+template<> ::vosfs::raft::AccountInfo* Arena::CreateMaybeMessage<::vosfs::raft::AccountInfo>(Arena*);
 template<> ::vosfs::raft::AppendEntriesRequest* Arena::CreateMaybeMessage<::vosfs::raft::AppendEntriesRequest>(Arena*);
 template<> ::vosfs::raft::AppendEntriesResponse* Arena::CreateMaybeMessage<::vosfs::raft::AppendEntriesResponse>(Arena*);
 template<> ::vosfs::raft::ClusterInfo* Arena::CreateMaybeMessage<::vosfs::raft::ClusterInfo>(Arena*);
-template<> ::vosfs::raft::CreateFileCommitRequest* Arena::CreateMaybeMessage<::vosfs::raft::CreateFileCommitRequest>(Arena*);
-template<> ::vosfs::raft::CreateFileCommitResponse* Arena::CreateMaybeMessage<::vosfs::raft::CreateFileCommitResponse>(Arena*);
-template<> ::vosfs::raft::CreateFilePrepareRequest* Arena::CreateMaybeMessage<::vosfs::raft::CreateFilePrepareRequest>(Arena*);
-template<> ::vosfs::raft::CreateFilePrepareResponse* Arena::CreateMaybeMessage<::vosfs::raft::CreateFilePrepareResponse>(Arena*);
+template<> ::vosfs::raft::DeleteAccountRequest* Arena::CreateMaybeMessage<::vosfs::raft::DeleteAccountRequest>(Arena*);
+template<> ::vosfs::raft::DeleteAccountResponse* Arena::CreateMaybeMessage<::vosfs::raft::DeleteAccountResponse>(Arena*);
 template<> ::vosfs::raft::EntryCommand* Arena::CreateMaybeMessage<::vosfs::raft::EntryCommand>(Arena*);
+template<> ::vosfs::raft::GetAccountRequest* Arena::CreateMaybeMessage<::vosfs::raft::GetAccountRequest>(Arena*);
+template<> ::vosfs::raft::GetAccountResponse* Arena::CreateMaybeMessage<::vosfs::raft::GetAccountResponse>(Arena*);
 template<> ::vosfs::raft::HardState* Arena::CreateMaybeMessage<::vosfs::raft::HardState>(Arena*);
 template<> ::vosfs::raft::Inode* Arena::CreateMaybeMessage<::vosfs::raft::Inode>(Arena*);
 template<> ::vosfs::raft::InstallSnapshotRequest* Arena::CreateMaybeMessage<::vosfs::raft::InstallSnapshotRequest>(Arena*);
 template<> ::vosfs::raft::InstallSnapshotResponse* Arena::CreateMaybeMessage<::vosfs::raft::InstallSnapshotResponse>(Arena*);
 template<> ::vosfs::raft::LogEntry* Arena::CreateMaybeMessage<::vosfs::raft::LogEntry>(Arena*);
 template<> ::vosfs::raft::NodeInfo* Arena::CreateMaybeMessage<::vosfs::raft::NodeInfo>(Arena*);
+template<> ::vosfs::raft::PutAccountRequest* Arena::CreateMaybeMessage<::vosfs::raft::PutAccountRequest>(Arena*);
+template<> ::vosfs::raft::PutAccountResponse* Arena::CreateMaybeMessage<::vosfs::raft::PutAccountResponse>(Arena*);
+template<> ::vosfs::raft::PutFileRequest* Arena::CreateMaybeMessage<::vosfs::raft::PutFileRequest>(Arena*);
+template<> ::vosfs::raft::PutFileResponse* Arena::CreateMaybeMessage<::vosfs::raft::PutFileResponse>(Arena*);
 template<> ::vosfs::raft::RequestVoteRequest* Arena::CreateMaybeMessage<::vosfs::raft::RequestVoteRequest>(Arena*);
 template<> ::vosfs::raft::RequestVoteResponse* Arena::CreateMaybeMessage<::vosfs::raft::RequestVoteResponse>(Arena*);
 template<> ::vosfs::raft::SliceInfo* Arena::CreateMaybeMessage<::vosfs::raft::SliceInfo>(Arena*);
 template<> ::vosfs::raft::Snapshot* Arena::CreateMaybeMessage<::vosfs::raft::Snapshot>(Arena*);
 template<> ::vosfs::raft::SnapshotMetadata* Arena::CreateMaybeMessage<::vosfs::raft::SnapshotMetadata>(Arena*);
+template<> ::vosfs::raft::TransmitFileRequest* Arena::CreateMaybeMessage<::vosfs::raft::TransmitFileRequest>(Arena*);
+template<> ::vosfs::raft::TransmitFileResponse* Arena::CreateMaybeMessage<::vosfs::raft::TransmitFileResponse>(Arena*);
+template<> ::vosfs::raft::UpdateAccountRequest* Arena::CreateMaybeMessage<::vosfs::raft::UpdateAccountRequest>(Arena*);
+template<> ::vosfs::raft::UpdateAccountResponse* Arena::CreateMaybeMessage<::vosfs::raft::UpdateAccountResponse>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace vosfs {
 namespace raft {
@@ -2751,24 +2787,24 @@ class Snapshot final :
 };
 // -------------------------------------------------------------------
 
-class CreateFilePrepareRequest final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.CreateFilePrepareRequest) */ {
+class AccountInfo final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.AccountInfo) */ {
  public:
-  inline CreateFilePrepareRequest() : CreateFilePrepareRequest(nullptr) {}
-  ~CreateFilePrepareRequest() override;
-  explicit PROTOBUF_CONSTEXPR CreateFilePrepareRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline AccountInfo() : AccountInfo(nullptr) {}
+  ~AccountInfo() override;
+  explicit PROTOBUF_CONSTEXPR AccountInfo(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  CreateFilePrepareRequest(const CreateFilePrepareRequest& from);
-  CreateFilePrepareRequest(CreateFilePrepareRequest&& from) noexcept
-    : CreateFilePrepareRequest() {
+  AccountInfo(const AccountInfo& from);
+  AccountInfo(AccountInfo&& from) noexcept
+    : AccountInfo() {
     *this = ::std::move(from);
   }
 
-  inline CreateFilePrepareRequest& operator=(const CreateFilePrepareRequest& from) {
+  inline AccountInfo& operator=(const AccountInfo& from) {
     CopyFrom(from);
     return *this;
   }
-  inline CreateFilePrepareRequest& operator=(CreateFilePrepareRequest&& from) noexcept {
+  inline AccountInfo& operator=(AccountInfo&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -2791,20 +2827,20 @@ class CreateFilePrepareRequest final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const CreateFilePrepareRequest& default_instance() {
+  static const AccountInfo& default_instance() {
     return *internal_default_instance();
   }
-  static inline const CreateFilePrepareRequest* internal_default_instance() {
-    return reinterpret_cast<const CreateFilePrepareRequest*>(
-               &_CreateFilePrepareRequest_default_instance_);
+  static inline const AccountInfo* internal_default_instance() {
+    return reinterpret_cast<const AccountInfo*>(
+               &_AccountInfo_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     14;
 
-  friend void swap(CreateFilePrepareRequest& a, CreateFilePrepareRequest& b) {
+  friend void swap(AccountInfo& a, AccountInfo& b) {
     a.Swap(&b);
   }
-  inline void Swap(CreateFilePrepareRequest* other) {
+  inline void Swap(AccountInfo* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -2817,7 +2853,7 @@ class CreateFilePrepareRequest final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(CreateFilePrepareRequest* other) {
+  void UnsafeArenaSwap(AccountInfo* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -2825,14 +2861,14 @@ class CreateFilePrepareRequest final :
 
   // implements Message ----------------------------------------------
 
-  CreateFilePrepareRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<CreateFilePrepareRequest>(arena);
+  AccountInfo* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<AccountInfo>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const CreateFilePrepareRequest& from);
+  void CopyFrom(const AccountInfo& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CreateFilePrepareRequest& from) {
-    CreateFilePrepareRequest::MergeImpl(*this, from);
+  void MergeFrom( const AccountInfo& from) {
+    AccountInfo::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -2850,15 +2886,15 @@ class CreateFilePrepareRequest final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(CreateFilePrepareRequest* other);
+  void InternalSwap(AccountInfo* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "vosfs.raft.CreateFilePrepareRequest";
+    return "vosfs.raft.AccountInfo";
   }
   protected:
-  explicit CreateFilePrepareRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit AccountInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -2872,18 +2908,48 @@ class CreateFilePrepareRequest final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kSliceNumFieldNumber = 1,
+    kNameFieldNumber = 2,
+    kHashPasswordFieldNumber = 3,
+    kUidFieldNumber = 1,
   };
-  // uint64 slice_num = 1;
-  void clear_slice_num();
-  uint64_t slice_num() const;
-  void set_slice_num(uint64_t value);
+  // string name = 2;
+  void clear_name();
+  const std::string& name() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_name();
+  PROTOBUF_NODISCARD std::string* release_name();
+  void set_allocated_name(std::string* name);
   private:
-  uint64_t _internal_slice_num() const;
-  void _internal_set_slice_num(uint64_t value);
+  const std::string& _internal_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_name(const std::string& value);
+  std::string* _internal_mutable_name();
   public:
 
-  // @@protoc_insertion_point(class_scope:vosfs.raft.CreateFilePrepareRequest)
+  // string hash_password = 3;
+  void clear_hash_password();
+  const std::string& hash_password() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_hash_password(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_hash_password();
+  PROTOBUF_NODISCARD std::string* release_hash_password();
+  void set_allocated_hash_password(std::string* hash_password);
+  private:
+  const std::string& _internal_hash_password() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_hash_password(const std::string& value);
+  std::string* _internal_mutable_hash_password();
+  public:
+
+  // uint64 uid = 1;
+  void clear_uid();
+  uint64_t uid() const;
+  void set_uid(uint64_t value);
+  private:
+  uint64_t _internal_uid() const;
+  void _internal_set_uid(uint64_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:vosfs.raft.AccountInfo)
  private:
   class _Internal;
 
@@ -2891,7 +2957,9 @@ class CreateFilePrepareRequest final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    uint64_t slice_num_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr hash_password_;
+    uint64_t uid_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2899,24 +2967,24 @@ class CreateFilePrepareRequest final :
 };
 // -------------------------------------------------------------------
 
-class CreateFilePrepareResponse final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.CreateFilePrepareResponse) */ {
+class PutAccountRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.PutAccountRequest) */ {
  public:
-  inline CreateFilePrepareResponse() : CreateFilePrepareResponse(nullptr) {}
-  ~CreateFilePrepareResponse() override;
-  explicit PROTOBUF_CONSTEXPR CreateFilePrepareResponse(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline PutAccountRequest() : PutAccountRequest(nullptr) {}
+  ~PutAccountRequest() override;
+  explicit PROTOBUF_CONSTEXPR PutAccountRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  CreateFilePrepareResponse(const CreateFilePrepareResponse& from);
-  CreateFilePrepareResponse(CreateFilePrepareResponse&& from) noexcept
-    : CreateFilePrepareResponse() {
+  PutAccountRequest(const PutAccountRequest& from);
+  PutAccountRequest(PutAccountRequest&& from) noexcept
+    : PutAccountRequest() {
     *this = ::std::move(from);
   }
 
-  inline CreateFilePrepareResponse& operator=(const CreateFilePrepareResponse& from) {
+  inline PutAccountRequest& operator=(const PutAccountRequest& from) {
     CopyFrom(from);
     return *this;
   }
-  inline CreateFilePrepareResponse& operator=(CreateFilePrepareResponse&& from) noexcept {
+  inline PutAccountRequest& operator=(PutAccountRequest&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -2939,20 +3007,20 @@ class CreateFilePrepareResponse final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const CreateFilePrepareResponse& default_instance() {
+  static const PutAccountRequest& default_instance() {
     return *internal_default_instance();
   }
-  static inline const CreateFilePrepareResponse* internal_default_instance() {
-    return reinterpret_cast<const CreateFilePrepareResponse*>(
-               &_CreateFilePrepareResponse_default_instance_);
+  static inline const PutAccountRequest* internal_default_instance() {
+    return reinterpret_cast<const PutAccountRequest*>(
+               &_PutAccountRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     15;
 
-  friend void swap(CreateFilePrepareResponse& a, CreateFilePrepareResponse& b) {
+  friend void swap(PutAccountRequest& a, PutAccountRequest& b) {
     a.Swap(&b);
   }
-  inline void Swap(CreateFilePrepareResponse* other) {
+  inline void Swap(PutAccountRequest* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -2965,7 +3033,7 @@ class CreateFilePrepareResponse final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(CreateFilePrepareResponse* other) {
+  void UnsafeArenaSwap(PutAccountRequest* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -2973,14 +3041,14 @@ class CreateFilePrepareResponse final :
 
   // implements Message ----------------------------------------------
 
-  CreateFilePrepareResponse* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<CreateFilePrepareResponse>(arena);
+  PutAccountRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<PutAccountRequest>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const CreateFilePrepareResponse& from);
+  void CopyFrom(const PutAccountRequest& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CreateFilePrepareResponse& from) {
-    CreateFilePrepareResponse::MergeImpl(*this, from);
+  void MergeFrom( const PutAccountRequest& from) {
+    PutAccountRequest::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -2998,15 +3066,1472 @@ class CreateFilePrepareResponse final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(CreateFilePrepareResponse* other);
+  void InternalSwap(PutAccountRequest* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "vosfs.raft.CreateFilePrepareResponse";
+    return "vosfs.raft.PutAccountRequest";
   }
   protected:
-  explicit CreateFilePrepareResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit PutAccountRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kNameFieldNumber = 1,
+    kHashPasswordFieldNumber = 2,
+  };
+  // string name = 1;
+  void clear_name();
+  const std::string& name() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_name();
+  PROTOBUF_NODISCARD std::string* release_name();
+  void set_allocated_name(std::string* name);
+  private:
+  const std::string& _internal_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_name(const std::string& value);
+  std::string* _internal_mutable_name();
+  public:
+
+  // string hash_password = 2;
+  void clear_hash_password();
+  const std::string& hash_password() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_hash_password(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_hash_password();
+  PROTOBUF_NODISCARD std::string* release_hash_password();
+  void set_allocated_hash_password(std::string* hash_password);
+  private:
+  const std::string& _internal_hash_password() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_hash_password(const std::string& value);
+  std::string* _internal_mutable_hash_password();
+  public:
+
+  // @@protoc_insertion_point(class_scope:vosfs.raft.PutAccountRequest)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr hash_password_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_raft_2eproto;
+};
+// -------------------------------------------------------------------
+
+class PutAccountResponse final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.PutAccountResponse) */ {
+ public:
+  inline PutAccountResponse() : PutAccountResponse(nullptr) {}
+  ~PutAccountResponse() override;
+  explicit PROTOBUF_CONSTEXPR PutAccountResponse(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  PutAccountResponse(const PutAccountResponse& from);
+  PutAccountResponse(PutAccountResponse&& from) noexcept
+    : PutAccountResponse() {
+    *this = ::std::move(from);
+  }
+
+  inline PutAccountResponse& operator=(const PutAccountResponse& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline PutAccountResponse& operator=(PutAccountResponse&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const PutAccountResponse& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const PutAccountResponse* internal_default_instance() {
+    return reinterpret_cast<const PutAccountResponse*>(
+               &_PutAccountResponse_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    16;
+
+  friend void swap(PutAccountResponse& a, PutAccountResponse& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(PutAccountResponse* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(PutAccountResponse* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  PutAccountResponse* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<PutAccountResponse>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const PutAccountResponse& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const PutAccountResponse& from) {
+    PutAccountResponse::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(PutAccountResponse* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "vosfs.raft.PutAccountResponse";
+  }
+  protected:
+  explicit PutAccountResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kAccountInfoFieldNumber = 1,
+  };
+  // optional .vosfs.raft.AccountInfo account_info = 1;
+  bool has_account_info() const;
+  private:
+  bool _internal_has_account_info() const;
+  public:
+  void clear_account_info();
+  const ::vosfs::raft::AccountInfo& account_info() const;
+  PROTOBUF_NODISCARD ::vosfs::raft::AccountInfo* release_account_info();
+  ::vosfs::raft::AccountInfo* mutable_account_info();
+  void set_allocated_account_info(::vosfs::raft::AccountInfo* account_info);
+  private:
+  const ::vosfs::raft::AccountInfo& _internal_account_info() const;
+  ::vosfs::raft::AccountInfo* _internal_mutable_account_info();
+  public:
+  void unsafe_arena_set_allocated_account_info(
+      ::vosfs::raft::AccountInfo* account_info);
+  ::vosfs::raft::AccountInfo* unsafe_arena_release_account_info();
+
+  // @@protoc_insertion_point(class_scope:vosfs.raft.PutAccountResponse)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::vosfs::raft::AccountInfo* account_info_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_raft_2eproto;
+};
+// -------------------------------------------------------------------
+
+class GetAccountRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.GetAccountRequest) */ {
+ public:
+  inline GetAccountRequest() : GetAccountRequest(nullptr) {}
+  ~GetAccountRequest() override;
+  explicit PROTOBUF_CONSTEXPR GetAccountRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  GetAccountRequest(const GetAccountRequest& from);
+  GetAccountRequest(GetAccountRequest&& from) noexcept
+    : GetAccountRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline GetAccountRequest& operator=(const GetAccountRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline GetAccountRequest& operator=(GetAccountRequest&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const GetAccountRequest& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const GetAccountRequest* internal_default_instance() {
+    return reinterpret_cast<const GetAccountRequest*>(
+               &_GetAccountRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    17;
+
+  friend void swap(GetAccountRequest& a, GetAccountRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(GetAccountRequest* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(GetAccountRequest* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  GetAccountRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<GetAccountRequest>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const GetAccountRequest& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const GetAccountRequest& from) {
+    GetAccountRequest::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(GetAccountRequest* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "vosfs.raft.GetAccountRequest";
+  }
+  protected:
+  explicit GetAccountRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kNameFieldNumber = 1,
+    kPasswordFieldNumber = 2,
+  };
+  // string name = 1;
+  void clear_name();
+  const std::string& name() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_name();
+  PROTOBUF_NODISCARD std::string* release_name();
+  void set_allocated_name(std::string* name);
+  private:
+  const std::string& _internal_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_name(const std::string& value);
+  std::string* _internal_mutable_name();
+  public:
+
+  // string password = 2;
+  void clear_password();
+  const std::string& password() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_password(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_password();
+  PROTOBUF_NODISCARD std::string* release_password();
+  void set_allocated_password(std::string* password);
+  private:
+  const std::string& _internal_password() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_password(const std::string& value);
+  std::string* _internal_mutable_password();
+  public:
+
+  // @@protoc_insertion_point(class_scope:vosfs.raft.GetAccountRequest)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr password_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_raft_2eproto;
+};
+// -------------------------------------------------------------------
+
+class GetAccountResponse final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.GetAccountResponse) */ {
+ public:
+  inline GetAccountResponse() : GetAccountResponse(nullptr) {}
+  ~GetAccountResponse() override;
+  explicit PROTOBUF_CONSTEXPR GetAccountResponse(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  GetAccountResponse(const GetAccountResponse& from);
+  GetAccountResponse(GetAccountResponse&& from) noexcept
+    : GetAccountResponse() {
+    *this = ::std::move(from);
+  }
+
+  inline GetAccountResponse& operator=(const GetAccountResponse& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline GetAccountResponse& operator=(GetAccountResponse&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const GetAccountResponse& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const GetAccountResponse* internal_default_instance() {
+    return reinterpret_cast<const GetAccountResponse*>(
+               &_GetAccountResponse_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    18;
+
+  friend void swap(GetAccountResponse& a, GetAccountResponse& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(GetAccountResponse* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(GetAccountResponse* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  GetAccountResponse* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<GetAccountResponse>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const GetAccountResponse& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const GetAccountResponse& from) {
+    GetAccountResponse::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(GetAccountResponse* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "vosfs.raft.GetAccountResponse";
+  }
+  protected:
+  explicit GetAccountResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kMsgFieldNumber = 3,
+    kUidFieldNumber = 1,
+    kSuccessFieldNumber = 2,
+  };
+  // string msg = 3;
+  void clear_msg();
+  const std::string& msg() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_msg(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_msg();
+  PROTOBUF_NODISCARD std::string* release_msg();
+  void set_allocated_msg(std::string* msg);
+  private:
+  const std::string& _internal_msg() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_msg(const std::string& value);
+  std::string* _internal_mutable_msg();
+  public:
+
+  // uint64 uid = 1;
+  void clear_uid();
+  uint64_t uid() const;
+  void set_uid(uint64_t value);
+  private:
+  uint64_t _internal_uid() const;
+  void _internal_set_uid(uint64_t value);
+  public:
+
+  // bool success = 2;
+  void clear_success();
+  bool success() const;
+  void set_success(bool value);
+  private:
+  bool _internal_success() const;
+  void _internal_set_success(bool value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:vosfs.raft.GetAccountResponse)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr msg_;
+    uint64_t uid_;
+    bool success_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_raft_2eproto;
+};
+// -------------------------------------------------------------------
+
+class UpdateAccountRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.UpdateAccountRequest) */ {
+ public:
+  inline UpdateAccountRequest() : UpdateAccountRequest(nullptr) {}
+  ~UpdateAccountRequest() override;
+  explicit PROTOBUF_CONSTEXPR UpdateAccountRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  UpdateAccountRequest(const UpdateAccountRequest& from);
+  UpdateAccountRequest(UpdateAccountRequest&& from) noexcept
+    : UpdateAccountRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline UpdateAccountRequest& operator=(const UpdateAccountRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline UpdateAccountRequest& operator=(UpdateAccountRequest&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const UpdateAccountRequest& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const UpdateAccountRequest* internal_default_instance() {
+    return reinterpret_cast<const UpdateAccountRequest*>(
+               &_UpdateAccountRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    19;
+
+  friend void swap(UpdateAccountRequest& a, UpdateAccountRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(UpdateAccountRequest* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(UpdateAccountRequest* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  UpdateAccountRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<UpdateAccountRequest>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const UpdateAccountRequest& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const UpdateAccountRequest& from) {
+    UpdateAccountRequest::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(UpdateAccountRequest* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "vosfs.raft.UpdateAccountRequest";
+  }
+  protected:
+  explicit UpdateAccountRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kNameFieldNumber = 1,
+  };
+  // string name = 1;
+  void clear_name();
+  const std::string& name() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_name();
+  PROTOBUF_NODISCARD std::string* release_name();
+  void set_allocated_name(std::string* name);
+  private:
+  const std::string& _internal_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_name(const std::string& value);
+  std::string* _internal_mutable_name();
+  public:
+
+  // @@protoc_insertion_point(class_scope:vosfs.raft.UpdateAccountRequest)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_raft_2eproto;
+};
+// -------------------------------------------------------------------
+
+class UpdateAccountResponse final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.UpdateAccountResponse) */ {
+ public:
+  inline UpdateAccountResponse() : UpdateAccountResponse(nullptr) {}
+  ~UpdateAccountResponse() override;
+  explicit PROTOBUF_CONSTEXPR UpdateAccountResponse(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  UpdateAccountResponse(const UpdateAccountResponse& from);
+  UpdateAccountResponse(UpdateAccountResponse&& from) noexcept
+    : UpdateAccountResponse() {
+    *this = ::std::move(from);
+  }
+
+  inline UpdateAccountResponse& operator=(const UpdateAccountResponse& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline UpdateAccountResponse& operator=(UpdateAccountResponse&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const UpdateAccountResponse& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const UpdateAccountResponse* internal_default_instance() {
+    return reinterpret_cast<const UpdateAccountResponse*>(
+               &_UpdateAccountResponse_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    20;
+
+  friend void swap(UpdateAccountResponse& a, UpdateAccountResponse& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(UpdateAccountResponse* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(UpdateAccountResponse* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  UpdateAccountResponse* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<UpdateAccountResponse>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const UpdateAccountResponse& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const UpdateAccountResponse& from) {
+    UpdateAccountResponse::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(UpdateAccountResponse* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "vosfs.raft.UpdateAccountResponse";
+  }
+  protected:
+  explicit UpdateAccountResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kMsgFieldNumber = 2,
+    kSuccessFieldNumber = 1,
+  };
+  // string msg = 2;
+  void clear_msg();
+  const std::string& msg() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_msg(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_msg();
+  PROTOBUF_NODISCARD std::string* release_msg();
+  void set_allocated_msg(std::string* msg);
+  private:
+  const std::string& _internal_msg() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_msg(const std::string& value);
+  std::string* _internal_mutable_msg();
+  public:
+
+  // bool success = 1;
+  void clear_success();
+  bool success() const;
+  void set_success(bool value);
+  private:
+  bool _internal_success() const;
+  void _internal_set_success(bool value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:vosfs.raft.UpdateAccountResponse)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr msg_;
+    bool success_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_raft_2eproto;
+};
+// -------------------------------------------------------------------
+
+class DeleteAccountRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.DeleteAccountRequest) */ {
+ public:
+  inline DeleteAccountRequest() : DeleteAccountRequest(nullptr) {}
+  ~DeleteAccountRequest() override;
+  explicit PROTOBUF_CONSTEXPR DeleteAccountRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  DeleteAccountRequest(const DeleteAccountRequest& from);
+  DeleteAccountRequest(DeleteAccountRequest&& from) noexcept
+    : DeleteAccountRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline DeleteAccountRequest& operator=(const DeleteAccountRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline DeleteAccountRequest& operator=(DeleteAccountRequest&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const DeleteAccountRequest& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const DeleteAccountRequest* internal_default_instance() {
+    return reinterpret_cast<const DeleteAccountRequest*>(
+               &_DeleteAccountRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    21;
+
+  friend void swap(DeleteAccountRequest& a, DeleteAccountRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(DeleteAccountRequest* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(DeleteAccountRequest* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  DeleteAccountRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<DeleteAccountRequest>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const DeleteAccountRequest& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const DeleteAccountRequest& from) {
+    DeleteAccountRequest::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(DeleteAccountRequest* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "vosfs.raft.DeleteAccountRequest";
+  }
+  protected:
+  explicit DeleteAccountRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kUidFieldNumber = 1,
+  };
+  // uint64 uid = 1;
+  void clear_uid();
+  uint64_t uid() const;
+  void set_uid(uint64_t value);
+  private:
+  uint64_t _internal_uid() const;
+  void _internal_set_uid(uint64_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:vosfs.raft.DeleteAccountRequest)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    uint64_t uid_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_raft_2eproto;
+};
+// -------------------------------------------------------------------
+
+class DeleteAccountResponse final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.DeleteAccountResponse) */ {
+ public:
+  inline DeleteAccountResponse() : DeleteAccountResponse(nullptr) {}
+  ~DeleteAccountResponse() override;
+  explicit PROTOBUF_CONSTEXPR DeleteAccountResponse(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  DeleteAccountResponse(const DeleteAccountResponse& from);
+  DeleteAccountResponse(DeleteAccountResponse&& from) noexcept
+    : DeleteAccountResponse() {
+    *this = ::std::move(from);
+  }
+
+  inline DeleteAccountResponse& operator=(const DeleteAccountResponse& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline DeleteAccountResponse& operator=(DeleteAccountResponse&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const DeleteAccountResponse& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const DeleteAccountResponse* internal_default_instance() {
+    return reinterpret_cast<const DeleteAccountResponse*>(
+               &_DeleteAccountResponse_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    22;
+
+  friend void swap(DeleteAccountResponse& a, DeleteAccountResponse& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(DeleteAccountResponse* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(DeleteAccountResponse* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  DeleteAccountResponse* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<DeleteAccountResponse>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const DeleteAccountResponse& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const DeleteAccountResponse& from) {
+    DeleteAccountResponse::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(DeleteAccountResponse* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "vosfs.raft.DeleteAccountResponse";
+  }
+  protected:
+  explicit DeleteAccountResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kMsgFieldNumber = 2,
+    kSuccessFieldNumber = 1,
+  };
+  // string msg = 2;
+  void clear_msg();
+  const std::string& msg() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_msg(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_msg();
+  PROTOBUF_NODISCARD std::string* release_msg();
+  void set_allocated_msg(std::string* msg);
+  private:
+  const std::string& _internal_msg() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_msg(const std::string& value);
+  std::string* _internal_mutable_msg();
+  public:
+
+  // bool success = 1;
+  void clear_success();
+  bool success() const;
+  void set_success(bool value);
+  private:
+  bool _internal_success() const;
+  void _internal_set_success(bool value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:vosfs.raft.DeleteAccountResponse)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr msg_;
+    bool success_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_raft_2eproto;
+};
+// -------------------------------------------------------------------
+
+class TransmitFileRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.TransmitFileRequest) */ {
+ public:
+  inline TransmitFileRequest() : TransmitFileRequest(nullptr) {}
+  ~TransmitFileRequest() override;
+  explicit PROTOBUF_CONSTEXPR TransmitFileRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  TransmitFileRequest(const TransmitFileRequest& from);
+  TransmitFileRequest(TransmitFileRequest&& from) noexcept
+    : TransmitFileRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline TransmitFileRequest& operator=(const TransmitFileRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline TransmitFileRequest& operator=(TransmitFileRequest&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const TransmitFileRequest& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const TransmitFileRequest* internal_default_instance() {
+    return reinterpret_cast<const TransmitFileRequest*>(
+               &_TransmitFileRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    23;
+
+  friend void swap(TransmitFileRequest& a, TransmitFileRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(TransmitFileRequest* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(TransmitFileRequest* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  TransmitFileRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<TransmitFileRequest>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const TransmitFileRequest& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const TransmitFileRequest& from) {
+    TransmitFileRequest::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(TransmitFileRequest* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "vosfs.raft.TransmitFileRequest";
+  }
+  protected:
+  explicit TransmitFileRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kSliceInfosFieldNumber = 1,
+  };
+  // repeated .vosfs.raft.SliceInfo slice_infos = 1;
+  int slice_infos_size() const;
+  private:
+  int _internal_slice_infos_size() const;
+  public:
+  void clear_slice_infos();
+  ::vosfs::raft::SliceInfo* mutable_slice_infos(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::SliceInfo >*
+      mutable_slice_infos();
+  private:
+  const ::vosfs::raft::SliceInfo& _internal_slice_infos(int index) const;
+  ::vosfs::raft::SliceInfo* _internal_add_slice_infos();
+  public:
+  const ::vosfs::raft::SliceInfo& slice_infos(int index) const;
+  ::vosfs::raft::SliceInfo* add_slice_infos();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::SliceInfo >&
+      slice_infos() const;
+
+  // @@protoc_insertion_point(class_scope:vosfs.raft.TransmitFileRequest)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::SliceInfo > slice_infos_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_raft_2eproto;
+};
+// -------------------------------------------------------------------
+
+class TransmitFileResponse final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.TransmitFileResponse) */ {
+ public:
+  inline TransmitFileResponse() : TransmitFileResponse(nullptr) {}
+  ~TransmitFileResponse() override;
+  explicit PROTOBUF_CONSTEXPR TransmitFileResponse(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  TransmitFileResponse(const TransmitFileResponse& from);
+  TransmitFileResponse(TransmitFileResponse&& from) noexcept
+    : TransmitFileResponse() {
+    *this = ::std::move(from);
+  }
+
+  inline TransmitFileResponse& operator=(const TransmitFileResponse& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline TransmitFileResponse& operator=(TransmitFileResponse&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const TransmitFileResponse& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const TransmitFileResponse* internal_default_instance() {
+    return reinterpret_cast<const TransmitFileResponse*>(
+               &_TransmitFileResponse_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    24;
+
+  friend void swap(TransmitFileResponse& a, TransmitFileResponse& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(TransmitFileResponse* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(TransmitFileResponse* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  TransmitFileResponse* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<TransmitFileResponse>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const TransmitFileResponse& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const TransmitFileResponse& from) {
+    TransmitFileResponse::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(TransmitFileResponse* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "vosfs.raft.TransmitFileResponse";
+  }
+  protected:
+  explicit TransmitFileResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -3050,7 +4575,7 @@ class CreateFilePrepareResponse final :
   void _internal_set_ino(uint64_t value);
   public:
 
-  // @@protoc_insertion_point(class_scope:vosfs.raft.CreateFilePrepareResponse)
+  // @@protoc_insertion_point(class_scope:vosfs.raft.TransmitFileResponse)
  private:
   class _Internal;
 
@@ -3067,24 +4592,24 @@ class CreateFilePrepareResponse final :
 };
 // -------------------------------------------------------------------
 
-class CreateFileCommitRequest final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.CreateFileCommitRequest) */ {
+class PutFileRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.PutFileRequest) */ {
  public:
-  inline CreateFileCommitRequest() : CreateFileCommitRequest(nullptr) {}
-  ~CreateFileCommitRequest() override;
-  explicit PROTOBUF_CONSTEXPR CreateFileCommitRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline PutFileRequest() : PutFileRequest(nullptr) {}
+  ~PutFileRequest() override;
+  explicit PROTOBUF_CONSTEXPR PutFileRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  CreateFileCommitRequest(const CreateFileCommitRequest& from);
-  CreateFileCommitRequest(CreateFileCommitRequest&& from) noexcept
-    : CreateFileCommitRequest() {
+  PutFileRequest(const PutFileRequest& from);
+  PutFileRequest(PutFileRequest&& from) noexcept
+    : PutFileRequest() {
     *this = ::std::move(from);
   }
 
-  inline CreateFileCommitRequest& operator=(const CreateFileCommitRequest& from) {
+  inline PutFileRequest& operator=(const PutFileRequest& from) {
     CopyFrom(from);
     return *this;
   }
-  inline CreateFileCommitRequest& operator=(CreateFileCommitRequest&& from) noexcept {
+  inline PutFileRequest& operator=(PutFileRequest&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -3107,20 +4632,20 @@ class CreateFileCommitRequest final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const CreateFileCommitRequest& default_instance() {
+  static const PutFileRequest& default_instance() {
     return *internal_default_instance();
   }
-  static inline const CreateFileCommitRequest* internal_default_instance() {
-    return reinterpret_cast<const CreateFileCommitRequest*>(
-               &_CreateFileCommitRequest_default_instance_);
+  static inline const PutFileRequest* internal_default_instance() {
+    return reinterpret_cast<const PutFileRequest*>(
+               &_PutFileRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    16;
+    25;
 
-  friend void swap(CreateFileCommitRequest& a, CreateFileCommitRequest& b) {
+  friend void swap(PutFileRequest& a, PutFileRequest& b) {
     a.Swap(&b);
   }
-  inline void Swap(CreateFileCommitRequest* other) {
+  inline void Swap(PutFileRequest* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -3133,7 +4658,7 @@ class CreateFileCommitRequest final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(CreateFileCommitRequest* other) {
+  void UnsafeArenaSwap(PutFileRequest* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -3141,14 +4666,14 @@ class CreateFileCommitRequest final :
 
   // implements Message ----------------------------------------------
 
-  CreateFileCommitRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<CreateFileCommitRequest>(arena);
+  PutFileRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<PutFileRequest>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const CreateFileCommitRequest& from);
+  void CopyFrom(const PutFileRequest& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CreateFileCommitRequest& from) {
-    CreateFileCommitRequest::MergeImpl(*this, from);
+  void MergeFrom( const PutFileRequest& from) {
+    PutFileRequest::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -3166,15 +4691,15 @@ class CreateFileCommitRequest final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(CreateFileCommitRequest* other);
+  void InternalSwap(PutFileRequest* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "vosfs.raft.CreateFileCommitRequest";
+    return "vosfs.raft.PutFileRequest";
   }
   protected:
-  explicit CreateFileCommitRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit PutFileRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -3263,7 +4788,7 @@ class CreateFileCommitRequest final :
   void _internal_set_is_dir(bool value);
   public:
 
-  // @@protoc_insertion_point(class_scope:vosfs.raft.CreateFileCommitRequest)
+  // @@protoc_insertion_point(class_scope:vosfs.raft.PutFileRequest)
  private:
   class _Internal;
 
@@ -3284,24 +4809,24 @@ class CreateFileCommitRequest final :
 };
 // -------------------------------------------------------------------
 
-class CreateFileCommitResponse final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.CreateFileCommitResponse) */ {
+class PutFileResponse final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.PutFileResponse) */ {
  public:
-  inline CreateFileCommitResponse() : CreateFileCommitResponse(nullptr) {}
-  ~CreateFileCommitResponse() override;
-  explicit PROTOBUF_CONSTEXPR CreateFileCommitResponse(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline PutFileResponse() : PutFileResponse(nullptr) {}
+  ~PutFileResponse() override;
+  explicit PROTOBUF_CONSTEXPR PutFileResponse(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  CreateFileCommitResponse(const CreateFileCommitResponse& from);
-  CreateFileCommitResponse(CreateFileCommitResponse&& from) noexcept
-    : CreateFileCommitResponse() {
+  PutFileResponse(const PutFileResponse& from);
+  PutFileResponse(PutFileResponse&& from) noexcept
+    : PutFileResponse() {
     *this = ::std::move(from);
   }
 
-  inline CreateFileCommitResponse& operator=(const CreateFileCommitResponse& from) {
+  inline PutFileResponse& operator=(const PutFileResponse& from) {
     CopyFrom(from);
     return *this;
   }
-  inline CreateFileCommitResponse& operator=(CreateFileCommitResponse&& from) noexcept {
+  inline PutFileResponse& operator=(PutFileResponse&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -3324,20 +4849,20 @@ class CreateFileCommitResponse final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const CreateFileCommitResponse& default_instance() {
+  static const PutFileResponse& default_instance() {
     return *internal_default_instance();
   }
-  static inline const CreateFileCommitResponse* internal_default_instance() {
-    return reinterpret_cast<const CreateFileCommitResponse*>(
-               &_CreateFileCommitResponse_default_instance_);
+  static inline const PutFileResponse* internal_default_instance() {
+    return reinterpret_cast<const PutFileResponse*>(
+               &_PutFileResponse_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    17;
+    26;
 
-  friend void swap(CreateFileCommitResponse& a, CreateFileCommitResponse& b) {
+  friend void swap(PutFileResponse& a, PutFileResponse& b) {
     a.Swap(&b);
   }
-  inline void Swap(CreateFileCommitResponse* other) {
+  inline void Swap(PutFileResponse* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -3350,7 +4875,7 @@ class CreateFileCommitResponse final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(CreateFileCommitResponse* other) {
+  void UnsafeArenaSwap(PutFileResponse* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -3358,14 +4883,14 @@ class CreateFileCommitResponse final :
 
   // implements Message ----------------------------------------------
 
-  CreateFileCommitResponse* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<CreateFileCommitResponse>(arena);
+  PutFileResponse* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<PutFileResponse>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const CreateFileCommitResponse& from);
+  void CopyFrom(const PutFileResponse& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CreateFileCommitResponse& from) {
-    CreateFileCommitResponse::MergeImpl(*this, from);
+  void MergeFrom( const PutFileResponse& from) {
+    PutFileResponse::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -3383,15 +4908,15 @@ class CreateFileCommitResponse final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(CreateFileCommitResponse* other);
+  void InternalSwap(PutFileResponse* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "vosfs.raft.CreateFileCommitResponse";
+    return "vosfs.raft.PutFileResponse";
   }
   protected:
-  explicit CreateFileCommitResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit PutFileResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -3416,7 +4941,7 @@ class CreateFileCommitResponse final :
   void _internal_set_success(bool value);
   public:
 
-  // @@protoc_insertion_point(class_scope:vosfs.raft.CreateFileCommitResponse)
+  // @@protoc_insertion_point(class_scope:vosfs.raft.PutFileResponse)
  private:
   class _Internal;
 
@@ -3476,7 +5001,7 @@ class EntryCommand final :
     return *internal_default_instance();
   }
   enum CmdCase {
-    kCreateFileCommitRequest = 1,
+    kPutFile = 1,
     CMD_NOT_SET = 0,
   };
 
@@ -3485,7 +5010,7 @@ class EntryCommand final :
                &_EntryCommand_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    18;
+    27;
 
   friend void swap(EntryCommand& a, EntryCommand& b) {
     a.Swap(&b);
@@ -3558,32 +5083,32 @@ class EntryCommand final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kCreateFileCommitRequestFieldNumber = 1,
+    kPutFileFieldNumber = 1,
   };
-  // .vosfs.raft.CreateFileCommitRequest create_file_commit_request = 1;
-  bool has_create_file_commit_request() const;
+  // .vosfs.raft.PutFileRequest put_file = 1;
+  bool has_put_file() const;
   private:
-  bool _internal_has_create_file_commit_request() const;
+  bool _internal_has_put_file() const;
   public:
-  void clear_create_file_commit_request();
-  const ::vosfs::raft::CreateFileCommitRequest& create_file_commit_request() const;
-  PROTOBUF_NODISCARD ::vosfs::raft::CreateFileCommitRequest* release_create_file_commit_request();
-  ::vosfs::raft::CreateFileCommitRequest* mutable_create_file_commit_request();
-  void set_allocated_create_file_commit_request(::vosfs::raft::CreateFileCommitRequest* create_file_commit_request);
+  void clear_put_file();
+  const ::vosfs::raft::PutFileRequest& put_file() const;
+  PROTOBUF_NODISCARD ::vosfs::raft::PutFileRequest* release_put_file();
+  ::vosfs::raft::PutFileRequest* mutable_put_file();
+  void set_allocated_put_file(::vosfs::raft::PutFileRequest* put_file);
   private:
-  const ::vosfs::raft::CreateFileCommitRequest& _internal_create_file_commit_request() const;
-  ::vosfs::raft::CreateFileCommitRequest* _internal_mutable_create_file_commit_request();
+  const ::vosfs::raft::PutFileRequest& _internal_put_file() const;
+  ::vosfs::raft::PutFileRequest* _internal_mutable_put_file();
   public:
-  void unsafe_arena_set_allocated_create_file_commit_request(
-      ::vosfs::raft::CreateFileCommitRequest* create_file_commit_request);
-  ::vosfs::raft::CreateFileCommitRequest* unsafe_arena_release_create_file_commit_request();
+  void unsafe_arena_set_allocated_put_file(
+      ::vosfs::raft::PutFileRequest* put_file);
+  ::vosfs::raft::PutFileRequest* unsafe_arena_release_put_file();
 
   void clear_cmd();
   CmdCase cmd_case() const;
   // @@protoc_insertion_point(class_scope:vosfs.raft.EntryCommand)
  private:
   class _Internal;
-  void set_has_create_file_commit_request();
+  void set_has_put_file();
 
   inline bool has_cmd() const;
   inline void clear_has_cmd();
@@ -3595,7 +5120,7 @@ class EntryCommand final :
     union CmdUnion {
       constexpr CmdUnion() : _constinit_{} {}
         ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized _constinit_;
-      ::vosfs::raft::CreateFileCommitRequest* create_file_commit_request_;
+      ::vosfs::raft::PutFileRequest* put_file_;
     } cmd_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     uint32_t _oneof_case_[1];
@@ -5142,192 +6667,64 @@ Snapshot::node_infos() const {
 
 // -------------------------------------------------------------------
 
-// CreateFilePrepareRequest
+// AccountInfo
 
-// uint64 slice_num = 1;
-inline void CreateFilePrepareRequest::clear_slice_num() {
-  _impl_.slice_num_ = uint64_t{0u};
+// uint64 uid = 1;
+inline void AccountInfo::clear_uid() {
+  _impl_.uid_ = uint64_t{0u};
 }
-inline uint64_t CreateFilePrepareRequest::_internal_slice_num() const {
-  return _impl_.slice_num_;
+inline uint64_t AccountInfo::_internal_uid() const {
+  return _impl_.uid_;
 }
-inline uint64_t CreateFilePrepareRequest::slice_num() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.CreateFilePrepareRequest.slice_num)
-  return _internal_slice_num();
+inline uint64_t AccountInfo::uid() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.AccountInfo.uid)
+  return _internal_uid();
 }
-inline void CreateFilePrepareRequest::_internal_set_slice_num(uint64_t value) {
+inline void AccountInfo::_internal_set_uid(uint64_t value) {
   
-  _impl_.slice_num_ = value;
+  _impl_.uid_ = value;
 }
-inline void CreateFilePrepareRequest::set_slice_num(uint64_t value) {
-  _internal_set_slice_num(value);
-  // @@protoc_insertion_point(field_set:vosfs.raft.CreateFilePrepareRequest.slice_num)
-}
-
-// -------------------------------------------------------------------
-
-// CreateFilePrepareResponse
-
-// uint64 ino = 1;
-inline void CreateFilePrepareResponse::clear_ino() {
-  _impl_.ino_ = uint64_t{0u};
-}
-inline uint64_t CreateFilePrepareResponse::_internal_ino() const {
-  return _impl_.ino_;
-}
-inline uint64_t CreateFilePrepareResponse::ino() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.CreateFilePrepareResponse.ino)
-  return _internal_ino();
-}
-inline void CreateFilePrepareResponse::_internal_set_ino(uint64_t value) {
-  
-  _impl_.ino_ = value;
-}
-inline void CreateFilePrepareResponse::set_ino(uint64_t value) {
-  _internal_set_ino(value);
-  // @@protoc_insertion_point(field_set:vosfs.raft.CreateFilePrepareResponse.ino)
+inline void AccountInfo::set_uid(uint64_t value) {
+  _internal_set_uid(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.AccountInfo.uid)
 }
 
-// repeated .vosfs.raft.SliceInfo slice_infos = 2;
-inline int CreateFilePrepareResponse::_internal_slice_infos_size() const {
-  return _impl_.slice_infos_.size();
-}
-inline int CreateFilePrepareResponse::slice_infos_size() const {
-  return _internal_slice_infos_size();
-}
-inline void CreateFilePrepareResponse::clear_slice_infos() {
-  _impl_.slice_infos_.Clear();
-}
-inline ::vosfs::raft::SliceInfo* CreateFilePrepareResponse::mutable_slice_infos(int index) {
-  // @@protoc_insertion_point(field_mutable:vosfs.raft.CreateFilePrepareResponse.slice_infos)
-  return _impl_.slice_infos_.Mutable(index);
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::SliceInfo >*
-CreateFilePrepareResponse::mutable_slice_infos() {
-  // @@protoc_insertion_point(field_mutable_list:vosfs.raft.CreateFilePrepareResponse.slice_infos)
-  return &_impl_.slice_infos_;
-}
-inline const ::vosfs::raft::SliceInfo& CreateFilePrepareResponse::_internal_slice_infos(int index) const {
-  return _impl_.slice_infos_.Get(index);
-}
-inline const ::vosfs::raft::SliceInfo& CreateFilePrepareResponse::slice_infos(int index) const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.CreateFilePrepareResponse.slice_infos)
-  return _internal_slice_infos(index);
-}
-inline ::vosfs::raft::SliceInfo* CreateFilePrepareResponse::_internal_add_slice_infos() {
-  return _impl_.slice_infos_.Add();
-}
-inline ::vosfs::raft::SliceInfo* CreateFilePrepareResponse::add_slice_infos() {
-  ::vosfs::raft::SliceInfo* _add = _internal_add_slice_infos();
-  // @@protoc_insertion_point(field_add:vosfs.raft.CreateFilePrepareResponse.slice_infos)
-  return _add;
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::SliceInfo >&
-CreateFilePrepareResponse::slice_infos() const {
-  // @@protoc_insertion_point(field_list:vosfs.raft.CreateFilePrepareResponse.slice_infos)
-  return _impl_.slice_infos_;
-}
-
-// -------------------------------------------------------------------
-
-// CreateFileCommitRequest
-
-// uint64 ino = 1;
-inline void CreateFileCommitRequest::clear_ino() {
-  _impl_.ino_ = uint64_t{0u};
-}
-inline uint64_t CreateFileCommitRequest::_internal_ino() const {
-  return _impl_.ino_;
-}
-inline uint64_t CreateFileCommitRequest::ino() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.CreateFileCommitRequest.ino)
-  return _internal_ino();
-}
-inline void CreateFileCommitRequest::_internal_set_ino(uint64_t value) {
-  
-  _impl_.ino_ = value;
-}
-inline void CreateFileCommitRequest::set_ino(uint64_t value) {
-  _internal_set_ino(value);
-  // @@protoc_insertion_point(field_set:vosfs.raft.CreateFileCommitRequest.ino)
-}
-
-// uint64 parent_ino = 2;
-inline void CreateFileCommitRequest::clear_parent_ino() {
-  _impl_.parent_ino_ = uint64_t{0u};
-}
-inline uint64_t CreateFileCommitRequest::_internal_parent_ino() const {
-  return _impl_.parent_ino_;
-}
-inline uint64_t CreateFileCommitRequest::parent_ino() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.CreateFileCommitRequest.parent_ino)
-  return _internal_parent_ino();
-}
-inline void CreateFileCommitRequest::_internal_set_parent_ino(uint64_t value) {
-  
-  _impl_.parent_ino_ = value;
-}
-inline void CreateFileCommitRequest::set_parent_ino(uint64_t value) {
-  _internal_set_parent_ino(value);
-  // @@protoc_insertion_point(field_set:vosfs.raft.CreateFileCommitRequest.parent_ino)
-}
-
-// uint64 size = 3;
-inline void CreateFileCommitRequest::clear_size() {
-  _impl_.size_ = uint64_t{0u};
-}
-inline uint64_t CreateFileCommitRequest::_internal_size() const {
-  return _impl_.size_;
-}
-inline uint64_t CreateFileCommitRequest::size() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.CreateFileCommitRequest.size)
-  return _internal_size();
-}
-inline void CreateFileCommitRequest::_internal_set_size(uint64_t value) {
-  
-  _impl_.size_ = value;
-}
-inline void CreateFileCommitRequest::set_size(uint64_t value) {
-  _internal_set_size(value);
-  // @@protoc_insertion_point(field_set:vosfs.raft.CreateFileCommitRequest.size)
-}
-
-// string name = 4;
-inline void CreateFileCommitRequest::clear_name() {
+// string name = 2;
+inline void AccountInfo::clear_name() {
   _impl_.name_.ClearToEmpty();
 }
-inline const std::string& CreateFileCommitRequest::name() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.CreateFileCommitRequest.name)
+inline const std::string& AccountInfo::name() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.AccountInfo.name)
   return _internal_name();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void CreateFileCommitRequest::set_name(ArgT0&& arg0, ArgT... args) {
+void AccountInfo::set_name(ArgT0&& arg0, ArgT... args) {
  
  _impl_.name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:vosfs.raft.CreateFileCommitRequest.name)
+  // @@protoc_insertion_point(field_set:vosfs.raft.AccountInfo.name)
 }
-inline std::string* CreateFileCommitRequest::mutable_name() {
+inline std::string* AccountInfo::mutable_name() {
   std::string* _s = _internal_mutable_name();
-  // @@protoc_insertion_point(field_mutable:vosfs.raft.CreateFileCommitRequest.name)
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.AccountInfo.name)
   return _s;
 }
-inline const std::string& CreateFileCommitRequest::_internal_name() const {
+inline const std::string& AccountInfo::_internal_name() const {
   return _impl_.name_.Get();
 }
-inline void CreateFileCommitRequest::_internal_set_name(const std::string& value) {
+inline void AccountInfo::_internal_set_name(const std::string& value) {
   
   _impl_.name_.Set(value, GetArenaForAllocation());
 }
-inline std::string* CreateFileCommitRequest::_internal_mutable_name() {
+inline std::string* AccountInfo::_internal_mutable_name() {
   
   return _impl_.name_.Mutable(GetArenaForAllocation());
 }
-inline std::string* CreateFileCommitRequest::release_name() {
-  // @@protoc_insertion_point(field_release:vosfs.raft.CreateFileCommitRequest.name)
+inline std::string* AccountInfo::release_name() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.AccountInfo.name)
   return _impl_.name_.Release();
 }
-inline void CreateFileCommitRequest::set_allocated_name(std::string* name) {
+inline void AccountInfo::set_allocated_name(std::string* name) {
   if (name != nullptr) {
     
   } else {
@@ -5339,168 +6736,1062 @@ inline void CreateFileCommitRequest::set_allocated_name(std::string* name) {
     _impl_.name_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.CreateFileCommitRequest.name)
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.AccountInfo.name)
 }
 
-// bool is_dir = 5;
-inline void CreateFileCommitRequest::clear_is_dir() {
-  _impl_.is_dir_ = false;
+// string hash_password = 3;
+inline void AccountInfo::clear_hash_password() {
+  _impl_.hash_password_.ClearToEmpty();
 }
-inline bool CreateFileCommitRequest::_internal_is_dir() const {
-  return _impl_.is_dir_;
+inline const std::string& AccountInfo::hash_password() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.AccountInfo.hash_password)
+  return _internal_hash_password();
 }
-inline bool CreateFileCommitRequest::is_dir() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.CreateFileCommitRequest.is_dir)
-  return _internal_is_dir();
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void AccountInfo::set_hash_password(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.hash_password_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.raft.AccountInfo.hash_password)
 }
-inline void CreateFileCommitRequest::_internal_set_is_dir(bool value) {
+inline std::string* AccountInfo::mutable_hash_password() {
+  std::string* _s = _internal_mutable_hash_password();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.AccountInfo.hash_password)
+  return _s;
+}
+inline const std::string& AccountInfo::_internal_hash_password() const {
+  return _impl_.hash_password_.Get();
+}
+inline void AccountInfo::_internal_set_hash_password(const std::string& value) {
   
-  _impl_.is_dir_ = value;
+  _impl_.hash_password_.Set(value, GetArenaForAllocation());
 }
-inline void CreateFileCommitRequest::set_is_dir(bool value) {
-  _internal_set_is_dir(value);
-  // @@protoc_insertion_point(field_set:vosfs.raft.CreateFileCommitRequest.is_dir)
+inline std::string* AccountInfo::_internal_mutable_hash_password() {
+  
+  return _impl_.hash_password_.Mutable(GetArenaForAllocation());
+}
+inline std::string* AccountInfo::release_hash_password() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.AccountInfo.hash_password)
+  return _impl_.hash_password_.Release();
+}
+inline void AccountInfo::set_allocated_hash_password(std::string* hash_password) {
+  if (hash_password != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.hash_password_.SetAllocated(hash_password, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.hash_password_.IsDefault()) {
+    _impl_.hash_password_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.AccountInfo.hash_password)
 }
 
-// repeated .vosfs.raft.SliceInfo slice_infos = 6;
-inline int CreateFileCommitRequest::_internal_slice_infos_size() const {
+// -------------------------------------------------------------------
+
+// PutAccountRequest
+
+// string name = 1;
+inline void PutAccountRequest::clear_name() {
+  _impl_.name_.ClearToEmpty();
+}
+inline const std::string& PutAccountRequest::name() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.PutAccountRequest.name)
+  return _internal_name();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void PutAccountRequest::set_name(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.raft.PutAccountRequest.name)
+}
+inline std::string* PutAccountRequest::mutable_name() {
+  std::string* _s = _internal_mutable_name();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.PutAccountRequest.name)
+  return _s;
+}
+inline const std::string& PutAccountRequest::_internal_name() const {
+  return _impl_.name_.Get();
+}
+inline void PutAccountRequest::_internal_set_name(const std::string& value) {
+  
+  _impl_.name_.Set(value, GetArenaForAllocation());
+}
+inline std::string* PutAccountRequest::_internal_mutable_name() {
+  
+  return _impl_.name_.Mutable(GetArenaForAllocation());
+}
+inline std::string* PutAccountRequest::release_name() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.PutAccountRequest.name)
+  return _impl_.name_.Release();
+}
+inline void PutAccountRequest::set_allocated_name(std::string* name) {
+  if (name != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.name_.SetAllocated(name, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.name_.IsDefault()) {
+    _impl_.name_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.PutAccountRequest.name)
+}
+
+// string hash_password = 2;
+inline void PutAccountRequest::clear_hash_password() {
+  _impl_.hash_password_.ClearToEmpty();
+}
+inline const std::string& PutAccountRequest::hash_password() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.PutAccountRequest.hash_password)
+  return _internal_hash_password();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void PutAccountRequest::set_hash_password(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.hash_password_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.raft.PutAccountRequest.hash_password)
+}
+inline std::string* PutAccountRequest::mutable_hash_password() {
+  std::string* _s = _internal_mutable_hash_password();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.PutAccountRequest.hash_password)
+  return _s;
+}
+inline const std::string& PutAccountRequest::_internal_hash_password() const {
+  return _impl_.hash_password_.Get();
+}
+inline void PutAccountRequest::_internal_set_hash_password(const std::string& value) {
+  
+  _impl_.hash_password_.Set(value, GetArenaForAllocation());
+}
+inline std::string* PutAccountRequest::_internal_mutable_hash_password() {
+  
+  return _impl_.hash_password_.Mutable(GetArenaForAllocation());
+}
+inline std::string* PutAccountRequest::release_hash_password() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.PutAccountRequest.hash_password)
+  return _impl_.hash_password_.Release();
+}
+inline void PutAccountRequest::set_allocated_hash_password(std::string* hash_password) {
+  if (hash_password != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.hash_password_.SetAllocated(hash_password, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.hash_password_.IsDefault()) {
+    _impl_.hash_password_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.PutAccountRequest.hash_password)
+}
+
+// -------------------------------------------------------------------
+
+// PutAccountResponse
+
+// optional .vosfs.raft.AccountInfo account_info = 1;
+inline bool PutAccountResponse::_internal_has_account_info() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.account_info_ != nullptr);
+  return value;
+}
+inline bool PutAccountResponse::has_account_info() const {
+  return _internal_has_account_info();
+}
+inline void PutAccountResponse::clear_account_info() {
+  if (_impl_.account_info_ != nullptr) _impl_.account_info_->Clear();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const ::vosfs::raft::AccountInfo& PutAccountResponse::_internal_account_info() const {
+  const ::vosfs::raft::AccountInfo* p = _impl_.account_info_;
+  return p != nullptr ? *p : reinterpret_cast<const ::vosfs::raft::AccountInfo&>(
+      ::vosfs::raft::_AccountInfo_default_instance_);
+}
+inline const ::vosfs::raft::AccountInfo& PutAccountResponse::account_info() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.PutAccountResponse.account_info)
+  return _internal_account_info();
+}
+inline void PutAccountResponse::unsafe_arena_set_allocated_account_info(
+    ::vosfs::raft::AccountInfo* account_info) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.account_info_);
+  }
+  _impl_.account_info_ = account_info;
+  if (account_info) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:vosfs.raft.PutAccountResponse.account_info)
+}
+inline ::vosfs::raft::AccountInfo* PutAccountResponse::release_account_info() {
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::vosfs::raft::AccountInfo* temp = _impl_.account_info_;
+  _impl_.account_info_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::vosfs::raft::AccountInfo* PutAccountResponse::unsafe_arena_release_account_info() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.PutAccountResponse.account_info)
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::vosfs::raft::AccountInfo* temp = _impl_.account_info_;
+  _impl_.account_info_ = nullptr;
+  return temp;
+}
+inline ::vosfs::raft::AccountInfo* PutAccountResponse::_internal_mutable_account_info() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  if (_impl_.account_info_ == nullptr) {
+    auto* p = CreateMaybeMessage<::vosfs::raft::AccountInfo>(GetArenaForAllocation());
+    _impl_.account_info_ = p;
+  }
+  return _impl_.account_info_;
+}
+inline ::vosfs::raft::AccountInfo* PutAccountResponse::mutable_account_info() {
+  ::vosfs::raft::AccountInfo* _msg = _internal_mutable_account_info();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.PutAccountResponse.account_info)
+  return _msg;
+}
+inline void PutAccountResponse::set_allocated_account_info(::vosfs::raft::AccountInfo* account_info) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.account_info_;
+  }
+  if (account_info) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(account_info);
+    if (message_arena != submessage_arena) {
+      account_info = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, account_info, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.account_info_ = account_info;
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.PutAccountResponse.account_info)
+}
+
+// -------------------------------------------------------------------
+
+// GetAccountRequest
+
+// string name = 1;
+inline void GetAccountRequest::clear_name() {
+  _impl_.name_.ClearToEmpty();
+}
+inline const std::string& GetAccountRequest::name() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.GetAccountRequest.name)
+  return _internal_name();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void GetAccountRequest::set_name(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.raft.GetAccountRequest.name)
+}
+inline std::string* GetAccountRequest::mutable_name() {
+  std::string* _s = _internal_mutable_name();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.GetAccountRequest.name)
+  return _s;
+}
+inline const std::string& GetAccountRequest::_internal_name() const {
+  return _impl_.name_.Get();
+}
+inline void GetAccountRequest::_internal_set_name(const std::string& value) {
+  
+  _impl_.name_.Set(value, GetArenaForAllocation());
+}
+inline std::string* GetAccountRequest::_internal_mutable_name() {
+  
+  return _impl_.name_.Mutable(GetArenaForAllocation());
+}
+inline std::string* GetAccountRequest::release_name() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.GetAccountRequest.name)
+  return _impl_.name_.Release();
+}
+inline void GetAccountRequest::set_allocated_name(std::string* name) {
+  if (name != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.name_.SetAllocated(name, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.name_.IsDefault()) {
+    _impl_.name_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.GetAccountRequest.name)
+}
+
+// string password = 2;
+inline void GetAccountRequest::clear_password() {
+  _impl_.password_.ClearToEmpty();
+}
+inline const std::string& GetAccountRequest::password() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.GetAccountRequest.password)
+  return _internal_password();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void GetAccountRequest::set_password(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.password_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.raft.GetAccountRequest.password)
+}
+inline std::string* GetAccountRequest::mutable_password() {
+  std::string* _s = _internal_mutable_password();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.GetAccountRequest.password)
+  return _s;
+}
+inline const std::string& GetAccountRequest::_internal_password() const {
+  return _impl_.password_.Get();
+}
+inline void GetAccountRequest::_internal_set_password(const std::string& value) {
+  
+  _impl_.password_.Set(value, GetArenaForAllocation());
+}
+inline std::string* GetAccountRequest::_internal_mutable_password() {
+  
+  return _impl_.password_.Mutable(GetArenaForAllocation());
+}
+inline std::string* GetAccountRequest::release_password() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.GetAccountRequest.password)
+  return _impl_.password_.Release();
+}
+inline void GetAccountRequest::set_allocated_password(std::string* password) {
+  if (password != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.password_.SetAllocated(password, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.password_.IsDefault()) {
+    _impl_.password_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.GetAccountRequest.password)
+}
+
+// -------------------------------------------------------------------
+
+// GetAccountResponse
+
+// uint64 uid = 1;
+inline void GetAccountResponse::clear_uid() {
+  _impl_.uid_ = uint64_t{0u};
+}
+inline uint64_t GetAccountResponse::_internal_uid() const {
+  return _impl_.uid_;
+}
+inline uint64_t GetAccountResponse::uid() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.GetAccountResponse.uid)
+  return _internal_uid();
+}
+inline void GetAccountResponse::_internal_set_uid(uint64_t value) {
+  
+  _impl_.uid_ = value;
+}
+inline void GetAccountResponse::set_uid(uint64_t value) {
+  _internal_set_uid(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.GetAccountResponse.uid)
+}
+
+// bool success = 2;
+inline void GetAccountResponse::clear_success() {
+  _impl_.success_ = false;
+}
+inline bool GetAccountResponse::_internal_success() const {
+  return _impl_.success_;
+}
+inline bool GetAccountResponse::success() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.GetAccountResponse.success)
+  return _internal_success();
+}
+inline void GetAccountResponse::_internal_set_success(bool value) {
+  
+  _impl_.success_ = value;
+}
+inline void GetAccountResponse::set_success(bool value) {
+  _internal_set_success(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.GetAccountResponse.success)
+}
+
+// string msg = 3;
+inline void GetAccountResponse::clear_msg() {
+  _impl_.msg_.ClearToEmpty();
+}
+inline const std::string& GetAccountResponse::msg() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.GetAccountResponse.msg)
+  return _internal_msg();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void GetAccountResponse::set_msg(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.msg_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.raft.GetAccountResponse.msg)
+}
+inline std::string* GetAccountResponse::mutable_msg() {
+  std::string* _s = _internal_mutable_msg();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.GetAccountResponse.msg)
+  return _s;
+}
+inline const std::string& GetAccountResponse::_internal_msg() const {
+  return _impl_.msg_.Get();
+}
+inline void GetAccountResponse::_internal_set_msg(const std::string& value) {
+  
+  _impl_.msg_.Set(value, GetArenaForAllocation());
+}
+inline std::string* GetAccountResponse::_internal_mutable_msg() {
+  
+  return _impl_.msg_.Mutable(GetArenaForAllocation());
+}
+inline std::string* GetAccountResponse::release_msg() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.GetAccountResponse.msg)
+  return _impl_.msg_.Release();
+}
+inline void GetAccountResponse::set_allocated_msg(std::string* msg) {
+  if (msg != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.msg_.SetAllocated(msg, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.msg_.IsDefault()) {
+    _impl_.msg_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.GetAccountResponse.msg)
+}
+
+// -------------------------------------------------------------------
+
+// UpdateAccountRequest
+
+// string name = 1;
+inline void UpdateAccountRequest::clear_name() {
+  _impl_.name_.ClearToEmpty();
+}
+inline const std::string& UpdateAccountRequest::name() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.UpdateAccountRequest.name)
+  return _internal_name();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void UpdateAccountRequest::set_name(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.raft.UpdateAccountRequest.name)
+}
+inline std::string* UpdateAccountRequest::mutable_name() {
+  std::string* _s = _internal_mutable_name();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.UpdateAccountRequest.name)
+  return _s;
+}
+inline const std::string& UpdateAccountRequest::_internal_name() const {
+  return _impl_.name_.Get();
+}
+inline void UpdateAccountRequest::_internal_set_name(const std::string& value) {
+  
+  _impl_.name_.Set(value, GetArenaForAllocation());
+}
+inline std::string* UpdateAccountRequest::_internal_mutable_name() {
+  
+  return _impl_.name_.Mutable(GetArenaForAllocation());
+}
+inline std::string* UpdateAccountRequest::release_name() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.UpdateAccountRequest.name)
+  return _impl_.name_.Release();
+}
+inline void UpdateAccountRequest::set_allocated_name(std::string* name) {
+  if (name != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.name_.SetAllocated(name, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.name_.IsDefault()) {
+    _impl_.name_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.UpdateAccountRequest.name)
+}
+
+// -------------------------------------------------------------------
+
+// UpdateAccountResponse
+
+// bool success = 1;
+inline void UpdateAccountResponse::clear_success() {
+  _impl_.success_ = false;
+}
+inline bool UpdateAccountResponse::_internal_success() const {
+  return _impl_.success_;
+}
+inline bool UpdateAccountResponse::success() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.UpdateAccountResponse.success)
+  return _internal_success();
+}
+inline void UpdateAccountResponse::_internal_set_success(bool value) {
+  
+  _impl_.success_ = value;
+}
+inline void UpdateAccountResponse::set_success(bool value) {
+  _internal_set_success(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.UpdateAccountResponse.success)
+}
+
+// string msg = 2;
+inline void UpdateAccountResponse::clear_msg() {
+  _impl_.msg_.ClearToEmpty();
+}
+inline const std::string& UpdateAccountResponse::msg() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.UpdateAccountResponse.msg)
+  return _internal_msg();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void UpdateAccountResponse::set_msg(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.msg_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.raft.UpdateAccountResponse.msg)
+}
+inline std::string* UpdateAccountResponse::mutable_msg() {
+  std::string* _s = _internal_mutable_msg();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.UpdateAccountResponse.msg)
+  return _s;
+}
+inline const std::string& UpdateAccountResponse::_internal_msg() const {
+  return _impl_.msg_.Get();
+}
+inline void UpdateAccountResponse::_internal_set_msg(const std::string& value) {
+  
+  _impl_.msg_.Set(value, GetArenaForAllocation());
+}
+inline std::string* UpdateAccountResponse::_internal_mutable_msg() {
+  
+  return _impl_.msg_.Mutable(GetArenaForAllocation());
+}
+inline std::string* UpdateAccountResponse::release_msg() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.UpdateAccountResponse.msg)
+  return _impl_.msg_.Release();
+}
+inline void UpdateAccountResponse::set_allocated_msg(std::string* msg) {
+  if (msg != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.msg_.SetAllocated(msg, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.msg_.IsDefault()) {
+    _impl_.msg_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.UpdateAccountResponse.msg)
+}
+
+// -------------------------------------------------------------------
+
+// DeleteAccountRequest
+
+// uint64 uid = 1;
+inline void DeleteAccountRequest::clear_uid() {
+  _impl_.uid_ = uint64_t{0u};
+}
+inline uint64_t DeleteAccountRequest::_internal_uid() const {
+  return _impl_.uid_;
+}
+inline uint64_t DeleteAccountRequest::uid() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.DeleteAccountRequest.uid)
+  return _internal_uid();
+}
+inline void DeleteAccountRequest::_internal_set_uid(uint64_t value) {
+  
+  _impl_.uid_ = value;
+}
+inline void DeleteAccountRequest::set_uid(uint64_t value) {
+  _internal_set_uid(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.DeleteAccountRequest.uid)
+}
+
+// -------------------------------------------------------------------
+
+// DeleteAccountResponse
+
+// bool success = 1;
+inline void DeleteAccountResponse::clear_success() {
+  _impl_.success_ = false;
+}
+inline bool DeleteAccountResponse::_internal_success() const {
+  return _impl_.success_;
+}
+inline bool DeleteAccountResponse::success() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.DeleteAccountResponse.success)
+  return _internal_success();
+}
+inline void DeleteAccountResponse::_internal_set_success(bool value) {
+  
+  _impl_.success_ = value;
+}
+inline void DeleteAccountResponse::set_success(bool value) {
+  _internal_set_success(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.DeleteAccountResponse.success)
+}
+
+// string msg = 2;
+inline void DeleteAccountResponse::clear_msg() {
+  _impl_.msg_.ClearToEmpty();
+}
+inline const std::string& DeleteAccountResponse::msg() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.DeleteAccountResponse.msg)
+  return _internal_msg();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void DeleteAccountResponse::set_msg(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.msg_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.raft.DeleteAccountResponse.msg)
+}
+inline std::string* DeleteAccountResponse::mutable_msg() {
+  std::string* _s = _internal_mutable_msg();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.DeleteAccountResponse.msg)
+  return _s;
+}
+inline const std::string& DeleteAccountResponse::_internal_msg() const {
+  return _impl_.msg_.Get();
+}
+inline void DeleteAccountResponse::_internal_set_msg(const std::string& value) {
+  
+  _impl_.msg_.Set(value, GetArenaForAllocation());
+}
+inline std::string* DeleteAccountResponse::_internal_mutable_msg() {
+  
+  return _impl_.msg_.Mutable(GetArenaForAllocation());
+}
+inline std::string* DeleteAccountResponse::release_msg() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.DeleteAccountResponse.msg)
+  return _impl_.msg_.Release();
+}
+inline void DeleteAccountResponse::set_allocated_msg(std::string* msg) {
+  if (msg != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.msg_.SetAllocated(msg, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.msg_.IsDefault()) {
+    _impl_.msg_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.DeleteAccountResponse.msg)
+}
+
+// -------------------------------------------------------------------
+
+// TransmitFileRequest
+
+// repeated .vosfs.raft.SliceInfo slice_infos = 1;
+inline int TransmitFileRequest::_internal_slice_infos_size() const {
   return _impl_.slice_infos_.size();
 }
-inline int CreateFileCommitRequest::slice_infos_size() const {
+inline int TransmitFileRequest::slice_infos_size() const {
   return _internal_slice_infos_size();
 }
-inline void CreateFileCommitRequest::clear_slice_infos() {
+inline void TransmitFileRequest::clear_slice_infos() {
   _impl_.slice_infos_.Clear();
 }
-inline ::vosfs::raft::SliceInfo* CreateFileCommitRequest::mutable_slice_infos(int index) {
-  // @@protoc_insertion_point(field_mutable:vosfs.raft.CreateFileCommitRequest.slice_infos)
+inline ::vosfs::raft::SliceInfo* TransmitFileRequest::mutable_slice_infos(int index) {
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.TransmitFileRequest.slice_infos)
   return _impl_.slice_infos_.Mutable(index);
 }
 inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::SliceInfo >*
-CreateFileCommitRequest::mutable_slice_infos() {
-  // @@protoc_insertion_point(field_mutable_list:vosfs.raft.CreateFileCommitRequest.slice_infos)
+TransmitFileRequest::mutable_slice_infos() {
+  // @@protoc_insertion_point(field_mutable_list:vosfs.raft.TransmitFileRequest.slice_infos)
   return &_impl_.slice_infos_;
 }
-inline const ::vosfs::raft::SliceInfo& CreateFileCommitRequest::_internal_slice_infos(int index) const {
+inline const ::vosfs::raft::SliceInfo& TransmitFileRequest::_internal_slice_infos(int index) const {
   return _impl_.slice_infos_.Get(index);
 }
-inline const ::vosfs::raft::SliceInfo& CreateFileCommitRequest::slice_infos(int index) const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.CreateFileCommitRequest.slice_infos)
+inline const ::vosfs::raft::SliceInfo& TransmitFileRequest::slice_infos(int index) const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.TransmitFileRequest.slice_infos)
   return _internal_slice_infos(index);
 }
-inline ::vosfs::raft::SliceInfo* CreateFileCommitRequest::_internal_add_slice_infos() {
+inline ::vosfs::raft::SliceInfo* TransmitFileRequest::_internal_add_slice_infos() {
   return _impl_.slice_infos_.Add();
 }
-inline ::vosfs::raft::SliceInfo* CreateFileCommitRequest::add_slice_infos() {
+inline ::vosfs::raft::SliceInfo* TransmitFileRequest::add_slice_infos() {
   ::vosfs::raft::SliceInfo* _add = _internal_add_slice_infos();
-  // @@protoc_insertion_point(field_add:vosfs.raft.CreateFileCommitRequest.slice_infos)
+  // @@protoc_insertion_point(field_add:vosfs.raft.TransmitFileRequest.slice_infos)
   return _add;
 }
 inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::SliceInfo >&
-CreateFileCommitRequest::slice_infos() const {
-  // @@protoc_insertion_point(field_list:vosfs.raft.CreateFileCommitRequest.slice_infos)
+TransmitFileRequest::slice_infos() const {
+  // @@protoc_insertion_point(field_list:vosfs.raft.TransmitFileRequest.slice_infos)
   return _impl_.slice_infos_;
 }
 
 // -------------------------------------------------------------------
 
-// CreateFileCommitResponse
+// TransmitFileResponse
+
+// uint64 ino = 1;
+inline void TransmitFileResponse::clear_ino() {
+  _impl_.ino_ = uint64_t{0u};
+}
+inline uint64_t TransmitFileResponse::_internal_ino() const {
+  return _impl_.ino_;
+}
+inline uint64_t TransmitFileResponse::ino() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.TransmitFileResponse.ino)
+  return _internal_ino();
+}
+inline void TransmitFileResponse::_internal_set_ino(uint64_t value) {
+  
+  _impl_.ino_ = value;
+}
+inline void TransmitFileResponse::set_ino(uint64_t value) {
+  _internal_set_ino(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.TransmitFileResponse.ino)
+}
+
+// repeated .vosfs.raft.SliceInfo slice_infos = 2;
+inline int TransmitFileResponse::_internal_slice_infos_size() const {
+  return _impl_.slice_infos_.size();
+}
+inline int TransmitFileResponse::slice_infos_size() const {
+  return _internal_slice_infos_size();
+}
+inline void TransmitFileResponse::clear_slice_infos() {
+  _impl_.slice_infos_.Clear();
+}
+inline ::vosfs::raft::SliceInfo* TransmitFileResponse::mutable_slice_infos(int index) {
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.TransmitFileResponse.slice_infos)
+  return _impl_.slice_infos_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::SliceInfo >*
+TransmitFileResponse::mutable_slice_infos() {
+  // @@protoc_insertion_point(field_mutable_list:vosfs.raft.TransmitFileResponse.slice_infos)
+  return &_impl_.slice_infos_;
+}
+inline const ::vosfs::raft::SliceInfo& TransmitFileResponse::_internal_slice_infos(int index) const {
+  return _impl_.slice_infos_.Get(index);
+}
+inline const ::vosfs::raft::SliceInfo& TransmitFileResponse::slice_infos(int index) const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.TransmitFileResponse.slice_infos)
+  return _internal_slice_infos(index);
+}
+inline ::vosfs::raft::SliceInfo* TransmitFileResponse::_internal_add_slice_infos() {
+  return _impl_.slice_infos_.Add();
+}
+inline ::vosfs::raft::SliceInfo* TransmitFileResponse::add_slice_infos() {
+  ::vosfs::raft::SliceInfo* _add = _internal_add_slice_infos();
+  // @@protoc_insertion_point(field_add:vosfs.raft.TransmitFileResponse.slice_infos)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::SliceInfo >&
+TransmitFileResponse::slice_infos() const {
+  // @@protoc_insertion_point(field_list:vosfs.raft.TransmitFileResponse.slice_infos)
+  return _impl_.slice_infos_;
+}
+
+// -------------------------------------------------------------------
+
+// PutFileRequest
+
+// uint64 ino = 1;
+inline void PutFileRequest::clear_ino() {
+  _impl_.ino_ = uint64_t{0u};
+}
+inline uint64_t PutFileRequest::_internal_ino() const {
+  return _impl_.ino_;
+}
+inline uint64_t PutFileRequest::ino() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.PutFileRequest.ino)
+  return _internal_ino();
+}
+inline void PutFileRequest::_internal_set_ino(uint64_t value) {
+  
+  _impl_.ino_ = value;
+}
+inline void PutFileRequest::set_ino(uint64_t value) {
+  _internal_set_ino(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.PutFileRequest.ino)
+}
+
+// uint64 parent_ino = 2;
+inline void PutFileRequest::clear_parent_ino() {
+  _impl_.parent_ino_ = uint64_t{0u};
+}
+inline uint64_t PutFileRequest::_internal_parent_ino() const {
+  return _impl_.parent_ino_;
+}
+inline uint64_t PutFileRequest::parent_ino() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.PutFileRequest.parent_ino)
+  return _internal_parent_ino();
+}
+inline void PutFileRequest::_internal_set_parent_ino(uint64_t value) {
+  
+  _impl_.parent_ino_ = value;
+}
+inline void PutFileRequest::set_parent_ino(uint64_t value) {
+  _internal_set_parent_ino(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.PutFileRequest.parent_ino)
+}
+
+// uint64 size = 3;
+inline void PutFileRequest::clear_size() {
+  _impl_.size_ = uint64_t{0u};
+}
+inline uint64_t PutFileRequest::_internal_size() const {
+  return _impl_.size_;
+}
+inline uint64_t PutFileRequest::size() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.PutFileRequest.size)
+  return _internal_size();
+}
+inline void PutFileRequest::_internal_set_size(uint64_t value) {
+  
+  _impl_.size_ = value;
+}
+inline void PutFileRequest::set_size(uint64_t value) {
+  _internal_set_size(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.PutFileRequest.size)
+}
+
+// string name = 4;
+inline void PutFileRequest::clear_name() {
+  _impl_.name_.ClearToEmpty();
+}
+inline const std::string& PutFileRequest::name() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.PutFileRequest.name)
+  return _internal_name();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void PutFileRequest::set_name(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.raft.PutFileRequest.name)
+}
+inline std::string* PutFileRequest::mutable_name() {
+  std::string* _s = _internal_mutable_name();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.PutFileRequest.name)
+  return _s;
+}
+inline const std::string& PutFileRequest::_internal_name() const {
+  return _impl_.name_.Get();
+}
+inline void PutFileRequest::_internal_set_name(const std::string& value) {
+  
+  _impl_.name_.Set(value, GetArenaForAllocation());
+}
+inline std::string* PutFileRequest::_internal_mutable_name() {
+  
+  return _impl_.name_.Mutable(GetArenaForAllocation());
+}
+inline std::string* PutFileRequest::release_name() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.PutFileRequest.name)
+  return _impl_.name_.Release();
+}
+inline void PutFileRequest::set_allocated_name(std::string* name) {
+  if (name != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.name_.SetAllocated(name, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.name_.IsDefault()) {
+    _impl_.name_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.PutFileRequest.name)
+}
+
+// bool is_dir = 5;
+inline void PutFileRequest::clear_is_dir() {
+  _impl_.is_dir_ = false;
+}
+inline bool PutFileRequest::_internal_is_dir() const {
+  return _impl_.is_dir_;
+}
+inline bool PutFileRequest::is_dir() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.PutFileRequest.is_dir)
+  return _internal_is_dir();
+}
+inline void PutFileRequest::_internal_set_is_dir(bool value) {
+  
+  _impl_.is_dir_ = value;
+}
+inline void PutFileRequest::set_is_dir(bool value) {
+  _internal_set_is_dir(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.PutFileRequest.is_dir)
+}
+
+// repeated .vosfs.raft.SliceInfo slice_infos = 6;
+inline int PutFileRequest::_internal_slice_infos_size() const {
+  return _impl_.slice_infos_.size();
+}
+inline int PutFileRequest::slice_infos_size() const {
+  return _internal_slice_infos_size();
+}
+inline void PutFileRequest::clear_slice_infos() {
+  _impl_.slice_infos_.Clear();
+}
+inline ::vosfs::raft::SliceInfo* PutFileRequest::mutable_slice_infos(int index) {
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.PutFileRequest.slice_infos)
+  return _impl_.slice_infos_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::SliceInfo >*
+PutFileRequest::mutable_slice_infos() {
+  // @@protoc_insertion_point(field_mutable_list:vosfs.raft.PutFileRequest.slice_infos)
+  return &_impl_.slice_infos_;
+}
+inline const ::vosfs::raft::SliceInfo& PutFileRequest::_internal_slice_infos(int index) const {
+  return _impl_.slice_infos_.Get(index);
+}
+inline const ::vosfs::raft::SliceInfo& PutFileRequest::slice_infos(int index) const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.PutFileRequest.slice_infos)
+  return _internal_slice_infos(index);
+}
+inline ::vosfs::raft::SliceInfo* PutFileRequest::_internal_add_slice_infos() {
+  return _impl_.slice_infos_.Add();
+}
+inline ::vosfs::raft::SliceInfo* PutFileRequest::add_slice_infos() {
+  ::vosfs::raft::SliceInfo* _add = _internal_add_slice_infos();
+  // @@protoc_insertion_point(field_add:vosfs.raft.PutFileRequest.slice_infos)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::SliceInfo >&
+PutFileRequest::slice_infos() const {
+  // @@protoc_insertion_point(field_list:vosfs.raft.PutFileRequest.slice_infos)
+  return _impl_.slice_infos_;
+}
+
+// -------------------------------------------------------------------
+
+// PutFileResponse
 
 // bool success = 1;
-inline void CreateFileCommitResponse::clear_success() {
+inline void PutFileResponse::clear_success() {
   _impl_.success_ = false;
 }
-inline bool CreateFileCommitResponse::_internal_success() const {
+inline bool PutFileResponse::_internal_success() const {
   return _impl_.success_;
 }
-inline bool CreateFileCommitResponse::success() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.CreateFileCommitResponse.success)
+inline bool PutFileResponse::success() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.PutFileResponse.success)
   return _internal_success();
 }
-inline void CreateFileCommitResponse::_internal_set_success(bool value) {
+inline void PutFileResponse::_internal_set_success(bool value) {
   
   _impl_.success_ = value;
 }
-inline void CreateFileCommitResponse::set_success(bool value) {
+inline void PutFileResponse::set_success(bool value) {
   _internal_set_success(value);
-  // @@protoc_insertion_point(field_set:vosfs.raft.CreateFileCommitResponse.success)
+  // @@protoc_insertion_point(field_set:vosfs.raft.PutFileResponse.success)
 }
 
 // -------------------------------------------------------------------
 
 // EntryCommand
 
-// .vosfs.raft.CreateFileCommitRequest create_file_commit_request = 1;
-inline bool EntryCommand::_internal_has_create_file_commit_request() const {
-  return cmd_case() == kCreateFileCommitRequest;
+// .vosfs.raft.PutFileRequest put_file = 1;
+inline bool EntryCommand::_internal_has_put_file() const {
+  return cmd_case() == kPutFile;
 }
-inline bool EntryCommand::has_create_file_commit_request() const {
-  return _internal_has_create_file_commit_request();
+inline bool EntryCommand::has_put_file() const {
+  return _internal_has_put_file();
 }
-inline void EntryCommand::set_has_create_file_commit_request() {
-  _impl_._oneof_case_[0] = kCreateFileCommitRequest;
+inline void EntryCommand::set_has_put_file() {
+  _impl_._oneof_case_[0] = kPutFile;
 }
-inline void EntryCommand::clear_create_file_commit_request() {
-  if (_internal_has_create_file_commit_request()) {
+inline void EntryCommand::clear_put_file() {
+  if (_internal_has_put_file()) {
     if (GetArenaForAllocation() == nullptr) {
-      delete _impl_.cmd_.create_file_commit_request_;
+      delete _impl_.cmd_.put_file_;
     }
     clear_has_cmd();
   }
 }
-inline ::vosfs::raft::CreateFileCommitRequest* EntryCommand::release_create_file_commit_request() {
-  // @@protoc_insertion_point(field_release:vosfs.raft.EntryCommand.create_file_commit_request)
-  if (_internal_has_create_file_commit_request()) {
+inline ::vosfs::raft::PutFileRequest* EntryCommand::release_put_file() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.EntryCommand.put_file)
+  if (_internal_has_put_file()) {
     clear_has_cmd();
-    ::vosfs::raft::CreateFileCommitRequest* temp = _impl_.cmd_.create_file_commit_request_;
+    ::vosfs::raft::PutFileRequest* temp = _impl_.cmd_.put_file_;
     if (GetArenaForAllocation() != nullptr) {
       temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
     }
-    _impl_.cmd_.create_file_commit_request_ = nullptr;
+    _impl_.cmd_.put_file_ = nullptr;
     return temp;
   } else {
     return nullptr;
   }
 }
-inline const ::vosfs::raft::CreateFileCommitRequest& EntryCommand::_internal_create_file_commit_request() const {
-  return _internal_has_create_file_commit_request()
-      ? *_impl_.cmd_.create_file_commit_request_
-      : reinterpret_cast< ::vosfs::raft::CreateFileCommitRequest&>(::vosfs::raft::_CreateFileCommitRequest_default_instance_);
+inline const ::vosfs::raft::PutFileRequest& EntryCommand::_internal_put_file() const {
+  return _internal_has_put_file()
+      ? *_impl_.cmd_.put_file_
+      : reinterpret_cast< ::vosfs::raft::PutFileRequest&>(::vosfs::raft::_PutFileRequest_default_instance_);
 }
-inline const ::vosfs::raft::CreateFileCommitRequest& EntryCommand::create_file_commit_request() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.EntryCommand.create_file_commit_request)
-  return _internal_create_file_commit_request();
+inline const ::vosfs::raft::PutFileRequest& EntryCommand::put_file() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.EntryCommand.put_file)
+  return _internal_put_file();
 }
-inline ::vosfs::raft::CreateFileCommitRequest* EntryCommand::unsafe_arena_release_create_file_commit_request() {
-  // @@protoc_insertion_point(field_unsafe_arena_release:vosfs.raft.EntryCommand.create_file_commit_request)
-  if (_internal_has_create_file_commit_request()) {
+inline ::vosfs::raft::PutFileRequest* EntryCommand::unsafe_arena_release_put_file() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:vosfs.raft.EntryCommand.put_file)
+  if (_internal_has_put_file()) {
     clear_has_cmd();
-    ::vosfs::raft::CreateFileCommitRequest* temp = _impl_.cmd_.create_file_commit_request_;
-    _impl_.cmd_.create_file_commit_request_ = nullptr;
+    ::vosfs::raft::PutFileRequest* temp = _impl_.cmd_.put_file_;
+    _impl_.cmd_.put_file_ = nullptr;
     return temp;
   } else {
     return nullptr;
   }
 }
-inline void EntryCommand::unsafe_arena_set_allocated_create_file_commit_request(::vosfs::raft::CreateFileCommitRequest* create_file_commit_request) {
+inline void EntryCommand::unsafe_arena_set_allocated_put_file(::vosfs::raft::PutFileRequest* put_file) {
   clear_cmd();
-  if (create_file_commit_request) {
-    set_has_create_file_commit_request();
-    _impl_.cmd_.create_file_commit_request_ = create_file_commit_request;
+  if (put_file) {
+    set_has_put_file();
+    _impl_.cmd_.put_file_ = put_file;
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:vosfs.raft.EntryCommand.create_file_commit_request)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:vosfs.raft.EntryCommand.put_file)
 }
-inline ::vosfs::raft::CreateFileCommitRequest* EntryCommand::_internal_mutable_create_file_commit_request() {
-  if (!_internal_has_create_file_commit_request()) {
+inline ::vosfs::raft::PutFileRequest* EntryCommand::_internal_mutable_put_file() {
+  if (!_internal_has_put_file()) {
     clear_cmd();
-    set_has_create_file_commit_request();
-    _impl_.cmd_.create_file_commit_request_ = CreateMaybeMessage< ::vosfs::raft::CreateFileCommitRequest >(GetArenaForAllocation());
+    set_has_put_file();
+    _impl_.cmd_.put_file_ = CreateMaybeMessage< ::vosfs::raft::PutFileRequest >(GetArenaForAllocation());
   }
-  return _impl_.cmd_.create_file_commit_request_;
+  return _impl_.cmd_.put_file_;
 }
-inline ::vosfs::raft::CreateFileCommitRequest* EntryCommand::mutable_create_file_commit_request() {
-  ::vosfs::raft::CreateFileCommitRequest* _msg = _internal_mutable_create_file_commit_request();
-  // @@protoc_insertion_point(field_mutable:vosfs.raft.EntryCommand.create_file_commit_request)
+inline ::vosfs::raft::PutFileRequest* EntryCommand::mutable_put_file() {
+  ::vosfs::raft::PutFileRequest* _msg = _internal_mutable_put_file();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.EntryCommand.put_file)
   return _msg;
 }
 
@@ -5516,6 +7807,24 @@ inline EntryCommand::CmdCase EntryCommand::cmd_case() const {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

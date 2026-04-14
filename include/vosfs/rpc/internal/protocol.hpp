@@ -1,5 +1,4 @@
 #pragma once
-#include "vosfs/api/serverpb/rpc.pb.h"
 #include "vosfs/rpc/types.hpp"
 
 namespace vosfs::rpc::detail {

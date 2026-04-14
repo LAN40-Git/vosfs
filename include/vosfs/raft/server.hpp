@@ -4,11 +4,11 @@
 #include "state_machine.hpp"
 
 namespace vosfs::raft {
-class RaftNode {
+class RaftServer {
     using RpcServer = std::unique_ptr<rpc::RpcProvider>;
     using SnapshotContextMap = std::unordered_map<uint64_t, uint64_t>;
 private:
-    explicit RaftNode(
+    explicit RaftServer(
         RpcServer raft_rpc_server,
         RpcServer client_rpc_server,
         Persister&& persister,
@@ -18,7 +18,7 @@ private:
         std::string&& snapshot_data);
 
 public:
-    static auto create(std::string_view data_dir) -> kosio::async::Task<Result<std::unique_ptr<RaftNode>>>;
+    static auto create(std::string_view data_dir) -> kosio::async::Task<Result<std::unique_ptr<RaftServer>>>;
 
 public:
     [[REMEMBER_CO_AWAIT]]
@@ -41,7 +41,6 @@ private:
     void send_snapshot(uint64_t member_id, uint64_t offset);
 
 private:
-    // ========== Raft RPC ==========
     [[REMEMBER_CO_AWAIT]]
     auto handle_request_vote_request(std::string_view req_payload, std::span<char> resp_payload)
         -> kosio::async::Task<rpc::RpcResult>;
@@ -51,8 +50,6 @@ private:
     [[REMEMBER_CO_AWAIT]]
     auto handle_install_snapshot_request(std::string_view req_payload, std::span<char> resp_payload)
         -> kosio::async::Task<rpc::RpcResult>;
-
-    // ========== Client RPC ==========
 
 private:
     [[REMEMBER_CO_AWAIT]]

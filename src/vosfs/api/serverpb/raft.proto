@@ -2,125 +2,125 @@ syntax = "proto3";
 package vosfs.raft;
 
 message HardState {
-    uint64 current_term = 1;
-    optional uint64 voted_for = 2;
+  uint64 current_term = 1;
+  optional uint64 voted_for = 2;
 }
 
 message RequestVoteRequest {
-    uint64 term = 1;
-    uint64 candidate_id = 2;
-    uint64 last_log_index = 3;
-    uint64 last_log_term = 4;
+  uint64 term = 1;
+  uint64 candidate_id = 2;
+  uint64 last_log_index = 3;
+  uint64 last_log_term = 4;
 }
 
 message RequestVoteResponse {
-    uint64 id = 1;
-    uint64 term = 2;
-    bool vote_granted = 3;
+  uint64 id = 1;
+  uint64 term = 2;
+  bool vote_granted = 3;
 }
 
 message LogEntry {
-    uint64 term = 1;
-    uint64 index = 2;
-    bytes command = 3;
+  uint64 term = 1;
+  uint64 index = 2;
+  bytes command = 3;
 }
 
 message AppendEntriesRequest {
-    uint64 term = 1;
-    uint64 leader_id = 2;
-    uint64 prev_log_index = 3;
-    uint64 prev_log_term = 4;
-    repeated LogEntry entries = 5;
-    uint64 leader_commit = 6;
+  uint64 term = 1;
+  uint64 leader_id = 2;
+  uint64 prev_log_index = 3;
+  uint64 prev_log_term = 4;
+  repeated LogEntry entries = 5;
+  uint64 leader_commit = 6;
 }
 
 message AppendEntriesResponse {
-    uint64 id = 1;
-    uint64 term = 2;
-    bool success = 3;
-    uint64 last_log_index = 4;
-    optional uint64 conflict_index = 5;
+  uint64 id = 1;
+  uint64 term = 2;
+  bool success = 3;
+  uint64 last_log_index = 4;
+  optional uint64 conflict_index = 5;
 }
 
 message NodeInfo {
-    uint64 id = 1;
-    string name = 2;
-    string host = 3;
+  uint64 id = 1;
+  string name = 2;
+  string host = 3;
 }
 
 message ClusterInfo {
-    uint64 id = 1;
-    repeated NodeInfo node_infos = 2;
+  uint64 id = 1;
+  repeated NodeInfo node_infos = 2;
 }
 
 message InstallSnapshotRequest {
-    uint64 term = 1;
-    uint64 leader_id = 2;
-    uint64 last_included_index = 3;
-    uint64 last_included_term = 4;
-    uint64 offset = 5;
-    bytes data = 6;
-    bool done = 7;
+  uint64 term = 1;
+  uint64 leader_id = 2;
+  uint64 last_included_index = 3;
+  uint64 last_included_term = 4;
+  uint64 offset = 5;
+  bytes data = 6;
+  bool done = 7;
 }
 
 message InstallSnapshotResponse {
-    uint64 id = 1;
-    uint64 term = 2;
+  uint64 id = 1;
+  uint64 term = 2;
 }
 
 message SliceInfo {
-    uint64 id = 1;
-    uint64 size = 2;
-    string address = 3; // 分片存储地址
+  uint64 id = 1;
+  uint64 size = 2;
+  string address = 3; // 分片存储地址
 }
 
 message Inode {
-    uint64 ino = 1;
-    uint64 parent_ino = 2;
-    repeated uint64 child_ino = 3;
-    uint64 size = 4;
-    string name = 5;
-    uint64 ctime = 6;
-    uint64 mtime = 7;
-    bool   is_dir = 8;
-    repeated SliceInfo slice_infos = 9;
+  uint64 ino = 1;
+  uint64 parent_ino = 2;
+  repeated uint64 child_ino = 3;
+  uint64 size = 4;
+  string name = 5;
+  uint64 ctime = 6;
+  uint64 mtime = 7;
+  bool   is_dir = 8;
+  repeated SliceInfo slice_infos = 9;
 }
 
 message SnapshotMetadata {
-    uint64 last_included_index = 1;
-    uint64 last_included_term = 2;
+  uint64 last_included_index = 1;
+  uint64 last_included_term = 2;
 }
 
 message Snapshot {
-    repeated Inode inodes = 1;
-    SnapshotMetadata snapshot_metadata = 2;
-    repeated NodeInfo node_infos = 3;
+  repeated Inode inodes = 1;
+  SnapshotMetadata snapshot_metadata = 2;
+  repeated NodeInfo node_infos = 3;
 }
 
-message CreateFilePrepareRequest {
-    repeated SliceInfo slice_infos = 1;
+message TransmitFileRequest {
+  repeated SliceInfo slice_infos = 1;
 }
 
-message CreateFilePrepareResponse {
-    uint64 ino = 1;
-    repeated SliceInfo slice_infos = 2;
+message TransmitFileResponse {
+  uint64 ino = 1;
+  repeated SliceInfo slice_infos = 2;
 }
 
-message CreateFileCommitRequest {
-    uint64 ino = 1;
-    uint64 parent_ino = 2;
-    uint64 size = 3;
-    string name = 4;
-    bool   is_dir = 5;
-    repeated SliceInfo slice_infos = 6;
+message PutFileRequest {
+  uint64 ino = 1;
+  uint64 parent_ino = 2;
+  uint64 size = 3;
+  string name = 4;
+  bool   is_dir = 5;
+  repeated SliceInfo slice_infos = 6;
 }
 
-message CreateFileCommitResponse {
-    bool success = 1;
+message PutFileResponse {
+  bool success = 1;
 }
 
 message EntryCommand {
-    oneof cmd {
-        CreateFileCommitRequest create_file_commit_request = 1;
-    }
+  oneof cmd {
+      PutFileRequest put_file = 1;
+  }
 }

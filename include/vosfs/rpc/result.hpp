@@ -9,13 +9,11 @@ class RpcResult {
 public:
     enum Status : uint8_t {
         kSuccess = 0,
-        kFailed,
         kFindServiceTypeFailed,
         kFindMethodTypeFailed,
         kMessageTooLarge,
         kMessageParseFailed,
         kMessageSerializeFailed,
-        kCommandNotFound,
     };
 
 public:
@@ -34,8 +32,6 @@ public:
         switch (status_) {
         case kSuccess:
             return "Success to handle rpc request.";
-        case kFailed:
-            return "Failed to handle rpc request.";
         case kFindServiceTypeFailed:
             return "Failed to find service type.";
         case kFindMethodTypeFailed:
@@ -46,8 +42,6 @@ public:
             return "Failed to parse message.";
         case kMessageSerializeFailed:
             return "Failed to serialize message.";
-        case kCommandNotFound:
-            return "Command not found.";
         default:
             return "Unknown rpc result.";
         }
