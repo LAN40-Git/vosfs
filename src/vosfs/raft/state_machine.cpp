@@ -5,7 +5,8 @@
 void vosfs::raft::StateMachine::apply(const LogEntry& entry) {
     EntryCommand command;
     if (!command.ParseFromString(entry.command())) {
-        LOG_FATAL("Failed to parse command at entry {}", entry.index());
+        LOG_FATAL("failed to parse command at entry {}", entry.index());
+        std::abort();
     }
 
     switch (command.cmd_case()) {
@@ -14,8 +15,8 @@ void vosfs::raft::StateMachine::apply(const LogEntry& entry) {
             break;
         }
         default: {
-            LOG_FATAL("Failed to find command at entry {}", entry.index());
-            break;
+            LOG_FATAL("in command at entry {}", entry.index());
+            std::abort();
         }
     }
 }

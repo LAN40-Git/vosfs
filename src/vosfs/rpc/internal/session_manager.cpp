@@ -3,7 +3,7 @@
 auto vosfs::rpc::detail::SessionManager::assign_session(
     kosio::net::TcpStream&& stream, kosio::net::SocketAddr addr) -> std::shared_ptr<Session> {
     auto id = id_++;
-    auto new_session = std::make_shared<Session>(false, id, std::move(stream), addr);
+    auto new_session = std::make_shared<Session>(id, std::move(stream), addr);
     auto copy_session = new_session;
     sessions_.insert({id, std::move(new_session)});
     return copy_session;

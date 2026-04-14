@@ -15,14 +15,14 @@ auto process(std::unique_ptr<RpcConsumer> consumer) -> kosio::async::Task<void> 
             [](std::string_view resp_payload) -> kosio::async::Task<void> {
             math::MathResponse response;
             if (!response.ParseFromArray(resp_payload.data(), resp_payload.size())) {
-                LOG_ERROR("Failed to parse rpc response");
+                LOG_ERROR("failed to parse rpc response");
                 co_return;
             }
 
-            LOG_INFO("Result : {}", response.result());
+            LOG_INFO("result : {}", response.result());
         });
         if (!ret) {
-            LOG_ERROR("Failed to send request : {}", ret.error());
+            LOG_ERROR("failed to send request : {}", ret.error());
             break;
         }
     }
@@ -33,7 +33,7 @@ auto process(std::unique_ptr<RpcConsumer> consumer) -> kosio::async::Task<void> 
 auto main_loop() -> kosio::async::Task<void> {
     auto has_consumer = co_await RpcConsumer::create("127.0.0.1", 8080);
     if (!has_consumer) {
-        LOG_ERROR("Failed to create consumer : {}", has_consumer.error());
+        LOG_ERROR("failed to create consumer : {}", has_consumer.error());
         co_return;
     }
 

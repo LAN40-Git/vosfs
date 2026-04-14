@@ -7,19 +7,15 @@ using namespace vosfs::rpc;
 
 auto shutdown(std::unique_ptr<RpcProvider>& provider) -> kosio::async::Task<void> {
     co_await kosio::time::sleep(15000);
-    auto ret = co_await provider->shutdown();
-    if (!ret) {
-        LOG_ERROR("Failed to shutdown provider  : {}", ret.error());
-    }
+    co_await provider->shutdown();
 }
 
 auto process(std::unique_ptr<RpcProvider>& provider) -> kosio::async::Task<void> {
     co_await provider->run();
-    LOG_INFO("Provider stopped.");
 }
 
 auto main_loop() -> kosio::async::Task<void> {
-    auto has_provider = co_await RpcProvider::create(8080, RpcProvider::AuthMode::NONE);
+    auto has_provider = co_await RpcProvider::create(8080);
     if (!has_provider) {
         LOG_ERROR("Failed to create RpcProvider : {}", has_provider.error());
         co_return;
@@ -32,24 +28,11 @@ auto main_loop() -> kosio::async::Task<void> {
         math::MathRequest request;
         math::MathResponse response;
 
-        // RedirectInfo info;
-        // info.set_host("127.0.0.1");
-        // info.set_port(8080);
-        // if (!info.SerializeToArray(resp_payload.data(), resp_payload.size())) {
-        //     co_return std::make_pair(RpcError::kMessageSerializeFailed, 0);
-        // }
-        // co_return std::make_pair(RpcError::kRedirect, info.ByteSizeLong());
-
         if (!request.ParseFromArray(req_payload.data(), static_cast<int>(req_payload.size()))) {
             co_return make_result(RpcResult::kMessageParseFailed);
         }
-
         response.set_result(request.a() + request.b());
-        if (!response.SerializeToArray(resp_payload.data(), static_cast<int>(req_payload.size()))) {
-            co_return make_result(RpcResult::kMessageSerializeFailed);
-        }
-
-        co_return make_result(RpcResult::kSuccess, response.ByteSizeLong());
+        co_return serialize_response(response, resp_payload);
     });
 
     kosio::spawn(process(provider));

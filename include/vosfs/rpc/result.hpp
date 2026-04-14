@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <string_view>
 #include <format>
+#include "vosfs/rpc/internal/config.hpp"
 
 namespace vosfs::rpc {
 class RpcResult {

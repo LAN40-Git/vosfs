@@ -2,16 +2,14 @@
 #include <ranges>
 
 auto vosfs::rpc::RpcProvider::create(uint16_t port)
--> kosio::async::Task<Result<std::unique_ptr<RpcProvider>>> {
+-> kosio::async::Task<kosio::Result<std::unique_ptr<RpcProvider>>> {
     auto has_addr = kosio::net::SocketAddr::parse("0.0.0.0", port);
     if (!has_addr) {
-        LOG_ERROR("{}", has_addr.error());
-        co_return std::unexpected{make_error(Error::kInvalidAddress)};
+        co_return std::unexpected{has_addr.error()};
     }
     auto has_listener = kosio::net::TcpListener::bind(has_addr.value());
     if (!has_listener) {
-        LOG_ERROR("{}", has_listener.error());
-        co_return std::unexpected{make_error(Error::kBindFailed)};
+        co_return std::unexpected{has_listener.error()};
     }
     co_return std::unique_ptr<RpcProvider>(new RpcProvider(port, std::move(has_listener.value())));
 }
@@ -31,19 +29,18 @@ auto vosfs::rpc::RpcProvider::run() -> kosio::async::Task<void> {
             if (has_stream.error().value() == ECANCELED) {
                 break;
             }
-            LOG_ERROR("Failed to accept rpc connection : {}", has_stream.error());
+            LOG_ERROR("failed to accept rpc connection : {}", has_stream.error());
             continue;
         }
         auto& [stream, peer_addr] = has_stream.value();
 
         auto session = session_manager_.assign_session(std::move(stream), peer_addr);
-        LOG_VERBOSE("Accept connection from {}, session_id : {}", peer_addr, session->id);
+        LOG_VERBOSE("accept connection from {}, session_id : {}", peer_addr, session->id);
         kosio::spawn(handle_request(session));
         kosio::spawn(send_response(session));
     }
 
     is_shutdown_.store(true, std::memory_order_release);
-    LOG_VERBOSE("The provider has stop listening.");
 }
 
 auto vosfs::rpc::RpcProvider::shutdown() -> kosio::async::Task<void> {
@@ -58,7 +55,7 @@ auto vosfs::rpc::RpcProvider::shutdown() -> kosio::async::Task<void> {
 
     // clear sessions
     while (!session_manager_.sessions_.empty()) {
-        for (auto session : session_manager_.sessions_ | std::views::values) {
+        for (const auto& session : session_manager_.sessions_ | std::views::values) {
             co_await session->requests.shutdown();
             if (auto ret = co_await kosio::io::cancel(session->stream.fd(), IORING_ASYNC_CANCEL_ALL); !ret) {
                 LOG_ERROR("{}", ret.error());
@@ -66,6 +63,8 @@ auto vosfs::rpc::RpcProvider::shutdown() -> kosio::async::Task<void> {
         }
         co_await kosio::time::sleep(50);
     }
+
+    LOG_INFO("stop rpc service on port {}", port_);
 }
 
 auto vosfs::rpc::RpcProvider::handle_request(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void> {
@@ -89,7 +88,7 @@ auto vosfs::rpc::RpcProvider::handle_request(std::shared_ptr<detail::Session> se
         auto method_type = req_header.method_type;
 
         if (payload_size > detail::MAX_RPC_MESSAGE_SIZE) {
-            LOG_ERROR("Receive unusual rpc message, request_id : {}, payload_size : {}.", request_id, payload_size);
+            LOG_ERROR("receive unusual rpc message, request_id : {}, payload_size : {}.", request_id, payload_size);
             break;
         }
 
@@ -141,7 +140,7 @@ auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> ses
         );
 
         if (!ret) {
-            LOG_ERROR("Failed to send response to Session {} : {}", session->id, ret.error());
+            LOG_ERROR("failed to send response to session {} : {}", session->id, ret.error());
             break;
         }
     }

@@ -15,7 +15,7 @@ auto process(TcpStream stream) -> Task<void> {
         }
         co_await stream.write_all({buf, len});
     }
-    LOG_INFO("Connection from {} closed", stream.peer_addr().value());
+    LOG_INFO("connection from {} closed", stream.peer_addr().value());
 }
 
 auto server() -> Task<void> {
@@ -23,7 +23,7 @@ auto server() -> Task<void> {
     auto listener = TcpListener::bind(addr).value();
     while (true) {
         auto [stream, addr] = (co_await listener.accept()).value();
-        LOG_INFO("Accepted connection from {}", addr);
+        LOG_INFO("accepted connection from {}", addr);
         spawn(process(std::move(stream)));
     }
 }

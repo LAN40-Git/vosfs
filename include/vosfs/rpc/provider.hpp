@@ -28,7 +28,7 @@ public:
 
 public:
     [[REMEMBER_CO_AWAIT]]
-    static auto create(uint16_t port) -> kosio::async::Task<Result<std::unique_ptr<RpcProvider>>>;
+    static auto create(uint16_t port) -> kosio::async::Task<kosio::Result<std::unique_ptr<RpcProvider>>>;
 
 public:
     void register_handler(

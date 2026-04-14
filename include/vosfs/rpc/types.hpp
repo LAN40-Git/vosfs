@@ -10,8 +10,6 @@ using RpcRequestHandler = std::function<kosio::async::Task<RpcResult>(std::strin
 
 enum class ServiceType : uint8_t {
     kMinService = 0,
-    kAuth,
-    //kConn,
     kRaft,
     kMath, // for test
     kMaxService
@@ -19,10 +17,6 @@ enum class ServiceType : uint8_t {
 
 enum class MethodType : uint8_t {
     kMinMethod = 0,
-    kAuthSignin,
-    kAuthSignout,
-    kAuthSignup,
-    //kConnShutdown,
     kRaftRequestVote,
     kRaftAppendEntries,
     kRaftInstallSnapshot,
@@ -36,8 +30,6 @@ public:
     [[nodiscard]]
     static auto to_string(ServiceType service_type) -> std::string_view {
         switch (service_type) {
-            //case ServiceType::kConn:
-            //    return "Conn";
             case ServiceType::kRaft:
                 return "Raft";
             case ServiceType::kMath:

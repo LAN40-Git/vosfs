@@ -24,8 +24,6 @@ auto vosfs::Error::message() const noexcept -> std::string_view {
             return "Failed to create provider.";
         case kCreatePeerFailed:
             return "Failed to create peer.";
-        case kInvalidAddress:
-            return "Invalid address.";
         case kConnectToServerFailed:
             return "Failed to connect to server.";
         case kSendRpcRequestFailed:
@@ -36,8 +34,6 @@ auto vosfs::Error::message() const noexcept -> std::string_view {
             return "Find repeated peer.";
         case kLocalNodeNotFound:
             return "Failed to find local node.";
-        case kBindFailed:
-            return "Failed to bind to address.";
         case kConnectionShutdown:
             return "Connection shutdown.";
         case kQueueEmpty:

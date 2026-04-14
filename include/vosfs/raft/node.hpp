@@ -15,20 +15,16 @@ private:
         detail::RaftLog&& logs,
         detail::Transport&& transport,
         HardState&& hard_state,
-        std::string&& snapshot_data)
-        : raft_rpc_server_(std::move(raft_rpc_server))
-        , client_rpc_server_(std::move(client_rpc_server))
-        , persister_(std::move(persister))
-        , logs_(std::move(logs))
-        , transport_(std::move(transport))
-        , hard_state_(std::move(hard_state))
-        , snapshot_data_(std::move(snapshot_data)) {}
+        std::string&& snapshot_data);
 
 public:
     static auto create(std::string_view data_dir) -> kosio::async::Task<Result<std::unique_ptr<RaftNode>>>;
 
 public:
+    [[REMEMBER_CO_AWAIT]]
     auto run() -> kosio::async::Task<void>;
+
+    [[REMEMBER_CO_AWAIT]]
     auto shutdown() -> kosio::async::Task<void>;
 
 private:
@@ -36,6 +32,7 @@ private:
     auto heartbeat_loop() -> kosio::async::Task<void>;
 
 private:
+    void init();
     void do_election();
     void do_heartbeat();
     void increase_term_to(uint64_t term);
@@ -44,6 +41,7 @@ private:
     void send_snapshot(uint64_t member_id, uint64_t offset);
 
 private:
+    // ========== Raft RPC ==========
     [[REMEMBER_CO_AWAIT]]
     auto handle_request_vote_request(std::string_view req_payload, std::span<char> resp_payload)
         -> kosio::async::Task<rpc::RpcResult>;
@@ -53,6 +51,8 @@ private:
     [[REMEMBER_CO_AWAIT]]
     auto handle_install_snapshot_request(std::string_view req_payload, std::span<char> resp_payload)
         -> kosio::async::Task<rpc::RpcResult>;
+
+    // ========== Client RPC ==========
 
 private:
     [[REMEMBER_CO_AWAIT]]
@@ -66,6 +66,7 @@ private:
     enum Role { kLeader, kFollower, kCandidate };
 
     kosio::sync::Mutex    mutex_;
+    kosio::sync::Latch    latch_{2}; // 两个循环协程-(election_loop 和 heartbeat_loop)
     std::atomic<bool>     is_shutdown_{false};
     std::atomic<uint64_t> last_reset_time_{0};
     RpcServer             raft_rpc_server_;

@@ -28,9 +28,6 @@ public:
         std::string_view req_payload,
         std::span<char> resp_payload) -> kosio::async::Task<RpcResult>;
 
-public:
-    static auto is_unauth_method(ServiceType service_type, MethodType method_type) noexcept -> bool;
-
 private:
     MethodMap methods_;
 };
