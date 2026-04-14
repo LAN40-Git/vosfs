@@ -14,11 +14,11 @@ public:
         kProtoParseFailed,
         kTruncateFailed,
         kRecoverFailed,
+        kCreateRpcConsumerFailed,
+        kCreateRpcProviderFailed,
         kCreateRocksDBEngineFailed,
         kCreatePeerFailed,
         kQueueShutdown,
-        kConsumerShutdown,
-        kConsumerRunning,
     };
 
 public:
@@ -29,25 +29,25 @@ public:
     auto message() const noexcept -> std::string_view {
         switch (error_code_) {
             case kUnknown:
-                return "Unknown error.";
+                return "unknown error";
             case kProtoSerializeFailed:
-                return "Failed to serialize proto.";
+                return "failed to serialize proto";
             case kProtoParseFailed:
-                return "Failed to parse proto.";
+                return "failed to parse proto";
             case kTruncateFailed:
-                return "Failed to truncate data.";
+                return "failed to truncate data";
             case kRecoverFailed:
-                return "Failed to recover data.";
+                return "failed to recover data";
+            case kCreateRpcConsumerFailed:
+                return "failed to create rpc consumer";
+            case kCreateRpcProviderFailed:
+                return "failed to create rpc provider";
             case kCreateRocksDBEngineFailed:
-                return "Failed to create rocksdb engine.";
+                return "failed to create rocksdb engine";
             case kCreatePeerFailed:
-                return "Failed to create peer.";
+                return "failed to create peer";
             case kQueueShutdown:
-                return "Shutdown queue.";
-            case kConsumerShutdown:
-                return "Consumer has shutdown.";
-            case kConsumerRunning:
-                return "Consumer is running.";
+                return "shutdown queue";
             default:
                 return strerror(error_code_);
         }

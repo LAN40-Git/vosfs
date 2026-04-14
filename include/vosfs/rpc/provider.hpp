@@ -28,7 +28,7 @@ public:
 
 public:
     [[REMEMBER_CO_AWAIT]]
-    static auto create(uint16_t port) -> kosio::async::Task<kosio::Result<std::unique_ptr<RpcProvider>>>;
+    static auto create(uint16_t port) -> kosio::async::Task<Result<std::unique_ptr<RpcProvider>>>;
 
 public:
     void register_handler(
@@ -47,7 +47,7 @@ public:
     auto shutdown() -> kosio::async::Task<void>;
 
 private:
-    auto handle_request(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void>;
+    auto handle_request(std::shared_ptr<detail::Session> session) const -> kosio::async::Task<void>;
 
     auto send_response(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void>;
 

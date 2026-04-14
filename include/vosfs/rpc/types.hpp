@@ -1,6 +1,5 @@
 #pragma once
 #include <functional>
-#include <cstdint>
 #include <format>
 #include <kosio/async/coroutine/task.hpp>
 #include "vosfs/rpc/result.hpp"
@@ -11,6 +10,7 @@ using RpcRequestHandler = std::function<kosio::async::Task<RpcResult>(std::strin
 enum class ServiceType : uint8_t {
     kMinService = 0,
     kRaft,
+    kUser,
     kMath, // for test
     kMaxService
 };
@@ -20,6 +20,10 @@ enum class MethodType : uint8_t {
     kRaftRequestVote,
     kRaftAppendEntries,
     kRaftInstallSnapshot,
+    kUserPutAccount,
+    kUserGetAccount,
+    kUserUpdateAccount,
+    kUserDeleteAccount,
     kMathAdd,
     kMathSub,
     kMaxMethod
@@ -32,6 +36,8 @@ public:
         switch (service_type) {
             case ServiceType::kRaft:
                 return "Raft";
+            case ServiceType::kUser:
+                return "User";
             case ServiceType::kMath:
                 return "Math";
             default: return "Unknown service type";
@@ -41,14 +47,20 @@ public:
     [[nodiscard]]
     static auto to_string(MethodType method_type) -> std::string_view {
         switch (method_type) {
-            //case MethodType::kConnShutdown:
-            //    return "ConnShutdown";
             case MethodType::kRaftRequestVote:
                 return "RaftRequestVote";
             case MethodType::kRaftAppendEntries:
                 return "RaftAppendEntries";
             case MethodType::kRaftInstallSnapshot:
                 return "RaftInstallSnapshot";
+            case MethodType::kUserPutAccount:
+                return "UserPutAccount";
+            case MethodType::kUserGetAccount:
+                return "UserGetAccount";
+            case MethodType::kUserUpdateAccount:
+                return "UserUpdateAccount";
+            case MethodType::kUserDeleteAccount:
+                return "UserDeleteAccount";
             case MethodType::kMathAdd:
                 return "MathAdd";
             case MethodType::kMathSub:

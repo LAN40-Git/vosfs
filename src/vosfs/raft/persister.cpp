@@ -18,7 +18,7 @@ auto vosfs::raft::Persister::create(std::string_view data_dir) -> Result<Persist
 
 void vosfs::raft::Persister::save_hard_state(const HardState& hard_state) const {
     if (auto status = engine_.put(HARD_STATE_KEY, hard_state.SerializeAsString()); !status.ok()) {
-        LOG_FATAL("failed to save hard state : {}", status.ToString());
+        LOG_FATAL("failed to save hard state: {}", status.ToString());
         std::abort();
     }
 }
@@ -27,7 +27,7 @@ auto vosfs::raft::Persister::load_hard_state() const -> Result<HardState> {
     std::string payload;
     HardState hard_state;
     if (auto status = engine_.get(HARD_STATE_KEY, &payload); !status.ok()) {
-        LOG_ERROR("failed to load hard state : {}", status.ToString());
+        LOG_ERROR("failed to load hard state: {}", status.ToString());
         return std::unexpected{make_error(Error::kRecoverFailed)};
     }
     if (!hard_state.ParseFromString(payload)) {

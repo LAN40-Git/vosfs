@@ -135,7 +135,7 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
         auto payload_size = be32toh(resp_header.payload_size);
         auto status = resp_header.status;
         if (payload_size > detail::MAX_RPC_MESSAGE_SIZE) {
-            LOG_ERROR("receive unusual rpc message, request_id : {}, payload_size : {}.", request_id, payload_size);
+            LOG_ERROR("receive unusual rpc message, request_id: {}, payload_size: {}.", request_id, payload_size);
             co_await remove_request(request_id);
             break;
         }
@@ -144,7 +144,7 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
             // receive response payload
             ret = co_await stream_.read_exact({buf.data(), payload_size});
             if (!ret) [[unlikely]] {
-                LOG_ERROR("failed to receive response payload : {}", ret.error());
+                LOG_ERROR("failed to receive response payload: {}", ret.error());
                 break;
             }
         }
@@ -160,7 +160,7 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
                 break;
             }
             default: {
-                LOG_ERROR("rpc result : {}", make_result(status));
+                LOG_ERROR("rpc result: {}", make_result(status));
                 break;
             }
         }
