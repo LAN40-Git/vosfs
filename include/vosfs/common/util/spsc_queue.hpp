@@ -72,7 +72,7 @@ public:
     }
 
     [[REMEMBER_CO_AWAIT]]
-    auto run() -> kosio::async::Task<> {
+    auto run() -> kosio::async::Task<void> {
         co_await mutex_.lock();
         std::unique_lock lock{mutex_, std::adopt_lock};
         std::queue<T> empty_queue;
@@ -82,7 +82,7 @@ public:
     }
 
     [[REMEMBER_CO_AWAIT]]
-    auto shutdown() -> kosio::async::Task<> {
+    auto shutdown() -> kosio::async::Task<void> {
         co_await mutex_.lock();
         std::unique_lock lock{mutex_, std::adopt_lock};
         is_shutdown_.store(true, std::memory_order_relaxed);

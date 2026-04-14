@@ -26,14 +26,11 @@ auto vosfs::raft::detail::Transport::create(const Persister& persister) -> kosio
 
 auto vosfs::raft::detail::Transport::shutdown() const -> kosio::async::Task<void> {
     for (const auto& peer : peers_ | std::views::values) {
-        auto ret = co_await peer.shutdown();
-        if (!ret) {
-            LOG_WARN("{}", ret.error());
-        }
+        co_await peer.shutdown();
     }
 }
 
-auto vosfs::raft::detail::Transport::apply_snapshot(Snapshot& snapshot) -> kosio::async::Task<Result<void>> {
+auto vosfs::raft::detail::Transport::apply_snapshot(Snapshot& snapshot) -> kosio::async::Task<void> {
     co_await shutdown();
     peers_.clear();
     auto& node_infos = snapshot.node_infos();
@@ -45,10 +42,10 @@ auto vosfs::raft::detail::Transport::apply_snapshot(Snapshot& snapshot) -> kosio
 
     auto ret = co_await build_cluster(cluster_info_, node_info_);
     if (!ret) {
-        co_return std::unexpected{ret.error()};
+        LOG_FATAL("{}", ret.error());
+        std::abort();
     }
     peers_ = std::move(ret.value());
-    co_return Result<void>{};
 }
 
 auto vosfs::raft::detail::Transport::unicast_request(
@@ -62,10 +59,7 @@ auto vosfs::raft::detail::Transport::unicast_request(
     }
 
     auto& peer = it->second;
-    if (auto ret = co_await peer.check_status(); !ret) {
-        LOG_ERROR("{}", ret.error());
-        co_return;
-    }
+    co_await peer.check_status();
 
     if (auto ret = co_await peer.send_request(service_type, method_type, req_payload, callback)) {
         LOG_ERROR("{}", ret.error());
@@ -83,10 +77,7 @@ auto vosfs::raft::detail::Transport::unicast_request(uint64_t peer_id, rpc::Serv
     }
 
     auto& peer = it->second;
-    if (auto ret = co_await peer.check_status(); !ret) {
-        LOG_ERROR("{}", ret.error());
-        co_return;
-    }
+    co_await peer.check_status();
 
     if (auto ret = co_await peer.send_request(service_type, method_type, std::move(req_payload), callback)) {
         LOG_ERROR("{}", ret.error());
@@ -97,10 +88,7 @@ auto vosfs::raft::detail::Transport::broadcast_request(rpc::ServiceType service_
     std::string_view req_payload, const rpc::RpcCallback& callback)
     -> kosio::async::Task<void> {
     for (auto& peer : peers_ | std::views::values) {
-        if (auto ret = co_await peer.check_status(); !ret) {
-            LOG_ERROR("{}", ret.error());
-            continue;
-        }
+        co_await peer.check_status();
 
         if (auto ret = co_await peer.send_request(service_type, method_type, req_payload, callback)) {
             LOG_ERROR("{}", ret.error());
@@ -113,10 +101,7 @@ auto vosfs::raft::detail::Transport::broadcast_request(
     std::string&& req_payload, rpc::RpcCallback&& callback)
     -> kosio::async::Task<void> {
     for (auto& peer : peers_ | std::views::values) {
-        if (auto ret = co_await peer.check_status(); !ret) {
-            LOG_ERROR("{}", ret.error());
-            continue;
-        }
+        co_await peer.check_status();
 
         if (auto ret = co_await peer.send_request(service_type, method_type, std::move(req_payload), callback)) {
             LOG_ERROR("{}", ret.error());

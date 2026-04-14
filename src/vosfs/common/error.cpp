@@ -16,8 +16,6 @@ auto vosfs::Error::message() const noexcept -> std::string_view {
             return "Failed to truncate data.";
         case kRecoverFailed:
             return "Failed to recover data.";
-        case kPersistFailed:
-            return "Failed to persist data.";
         case kRocksDBEngineCreateFailed:
             return "Failed to create rocksdb engine.";
         case kConnectToPeerFailed:
@@ -48,14 +46,10 @@ auto vosfs::Error::message() const noexcept -> std::string_view {
             return "Shutdown queue.";
         case kProviderHasShutdown:
             return "The provider has shutdown.";
+        case kConsumerShutdown:
+            return "Consumer has shutdown.";
         case kConsumerRunning:
-            return "The consumer is running.";
-        case kConsumerNotRunning:
-            return "The consumer is not running.";
-        case kStopListeningFailed:
-            return "Failed to stop listening.";
-        case kNeedRedirect:
-            return "Need to redirect to leader.";
+            return "Consumer is running.";
         default:
             return strerror(error_code_);
     }

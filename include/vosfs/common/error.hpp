@@ -3,6 +3,7 @@
 #include <string_view>
 #include <cstring>
 #include <format>
+#include <kosio/common/error.hpp>
 
 namespace vosfs {
 class Error {
@@ -15,7 +16,6 @@ public:
         kProtoParseFailed,
         kTruncateFailed,
         kRecoverFailed,
-        kPersistFailed,
         kRocksDBEngineCreateFailed,
         kConnectToPeerFailed,
         kCreateProviderFailed,
@@ -31,10 +31,8 @@ public:
         kQueueEmpty,
         kQueueShutdown,
         kProviderHasShutdown,
+        kConsumerShutdown,
         kConsumerRunning,
-        kConsumerNotRunning,
-        kStopListeningFailed,
-        kNeedRedirect,
     };
 
 public:

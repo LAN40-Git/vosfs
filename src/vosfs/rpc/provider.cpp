@@ -24,15 +24,15 @@ void vosfs::rpc::RpcProvider::register_handler(
 }
 
 auto vosfs::rpc::RpcProvider::run() -> kosio::async::Task<void> {
-    is_accepting_ = true;
+    is_shutdown_.store(false, std::memory_order_release);
     while (true) {
         auto has_stream = co_await listener_.accept();
         if (!has_stream) {
             if (has_stream.error().value() == ECANCELED) {
                 break;
             }
-            LOG_FATAL("Failed to accept rpc connection : {}", has_stream.error());
-            break;
+            LOG_ERROR("Failed to accept rpc connection : {}", has_stream.error());
+            continue;
         }
         auto& [stream, peer_addr] = has_stream.value();
 
@@ -42,32 +42,30 @@ auto vosfs::rpc::RpcProvider::run() -> kosio::async::Task<void> {
         kosio::spawn(send_response(session));
     }
 
-    is_accepting_ = false;
+    is_shutdown_.store(true, std::memory_order_release);
     LOG_VERBOSE("The provider has stop listening.");
 }
 
-auto vosfs::rpc::RpcProvider::shutdown() -> kosio::async::Task<Result<void>> {
-    while (is_accepting_) {
-        auto has_cancel = co_await kosio::io::cancel(listener_.fd(), IORING_ASYNC_CANCEL_ALL);
-        if (!has_cancel) {
-            LOG_FATAL("Failed to stop listening : {}", has_cancel.error());
-            co_return std::unexpected{make_error(Error::kStopListeningFailed)};
+auto vosfs::rpc::RpcProvider::shutdown() -> kosio::async::Task<void> {
+    while (!is_shutdown_.load(std::memory_order_acquire)) {
+        if (auto ret = co_await kosio::io::cancel(listener_.fd(), IORING_ASYNC_CANCEL_ALL); !ret) {
+            LOG_ERROR("{}", ret.error());
+            continue;
         }
 
         co_await kosio::time::sleep(50);
     }
 
-    // Clear sessions
-    for (auto session : session_manager_.sessions_ | std::views::values) {
-
-    }
-
+    // clear sessions
     while (!session_manager_.sessions_.empty()) {
+        for (auto session : session_manager_.sessions_ | std::views::values) {
+            co_await session->requests.shutdown();
+            if (auto ret = co_await kosio::io::cancel(session->stream.fd(), IORING_ASYNC_CANCEL_ALL); !ret) {
+                LOG_ERROR("{}", ret.error());
+            }
+        }
         co_await kosio::time::sleep(50);
     }
-
-    LOG_VERBOSE("The sessions has been clean up.");
-    co_return Result<void>{};
 }
 
 auto vosfs::rpc::RpcProvider::handle_request(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void> {
@@ -75,10 +73,9 @@ auto vosfs::rpc::RpcProvider::handle_request(std::shared_ptr<detail::Session> se
     auto& requests = session->requests;
     std::vector<char> buf(detail::MAX_RPC_MESSAGE_SIZE);
 
-    detail::FixedRpcRequestHeader req_header;
-
-    while (true) {
-        // Recv fixed request header
+    while (!is_shutdown_.load(std::memory_order_acquire)) {
+        detail::FixedRpcRequestHeader req_header;
+        // receive fixed request header
         auto ret = co_await stream.read_exact(
             {reinterpret_cast<char*>(&req_header), sizeof(req_header)});
         if (!ret) {
@@ -96,7 +93,7 @@ auto vosfs::rpc::RpcProvider::handle_request(std::shared_ptr<detail::Session> se
             break;
         }
 
-        // Recv req_payload
+        // receive req_payload
         ret = co_await stream.read_exact({buf.data(), payload_size});
         if (!ret) {
             LOG_ERROR("{}", ret.error());
@@ -121,9 +118,8 @@ auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> ses
     auto& requests = session->requests;
     std::vector<char> buf(detail::MAX_RPC_MESSAGE_SIZE);
 
-    detail::FixedRpcResponseHeader resp_header;
-
-    while (true) {
+    while (!is_shutdown_.load(std::memory_order_acquire)) {
+        detail::FixedRpcResponseHeader resp_header;
         // get rpc request
         auto has_request = co_await requests.pop();
         if (!has_request) {
@@ -131,8 +127,6 @@ auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> ses
         }
         auto request = std::move(has_request.value());
         resp_header.request_id = htobe64(request.request_id);
-        resp_header.status = request.status;
-
         auto result = co_await invoker_.invoke(
         request.service_type,
         request.method_type,

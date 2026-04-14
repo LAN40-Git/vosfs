@@ -1,16 +1,17 @@
 #include "vosfs/raft/node.hpp"
 #include "vosfs/raft/internal/message_factory.hpp"
 #include <ranges>
+#include <kosio/signal/signal.hpp>
 
 auto vosfs::raft::RaftNode::create(std::string_view data_dir) -> kosio::async::Task<Result<std::unique_ptr<RaftNode>>> {
     // 创建 RPC 服务层
-    auto has_raft_rpc_server = co_await rpc::RpcProvider::create(RAFT_RPC_PORT, rpc::RpcProvider::AuthMode::NONE);
+    auto has_raft_rpc_server = co_await rpc::RpcProvider::create(RAFT_RPC_PORT);
     if (!has_raft_rpc_server) {
         co_return std::unexpected{has_raft_rpc_server.error()};
     }
     auto raft_rpc_server = std::move(has_raft_rpc_server.value());
 
-    auto has_client_rpc_server = co_await rpc::RpcProvider::create(CLIENT_RPC_PORT, rpc::RpcProvider::AuthMode::REQUIRED);
+    auto has_client_rpc_server = co_await rpc::RpcProvider::create(CLIENT_RPC_PORT);
     if (!has_client_rpc_server) {
         co_return std::unexpected{has_client_rpc_server.error()};
     }
@@ -63,14 +64,16 @@ auto vosfs::raft::RaftNode::create(std::string_view data_dir) -> kosio::async::T
 }
 
 auto vosfs::raft::RaftNode::run() -> kosio::async::Task<void> {
-
+    kosio::spawn(raft_rpc_server_->run());
+    kosio::spawn(client_rpc_server_->run());
+    co_await kosio::signal::ctrl_c();
 }
 
 auto vosfs::raft::RaftNode::shutdown() -> kosio::async::Task<void> {
-    is_shutdown_.store(true, std::memory_order_release);
     co_await transport_.shutdown();
     co_await raft_rpc_server_->shutdown();
     co_await client_rpc_server_->shutdown();
+    is_shutdown_.store(true, std::memory_order_release);
 }
 
 auto vosfs::raft::RaftNode::election_loop() -> kosio::async::Task<void> {
@@ -93,7 +96,7 @@ auto vosfs::raft::RaftNode::election_loop() -> kosio::async::Task<void> {
             continue;
         }
 
-        co_await do_election();
+        do_election();
     }
 }
 
@@ -116,13 +119,13 @@ auto vosfs::raft::RaftNode::heartbeat_loop() -> kosio::async::Task<void> {
     }
 }
 
-auto vosfs::raft::RaftNode::do_election() -> kosio::async::Task<void> {
+void vosfs::raft::RaftNode::do_election() {
     votes_ = 0;
     auto current_term = hard_state_.current_term();
     hard_state_.set_current_term(current_term+1);
     hard_state_.set_voted_for(transport_.member_id());
     role_.store(kCandidate, std::memory_order_relaxed);
-    co_await persist_hard_state();
+    persister_.save_hard_state(hard_state_);
 
     // 广播选举请求
     auto request = detail::MessageFactory::make_request_vote_request(
@@ -143,7 +146,7 @@ auto vosfs::raft::RaftNode::do_election() -> kosio::async::Task<void> {
     ++votes_;
     if (votes_ > transport_.peer_count() / 2 &&
             role_.load(std::memory_order_relaxed) == kCandidate) {
-        co_await become_leader();
+        become_leader();
     }
 }
 
@@ -195,19 +198,19 @@ void vosfs::raft::RaftNode::do_heartbeat() {
     }
 }
 
-auto vosfs::raft::RaftNode::increase_term_to(uint64_t term) -> kosio::async::Task<void> {
+void vosfs::raft::RaftNode::increase_term_to(uint64_t term) {
     votes_ = 0;
     hard_state_.clear_voted_for();
     hard_state_.set_current_term(term);
     role_.store(kFollower, std::memory_order_release);
-    co_await persist_hard_state();
+    persister_.save_hard_state(hard_state_);
 }
 
-auto vosfs::raft::RaftNode::become_leader() -> kosio::async::Task<void> {
+void vosfs::raft::RaftNode::become_leader() {
     votes_ = 0;
     hard_state_.clear_voted_for();
     role_.store(kLeader, std::memory_order_release);
-    co_await persist_hard_state();
+    persister_.save_hard_state(hard_state_);
     leader_id_ = transport_.member_id();
     // 更新每个Raft节点的 next_index 和 match_index
     auto& peers = transport_.peers();
@@ -224,14 +227,6 @@ void vosfs::raft::RaftNode::apply_to_state_machine() {
         state_machine_.apply(logs_.get_entry(last_applied_));
         // TODO: 尝试创建快照
 
-    }
-}
-
-auto vosfs::raft::RaftNode::persist_hard_state() -> kosio::async::Task<void> {
-    auto ret = persister_.save_hard_state(hard_state_);
-    if (!ret) {
-        LOG_FATAL("{}", ret.error());
-        co_await shutdown();
     }
 }
 
@@ -289,7 +284,7 @@ auto vosfs::raft::RaftNode::handle_request_vote_request(
     }
 
     if (term > current_term) {
-        co_await increase_term_to(term);
+        increase_term_to(term);
         current_term = term;
     }
 
@@ -336,7 +331,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
     }
 
     if (term > current_term) {
-        co_await increase_term_to(term);
+        increase_term_to(term);
         current_term = term;
     }
 
@@ -365,24 +360,14 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
             }
 
             if (logs_.get_term(idx) != entry.term()) {
-                auto ret = persister_.truncate_entries(idx, logs_.last_log_index());
-                if (!ret) {
-                    LOG_WARN("{}", ret.error());
-                    co_return detail::MessageFactory::make_append_entries_response(
-                        resp_payload, transport_.member_id(), current_term, false, logs_.last_log_index());
-                }
+                persister_.truncate_entries(idx, logs_.last_log_index());
                 logs_.truncate_entries_before(idx);
                 break;
             }
         }
 
         // 追加并持久化日志
-        auto ret = persister_.save_entries(entries);
-        if (!ret) {
-            LOG_WARN("{}", ret.error());
-            co_return detail::MessageFactory::make_append_entries_response(
-                resp_payload, transport_.member_id(), current_term, false, logs_.last_log_index());
-        }
+        persister_.save_entries(entries);
         logs_.append_entries(entries);
     }
 
@@ -420,7 +405,7 @@ auto vosfs::raft::RaftNode::handle_install_snapshot_request(
     }
 
     if (term > current_term) {
-        co_await increase_term_to(term);
+        increase_term_to(term);
         current_term = term;
     }
 
@@ -437,9 +422,7 @@ auto vosfs::raft::RaftNode::handle_install_snapshot_request(
         co_return detail::MessageFactory::make_install_snapshot_response(resp_payload, current_term);
     }
 
-    if (auto ret = persister_.save_snapshot(snapshot_data_); !ret) {
-        LOG_WARN("{}", ret.error());
-    }
+    persister_.save_snapshot(snapshot_data_);
 
     Snapshot snapshot;
     if (!snapshot.ParseFromString(snapshot_data_)) {
@@ -452,9 +435,7 @@ auto vosfs::raft::RaftNode::handle_install_snapshot_request(
     // 日志层应用快照-更新快照元数据
     logs_.apply_snapshot(snapshot);
     // 通信层应用快照-集群配置
-    if (auto ret = co_await transport_.apply_snapshot(snapshot); !ret) {
-        LOG_FATAL("{}", ret.error());
-    }
+    co_await transport_.apply_snapshot(snapshot);
 
     co_return detail::MessageFactory::make_install_snapshot_response(resp_payload, current_term);
 }
@@ -482,7 +463,7 @@ auto vosfs::raft::RaftNode::handle_request_vote_response(std::string_view resp_p
     }
 
     if (term > current_term) {
-        co_await increase_term_to(term);
+        increase_term_to(term);
         co_return;
     }
 
@@ -493,7 +474,7 @@ auto vosfs::raft::RaftNode::handle_request_vote_response(std::string_view resp_p
     if (vote_granted) {
         if (++votes_ > transport_.peer_count() / 2 &&
             role_.load(std::memory_order_relaxed) == kCandidate) {
-            co_await become_leader();
+            become_leader();
         }
     }
 }
@@ -525,7 +506,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_response(std::string_view resp
     }
 
     if (term > current_term) {
-        co_await increase_term_to(term);
+        increase_term_to(term);
         co_return;
     }
 
@@ -565,7 +546,7 @@ auto vosfs::raft::RaftNode::handle_install_snapshot_response(std::string_view re
 
     auto current_term = hard_state_.current_term();
     if (term > current_term) {
-        co_await increase_term_to(term);
+        increase_term_to(term);
         co_return;
     }
 

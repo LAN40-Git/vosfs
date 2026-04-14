@@ -30,10 +30,10 @@ public:
 
 public:
     [[REMEMBER_CO_AWAIT]]
-    auto shutdown() const -> kosio::async::Task<Result<void>>;
+    auto shutdown() const -> kosio::async::Task<void>;
 
     [[REMEMBER_CO_AWAIT]]
-    auto check_status() const -> kosio::async::Task<Result<void>>;
+    auto check_status() const -> kosio::async::Task<void>;
 
 public:
     [[REMEMBER_CO_AWAIT]]

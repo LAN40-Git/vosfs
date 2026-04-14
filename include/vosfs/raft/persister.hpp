@@ -23,47 +23,39 @@ public:
     static auto create(std::string_view data_dir) -> Result<Persister>;
 
 public:
-    [[nodiscard]]
-    auto save_hard_state(const HardState& hard_state) const -> Result<void>;
+    void save_hard_state(const HardState& hard_state) const;
 
     [[nodiscard]]
     auto load_hard_state() const -> Result<HardState>;
 
-    [[nodiscard]]
-    auto save_cluster_info(const ClusterInfo& cluster_info) const -> Result<void>;
+    void save_cluster_info(const ClusterInfo& cluster_info) const;
 
     [[nodiscard]]
     auto load_cluster_info() const -> Result<ClusterInfo>;
 
-    [[nodiscard]]
-    auto save_node_info(const NodeInfo& node_info) const -> Result<void>;
+    void save_node_info(const NodeInfo& node_info) const;
 
     [[nodiscard]]
     auto load_node_info() const -> Result<NodeInfo>;
 
-    [[nodiscard]]
-    auto save_snapshot_metadata(const SnapshotMetadata& snapshot_metadata) const -> Result<void>;
+    void save_snapshot_metadata(const SnapshotMetadata& snapshot_metadata) const;
 
     [[nodiscard]]
     auto load_snapshot_metadata() const -> Result<SnapshotMetadata>;
 
-    [[nodiscard]]
-    auto save_snapshot(const std::string& snapshot_data) const -> Result<void>;
+    void save_snapshot(const std::string& snapshot_data) const;
 
     [[nodiscard]]
     auto load_snapshot() const -> Result<std::string>;
 
-    [[nodiscard]]
-    auto save_entry(const LogEntry& entry) const -> Result<void>;
+    void save_entry(const LogEntry& entry) const;
 
-    [[nodiscard]]
-    auto save_entries(const google::protobuf::RepeatedPtrField<LogEntry>& entries) const -> Result<void>;
+    void save_entries(const google::protobuf::RepeatedPtrField<LogEntry>& entries) const;
 
     [[nodiscard]]
     auto load_entries(uint64_t last_included_index) const -> Result<std::vector<LogEntry>>;
 
-    [[nodiscard]]
-    auto truncate_entries(uint64_t start_index, uint64_t end_index) const -> Result<void>;
+    auto truncate_entries(uint64_t start_index, uint64_t end_index) const -> void;
 
 private:
     static auto get_entry_key(uint64_t index) -> std::string {

@@ -16,12 +16,11 @@ auto vosfs::raft::Persister::create(std::string_view data_dir) -> Result<Persist
     return Persister{std::move(ret.value())};
 }
 
-auto vosfs::raft::Persister::save_hard_state(const HardState& hard_state) const -> Result<void> {
+void vosfs::raft::Persister::save_hard_state(const HardState& hard_state) const {
     if (auto status = engine_.put(HARD_STATE_KEY, hard_state.SerializeAsString()); !status.ok()) {
-        LOG_ERROR("failed to save hard state : {}", status.ToString());
-        return std::unexpected{make_error(Error::kPersistFailed)};
+        LOG_FATAL("failed to save hard state : {}", status.ToString());
+        std::abort();
     }
-    return Result<void>{};
 }
 
 auto vosfs::raft::Persister::load_hard_state() const -> Result<HardState> {
@@ -37,12 +36,11 @@ auto vosfs::raft::Persister::load_hard_state() const -> Result<HardState> {
     return hard_state;
 }
 
-auto vosfs::raft::Persister::save_cluster_info(const ClusterInfo& cluster_info) const -> Result<void> {
+void vosfs::raft::Persister::save_cluster_info(const ClusterInfo& cluster_info) const {
     if (auto status = engine_.put(CLUSTER_INFO_KEY, cluster_info.SerializeAsString()); !status.ok()) {
-        LOG_ERROR("failed to save cluster info : {}", status.ToString());
-        return std::unexpected{make_error(Error::kPersistFailed)};
+        LOG_FATAL("failed to save cluster info : {}", status.ToString());
+        std::abort();
     }
-    return Result<void>{};
 }
 
 auto vosfs::raft::Persister::load_cluster_info() const -> Result<ClusterInfo> {
@@ -58,12 +56,11 @@ auto vosfs::raft::Persister::load_cluster_info() const -> Result<ClusterInfo> {
     return cluster_info;
 }
 
-auto vosfs::raft::Persister::save_node_info(const NodeInfo& node_info) const -> Result<void> {
+void vosfs::raft::Persister::save_node_info(const NodeInfo& node_info) const {
     if (auto status = engine_.put(NODE_INFO_KEY, node_info.SerializeAsString()); !status.ok()) {
-        LOG_ERROR("failed to save node info : {}", status.ToString());
-        return std::unexpected{make_error(Error::kPersistFailed)};
+        LOG_FATAL("failed to save node info : {}", status.ToString());
+        std::abort();
     }
-    return Result<void>{};
 }
 
 auto vosfs::raft::Persister::load_node_info() const -> Result<NodeInfo> {
@@ -79,12 +76,11 @@ auto vosfs::raft::Persister::load_node_info() const -> Result<NodeInfo> {
     return node_info;
 }
 
-auto vosfs::raft::Persister::save_snapshot_metadata(const SnapshotMetadata& snapshot_metadata) const -> Result<void> {
+void vosfs::raft::Persister::save_snapshot_metadata(const SnapshotMetadata& snapshot_metadata) const {
     if (auto status = engine_.put(SNAPSHOT_METADATA_KEY, snapshot_metadata.SerializeAsString()); !status.ok()) {
-        LOG_ERROR("failed to save snapshot metadata : {}", status.ToString());
-        return std::unexpected{make_error(Error::kPersistFailed)};
+        LOG_FATAL("failed to save snapshot metadata : {}", status.ToString());
+        std::abort();
     }
-    return Result<void>{};
 }
 
 auto vosfs::raft::Persister::load_snapshot_metadata() const -> Result<SnapshotMetadata> {
@@ -100,12 +96,11 @@ auto vosfs::raft::Persister::load_snapshot_metadata() const -> Result<SnapshotMe
     return snapshot_metadata;
 }
 
-auto vosfs::raft::Persister::save_snapshot(const std::string& snapshot_data) const -> Result<void> {
+void vosfs::raft::Persister::save_snapshot(const std::string& snapshot_data) const {
     if (auto status = engine_.put(SNAPSHOT_KEY, snapshot_data); !status.ok()) {
-        LOG_ERROR("failed to save snapshot : {}", status.ToString());
-        return std::unexpected{make_error(Error::kPersistFailed)};
+        LOG_FATAL("failed to save snapshot : {}", status.ToString());
+        std::abort();
     }
-    return Result<void>{};
 }
 
 auto vosfs::raft::Persister::load_snapshot() const -> Result<std::string> {
@@ -117,25 +112,23 @@ auto vosfs::raft::Persister::load_snapshot() const -> Result<std::string> {
     return payload;
 }
 
-auto vosfs::raft::Persister::save_entry(const LogEntry& entry) const -> Result<void> {
+void vosfs::raft::Persister::save_entry(const LogEntry& entry) const {
     if (auto status = engine_.put(get_entry_key(entry.index()), entry.SerializeAsString()); !status.ok()) {
-        LOG_ERROR("failed to save entry at {} : {}", entry.index(), status.ToString());
-        return std::unexpected{make_error(Error::kPersistFailed)};
+        LOG_FATAL("failed to save entry at {} : {}", entry.index(), status.ToString());
+        std::abort();
     }
-    return Result<void>{};
 }
 
-auto vosfs::raft::Persister::save_entries(const google::protobuf::RepeatedPtrField<LogEntry>& entries) const -> Result<void> {
+void vosfs::raft::Persister::save_entries(const google::protobuf::RepeatedPtrField<LogEntry>& entries) const {
     rocksdb::WriteBatch write_batch;
     for (const auto& entry : entries) {
         write_batch.Put(get_entry_key(entry.index()), entry.SerializeAsString());
     }
 
     if (auto status = engine_.batch_write(write_batch); !status.ok()) {
-        LOG_ERROR("failed to save entries : {}", status.ToString());
-        return std::unexpected{make_error(Error::kPersistFailed)};
+        LOG_FATAL("failed to save entries : {}", status.ToString());
+        std::abort();
     }
-    return Result<void>{};
 }
 
 auto vosfs::raft::Persister::load_entries(uint64_t last_included_index) const -> Result<std::vector<LogEntry>> {
@@ -160,15 +153,14 @@ auto vosfs::raft::Persister::load_entries(uint64_t last_included_index) const ->
     return entries;
 }
 
-auto vosfs::raft::Persister::truncate_entries(uint64_t start_index, uint64_t end_index) const -> Result<void> {
+void vosfs::raft::Persister::truncate_entries(uint64_t start_index, uint64_t end_index) const {
     rocksdb::WriteBatch write_batch;
     for (uint64_t index = start_index; index <= end_index; ++index) {
         write_batch.Delete(get_entry_key(index));
     }
 
     if (auto status = engine_.batch_write(write_batch); !status.ok()) {
-        LOG_ERROR("failed to truncate entries from {} to {} : {}", start_index, end_index, status.ToString());
-        return std::unexpected{make_error(Error::kTruncateFailed)};
+        LOG_FATAL("failed to truncate entries from {} to {} : {}", start_index, end_index, status.ToString());
+        std::abort();
     }
-    return Result<void>{};
 }

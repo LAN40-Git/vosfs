@@ -29,42 +29,27 @@ public:
 
 public:
     auto run() -> kosio::async::Task<void>;
-
     auto shutdown() -> kosio::async::Task<void>;
 
 private:
     auto election_loop() -> kosio::async::Task<void>;
-
     auto heartbeat_loop() -> kosio::async::Task<void>;
 
 private:
-    [[REMEMBER_CO_AWAIT]]
-    auto do_election() -> kosio::async::Task<void>;
-
+    void do_election();
     void do_heartbeat();
-
-    [[REMEMBER_CO_AWAIT]]
-    auto increase_term_to(uint64_t term) -> kosio::async::Task<void>;
-
-    [[REMEMBER_CO_AWAIT]]
-    auto become_leader() -> kosio::async::Task<void>;
-
+    void increase_term_to(uint64_t term);
+    void become_leader();
     void apply_to_state_machine();
-
-    [[REMEMBER_CO_AWAIT]]
-    auto persist_hard_state() -> kosio::async::Task<void>;
-
     void send_snapshot(uint64_t member_id, uint64_t offset);
 
 private:
     [[REMEMBER_CO_AWAIT]]
     auto handle_request_vote_request(std::string_view req_payload, std::span<char> resp_payload)
         -> kosio::async::Task<rpc::RpcResult>;
-
     [[REMEMBER_CO_AWAIT]]
     auto handle_append_entries_request(std::string_view req_payload, std::span<char> resp_payload)
         -> kosio::async::Task<rpc::RpcResult>;
-
     [[REMEMBER_CO_AWAIT]]
     auto handle_install_snapshot_request(std::string_view req_payload, std::span<char> resp_payload)
         -> kosio::async::Task<rpc::RpcResult>;
@@ -72,10 +57,8 @@ private:
 private:
     [[REMEMBER_CO_AWAIT]]
     auto handle_request_vote_response(std::string_view resp_payload) -> kosio::async::Task<void>;
-
     [[REMEMBER_CO_AWAIT]]
     auto handle_append_entries_response(std::string_view resp_payload) -> kosio::async::Task<void>;
-
     [[REMEMBER_CO_AWAIT]]
     auto handle_install_snapshot_response(std::string_view resp_payload) -> kosio::async::Task<void>;
 

@@ -21,7 +21,7 @@ public:
 public:
     auto shutdown() const -> kosio::async::Task<void>;
 
-    auto apply_snapshot(Snapshot& snapshot) -> kosio::async::Task<Result<void>>;
+    auto apply_snapshot(Snapshot& snapshot) -> kosio::async::Task<void>;
 
 public:
     [[REMEMBER_CO_AWAIT]]

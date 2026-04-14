@@ -18,12 +18,6 @@ class RpcConsumer {
     };
     using RequestMap = std::unordered_map<uint64_t, RpcRequest>;
 
-    enum Status {
-        Running = 0,
-        ShuttingDown,
-        ShutDown
-    };
-
 private:
     explicit RpcConsumer(std::string_view server_host, uint16_t server_port, kosio::net::TcpStream stream)
         : server_host_(server_host), server_port_(server_port), stream_(std::move(stream)) {
@@ -59,13 +53,13 @@ public:
         RpcCallback&& callback) -> kosio::async::Task<Result<void>>;
 
     [[REMEMBER_CO_AWAIT]]
-    auto run() -> kosio::async::Task<Result<void>>;
+    auto run() -> kosio::async::Task<void>;
 
     [[REMEMBER_CO_AWAIT]]
-    auto shutdown() -> kosio::async::Task<Result<void>>;
+    auto shutdown() -> kosio::async::Task<void>;
 
     [[REMEMBER_CO_AWAIT]]
-    auto is_running() -> kosio::async::Task<bool>;
+    auto is_shutdown() const -> bool;
 
 private:
     [[REMEMBER_CO_AWAIT]]
@@ -84,16 +78,13 @@ private:
     [[REMEMBER_CO_AWAIT]]
     auto handle_response() -> kosio::async::Task<void>;
 
-    [[REMEMBER_CO_AWAIT]]
-    auto send_shutdown_request() -> kosio::async::Task<Result<void>>;
-
 private:
     std::string           server_host_;
     uint16_t              server_port_;
     kosio::net::TcpStream stream_;
     uint64_t              request_id_{0}; // current request id
+    std::atomic<bool>     is_shutdown_{false};
     RequestMap            requests_;
     kosio::sync::Mutex    mutex_;
-    Status                status_{Running};
 };
 } // namespace vosfs::rpc

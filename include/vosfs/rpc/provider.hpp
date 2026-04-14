@@ -44,7 +44,7 @@ public:
     /// @brief Let provider shutdown
     /// @note not-thread-safe!
     [[REMEMBER_CO_AWAIT]]
-    auto shutdown() -> kosio::async::Task<Result<void>>;
+    auto shutdown() -> kosio::async::Task<void>;
 
 private:
     auto handle_request(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void>;
@@ -56,7 +56,7 @@ private:
 
     uint16_t                port_;
     kosio::net::TcpListener listener_;
-    bool                    is_accepting_{true};
+    std::atomic<bool>       is_shutdown_{true};
     detail::SessionManager  session_manager_;
     detail::RpcInvoker      invoker_;
 };

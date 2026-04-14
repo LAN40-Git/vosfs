@@ -1,23 +1,22 @@
 #include "vosfs/raft/internal/peer.hpp"
 
 auto vosfs::raft::detail::Peer::create(const NodeInfo& node_info) -> kosio::async::Task<Result<Peer>> {
-    // try to connect to the raft node at host:RAFT_PROVIDER_PORT
-    auto ret = co_await rpc::RpcConsumer::create(node_info.host(), RAFT_PROVIDER_PORT);
+    // try to connect to the raft node at host:RAFT_RPC_PORT
+    auto ret = co_await rpc::RpcConsumer::create(node_info.host(), RAFT_RPC_PORT);
     if (!ret) {
         co_return std::unexpected{make_error(Error::kCreatePeerFailed)};
     }
     co_return Peer(node_info, std::move(ret.value()));
 }
 
-auto vosfs::raft::detail::Peer::check_status() const -> kosio::async::Task<Result<void>> {
-    if (!co_await consumer_->is_running()) {
-        co_return co_await consumer_->run();
+auto vosfs::raft::detail::Peer::check_status() const -> kosio::async::Task<void> {
+    if (consumer_->is_shutdown()) {
+        co_await consumer_->run();
     }
-    co_return Result<void>{};
 }
 
-auto vosfs::raft::detail::Peer::shutdown() const -> kosio::async::Task<Result<void>> {
-    co_return co_await consumer_->shutdown();
+auto vosfs::raft::detail::Peer::shutdown() const -> kosio::async::Task<void> {
+    co_await consumer_->shutdown();
 }
 
 auto vosfs::raft::detail::Peer::send_request(
