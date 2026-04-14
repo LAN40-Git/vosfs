@@ -51,7 +51,7 @@ public:
     auto save_snapshot(const std::string& snapshot_data) const -> Result<void>;
 
     [[nodiscard]]
-    auto load_snapshot() const -> Result<Snapshot>;
+    auto load_snapshot() const -> Result<std::string>;
 
     [[nodiscard]]
     auto save_entry(const LogEntry& entry) const -> Result<void>;

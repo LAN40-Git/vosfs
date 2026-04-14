@@ -20,11 +20,7 @@ auto vosfs::raft::detail::MessageFactory::make_request_vote_response(
     response.set_id(id);
     response.set_term(term);
     response.set_vote_granted(vote_granted);
-    auto size = static_cast<int>(response.ByteSizeLong());
-    if (!response.SerializeToArray(resp_payload.data(), size)) {
-        return rpc::make_result(rpc::RpcResult::kMessageSerializeFailed);
-    }
-    return rpc::make_result(rpc::RpcResult::kSuccess, size);
+    return rpc::serialize_response(response, resp_payload);
 }
 
 auto vosfs::raft::detail::MessageFactory::make_append_entries_request(
@@ -61,12 +57,7 @@ auto vosfs::raft::detail::MessageFactory::make_append_entries_response(
     if (conflict_index.has_value()) {
         response.set_conflict_index(conflict_index.value());
     }
-
-    auto size = static_cast<int>(response.ByteSizeLong());
-    if (!response.SerializeToArray(resp_payload.data(), size)) {
-        return rpc::make_result(rpc::RpcResult::kMessageSerializeFailed);
-    }
-    return rpc::make_result(rpc::RpcResult::kSuccess, size);
+    return rpc::serialize_response(response, resp_payload);
 }
 
 auto vosfs::raft::detail::MessageFactory::make_install_snapshot_request(
@@ -93,9 +84,5 @@ auto vosfs::raft::detail::MessageFactory::make_install_snapshot_response(
     uint64_t term) -> rpc::RpcResult {
     InstallSnapshotResponse response;
     response.set_term(term);
-    auto size = static_cast<int>(response.ByteSizeLong());
-    if (!response.SerializeToArray(resp_payload.data(), size)) {
-        return rpc::make_result(rpc::RpcResult::kMessageSerializeFailed);
-    }
-    return rpc::make_result(rpc::RpcResult::kSuccess, size);
+    return rpc::serialize_response(response, resp_payload);
 }

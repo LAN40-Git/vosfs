@@ -1,7 +1,7 @@
 #include "vosfs/rpc/provider.hpp"
 #include <ranges>
 
-auto vosfs::rpc::RpcProvider::create(uint16_t port, AuthMode auth_mode)
+auto vosfs::rpc::RpcProvider::create(uint16_t port)
 -> kosio::async::Task<Result<std::unique_ptr<RpcProvider>>> {
     auto has_addr = kosio::net::SocketAddr::parse("0.0.0.0", port);
     if (!has_addr) {
@@ -13,12 +13,7 @@ auto vosfs::rpc::RpcProvider::create(uint16_t port, AuthMode auth_mode)
         LOG_ERROR("{}", has_listener.error());
         co_return std::unexpected{make_error(Error::kBindFailed)};
     }
-    auto provider = std::unique_ptr<RpcProvider>(new RpcProvider(port, auth_mode, std::move(has_listener.value())));
-    provider->register_handler(ServiceType::kConn, MethodType::kConnShutdown, [](
-        std::string_view, std::span<char>) -> kosio::async::Task<RpcResult> {
-        co_return make_result(RpcResult::kShutdown);
-    });
-    co_return std::move(provider);
+    co_return std::unique_ptr<RpcProvider>(new RpcProvider(port, std::move(has_listener.value())));
 }
 
 void vosfs::rpc::RpcProvider::register_handler(
@@ -36,16 +31,13 @@ auto vosfs::rpc::RpcProvider::run() -> kosio::async::Task<void> {
             if (has_stream.error().value() == ECANCELED) {
                 break;
             }
-
-            // fatal error
             LOG_FATAL("Failed to accept rpc connection : {}", has_stream.error());
-            std::abort();
+            break;
         }
         auto& [stream, peer_addr] = has_stream.value();
 
         auto session = session_manager_.assign_session(std::move(stream), peer_addr);
         LOG_VERBOSE("Accept connection from {}, session_id : {}", peer_addr, session->id);
-        // TODO: add auth func
         kosio::spawn(handle_request(session));
         kosio::spawn(send_response(session));
     }
@@ -67,9 +59,7 @@ auto vosfs::rpc::RpcProvider::shutdown() -> kosio::async::Task<Result<void>> {
 
     // Clear sessions
     for (auto session : session_manager_.sessions_ | std::views::values) {
-        detail::FixedRpcResponseHeader resp_header;
-        resp_header.status = RpcResult::kNeedShutdown;
-        co_await session->stream.write_all({reinterpret_cast<char*>(&resp_header), sizeof(resp_header)});
+
     }
 
     while (!session_manager_.sessions_.empty()) {
@@ -101,10 +91,6 @@ auto vosfs::rpc::RpcProvider::handle_request(std::shared_ptr<detail::Session> se
         auto service_type = req_header.service_type;
         auto method_type = req_header.method_type;
 
-        if (service_type == ServiceType::kConn && method_type == MethodType::kConnShutdown) {
-            break;
-        }
-
         if (payload_size > detail::MAX_RPC_MESSAGE_SIZE) {
             LOG_ERROR("Receive unusual rpc message, request_id : {}, payload_size : {}.", request_id, payload_size);
             break;
@@ -122,6 +108,7 @@ auto vosfs::rpc::RpcProvider::handle_request(std::shared_ptr<detail::Session> se
         request.service_type = service_type;
         request.method_type = method_type;
         request.req_payload = std::string{buf.data(), payload_size};
+        request.status = RpcResult::kSuccess;
 
         co_await requests.push(std::move(request));
     }
@@ -140,47 +127,28 @@ auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> ses
         // get rpc request
         auto has_request = co_await requests.pop();
         if (!has_request) {
-            resp_header.status = RpcResult::kShutdown;
-            co_await stream.write_all({reinterpret_cast<char*>(&resp_header), sizeof(resp_header)});
             break;
         }
         auto request = std::move(has_request.value());
         resp_header.request_id = htobe64(request.request_id);
         resp_header.status = request.status;
 
-        if (auth_mode_ == AuthMode::REQUIRED) {
-            if (!session->is_authorized && !detail::RpcInvoker::is_unauth_method(request.service_type, request.method_type)) {
-                resp_header.status = RpcResult::kUnauthenticated;
-            }
-        } else {
-            if (resp_header.status == RpcResult::kSuccess) {
-                auto result = co_await invoker_.invoke(
-                request.service_type,
-                request.method_type,
-                request.req_payload,
-                {buf.data(), buf.capacity()});
-                resp_header.status = static_cast<RpcResult::Status>(result.value());
-                resp_header.payload_size = htobe32(result.size());
-            }
-        }
+        auto result = co_await invoker_.invoke(
+        request.service_type,
+        request.method_type,
+        request.req_payload,
+        {buf.data(), buf.capacity()});
+        resp_header.status = static_cast<RpcResult::Status>(result.value());
+        resp_header.payload_size = htobe32(result.size());
 
-        if (be32toh(resp_header.payload_size) <= detail::MAX_RPC_MESSAGE_SIZE) [[likely]] {
-            auto ret = co_await stream.write_vectored(
-                std::span<const char>(reinterpret_cast<char*>(&resp_header), sizeof(resp_header)),
-                std::span<const char>(buf.data(), be32toh(resp_header.payload_size))
-            );
+        auto ret = co_await stream.write_vectored(
+            std::span<const char>(reinterpret_cast<char*>(&resp_header), sizeof(resp_header)),
+            std::span<const char>(buf.data(), be32toh(resp_header.payload_size))
+        );
 
-            if (!ret) {
-                LOG_ERROR("Failed to send response to Session {} : {}", session->id, ret.error());
-                break;
-            }
-        } else {
-            resp_header.status = RpcResult::kMessageTooLarge;
-            auto ret = co_await stream.write_all({buf.data(), be32toh(resp_header.payload_size)});
-            if (!ret) {
-                LOG_ERROR("Failed to send response to Session {} : {}", session->id, ret.error());
-                break;
-            }
+        if (!ret) {
+            LOG_ERROR("Failed to send response to Session {} : {}", session->id, ret.error());
+            break;
         }
     }
 

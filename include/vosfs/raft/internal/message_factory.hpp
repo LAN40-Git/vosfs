@@ -5,15 +5,6 @@
 namespace vosfs::raft::detail {
 class MessageFactory {
 public:
-    enum RequestType {
-        kRequestVoteRequest,
-    };
-
-    enum ResponseType {
-        kRequestVoteResponse,
-    };
-
-public:
     MessageFactory() = delete;
 
 public:

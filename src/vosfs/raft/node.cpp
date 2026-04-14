@@ -35,6 +35,7 @@ auto vosfs::raft::RaftNode::create(std::string_view data_dir) -> kosio::async::T
     if (!has_transport) {
         co_return std::unexpected{has_transport.error()};
     }
+    auto transport = std::move(has_transport.value());
 
     // 加载 HardState
     auto has_hard_state = persister.load_hard_state();
@@ -43,12 +44,33 @@ auto vosfs::raft::RaftNode::create(std::string_view data_dir) -> kosio::async::T
     }
     auto hard_state = std::move(has_hard_state.value());
 
+    // 加载快照
+    auto has_snapshot_data = persister.load_snapshot();
+    if (!has_snapshot_data) {
+        co_return std::unexpected{has_snapshot_data.error()};
+    }
+    auto snapshot_data = std::move(has_snapshot_data.value());
+
     // 创建节点
+    co_return std::unique_ptr<RaftNode>(new RaftNode{
+        std::move(raft_rpc_server),
+        std::move(client_rpc_server),
+        std::move(persister),
+        std::move(logs),
+        std::move(transport),
+        std::move(hard_state),
+        std::move(snapshot_data)});
+}
+
+auto vosfs::raft::RaftNode::run() -> kosio::async::Task<void> {
 
 }
 
 auto vosfs::raft::RaftNode::shutdown() -> kosio::async::Task<void> {
     is_shutdown_.store(true, std::memory_order_release);
+    co_await transport_.shutdown();
+    co_await raft_rpc_server_->shutdown();
+    co_await client_rpc_server_->shutdown();
 }
 
 auto vosfs::raft::RaftNode::election_loop() -> kosio::async::Task<void> {
@@ -214,6 +236,10 @@ auto vosfs::raft::RaftNode::persist_hard_state() -> kosio::async::Task<void> {
 }
 
 void vosfs::raft::RaftNode::send_snapshot(uint64_t member_id, uint64_t offset) {
+    if (snapshot_data_.empty()) {
+        return;
+    }
+
     auto current_term = hard_state_.current_term();
     auto leader_id = transport_.member_id();
     auto last_included_index = logs_.last_included_index();
@@ -427,8 +453,7 @@ auto vosfs::raft::RaftNode::handle_install_snapshot_request(
     logs_.apply_snapshot(snapshot);
     // 通信层应用快照-集群配置
     if (auto ret = co_await transport_.apply_snapshot(snapshot); !ret) {
-        // 关闭节点
-        co_await shutdown();
+        LOG_FATAL("{}", ret.error());
     }
 
     co_return detail::MessageFactory::make_install_snapshot_response(resp_payload, current_term);

@@ -108,17 +108,13 @@ auto vosfs::raft::Persister::save_snapshot(const std::string& snapshot_data) con
     return Result<void>{};
 }
 
-auto vosfs::raft::Persister::load_snapshot() const -> Result<Snapshot> {
+auto vosfs::raft::Persister::load_snapshot() const -> Result<std::string> {
     std::string payload;
-    Snapshot snapshot;
     if (auto status = engine_.get(SNAPSHOT_KEY, &payload); !status.ok()) {
         LOG_ERROR("failed to load snapshot : {}", status.ToString());
         return std::unexpected{make_error(Error::kRecoverFailed)};
     }
-    if (!snapshot.ParseFromString(payload)) {
-        return std::unexpected{make_error(Error::kProtoParseFailed)};
-    }
-    return snapshot;
+    return payload;
 }
 
 auto vosfs::raft::Persister::save_entry(const LogEntry& entry) const -> Result<void> {

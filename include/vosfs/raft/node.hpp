@@ -5,13 +5,31 @@
 
 namespace vosfs::raft {
 class RaftNode {
+    using RpcServer = std::unique_ptr<rpc::RpcProvider>;
+    using SnapshotContextMap = std::unordered_map<uint64_t, uint64_t>;
 private:
-    // explicit RaftNode() {}
+    explicit RaftNode(
+        RpcServer raft_rpc_server,
+        RpcServer client_rpc_server,
+        Persister&& persister,
+        detail::RaftLog&& logs,
+        detail::Transport&& transport,
+        HardState&& hard_state,
+        std::string&& snapshot_data)
+        : raft_rpc_server_(std::move(raft_rpc_server))
+        , client_rpc_server_(std::move(client_rpc_server))
+        , persister_(std::move(persister))
+        , logs_(std::move(logs))
+        , transport_(std::move(transport))
+        , hard_state_(std::move(hard_state))
+        , snapshot_data_(std::move(snapshot_data)) {}
 
 public:
     static auto create(std::string_view data_dir) -> kosio::async::Task<Result<std::unique_ptr<RaftNode>>>;
 
 public:
+    auto run() -> kosio::async::Task<void>;
+
     auto shutdown() -> kosio::async::Task<void>;
 
 private:
@@ -63,24 +81,22 @@ private:
 
 private:
     enum Role { kLeader, kFollower, kCandidate };
-    using RpcServer = std::unique_ptr<rpc::RpcProvider>;
-    using SnapshotContextMap = std::unordered_map<uint64_t, uint64_t>;
 
     kosio::sync::Mutex    mutex_;
     std::atomic<bool>     is_shutdown_{false};
     std::atomic<uint64_t> last_reset_time_{0};
-    std::string           snapshot_data_{};
-    SnapshotContextMap    snapshot_context_{};
+    RpcServer             raft_rpc_server_;
+    RpcServer             client_rpc_server_;
     Persister             persister_;
     StateMachine          state_machine_;
     detail::RaftLog       logs_;
     detail::Transport     transport_;
-    RpcServer             raft_rpc_server_;
-    RpcServer             client_rpc_server_;
 
     /* RaftState from https://raft.github.io/raft.pdf */
     // Persistent state on all servers
-    HardState               hard_state_;
+    HardState          hard_state_;
+    std::string        snapshot_data_{};
+    SnapshotContextMap snapshot_context_{};
 
     // Volatile state on all servers
     std::size_t             votes_{0};

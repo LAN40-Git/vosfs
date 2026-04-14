@@ -9,10 +9,6 @@ public:
     enum Status : uint8_t {
         kSuccess = 0,
         kFailed,
-        kShutdown,
-        kRedirect,
-        kNeedShutdown,
-        kUnauthenticated,
         kFindServiceTypeFailed,
         kFindMethodTypeFailed,
         kMessageTooLarge,
@@ -39,14 +35,6 @@ public:
             return "Success to handle rpc request.";
         case kFailed:
             return "Failed to handle rpc request.";
-        case kShutdown:
-            return "Normal shutdown.";
-        case kRedirect:
-            return "Need to redirect to leader.";
-        case kNeedShutdown:
-            return "Need to send the shutdown rp.";
-        case kUnauthenticated:
-            return "Failed to handle unauthenticated rpc request.";
         case kFindServiceTypeFailed:
             return "Failed to find service type.";
         case kFindMethodTypeFailed:
@@ -71,6 +59,19 @@ private:
 
 static auto make_result(uint8_t status, uint32_t size = 0) -> RpcResult {
     return RpcResult{status, size};
+}
+
+template<typename T>
+[[nodiscard]]
+static auto serialize_response(const T& response, std::span<char> resp_payload) -> RpcResult {
+    auto size = static_cast<int>(response.ByteSizeLong());
+    if (size > detail::MAX_RPC_MESSAGE_SIZE) {
+        return make_result(RpcResult::kMessageTooLarge);
+    }
+    if (!response.SerializeToArray(resp_payload.data(), size)) {
+        return make_result(RpcResult::kMessageSerializeFailed);
+    }
+    return make_result(RpcResult::kSuccess, size);
 }
 } // namespace vosfs::rpc
 

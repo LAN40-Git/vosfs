@@ -13,15 +13,9 @@ class RpcProvider {
         ShutDown
     };
 
-public:
-    enum class AuthMode {
-        NONE = 0,
-        REQUIRED
-    };
-
 private:
-    explicit RpcProvider(uint16_t port, AuthMode auth_mode, kosio::net::TcpListener listener)
-        : port_(port), auth_mode_(auth_mode), listener_(std::move(listener)) {}
+    explicit RpcProvider(uint16_t port, kosio::net::TcpListener listener)
+        : port_(port), listener_(std::move(listener)) {}
 
 public:
     // Delete copy
@@ -34,7 +28,7 @@ public:
 
 public:
     [[REMEMBER_CO_AWAIT]]
-    static auto create(uint16_t port, AuthMode auth_mode) -> kosio::async::Task<Result<std::unique_ptr<RpcProvider>>>;
+    static auto create(uint16_t port) -> kosio::async::Task<Result<std::unique_ptr<RpcProvider>>>;
 
 public:
     void register_handler(
@@ -61,7 +55,6 @@ private:
     using RpcRequest = detail::RpcInvoker::Request;
 
     uint16_t                port_;
-    AuthMode                auth_mode_;
     kosio::net::TcpListener listener_;
     bool                    is_accepting_{true};
     detail::SessionManager  session_manager_;

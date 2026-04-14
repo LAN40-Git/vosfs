@@ -13,7 +13,7 @@ public:
         ServiceType         service_type{};
         MethodType          method_type{};
         std::string         req_payload{};
-        RpcResult::Status   status{RpcResult::kSuccess};
+        RpcResult::Status   status{};
     };
 
     using RequestQueue = util::SPSCQueue<Request>;

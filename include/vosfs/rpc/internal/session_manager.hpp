@@ -9,7 +9,6 @@ class RpcProvider;
 
 namespace vosfs::rpc::detail {
 struct Session {
-    bool                     is_authorized;
     uint64_t                 id;
     kosio::net::TcpStream    stream;
     kosio::net::SocketAddr   addr;
