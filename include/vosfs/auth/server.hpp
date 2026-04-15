@@ -1,6 +1,6 @@
 #pragma once
+#include <sqlite3.h>
 #include "vosfs/rpc/provider.hpp"
-#include "vosfs/auth/internal/sqlite_engine.hpp"
 
 namespace vosfs::auth {
 class AuthServer {
@@ -22,17 +22,17 @@ public:
     static auto create(uint16_t port) -> kosio::async::Task<Result<AuthServer>>;
 
 public:
-    void init() const;
+    void init();
     auto run() const -> kosio::async::Task<void>;
     auto shutdown() const -> kosio::async::Task<void>;
 
 private:
     [[REMEMBER_CO_AWAIT]]
     auto handle_put_user_request(std::string_view req_payload, std::span<char> resp_payload)
-        const -> kosio::async::Task<rpc::RpcResult>;
+    -> kosio::async::Task<rpc::RpcResult>;
 
 private:
-    sqlite3*       db_;
+    sqlite3*       db_{nullptr};
     rpc::RpcServer rpc_server_;
 };
 } // namespace vosfs::auth

@@ -2,7 +2,8 @@
 #include "vosfs/auth/server.hpp"
 #include "vosfs/common/util/message_factory.hpp"
 
-vosfs::auth::AuthServer::AuthServer(sqlite3* db, rpc::RpcServer rpc_server)
+vosfs::auth::AuthServer::AuthServer(
+    sqlite3* db, rpc::RpcServer rpc_server)
     : db_(db)
     , rpc_server_(std::move(rpc_server)) {
     init();
@@ -16,7 +17,9 @@ vosfs::auth::AuthServer::~AuthServer() {
 
 vosfs::auth::AuthServer::AuthServer(AuthServer&& other) noexcept
     : db_(other.db_)
-    , rpc_server_(std::move(other.rpc_server_)) {}
+    , rpc_server_(std::move(other.rpc_server_)) {
+    other.db_ = nullptr;
+}
 
 auto vosfs::auth::AuthServer::operator=(AuthServer&& other) noexcept -> AuthServer& {
     if (this == &other) {
@@ -34,12 +37,26 @@ auto vosfs::auth::AuthServer::operator=(AuthServer&& other) noexcept -> AuthServ
 }
 
 auto vosfs::auth::AuthServer::create(uint16_t port) -> kosio::async::Task<Result<AuthServer>> {
-    sqlite3* db = nullptr;
+    sqlite3* db;
+    if (sqlite3_open(DB_PATH.data(), &db) != SQLITE_OK) {
+        co_return std::unexpected{make_error(Error::kCreateAuthServerFailed)};
+    }
 
-    int rc = sqlite3_open(DB_PATH.data(), &db);
-    if (rc != SQLITE_OK) {
-        std::string err = sqlite3_errmsg(db);
-        sqlite3_close(db);
+    const char* sql = R"(
+        CREATE TABLE IF NOT EXISTS user (
+            uid INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE,
+            hashed_password TEXT NOT NULL,
+            role INTEGER NOT NULL,
+            status INTEGER NOT NULL,
+            create_time INTEGER NOT NULL,
+            modify_time INTEGER NOT NULL,
+            last_login_time INTEGER,
+            last_login_ip TEXT
+        );
+    )";
+
+    if (sqlite3_exec(db, sql, nullptr, nullptr, nullptr) != SQLITE_OK) {
         co_return std::unexpected{make_error(Error::kCreateAuthServerFailed)};
     }
 
@@ -51,7 +68,7 @@ auto vosfs::auth::AuthServer::create(uint16_t port) -> kosio::async::Task<Result
     co_return AuthServer{db, std::move(rpc_server)};
 }
 
-void vosfs::auth::AuthServer::init() const {
+void vosfs::auth::AuthServer::init() {
     // 注册 RPC 服务
     using rpc::ServiceType;
     using rpc::MethodType;
@@ -63,6 +80,9 @@ void vosfs::auth::AuthServer::init() const {
 }
 
 auto vosfs::auth::AuthServer::run() const -> kosio::async::Task<void> {
+    if (db_ == nullptr) {
+        co_return;
+    }
     co_await rpc_server_->run();
 }
 
@@ -72,7 +92,7 @@ auto vosfs::auth::AuthServer::shutdown() const -> kosio::async::Task<void> {
 
 auto vosfs::auth::AuthServer::handle_put_user_request(
     std::string_view req_payload,
-    std::span<char> resp_payload) const -> kosio::async::Task<rpc::RpcResult> {
+    std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
     PutUserRequest request;
     if (!request.ParseFromArray(req_payload.data(), static_cast<int>(req_payload.size()))) {
         co_return rpc::make_result(rpc::RpcResult::kMessageParseFailed);
@@ -89,10 +109,10 @@ auto vosfs::auth::AuthServer::handle_put_user_request(
     auto create_time = kosio::util::current_ms();
     auto modify_time = create_time;
 
-    const char* check_sql = "SELECT 1 FROM user WHERE name = ?;";
-    sqlite3_stmt* check_stat{nullptr};
+    const char* check_sql = "SELECT 1 FROM user WHERE name = ? LIMIT 1;";
+    sqlite3_stmt* check_stat;
     if (sqlite3_prepare_v2(db_, check_sql, -1, &check_stat, nullptr) != SQLITE_OK) {
-        LOG_ERROR("sqlite prepare failed");
+        LOG_ERROR("{}", sqlite3_errmsg(db_));
         sqlite3_finalize(check_stat);
         co_return util::MessageFactory::make_put_user_response(resp_payload, false, "unknown error");
     }
@@ -112,7 +132,7 @@ auto vosfs::auth::AuthServer::handle_put_user_request(
     )";
     sqlite3_stmt* put_stat{nullptr};
     if (sqlite3_prepare_v2(db_, put_sql, -1, &put_stat, nullptr) != SQLITE_OK) {
-        LOG_ERROR("sqlite prepare failed");
+        LOG_ERROR("{}", sqlite3_errmsg(db_));
         sqlite3_finalize(put_stat);
         co_return util::MessageFactory::make_put_user_response(resp_payload, false, "unknown error");
     }
