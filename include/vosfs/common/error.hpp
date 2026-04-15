@@ -10,6 +10,7 @@ class Error {
 public:
     enum ErrorCode {
         kUnknown = 8000,
+        kSQLError,
         kProtoSerializeFailed,
         kProtoParseFailed,
         kTruncateFailed,
@@ -31,6 +32,8 @@ public:
         switch (error_code_) {
             case kUnknown:
                 return "unknown error";
+            case kSQLError:
+                return "sql error occ";
             case kProtoSerializeFailed:
                 return "failed to serialize proto";
             case kProtoParseFailed:

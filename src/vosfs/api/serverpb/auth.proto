@@ -26,10 +26,12 @@ message User {
 message PutUserRequest {
   string name = 1;
   string hashed_password = 2;
+  Role role = 3;
 }
 
 message PutUserResponse {
-  optional User user = 1;
+  bool success = 1;
+  string msg = 2;
 }
 
 message GetUserRequest {

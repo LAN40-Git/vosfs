@@ -47,6 +47,7 @@ PROTOBUF_CONSTEXPR PutUserRequest::PutUserRequest(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.name_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.hashed_password_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.role_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct PutUserRequestDefaultTypeInternal {
   PROTOBUF_CONSTEXPR PutUserRequestDefaultTypeInternal()
@@ -59,9 +60,9 @@ struct PutUserRequestDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PutUserRequestDefaultTypeInternal _PutUserRequest_default_instance_;
 PROTOBUF_CONSTEXPR PutUserResponse::PutUserResponse(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_._has_bits_)*/{}
-  , /*decltype(_impl_._cached_size_)*/{}
-  , /*decltype(_impl_.user_)*/nullptr} {}
+    /*decltype(_impl_.msg_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.success_)*/false
+  , /*decltype(_impl_._cached_size_)*/{}} {}
 struct PutUserResponseDefaultTypeInternal {
   PROTOBUF_CONSTEXPR PutUserResponseDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
@@ -184,14 +185,15 @@ const uint32_t TableStruct_auth_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pro
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::vosfs::auth::PutUserRequest, _impl_.name_),
   PROTOBUF_FIELD_OFFSET(::vosfs::auth::PutUserRequest, _impl_.hashed_password_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::auth::PutUserResponse, _impl_._has_bits_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::auth::PutUserRequest, _impl_.role_),
+  ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::vosfs::auth::PutUserResponse, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::vosfs::auth::PutUserResponse, _impl_.user_),
-  0,
+  PROTOBUF_FIELD_OFFSET(::vosfs::auth::PutUserResponse, _impl_.success_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::auth::PutUserResponse, _impl_.msg_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::vosfs::auth::GetUserRequest, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -243,13 +245,13 @@ const uint32_t TableStruct_auth_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pro
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::vosfs::auth::User)},
   { 15, -1, -1, sizeof(::vosfs::auth::PutUserRequest)},
-  { 23, 30, -1, sizeof(::vosfs::auth::PutUserResponse)},
-  { 31, -1, -1, sizeof(::vosfs::auth::GetUserRequest)},
-  { 39, -1, -1, sizeof(::vosfs::auth::GetUserResponse)},
-  { 48, -1, -1, sizeof(::vosfs::auth::UpdateUserRequest)},
-  { 55, -1, -1, sizeof(::vosfs::auth::UpdateUserResponse)},
-  { 63, -1, -1, sizeof(::vosfs::auth::DeleteUserRequest)},
-  { 70, -1, -1, sizeof(::vosfs::auth::DeleteUserResponse)},
+  { 24, -1, -1, sizeof(::vosfs::auth::PutUserResponse)},
+  { 32, -1, -1, sizeof(::vosfs::auth::GetUserRequest)},
+  { 40, -1, -1, sizeof(::vosfs::auth::GetUserResponse)},
+  { 49, -1, -1, sizeof(::vosfs::auth::UpdateUserRequest)},
+  { 56, -1, -1, sizeof(::vosfs::auth::UpdateUserResponse)},
+  { 64, -1, -1, sizeof(::vosfs::auth::DeleteUserRequest)},
+  { 71, -1, -1, sizeof(::vosfs::auth::DeleteUserResponse)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -271,23 +273,23 @@ const char descriptor_table_protodef_auth_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "\006status\030\005 \001(\0162\022.vosfs.auth.Status\022\023\n\013cre"
   "ate_time\030\006 \001(\004\022\023\n\013modify_time\030\007 \001(\004\022\027\n\017l"
   "ast_login_time\030\010 \001(\004\022\025\n\rlast_login_ip\030\t "
-  "\001(\t\"7\n\016PutUserRequest\022\014\n\004name\030\001 \001(\t\022\027\n\017h"
-  "ashed_password\030\002 \001(\t\"\?\n\017PutUserResponse\022"
-  "#\n\004user\030\001 \001(\0132\020.vosfs.auth.UserH\000\210\001\001B\007\n\005"
-  "_user\"7\n\016GetUserRequest\022\014\n\004name\030\001 \001(\t\022\027\n"
-  "\017hashed_password\030\002 \001(\t\"<\n\017GetUserRespons"
-  "e\022\013\n\003uid\030\001 \001(\004\022\017\n\007success\030\002 \001(\010\022\013\n\003msg\030\003"
-  " \001(\t\"!\n\021UpdateUserRequest\022\014\n\004name\030\001 \001(\t\""
-  "2\n\022UpdateUserResponse\022\017\n\007success\030\001 \001(\010\022\013"
-  "\n\003msg\030\002 \001(\t\" \n\021DeleteUserRequest\022\013\n\003uid\030"
-  "\001 \001(\004\"2\n\022DeleteUserResponse\022\017\n\007success\030\001"
-  " \001(\010\022\013\n\003msg\030\002 \001(\t*\035\n\004Role\022\n\n\006kAdmin\020\000\022\t\n"
-  "\005kUser\020\001*%\n\006Status\022\014\n\010kEnabled\020\000\022\r\n\tkDis"
-  "abled\020\001b\006proto3"
+  "\001(\t\"W\n\016PutUserRequest\022\014\n\004name\030\001 \001(\t\022\027\n\017h"
+  "ashed_password\030\002 \001(\t\022\036\n\004role\030\003 \001(\0162\020.vos"
+  "fs.auth.Role\"/\n\017PutUserResponse\022\017\n\007succe"
+  "ss\030\001 \001(\010\022\013\n\003msg\030\002 \001(\t\"7\n\016GetUserRequest\022"
+  "\014\n\004name\030\001 \001(\t\022\027\n\017hashed_password\030\002 \001(\t\"<"
+  "\n\017GetUserResponse\022\013\n\003uid\030\001 \001(\004\022\017\n\007succes"
+  "s\030\002 \001(\010\022\013\n\003msg\030\003 \001(\t\"!\n\021UpdateUserReques"
+  "t\022\014\n\004name\030\001 \001(\t\"2\n\022UpdateUserResponse\022\017\n"
+  "\007success\030\001 \001(\010\022\013\n\003msg\030\002 \001(\t\" \n\021DeleteUse"
+  "rRequest\022\013\n\003uid\030\001 \001(\004\"2\n\022DeleteUserRespo"
+  "nse\022\017\n\007success\030\001 \001(\010\022\013\n\003msg\030\002 \001(\t*\035\n\004Rol"
+  "e\022\n\n\006kAdmin\020\000\022\t\n\005kUser\020\001*%\n\006Status\022\014\n\010kE"
+  "nabled\020\000\022\r\n\tkDisabled\020\001b\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_auth_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_auth_2eproto = {
-    false, false, 735, descriptor_table_protodef_auth_2eproto,
+    false, false, 751, descriptor_table_protodef_auth_2eproto,
     "auth.proto",
     &descriptor_table_auth_2eproto_once, nullptr, 0, 9,
     schemas, file_default_instances, TableStruct_auth_2eproto::offsets,
@@ -814,6 +816,7 @@ PutUserRequest::PutUserRequest(const PutUserRequest& from)
   new (&_impl_) Impl_{
       decltype(_impl_.name_){}
     , decltype(_impl_.hashed_password_){}
+    , decltype(_impl_.role_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -833,6 +836,7 @@ PutUserRequest::PutUserRequest(const PutUserRequest& from)
     _this->_impl_.hashed_password_.Set(from._internal_hashed_password(), 
       _this->GetArenaForAllocation());
   }
+  _this->_impl_.role_ = from._impl_.role_;
   // @@protoc_insertion_point(copy_constructor:vosfs.auth.PutUserRequest)
 }
 
@@ -843,6 +847,7 @@ inline void PutUserRequest::SharedCtor(
   new (&_impl_) Impl_{
       decltype(_impl_.name_){}
     , decltype(_impl_.hashed_password_){}
+    , decltype(_impl_.role_){0}
     , /*decltype(_impl_._cached_size_)*/{}
   };
   _impl_.name_.InitDefault();
@@ -882,6 +887,7 @@ void PutUserRequest::Clear() {
 
   _impl_.name_.ClearToEmpty();
   _impl_.hashed_password_.ClearToEmpty();
+  _impl_.role_ = 0;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -908,6 +914,15 @@ const char* PutUserRequest::_InternalParse(const char* ptr, ::_pbi::ParseContext
           ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
           CHK_(::_pbi::VerifyUTF8(str, "vosfs.auth.PutUserRequest.hashed_password"));
+        } else
+          goto handle_unusual;
+        continue;
+      // .vosfs.auth.Role role = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+          _internal_set_role(static_cast<::vosfs::auth::Role>(val));
         } else
           goto handle_unusual;
         continue;
@@ -960,6 +975,13 @@ uint8_t* PutUserRequest::_InternalSerialize(
         2, this->_internal_hashed_password(), target);
   }
 
+  // .vosfs.auth.Role role = 3;
+  if (this->_internal_role() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteEnumToArray(
+      3, this->_internal_role(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -990,6 +1012,12 @@ size_t PutUserRequest::ByteSizeLong() const {
         this->_internal_hashed_password());
   }
 
+  // .vosfs.auth.Role role = 3;
+  if (this->_internal_role() != 0) {
+    total_size += 1 +
+      ::_pbi::WireFormatLite::EnumSize(this->_internal_role());
+  }
+
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -1013,6 +1041,9 @@ void PutUserRequest::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const :
   }
   if (!from._internal_hashed_password().empty()) {
     _this->_internal_set_hashed_password(from._internal_hashed_password());
+  }
+  if (from._internal_role() != 0) {
+    _this->_internal_set_role(from._internal_role());
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -1041,6 +1072,7 @@ void PutUserRequest::InternalSwap(PutUserRequest* other) {
       &_impl_.hashed_password_, lhs_arena,
       &other->_impl_.hashed_password_, rhs_arena
   );
+  swap(_impl_.role_, other->_impl_.role_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata PutUserRequest::GetMetadata() const {
@@ -1053,17 +1085,8 @@ void PutUserRequest::InternalSwap(PutUserRequest* other) {
 
 class PutUserResponse::_Internal {
  public:
-  using HasBits = decltype(std::declval<PutUserResponse>()._impl_._has_bits_);
-  static const ::vosfs::auth::User& user(const PutUserResponse* msg);
-  static void set_has_user(HasBits* has_bits) {
-    (*has_bits)[0] |= 1u;
-  }
 };
 
-const ::vosfs::auth::User&
-PutUserResponse::_Internal::user(const PutUserResponse* msg) {
-  return *msg->_impl_.user_;
-}
 PutUserResponse::PutUserResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
@@ -1074,14 +1097,20 @@ PutUserResponse::PutUserResponse(const PutUserResponse& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   PutUserResponse* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_._has_bits_){from._impl_._has_bits_}
-    , /*decltype(_impl_._cached_size_)*/{}
-    , decltype(_impl_.user_){nullptr}};
+      decltype(_impl_.msg_){}
+    , decltype(_impl_.success_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  if (from._internal_has_user()) {
-    _this->_impl_.user_ = new ::vosfs::auth::User(*from._impl_.user_);
+  _impl_.msg_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.msg_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_msg().empty()) {
+    _this->_impl_.msg_.Set(from._internal_msg(), 
+      _this->GetArenaForAllocation());
   }
+  _this->_impl_.success_ = from._impl_.success_;
   // @@protoc_insertion_point(copy_constructor:vosfs.auth.PutUserResponse)
 }
 
@@ -1090,10 +1119,14 @@ inline void PutUserResponse::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_._has_bits_){}
+      decltype(_impl_.msg_){}
+    , decltype(_impl_.success_){false}
     , /*decltype(_impl_._cached_size_)*/{}
-    , decltype(_impl_.user_){nullptr}
   };
+  _impl_.msg_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.msg_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
 PutUserResponse::~PutUserResponse() {
@@ -1107,7 +1140,7 @@ PutUserResponse::~PutUserResponse() {
 
 inline void PutUserResponse::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  if (this != internal_default_instance()) delete _impl_.user_;
+  _impl_.msg_.Destroy();
 }
 
 void PutUserResponse::SetCachedSize(int size) const {
@@ -1120,27 +1153,32 @@ void PutUserResponse::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000001u) {
-    GOOGLE_DCHECK(_impl_.user_ != nullptr);
-    _impl_.user_->Clear();
-  }
-  _impl_._has_bits_.Clear();
+  _impl_.msg_.ClearToEmpty();
+  _impl_.success_ = false;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
 const char* PutUserResponse::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  _Internal::HasBits has_bits{};
   while (!ctx->Done(&ptr)) {
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // optional .vosfs.auth.User user = 1;
+      // bool success = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
-          ptr = ctx->ParseMessage(_internal_mutable_user(), ptr);
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.success_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string msg = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_msg();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "vosfs.auth.PutUserResponse.msg"));
         } else
           goto handle_unusual;
         continue;
@@ -1160,7 +1198,6 @@ const char* PutUserResponse::_InternalParse(const char* ptr, ::_pbi::ParseContex
     CHK_(ptr != nullptr);
   }  // while
 message_done:
-  _impl_._has_bits_.Or(has_bits);
   return ptr;
 failure:
   ptr = nullptr;
@@ -1174,11 +1211,20 @@ uint8_t* PutUserResponse::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // optional .vosfs.auth.User user = 1;
-  if (_internal_has_user()) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(1, _Internal::user(this),
-        _Internal::user(this).GetCachedSize(), target, stream);
+  // bool success = 1;
+  if (this->_internal_success() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(1, this->_internal_success(), target);
+  }
+
+  // string msg = 2;
+  if (!this->_internal_msg().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_msg().data(), static_cast<int>(this->_internal_msg().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "vosfs.auth.PutUserResponse.msg");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_msg(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -1197,12 +1243,16 @@ size_t PutUserResponse::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // optional .vosfs.auth.User user = 1;
-  cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000001u) {
+  // string msg = 2;
+  if (!this->_internal_msg().empty()) {
     total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-        *_impl_.user_);
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_msg());
+  }
+
+  // bool success = 1;
+  if (this->_internal_success() != 0) {
+    total_size += 1 + 1;
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
@@ -1223,9 +1273,11 @@ void PutUserResponse::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const 
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from._internal_has_user()) {
-    _this->_internal_mutable_user()->::vosfs::auth::User::MergeFrom(
-        from._internal_user());
+  if (!from._internal_msg().empty()) {
+    _this->_internal_set_msg(from._internal_msg());
+  }
+  if (from._internal_success() != 0) {
+    _this->_internal_set_success(from._internal_success());
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -1243,9 +1295,14 @@ bool PutUserResponse::IsInitialized() const {
 
 void PutUserResponse::InternalSwap(PutUserResponse* other) {
   using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
-  swap(_impl_.user_, other->_impl_.user_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.msg_, lhs_arena,
+      &other->_impl_.msg_, rhs_arena
+  );
+  swap(_impl_.success_, other->_impl_.success_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata PutUserResponse::GetMetadata() const {

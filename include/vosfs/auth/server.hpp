@@ -1,11 +1,15 @@
 #pragma once
 #include "vosfs/rpc/provider.hpp"
+#include "vosfs/auth/internal/sqlite_engine.hpp"
 
 namespace vosfs::auth {
 class AuthServer {
+    static constexpr std::string_view DB_PATH = "vosfs.db";
 private:
-    explicit AuthServer(rpc::RpcServer rpc_server)
-        : rpc_server_(std::move(rpc_server)) {}
+    explicit AuthServer(
+        detail::SQLiteEngine&& engine, rpc::RpcServer rpc_server)
+        : engine_(std::move(engine))
+        , rpc_server_(std::move(rpc_server)) {}
 
 public:
     [[REMEMBER_CO_AWAIT]]
@@ -21,6 +25,7 @@ private:
         -> kosio::async::Task<rpc::RpcResult>;
 
 private:
-    rpc::RpcServer rpc_server_;
+    detail::SQLiteEngine engine_;
+    rpc::RpcServer       rpc_server_;
 };
 } // namespace vosfs::auth

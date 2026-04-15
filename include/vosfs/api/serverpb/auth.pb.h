@@ -516,6 +516,7 @@ class PutUserRequest final :
   enum : int {
     kNameFieldNumber = 1,
     kHashedPasswordFieldNumber = 2,
+    kRoleFieldNumber = 3,
   };
   // string name = 1;
   void clear_name();
@@ -545,6 +546,15 @@ class PutUserRequest final :
   std::string* _internal_mutable_hashed_password();
   public:
 
+  // .vosfs.auth.Role role = 3;
+  void clear_role();
+  ::vosfs::auth::Role role() const;
+  void set_role(::vosfs::auth::Role value);
+  private:
+  ::vosfs::auth::Role _internal_role() const;
+  void _internal_set_role(::vosfs::auth::Role value);
+  public:
+
   // @@protoc_insertion_point(class_scope:vosfs.auth.PutUserRequest)
  private:
   class _Internal;
@@ -555,6 +565,7 @@ class PutUserRequest final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr hashed_password_;
+    int role_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -683,25 +694,31 @@ class PutUserResponse final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kUserFieldNumber = 1,
+    kMsgFieldNumber = 2,
+    kSuccessFieldNumber = 1,
   };
-  // optional .vosfs.auth.User user = 1;
-  bool has_user() const;
+  // string msg = 2;
+  void clear_msg();
+  const std::string& msg() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_msg(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_msg();
+  PROTOBUF_NODISCARD std::string* release_msg();
+  void set_allocated_msg(std::string* msg);
   private:
-  bool _internal_has_user() const;
+  const std::string& _internal_msg() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_msg(const std::string& value);
+  std::string* _internal_mutable_msg();
   public:
-  void clear_user();
-  const ::vosfs::auth::User& user() const;
-  PROTOBUF_NODISCARD ::vosfs::auth::User* release_user();
-  ::vosfs::auth::User* mutable_user();
-  void set_allocated_user(::vosfs::auth::User* user);
+
+  // bool success = 1;
+  void clear_success();
+  bool success() const;
+  void set_success(bool value);
   private:
-  const ::vosfs::auth::User& _internal_user() const;
-  ::vosfs::auth::User* _internal_mutable_user();
+  bool _internal_success() const;
+  void _internal_set_success(bool value);
   public:
-  void unsafe_arena_set_allocated_user(
-      ::vosfs::auth::User* user);
-  ::vosfs::auth::User* unsafe_arena_release_user();
 
   // @@protoc_insertion_point(class_scope:vosfs.auth.PutUserResponse)
  private:
@@ -711,9 +728,9 @@ class PutUserResponse final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr msg_;
+    bool success_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-    ::vosfs::auth::User* user_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_auth_2eproto;
@@ -2076,98 +2093,98 @@ inline void PutUserRequest::set_allocated_hashed_password(std::string* hashed_pa
   // @@protoc_insertion_point(field_set_allocated:vosfs.auth.PutUserRequest.hashed_password)
 }
 
+// .vosfs.auth.Role role = 3;
+inline void PutUserRequest::clear_role() {
+  _impl_.role_ = 0;
+}
+inline ::vosfs::auth::Role PutUserRequest::_internal_role() const {
+  return static_cast< ::vosfs::auth::Role >(_impl_.role_);
+}
+inline ::vosfs::auth::Role PutUserRequest::role() const {
+  // @@protoc_insertion_point(field_get:vosfs.auth.PutUserRequest.role)
+  return _internal_role();
+}
+inline void PutUserRequest::_internal_set_role(::vosfs::auth::Role value) {
+  
+  _impl_.role_ = value;
+}
+inline void PutUserRequest::set_role(::vosfs::auth::Role value) {
+  _internal_set_role(value);
+  // @@protoc_insertion_point(field_set:vosfs.auth.PutUserRequest.role)
+}
+
 // -------------------------------------------------------------------
 
 // PutUserResponse
 
-// optional .vosfs.auth.User user = 1;
-inline bool PutUserResponse::_internal_has_user() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
-  PROTOBUF_ASSUME(!value || _impl_.user_ != nullptr);
-  return value;
+// bool success = 1;
+inline void PutUserResponse::clear_success() {
+  _impl_.success_ = false;
 }
-inline bool PutUserResponse::has_user() const {
-  return _internal_has_user();
+inline bool PutUserResponse::_internal_success() const {
+  return _impl_.success_;
 }
-inline void PutUserResponse::clear_user() {
-  if (_impl_.user_ != nullptr) _impl_.user_->Clear();
-  _impl_._has_bits_[0] &= ~0x00000001u;
+inline bool PutUserResponse::success() const {
+  // @@protoc_insertion_point(field_get:vosfs.auth.PutUserResponse.success)
+  return _internal_success();
 }
-inline const ::vosfs::auth::User& PutUserResponse::_internal_user() const {
-  const ::vosfs::auth::User* p = _impl_.user_;
-  return p != nullptr ? *p : reinterpret_cast<const ::vosfs::auth::User&>(
-      ::vosfs::auth::_User_default_instance_);
+inline void PutUserResponse::_internal_set_success(bool value) {
+  
+  _impl_.success_ = value;
 }
-inline const ::vosfs::auth::User& PutUserResponse::user() const {
-  // @@protoc_insertion_point(field_get:vosfs.auth.PutUserResponse.user)
-  return _internal_user();
+inline void PutUserResponse::set_success(bool value) {
+  _internal_set_success(value);
+  // @@protoc_insertion_point(field_set:vosfs.auth.PutUserResponse.success)
 }
-inline void PutUserResponse::unsafe_arena_set_allocated_user(
-    ::vosfs::auth::User* user) {
-  if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.user_);
-  }
-  _impl_.user_ = user;
-  if (user) {
-    _impl_._has_bits_[0] |= 0x00000001u;
+
+// string msg = 2;
+inline void PutUserResponse::clear_msg() {
+  _impl_.msg_.ClearToEmpty();
+}
+inline const std::string& PutUserResponse::msg() const {
+  // @@protoc_insertion_point(field_get:vosfs.auth.PutUserResponse.msg)
+  return _internal_msg();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void PutUserResponse::set_msg(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.msg_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.auth.PutUserResponse.msg)
+}
+inline std::string* PutUserResponse::mutable_msg() {
+  std::string* _s = _internal_mutable_msg();
+  // @@protoc_insertion_point(field_mutable:vosfs.auth.PutUserResponse.msg)
+  return _s;
+}
+inline const std::string& PutUserResponse::_internal_msg() const {
+  return _impl_.msg_.Get();
+}
+inline void PutUserResponse::_internal_set_msg(const std::string& value) {
+  
+  _impl_.msg_.Set(value, GetArenaForAllocation());
+}
+inline std::string* PutUserResponse::_internal_mutable_msg() {
+  
+  return _impl_.msg_.Mutable(GetArenaForAllocation());
+}
+inline std::string* PutUserResponse::release_msg() {
+  // @@protoc_insertion_point(field_release:vosfs.auth.PutUserResponse.msg)
+  return _impl_.msg_.Release();
+}
+inline void PutUserResponse::set_allocated_msg(std::string* msg) {
+  if (msg != nullptr) {
+    
   } else {
-    _impl_._has_bits_[0] &= ~0x00000001u;
+    
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:vosfs.auth.PutUserResponse.user)
-}
-inline ::vosfs::auth::User* PutUserResponse::release_user() {
-  _impl_._has_bits_[0] &= ~0x00000001u;
-  ::vosfs::auth::User* temp = _impl_.user_;
-  _impl_.user_ = nullptr;
-#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
-  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
-  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  if (GetArenaForAllocation() == nullptr) { delete old; }
-#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
-  if (GetArenaForAllocation() != nullptr) {
-    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  _impl_.msg_.SetAllocated(msg, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.msg_.IsDefault()) {
+    _impl_.msg_.Set("", GetArenaForAllocation());
   }
-#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
-  return temp;
-}
-inline ::vosfs::auth::User* PutUserResponse::unsafe_arena_release_user() {
-  // @@protoc_insertion_point(field_release:vosfs.auth.PutUserResponse.user)
-  _impl_._has_bits_[0] &= ~0x00000001u;
-  ::vosfs::auth::User* temp = _impl_.user_;
-  _impl_.user_ = nullptr;
-  return temp;
-}
-inline ::vosfs::auth::User* PutUserResponse::_internal_mutable_user() {
-  _impl_._has_bits_[0] |= 0x00000001u;
-  if (_impl_.user_ == nullptr) {
-    auto* p = CreateMaybeMessage<::vosfs::auth::User>(GetArenaForAllocation());
-    _impl_.user_ = p;
-  }
-  return _impl_.user_;
-}
-inline ::vosfs::auth::User* PutUserResponse::mutable_user() {
-  ::vosfs::auth::User* _msg = _internal_mutable_user();
-  // @@protoc_insertion_point(field_mutable:vosfs.auth.PutUserResponse.user)
-  return _msg;
-}
-inline void PutUserResponse::set_allocated_user(::vosfs::auth::User* user) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  if (message_arena == nullptr) {
-    delete _impl_.user_;
-  }
-  if (user) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(user);
-    if (message_arena != submessage_arena) {
-      user = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, user, submessage_arena);
-    }
-    _impl_._has_bits_[0] |= 0x00000001u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000001u;
-  }
-  _impl_.user_ = user;
-  // @@protoc_insertion_point(field_set_allocated:vosfs.auth.PutUserResponse.user)
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:vosfs.auth.PutUserResponse.msg)
 }
 
 // -------------------------------------------------------------------

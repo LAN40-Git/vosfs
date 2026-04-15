@@ -1,5 +1,6 @@
 #pragma once
-#include "vosfs/api/serverpb/raft.pb.h"
+#include "raft.pb.h"
+#include "auth.pb.h"
 #include "vosfs/rpc/types.hpp"
 
 namespace vosfs::raft::detail {
