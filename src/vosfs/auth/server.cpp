@@ -5,9 +5,7 @@
 vosfs::auth::AuthServer::AuthServer(
     sqlite3* db, rpc::RpcServer rpc_server)
     : db_(db)
-    , rpc_server_(std::move(rpc_server)) {
-    init();
-}
+    , rpc_server_(std::move(rpc_server)) {}
 
 vosfs::auth::AuthServer::~AuthServer() {
     if (db_) {
@@ -68,7 +66,7 @@ auto vosfs::auth::AuthServer::create(uint16_t port) -> kosio::async::Task<Result
     co_return AuthServer{db, std::move(rpc_server)};
 }
 
-void vosfs::auth::AuthServer::init() {
+void vosfs::auth::AuthServer::init() const {
     // 注册 RPC 服务
     using rpc::ServiceType;
     using rpc::MethodType;
@@ -80,9 +78,7 @@ void vosfs::auth::AuthServer::init() {
 }
 
 auto vosfs::auth::AuthServer::run() const -> kosio::async::Task<void> {
-    if (db_ == nullptr) {
-        co_return;
-    }
+    init();
     co_await rpc_server_->run();
 }
 
@@ -92,14 +88,10 @@ auto vosfs::auth::AuthServer::shutdown() const -> kosio::async::Task<void> {
 
 auto vosfs::auth::AuthServer::handle_put_user_request(
     std::string_view req_payload,
-    std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
+    std::span<char> resp_payload) const -> kosio::async::Task<rpc::RpcResult> {
     PutUserRequest request;
     if (!request.ParseFromArray(req_payload.data(), static_cast<int>(req_payload.size()))) {
         co_return rpc::make_result(rpc::RpcResult::kMessageParseFailed);
-    }
-
-    if (request.name().empty() || request.hashed_password().empty()) {
-        co_return util::MessageFactory::make_put_user_response(resp_payload, false, "invalid name or password");
     }
 
     auto& name = request.name();
@@ -108,6 +100,10 @@ auto vosfs::auth::AuthServer::handle_put_user_request(
     auto status = Status::kEnabled;
     auto create_time = kosio::util::current_ms();
     auto modify_time = create_time;
+
+    if (name.empty() || hashed_password.empty()) {
+        co_return util::MessageFactory::make_put_user_response(resp_payload, false, "invalid name or password");
+    }
 
     const char* check_sql = "SELECT 1 FROM user WHERE name = ? LIMIT 1;";
     sqlite3_stmt* check_stat;
@@ -151,4 +147,22 @@ auto vosfs::auth::AuthServer::handle_put_user_request(
     sqlite3_finalize(put_stat);
 
     co_return util::MessageFactory::make_put_user_response(resp_payload, true, "register success");
+}
+
+auto vosfs::auth::AuthServer::handle_get_request(
+    std::string_view req_payload,
+    std::span<char> resp_payload) const -> kosio::async::Task<rpc::RpcResult> {
+    GetUserRequest request;
+    if (!request.ParseFromArray(req_payload.data(), static_cast<int>(req_payload.size()))) {
+        co_return rpc::make_result(rpc::RpcResult::kMessageParseFailed);
+    }
+
+    auto& name = request.name();
+    auto& hashed_password = request.hashed_password();
+
+    if (request.name().empty() || request.hashed_password().empty()) {
+        co_return util::MessageFactory::make_put_user_response(resp_payload, false, "invalid name or password");
+    }
+
+
 }

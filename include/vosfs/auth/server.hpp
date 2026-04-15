@@ -22,14 +22,18 @@ public:
     static auto create(uint16_t port) -> kosio::async::Task<Result<AuthServer>>;
 
 public:
-    void init();
+    void init() const; // 禁止放入构造函数
     auto run() const -> kosio::async::Task<void>;
     auto shutdown() const -> kosio::async::Task<void>;
 
 private:
     [[REMEMBER_CO_AWAIT]]
     auto handle_put_user_request(std::string_view req_payload, std::span<char> resp_payload)
-    -> kosio::async::Task<rpc::RpcResult>;
+        const -> kosio::async::Task<rpc::RpcResult>;
+
+    [[REMEMBER_CO_AWAIT]]
+    auto handle_get_request(std::string_view req_payload, std::span<char> resp_payload)
+        const -> kosio::async::Task<rpc::RpcResult>;
 
 private:
     sqlite3*       db_{nullptr};

@@ -17,10 +17,7 @@ vosfs::raft::RaftServer::RaftServer(
     , logs_(std::move(logs))
     , transport_(std::move(transport))
     , hard_state_(std::move(hard_state))
-    , snapshot_data_(std::move(snapshot_data)) {
-    // 初始化
-    init();
-}
+    , snapshot_data_(std::move(snapshot_data)) {}
 
 auto vosfs::raft::RaftServer::create(std::string_view data_dir) -> kosio::async::Task<Result<std::unique_ptr<RaftServer>>> {
     // 创建 Raft RPC 服务层
@@ -84,6 +81,7 @@ auto vosfs::raft::RaftServer::create(std::string_view data_dir) -> kosio::async:
 }
 
 auto vosfs::raft::RaftServer::run() -> kosio::async::Task<void> {
+    init();
     kosio::spawn(raft_rpc_server_->run());
     kosio::spawn(client_rpc_server_->run());
     co_await latch_.wait();
