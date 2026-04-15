@@ -1,5 +1,5 @@
 #include "vosfs/raft/server.hpp"
-#include "vosfs/raft/internal/message_factory.hpp"
+#include "vosfs/common/util/message_factory.hpp"
 #include <ranges>
 #include <kosio/signal/signal.hpp>
 
@@ -177,7 +177,7 @@ void vosfs::raft::RaftServer::do_election() {
     persister_.save_hard_state(hard_state_);
 
     // 广播选举请求
-    auto request = detail::MessageFactory::make_request_vote_request(
+    auto request = util::MessageFactory::make_request_vote_request(
         hard_state_.current_term(),
         transport_.member_id(),
         logs_.last_log_index(),
@@ -229,7 +229,7 @@ void vosfs::raft::RaftServer::do_heartbeat() {
         auto prev_log_term = logs_.get_term(prev_log_index);
 
         // 发送日志同步请求（心跳）
-        auto request = detail::MessageFactory::make_append_entries_request(
+        auto request = util::MessageFactory::make_append_entries_request(
             current_term,
             leader_id,
             prev_log_index,
@@ -297,7 +297,7 @@ void vosfs::raft::RaftServer::send_snapshot(uint64_t member_id, uint64_t offset)
     auto done = snapshot_context_[member_id] >= snapshot_data_.size();
 
     // 发送快照安装请求
-    auto request = detail::MessageFactory::make_install_snapshot_request(
+    auto request = util::MessageFactory::make_install_snapshot_request(
         current_term,
         leader_id,
         last_included_index,
@@ -333,7 +333,7 @@ auto vosfs::raft::RaftServer::handle_request_vote_request(
 
     auto current_term = hard_state_.current_term();
     if (term < current_term) {
-        co_return detail::MessageFactory::make_request_vote_response(resp_payload, transport_.member_id(), current_term, false);
+        co_return util::MessageFactory::make_request_vote_response(resp_payload, transport_.member_id(), current_term, false);
     }
 
     if (term > current_term) {
@@ -356,7 +356,7 @@ auto vosfs::raft::RaftServer::handle_request_vote_request(
         hard_state_.set_voted_for(candidate_id);
     }
 
-    co_return detail::MessageFactory::make_request_vote_response(resp_payload, transport_.member_id(), current_term, can_vote);
+    co_return util::MessageFactory::make_request_vote_response(resp_payload, transport_.member_id(), current_term, can_vote);
 }
 
 auto vosfs::raft::RaftServer::handle_append_entries_request(
@@ -379,7 +379,7 @@ auto vosfs::raft::RaftServer::handle_append_entries_request(
 
     auto current_term = hard_state_.current_term();
     if (term < current_term) {
-        co_return detail::MessageFactory::make_append_entries_response(
+        co_return util::MessageFactory::make_append_entries_response(
             resp_payload, transport_.member_id(), current_term, false, logs_.last_log_index());
     }
 
@@ -400,7 +400,7 @@ auto vosfs::raft::RaftServer::handle_append_entries_request(
     }
 
     if (!log_ok) {
-        co_return detail::MessageFactory::make_append_entries_response(
+        co_return util::MessageFactory::make_append_entries_response(
             resp_payload, transport_.member_id(),  current_term, false, logs_.last_log_index(), prev_log_index);
     }
 
@@ -429,7 +429,7 @@ auto vosfs::raft::RaftServer::handle_append_entries_request(
         apply_to_state_machine();
     }
 
-    co_return detail::MessageFactory::make_append_entries_response(
+    co_return util::MessageFactory::make_append_entries_response(
         resp_payload, transport_.member_id(), current_term, true, logs_.last_log_index());
 }
 
@@ -454,7 +454,7 @@ auto vosfs::raft::RaftServer::handle_install_snapshot_request(
 
     auto current_term = hard_state_.current_term();
     if (term < current_term) {
-        co_return detail::MessageFactory::make_install_snapshot_response(resp_payload, current_term);
+        co_return util::MessageFactory::make_install_snapshot_response(resp_payload, current_term);
     }
 
     if (term > current_term) {
@@ -472,7 +472,7 @@ auto vosfs::raft::RaftServer::handle_install_snapshot_request(
     snapshot_data_.append(data);
 
     if (!done) {
-        co_return detail::MessageFactory::make_install_snapshot_response(resp_payload, current_term);
+        co_return util::MessageFactory::make_install_snapshot_response(resp_payload, current_term);
     }
 
     persister_.save_snapshot(snapshot_data_);
@@ -480,7 +480,7 @@ auto vosfs::raft::RaftServer::handle_install_snapshot_request(
     Snapshot snapshot;
     if (!snapshot.ParseFromString(snapshot_data_)) {
         LOG_WARN("failed to parse from snapshot data.");
-        co_return detail::MessageFactory::make_install_snapshot_response(resp_payload, current_term);
+        co_return util::MessageFactory::make_install_snapshot_response(resp_payload, current_term);
     }
 
     // 状态机应用快照-更新 Inode 信息
@@ -490,7 +490,7 @@ auto vosfs::raft::RaftServer::handle_install_snapshot_request(
     // 通信层应用快照-集群配置
     co_await transport_.apply_snapshot(snapshot);
 
-    co_return detail::MessageFactory::make_install_snapshot_response(resp_payload, current_term);
+    co_return util::MessageFactory::make_install_snapshot_response(resp_payload, current_term);
 }
 
 auto vosfs::raft::RaftServer::handle_request_vote_response(std::string_view resp_payload) -> kosio::async::Task<void> {

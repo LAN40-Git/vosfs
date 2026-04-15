@@ -1,9 +1,9 @@
-#include "vosfs/raft/internal/message_factory.hpp"
+#include "vosfs/common/util/message_factory.hpp"
 
-auto vosfs::raft::detail::MessageFactory::make_request_vote_request(
+auto vosfs::util::MessageFactory::make_request_vote_request(
     uint64_t term, uint64_t candidate_id,
-    uint64_t last_log_index, uint64_t last_log_term) -> RequestVoteRequest {
-    RequestVoteRequest request;
+    uint64_t last_log_index, uint64_t last_log_term) -> raft::RequestVoteRequest {
+    raft::RequestVoteRequest request;
     request.set_term(term);
     request.set_candidate_id(candidate_id);
     request.set_last_log_index(last_log_index);
@@ -11,26 +11,26 @@ auto vosfs::raft::detail::MessageFactory::make_request_vote_request(
     return request;
 }
 
-auto vosfs::raft::detail::MessageFactory::make_request_vote_response(
+auto vosfs::util::MessageFactory::make_request_vote_response(
     std::span<char> resp_payload,
     uint64_t id,
     uint64_t term,
     bool vote_granted) -> rpc::RpcResult {
-    RequestVoteResponse response;
+    raft::RequestVoteResponse response;
     response.set_id(id);
     response.set_term(term);
     response.set_vote_granted(vote_granted);
     return rpc::serialize_response(response, resp_payload);
 }
 
-auto vosfs::raft::detail::MessageFactory::make_append_entries_request(
+auto vosfs::util::MessageFactory::make_append_entries_request(
     uint64_t term,
     uint64_t leader_id,
     uint64_t prev_log_index,
     uint64_t prev_log_term,
-    std::vector<LogEntry>& entries,
-    uint64_t leader_commit) -> AppendEntriesRequest {
-    AppendEntriesRequest request;
+    std::vector<raft::LogEntry>& entries,
+    uint64_t leader_commit) -> raft::AppendEntriesRequest {
+    raft::AppendEntriesRequest request;
     request.set_term(term);
     request.set_leader_id(leader_id);
     request.set_prev_log_index(prev_log_index);
@@ -42,14 +42,14 @@ auto vosfs::raft::detail::MessageFactory::make_append_entries_request(
     return request;
 }
 
-auto vosfs::raft::detail::MessageFactory::make_append_entries_response(
+auto vosfs::util::MessageFactory::make_append_entries_response(
     std::span<char> resp_payload,
     uint64_t id,
     uint64_t term,
     bool success,
     uint64_t last_log_index,
     std::optional<uint64_t> conflict_index) -> rpc::RpcResult {
-    AppendEntriesResponse response;
+    raft::AppendEntriesResponse response;
     response.set_id(id);
     response.set_term(term);
     response.set_success(success);
@@ -60,15 +60,15 @@ auto vosfs::raft::detail::MessageFactory::make_append_entries_response(
     return rpc::serialize_response(response, resp_payload);
 }
 
-auto vosfs::raft::detail::MessageFactory::make_install_snapshot_request(
+auto vosfs::util::MessageFactory::make_install_snapshot_request(
     uint64_t term,
     uint64_t leader_id,
     uint64_t last_included_index,
     uint64_t last_included_term,
     uint64_t offset,
     std::string&& data,
-    bool done) -> InstallSnapshotRequest {
-    InstallSnapshotRequest request;
+    bool done) -> raft::InstallSnapshotRequest {
+    raft::InstallSnapshotRequest request;
     request.set_term(term);
     request.set_leader_id(leader_id);
     request.set_last_included_index(last_included_index);
@@ -79,10 +79,31 @@ auto vosfs::raft::detail::MessageFactory::make_install_snapshot_request(
     return request;
 }
 
-auto vosfs::raft::detail::MessageFactory::make_install_snapshot_response(
+auto vosfs::util::MessageFactory::make_install_snapshot_response(
     std::span<char> resp_payload,
     uint64_t term) -> rpc::RpcResult {
-    InstallSnapshotResponse response;
+    raft::InstallSnapshotResponse response;
     response.set_term(term);
+    return rpc::serialize_response(response, resp_payload);
+}
+
+auto vosfs::util::MessageFactory::make_put_user_request(
+    std::string&& name,
+    std::string&& hashed_password,
+    auth::Role role) -> auth::PutUserRequest {
+    auth::PutUserRequest request;
+    request.set_allocated_name(&name);
+    request.set_allocated_hashed_password(&hashed_password);
+    request.set_role(role);
+    return request;
+}
+
+auto vosfs::util::MessageFactory::make_put_user_response(
+    std::span<char> resp_payload,
+    bool success,
+    std::string&& msg) -> rpc::RpcResult {
+    auth::PutUserResponse response;
+    response.set_success(success);
+    response.set_allocated_msg(&msg);
     return rpc::serialize_response(response, resp_payload);
 }
