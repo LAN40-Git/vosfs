@@ -6,6 +6,7 @@
 #include "vosfs/rpc/internal/session_manager.hpp"
 
 namespace vosfs::rpc {
+static inline thread_local std::shared_ptr<detail::Session> t_current_session{nullptr};
 class RpcProvider {
     enum Status {
         Running = 0,

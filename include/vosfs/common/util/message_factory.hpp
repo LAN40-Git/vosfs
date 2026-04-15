@@ -82,5 +82,38 @@ public:
         std::string&& name = "",
         auth::Role role = auth::kUser,
         uint64_t create_time = 0) -> rpc::RpcResult;
+
+    [[nodiscard]]
+    static auto make_update_user_name_request(
+        uint64_t uid,
+        std::string&& name) -> auth::UpdateUserNameRequest;
+
+    [[nodiscard]]
+    static auto make_update_user_name_response(
+        std::span<char> resp_payload,
+        bool success,
+        std::string&& msg) -> rpc::RpcResult;
+
+    [[nodiscard]]
+    static auto make_update_user_password_request(
+        uint64_t uid,
+        std::string&& hashed_password) -> auth::UpdateUserPasswordRequest;
+
+    [[nodiscard]]
+    static auto make_update_user_password_response(
+        std::span<char> resp_payload,
+        bool success,
+        std::string&& msg) -> rpc::RpcResult;
+
+    [[nodiscard]]
+    static auto make_update_user_role_request(
+        uint64_t uid,
+        auth::Role role) -> auth::UpdateUserRoleRequest;
+
+    [[nodiscard]]
+    static auto make_update_user_role_response(
+        std::span<char> resp_payload,
+        bool success,
+        std::string&& msg) -> rpc::RpcResult;
 };
 } // namespace vosfs::util

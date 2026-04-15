@@ -16,5 +16,5 @@ auto server() -> kosio::async::Task<void> {
 
 auto main() -> int {
     SET_LOG_LEVEL(kosio::log::LogLevel::Verbose);
-    kosio::runtime::MultiThreadBuilder::default_create().block_on(server());
+    kosio::runtime::CurrentThreadBuilder::default_create().block_on(server());
 }

@@ -133,3 +133,60 @@ auto vosfs::util::MessageFactory::make_get_user_response(
     response.set_create_time(create_time);
     return rpc::serialize_response(response, resp_payload);
 }
+
+auto vosfs::util::MessageFactory::make_update_user_name_request(
+    uint64_t uid,
+    std::string&& name) -> auth::UpdateUserNameRequest {
+    auth::UpdateUserNameRequest request;
+    request.set_uid(uid);
+    request.set_name(std::move(name));
+    return request;
+}
+
+auto vosfs::util::MessageFactory::make_update_user_name_response(
+    std::span<char> resp_payload,
+    bool success,
+    std::string&& msg) -> rpc::RpcResult {
+    auth::UpdateUserNameResponse response;
+    response.set_success(success);
+    response.set_msg(std::move(msg));
+    return rpc::serialize_response(response, resp_payload);
+}
+
+auto vosfs::util::MessageFactory::make_update_user_password_request(
+    uint64_t uid,
+    std::string&& hashed_password) -> auth::UpdateUserPasswordRequest {
+    auth::UpdateUserPasswordRequest request;
+    request.set_uid(uid);
+    request.set_hashed_password(std::move(hashed_password));
+    return request;
+}
+
+auto vosfs::util::MessageFactory::make_update_user_password_response(
+    std::span<char> resp_payload,
+    bool success,
+    std::string&& msg) -> rpc::RpcResult {
+    auth::UpdateUserPasswordResponse response;
+    response.set_success(success);
+    response.set_msg(std::move(msg));
+    return rpc::serialize_response(response, resp_payload);
+}
+
+auto vosfs::util::MessageFactory::make_update_user_role_request(
+    uint64_t uid,
+    auth::Role role) -> auth::UpdateUserRoleRequest {
+    auth::UpdateUserRoleRequest request;
+    request.set_uid(uid);
+    request.set_role(role);
+    return request;
+}
+
+auto vosfs::util::MessageFactory::make_update_user_role_response(
+    std::span<char> resp_payload,
+    bool success,
+    std::string&& msg) -> rpc::RpcResult {
+    auth::UpdateUserRoleResponse response;
+    response.set_success(success);
+    response.set_msg(std::move(msg));
+    return rpc::serialize_response(response, resp_payload);
+}

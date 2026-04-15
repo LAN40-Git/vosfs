@@ -114,7 +114,7 @@ auto vosfs::auth::AuthServer::handle_put_user_request(
         co_return util::MessageFactory::make_put_user_response(resp_payload, false, "unknown error");
     }
 
-    sqlite3_bind_text(stat, 1, name.data(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(stat, 1, name.data(), static_cast<int>(name.size()), SQLITE_STATIC);
     if (sqlite3_step(stat) == SQLITE_ROW) {
         sqlite3_finalize(stat);
         co_return util::MessageFactory::make_put_user_response(resp_payload, false, "repeated name");
@@ -146,8 +146,8 @@ auto vosfs::auth::AuthServer::handle_put_user_request(
         sqlite3_finalize(stat);
         co_return util::MessageFactory::make_put_user_response(resp_payload, false, "unknown error");
     }
-    sqlite3_finalize(stat);
 
+    sqlite3_finalize(stat);
     co_return util::MessageFactory::make_put_user_response(resp_payload, true, "register success");
 }
 
@@ -176,7 +176,7 @@ auto vosfs::auth::AuthServer::handle_get_user_request(
         co_return util::MessageFactory::make_get_user_response(resp_payload, false, "unknown error");
     }
 
-    sqlite3_bind_text(stat, 1, name.data(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(stat, 1, name.data(), static_cast<int>(name.size()), SQLITE_STATIC);
     if (sqlite3_step(stat) == SQLITE_ROW) {
         sqlite3_finalize(stat);
         exists = true;
@@ -197,10 +197,10 @@ auto vosfs::auth::AuthServer::handle_get_user_request(
         co_return util::MessageFactory::make_put_user_response(resp_payload, false, "unknown error");
     }
 
-    sqlite3_bind_text(stat, 1, name.data(), -1, SQLITE_STATIC);
-    sqlite3_bind_text(stat, 2, hashed_password.data(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(stat, 1, name.data(), static_cast<int>(name.size()), SQLITE_STATIC);
+    sqlite3_bind_text(stat, 2, hashed_password.data(), static_cast<int>(hashed_password.size()), SQLITE_STATIC);
 
-    // 账号存在但密码错误
+    // 用户存在但密码错误
     if (sqlite3_step(stat) != SQLITE_ROW) {
         sqlite3_finalize(stat);
         co_return util::MessageFactory::make_put_user_response(resp_payload, false, "incorrect password");
@@ -218,7 +218,31 @@ auto vosfs::auth::AuthServer::handle_get_user_request(
         co_return util::MessageFactory::make_put_user_response(resp_payload, false, "user has been disabled");
     }
     sqlite3_finalize(stat);
+    sqlite3_reset(stat);
+    sqlite3_clear_bindings(stat);
 
+    // 更新用户登录时间和 IP
+    sql = "UPDATE user SET last_login_time = ?, last_login_ip = ? WHERE uid = ?;";
+    if (sqlite3_prepare_v2(db_, sql, -1, &stat, nullptr) != SQLITE_OK) {
+        LOG_ERROR("{}", sqlite3_errmsg(db_));
+        sqlite3_finalize(stat);
+        co_return util::MessageFactory::make_get_user_response(resp_payload, false, "unknown error");
+    }
+
+    auto last_login_time = kosio::util::current_ms();
+    auto last_login_ip = rpc::t_current_session->addr.to_string();
+
+    sqlite3_bind_int(stat, 1, static_cast<int>(last_login_time));
+    sqlite3_bind_text(stat, 2, last_login_ip.data(), static_cast<int>(last_login_ip.size()), SQLITE_STATIC);
+    sqlite3_bind_int(stat, 3, uid);
+
+    // 更新失败
+    if (sqlite3_step(stat) != SQLITE_DONE) {
+        LOG_ERROR("failed to update data for user: {}-{}", uid, name);
+    }
+
+    // 返回用户信息
+    sqlite3_finalize(stat);
     co_return util::MessageFactory::make_get_user_response(
         resp_payload,
         true,
@@ -229,19 +253,18 @@ auto vosfs::auth::AuthServer::handle_get_user_request(
         create_time);
 }
 
-auto vosfs::auth::AuthServer::handle_update_user_request(
+auto vosfs::auth::AuthServer::handle_update_user_name_request(
     std::string_view req_payload,
     std::span<char> resp_payload) const -> kosio::async::Task<rpc::RpcResult> {
-    UpdateUserRequest request;
+    UpdateUserNameRequest request;
     if (!request.ParseFromArray(req_payload.data(), static_cast<int>(req_payload.size()))) {
         co_return rpc::make_result(rpc::RpcResult::kMessageParseFailed);
     }
 
     auto uid = request.uid();
     auto& name = request.name();
-    auto& hashed_password = request.hashed_password();
 
-    const char* sql = "UPDATE user SET name = ? hashed_password = ? WHERE uid = ?;";
+    const char* sql = "UPDATE user SET name = ? WHERE uid = ?;";
     sqlite3_stmt* stat;
     if (sqlite3_prepare_v2(db_, sql, -1, &stat, nullptr) != SQLITE_OK) {
         LOG_ERROR("{}", sqlite3_errmsg(db_));
@@ -249,13 +272,45 @@ auto vosfs::auth::AuthServer::handle_update_user_request(
         co_return util::MessageFactory::make_get_user_response(resp_payload, false, "unknown error");
     }
 
-    sqlite3_bind_text(stat, 1, name.data(), -1, SQLITE_STATIC);
-    sqlite3_bind_text(stat, 2, hashed_password.data(), -1, SQLITE_STATIC);
-    sqlite3_bind_int(stat, 3, uid);
-    if (sqlite3_step(stat) == SQLITE_ROW) {
+    sqlite3_bind_text(stat, 1, name.data(), static_cast<int>(name.size()), SQLITE_STATIC);
+    sqlite3_bind_int(stat, 2, uid);
+    if (sqlite3_step(stat) == SQLITE_DONE) {
         sqlite3_finalize(stat);
-
+        co_return util::MessageFactory::make_get_user_response(resp_payload, false, "modify failed");
     }
+
+    sqlite3_finalize(stat);
+    co_return util::MessageFactory::make_get_user_response(resp_payload, true, "modify success");
+}
+
+auto vosfs::auth::AuthServer::handle_update_user_password_request(
+    std::string_view req_payload,
+    std::span<char> resp_payload) const -> kosio::async::Task<rpc::RpcResult> {
+    UpdateUserPasswordRequest request;
+    if (!request.ParseFromArray(req_payload.data(), static_cast<int>(req_payload.size()))) {
+        co_return rpc::make_result(rpc::RpcResult::kMessageParseFailed);
+    }
+
+    auto uid = request.uid();
+    auto& name = request.name();
+
+    const char* sql = "UPDATE user SET name = ? WHERE uid = ?;";
+    sqlite3_stmt* stat;
+    if (sqlite3_prepare_v2(db_, sql, -1, &stat, nullptr) != SQLITE_OK) {
+        LOG_ERROR("{}", sqlite3_errmsg(db_));
+        sqlite3_finalize(stat);
+        co_return util::MessageFactory::make_get_user_response(resp_payload, false, "unknown error");
+    }
+
+    sqlite3_bind_text(stat, 1, name.data(), static_cast<int>(name.size()), SQLITE_STATIC);
+    sqlite3_bind_int(stat, 2, uid);
+    if (sqlite3_step(stat) == SQLITE_DONE) {
+        sqlite3_finalize(stat);
+        co_return util::MessageFactory::make_get_user_response(resp_payload, false, "modify failed");
+    }
+
+    sqlite3_finalize(stat);
+    co_return util::MessageFactory::make_get_user_response(resp_payload, true, "modify success");
 }
 
 auto vosfs::auth::AuthServer::handle_delete_user_request(

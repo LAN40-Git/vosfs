@@ -48,14 +48,32 @@ message GetUserResponse {
   uint64 create_time = 6;
 }
 
-message UpdateUserRequest {
+message UpdateUserNameRequest {
   uint64 uid = 1;
   string name = 2;
-  string hashed_password = 3;
-  Role role = 4;
 }
 
-message UpdateUserResponse {
+message UpdateUserNameResponse {
+  bool success = 1;
+  string msg = 2;
+}
+
+message UpdateUserPasswordRequest {
+  uint64 uid = 1;
+  string hashed_password = 2;
+}
+
+message UpdateUserPasswordResponse {
+  bool success = 1;
+  string msg = 2;
+}
+
+message UpdateUserRoleRequest {
+  uint64 uid = 1;
+  Role role = 2;
+}
+
+message UpdateUserRoleResponse {
   bool success = 1;
   string msg = 2;
 }
