@@ -5,6 +5,7 @@ file(GLOB API_SRCS
 
 file(GLOB COMMON_SRCS
         "common/*.cpp"
+        "common/util/*.cpp"
 )
 
 file(GLOB AUTH_SRCS

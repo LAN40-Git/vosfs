@@ -10,7 +10,6 @@ class Error {
 public:
     enum ErrorCode {
         kUnknown = 8000,
-        kSQLError,
         kProtoSerializeFailed,
         kProtoParseFailed,
         kTruncateFailed,
@@ -18,8 +17,8 @@ public:
         kCreateRpcConsumerFailed,
         kCreateRpcProviderFailed,
         kCreateRocksDBEngineFailed,
-        kCreateSQLiteEngineFailed,
         kCreatePeerFailed,
+        kCreateAuthServerFailed,
         kQueueShutdown,
     };
 
@@ -32,8 +31,6 @@ public:
         switch (error_code_) {
             case kUnknown:
                 return "unknown error";
-            case kSQLError:
-                return "sql error occ";
             case kProtoSerializeFailed:
                 return "failed to serialize proto";
             case kProtoParseFailed:
@@ -48,10 +45,10 @@ public:
                 return "failed to create rpc provider";
             case kCreateRocksDBEngineFailed:
                 return "failed to create rocksdb engine";
-            case kCreateSQLiteEngineFailed:
-                return "failed to create sqlite engine";
             case kCreatePeerFailed:
                 return "failed to create peer";
+            case kCreateAuthServerFailed:
+                return "failed to create auth server";
             case kQueueShutdown:
                 return "shutdown queue";
             default:

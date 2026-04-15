@@ -6,16 +6,23 @@ namespace vosfs::auth {
 class AuthServer {
     static constexpr std::string_view DB_PATH = "vosfs.db";
 private:
-    explicit AuthServer(
-        detail::SQLiteEngine&& engine, rpc::RpcServer rpc_server)
-        : engine_(std::move(engine))
-        , rpc_server_(std::move(rpc_server)) {}
+    explicit AuthServer(sqlite3* db, rpc::RpcServer rpc_server);
+
+public:
+    ~AuthServer();
+
+    AuthServer(const AuthServer&) = delete;
+    auto operator=(const AuthServer&) -> AuthServer& = delete;
+
+    AuthServer(AuthServer&& other) noexcept;
+    auto operator=(AuthServer&& other) noexcept -> AuthServer&;
 
 public:
     [[REMEMBER_CO_AWAIT]]
     static auto create(uint16_t port) -> kosio::async::Task<Result<AuthServer>>;
 
 public:
+    void init() const;
     auto run() const -> kosio::async::Task<void>;
     auto shutdown() const -> kosio::async::Task<void>;
 
@@ -25,7 +32,7 @@ private:
         const -> kosio::async::Task<rpc::RpcResult>;
 
 private:
-    detail::SQLiteEngine engine_;
-    rpc::RpcServer       rpc_server_;
+    sqlite3*       db_;
+    rpc::RpcServer rpc_server_;
 };
 } // namespace vosfs::auth

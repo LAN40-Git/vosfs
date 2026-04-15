@@ -127,7 +127,6 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
         auto ret = co_await stream_.read_exact(
             {reinterpret_cast<char*>(&resp_header), sizeof(resp_header)});
         if (!ret) {
-            LOG_ERROR("{}", ret.error());
             break;
         }
 

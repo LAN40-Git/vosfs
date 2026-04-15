@@ -92,8 +92,8 @@ auto vosfs::util::MessageFactory::make_put_user_request(
     std::string&& hashed_password,
     auth::Role role) -> auth::PutUserRequest {
     auth::PutUserRequest request;
-    request.set_allocated_name(&name);
-    request.set_allocated_hashed_password(&hashed_password);
+    request.set_name(std::move(name));
+    request.set_hashed_password(std::move(hashed_password));
     request.set_role(role);
     return request;
 }
@@ -104,6 +104,6 @@ auto vosfs::util::MessageFactory::make_put_user_response(
     std::string&& msg) -> rpc::RpcResult {
     auth::PutUserResponse response;
     response.set_success(success);
-    response.set_allocated_msg(&msg);
+    response.set_msg(std::move(msg));
     return rpc::serialize_response(response, resp_payload);
 }

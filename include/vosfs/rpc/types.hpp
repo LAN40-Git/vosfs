@@ -10,7 +10,7 @@ using RpcRequestHandler = std::function<kosio::async::Task<RpcResult>(std::strin
 enum class ServiceType : uint8_t {
     kMinService = 0,
     kRaft,
-    kUser,
+    kAuth,
     kMath, // for test
     kMaxService
 };
@@ -20,10 +20,10 @@ enum class MethodType : uint8_t {
     kRaftRequestVote,
     kRaftAppendEntries,
     kRaftInstallSnapshot,
-    kUserPutAccount,
-    kUserGetAccount,
-    kUserUpdateAccount,
-    kUserDeleteAccount,
+    kAuthPutUser,
+    kAuthGetUser,
+    kAuthUpdateUser,
+    kAuthDeleteUser,
     kMathAdd,
     kMathSub,
     kMaxMethod
@@ -36,7 +36,7 @@ public:
         switch (service_type) {
             case ServiceType::kRaft:
                 return "Raft";
-            case ServiceType::kUser:
+            case ServiceType::kAuth:
                 return "User";
             case ServiceType::kMath:
                 return "Math";
@@ -53,13 +53,13 @@ public:
                 return "RaftAppendEntries";
             case MethodType::kRaftInstallSnapshot:
                 return "RaftInstallSnapshot";
-            case MethodType::kUserPutAccount:
+            case MethodType::kAuthPutUser:
                 return "UserPutAccount";
-            case MethodType::kUserGetAccount:
+            case MethodType::kAuthGetUser:
                 return "UserGetAccount";
-            case MethodType::kUserUpdateAccount:
+            case MethodType::kAuthUpdateUser:
                 return "UserUpdateAccount";
-            case MethodType::kUserDeleteAccount:
+            case MethodType::kAuthDeleteUser:
                 return "UserDeleteAccount";
             case MethodType::kMathAdd:
                 return "MathAdd";

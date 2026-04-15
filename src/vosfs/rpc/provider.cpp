@@ -25,40 +25,28 @@ void vosfs::rpc::RpcProvider::register_handler(
 
 auto vosfs::rpc::RpcProvider::run() -> kosio::async::Task<void> {
     is_shutdown_.store(false, std::memory_order_release);
+    LOG_INFO("start rpc service on port {}", port_);
     while (true) {
         auto has_stream = co_await listener_.accept();
         if (!has_stream) {
-            if (has_stream.error().value() == ECANCELED) {
-                break;
-            }
             LOG_ERROR("failed to accept rpc connection: {}", has_stream.error());
-            continue;
+            break;
         }
         auto& [stream, peer_addr] = has_stream.value();
 
         auto session = session_manager_.assign_session(std::move(stream), peer_addr);
-        LOG_VERBOSE("accept connection from {}, session_id: {}", peer_addr, session->id);
+        LOG_INFO("accept connection from {}, session_id: {}", peer_addr, session->id);
         kosio::spawn(handle_request(session));
         kosio::spawn(send_response(session));
     }
-
-    is_shutdown_.store(true, std::memory_order_release);
 }
 
 auto vosfs::rpc::RpcProvider::shutdown() -> kosio::async::Task<void> {
-    while (!is_shutdown_.load(std::memory_order_acquire)) {
-        if (auto ret = co_await kosio::io::cancel(listener_.fd(), IORING_ASYNC_CANCEL_ALL); !ret) {
-            LOG_ERROR("{}", ret.error());
-            continue;
-        }
-
-        co_await kosio::time::sleep(50);
-    }
+    co_await listener_.close();
 
     // clear sessions
     while (!session_manager_.sessions_.empty()) {
         for (const auto& session : session_manager_.sessions_ | std::views::values) {
-            co_await session->requests.shutdown();
             if (auto ret = co_await kosio::io::cancel(session->stream.fd(), IORING_ASYNC_CANCEL_ALL); !ret) {
                 LOG_ERROR("{}", ret.error());
             }
@@ -80,7 +68,6 @@ auto vosfs::rpc::RpcProvider::handle_request(std::shared_ptr<detail::Session> se
         auto ret = co_await stream.read_exact(
             {reinterpret_cast<char*>(&req_header), sizeof(req_header)});
         if (!ret) {
-            LOG_ERROR("{}", ret.error());
             break;
         }
 
@@ -119,7 +106,7 @@ auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> ses
     auto& requests = session->requests;
     std::vector<char> buf(detail::MAX_RPC_MESSAGE_SIZE);
 
-    while (!is_shutdown_.load(std::memory_order_acquire)) {
+    while (true) {
         detail::FixedRpcResponseHeader resp_header;
         // get rpc request
         auto has_request = co_await requests.pop();
@@ -143,7 +130,6 @@ auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> ses
 
         if (!ret) {
             LOG_ERROR("failed to send response to session {}: {}", session->id, ret.error());
-            break;
         }
     }
 

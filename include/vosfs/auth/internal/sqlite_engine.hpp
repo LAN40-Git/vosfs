@@ -56,14 +56,15 @@ public:
 
 public:
     [[nodiscard]]
-    auto execute(std::string_view sql) const -> Result<void> {
+    auto execute(const char* sql, s) const -> Result<void> {
         char* err_msg = nullptr;
-        int rc = sqlite3_exec(db_, sql.data(), nullptr, nullptr, &err_msg);
+        int rc = sqlite3_exec(db_, sql, nullptr, nullptr, &err_msg);
 
         if (rc != SQLITE_OK) {
-            std::string err = err_msg ? err_msg : "unknown error";
-            LOG_ERROR("sql error: {}", err_msg);
-            sqlite3_free(err_msg);
+            if (err_msg) {
+                LOG_ERROR("sql error: {}", err_msg);
+                sqlite3_free(err_msg);
+            }
             return std::unexpected{make_error(Error::kSQLError)};
         }
 
