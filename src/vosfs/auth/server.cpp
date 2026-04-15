@@ -105,51 +105,53 @@ auto vosfs::auth::AuthServer::handle_put_user_request(
         co_return util::MessageFactory::make_put_user_response(resp_payload, false, "invalid name or password");
     }
 
-    const char* check_sql = "SELECT 1 FROM user WHERE name = ? LIMIT 1;";
-    sqlite3_stmt* check_stat;
-    if (sqlite3_prepare_v2(db_, check_sql, -1, &check_stat, nullptr) != SQLITE_OK) {
+    // 查询用户是否存在
+    const char* sql = "SELECT 1 FROM user WHERE name = ? LIMIT 1;";
+    sqlite3_stmt* stat;
+    if (sqlite3_prepare_v2(db_, sql, -1, &stat, nullptr) != SQLITE_OK) {
         LOG_ERROR("{}", sqlite3_errmsg(db_));
-        sqlite3_finalize(check_stat);
+        sqlite3_finalize(stat);
         co_return util::MessageFactory::make_put_user_response(resp_payload, false, "unknown error");
     }
 
-    sqlite3_bind_text(check_stat, 1, name.data(), -1, SQLITE_STATIC);
-    if (sqlite3_step(check_stat) == SQLITE_ROW) {
-        sqlite3_finalize(check_stat);
+    sqlite3_bind_text(stat, 1, name.data(), -1, SQLITE_STATIC);
+    if (sqlite3_step(stat) == SQLITE_ROW) {
+        sqlite3_finalize(stat);
         co_return util::MessageFactory::make_put_user_response(resp_payload, false, "repeated name");
     }
-    sqlite3_finalize(check_stat);
+    sqlite3_reset(stat);
+    sqlite3_clear_bindings(stat);
 
-    const char* put_sql = R"(
+    // 尝试创建用户
+    sql = R"(
         INSERT INTO user (
             name, hashed_password, role, status,
             create_time, modify_time, last_login_time, last_login_ip
         ) VALUES (?, ?, ?, ?, ?, ?, 0, '未知');
     )";
-    sqlite3_stmt* put_stat{nullptr};
-    if (sqlite3_prepare_v2(db_, put_sql, -1, &put_stat, nullptr) != SQLITE_OK) {
+    if (sqlite3_prepare_v2(db_, sql, -1, &stat, nullptr) != SQLITE_OK) {
         LOG_ERROR("{}", sqlite3_errmsg(db_));
-        sqlite3_finalize(put_stat);
+        sqlite3_finalize(stat);
         co_return util::MessageFactory::make_put_user_response(resp_payload, false, "unknown error");
     }
 
-    sqlite3_bind_text(put_stat, 1, name.data(), static_cast<int>(name.size()), SQLITE_STATIC);
-    sqlite3_bind_text(put_stat, 2, hashed_password.data(), static_cast<int>(hashed_password.size()), SQLITE_STATIC);
-    sqlite3_bind_int(put_stat, 3, static_cast<int>(role));
-    sqlite3_bind_int(put_stat, 4, static_cast<int>(status));
-    sqlite3_bind_int64(put_stat, 5, create_time);
-    sqlite3_bind_int64(put_stat, 6, modify_time);
+    sqlite3_bind_text(stat, 1, name.data(), static_cast<int>(name.size()), SQLITE_STATIC);
+    sqlite3_bind_text(stat, 2, hashed_password.data(), static_cast<int>(hashed_password.size()), SQLITE_STATIC);
+    sqlite3_bind_int(stat, 3, static_cast<int>(role));
+    sqlite3_bind_int(stat, 4, static_cast<int>(status));
+    sqlite3_bind_int64(stat, 5, create_time);
+    sqlite3_bind_int64(stat, 6, modify_time);
 
-    if (sqlite3_step(put_stat) != SQLITE_DONE) {
-        sqlite3_finalize(put_stat);
+    if (sqlite3_step(stat) != SQLITE_DONE) {
+        sqlite3_finalize(stat);
         co_return util::MessageFactory::make_put_user_response(resp_payload, false, "unknown error");
     }
-    sqlite3_finalize(put_stat);
+    sqlite3_finalize(stat);
 
     co_return util::MessageFactory::make_put_user_response(resp_payload, true, "register success");
 }
 
-auto vosfs::auth::AuthServer::handle_get_request(
+auto vosfs::auth::AuthServer::handle_get_user_request(
     std::string_view req_payload,
     std::span<char> resp_payload) const -> kosio::async::Task<rpc::RpcResult> {
     GetUserRequest request;
@@ -157,12 +159,107 @@ auto vosfs::auth::AuthServer::handle_get_request(
         co_return rpc::make_result(rpc::RpcResult::kMessageParseFailed);
     }
 
+    auto name = std::string{request.name()};
+    auto hashed_password = std::string{request.hashed_password()};
+
+    if (request.name().empty() || request.hashed_password().empty()) {
+        co_return util::MessageFactory::make_get_user_response(resp_payload, false, "invalid name or password");
+    }
+
+    // 查询用户是否存在
+    bool exists{false};
+    const char* sql = "SELECT 1 FROM user WHERE name = ? LIMIT 1;";
+    sqlite3_stmt* stat;
+    if (sqlite3_prepare_v2(db_, sql, -1, &stat, nullptr) != SQLITE_OK) {
+        LOG_ERROR("{}", sqlite3_errmsg(db_));
+        sqlite3_finalize(stat);
+        co_return util::MessageFactory::make_get_user_response(resp_payload, false, "unknown error");
+    }
+
+    sqlite3_bind_text(stat, 1, name.data(), -1, SQLITE_STATIC);
+    if (sqlite3_step(stat) == SQLITE_ROW) {
+        sqlite3_finalize(stat);
+        exists = true;
+    }
+    sqlite3_reset(stat);
+    sqlite3_clear_bindings(stat);
+
+    // 用户不存在
+    if (!exists) {
+        sqlite3_finalize(stat);
+        co_return util::MessageFactory::make_put_user_response(resp_payload, false, "user not exists");
+    }
+
+    sql = "SELECT uid, role, status, create_time FROM user WHERE name = ? AND hashed_password = ? LIMIT 1;";
+    if (sqlite3_prepare_v2(db_, sql, -1, &stat, nullptr) != SQLITE_OK) {
+        LOG_ERROR("{}", sqlite3_errmsg(db_));
+        sqlite3_finalize(stat);
+        co_return util::MessageFactory::make_put_user_response(resp_payload, false, "unknown error");
+    }
+
+    sqlite3_bind_text(stat, 1, name.data(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(stat, 2, hashed_password.data(), -1, SQLITE_STATIC);
+
+    // 账号存在但密码错误
+    if (sqlite3_step(stat) != SQLITE_ROW) {
+        sqlite3_finalize(stat);
+        co_return util::MessageFactory::make_put_user_response(resp_payload, false, "incorrect password");
+    }
+
+    // 账号密码都正确，返回用户信息
+    auto uid = sqlite3_column_int(stat, 0);
+    auto role = static_cast<Role>(sqlite3_column_int(stat, 1));
+    auto status = static_cast<Status>(sqlite3_column_int(stat, 2));
+    auto create_time = sqlite3_column_int(stat, 3);
+
+    // 用户被禁用
+    if (status == kDisabled) {
+        sqlite3_finalize(stat);
+        co_return util::MessageFactory::make_put_user_response(resp_payload, false, "user has been disabled");
+    }
+    sqlite3_finalize(stat);
+
+    co_return util::MessageFactory::make_get_user_response(
+        resp_payload,
+        true,
+        "login success",
+        uid,
+        std::move(name),
+        role,
+        create_time);
+}
+
+auto vosfs::auth::AuthServer::handle_update_user_request(
+    std::string_view req_payload,
+    std::span<char> resp_payload) const -> kosio::async::Task<rpc::RpcResult> {
+    UpdateUserRequest request;
+    if (!request.ParseFromArray(req_payload.data(), static_cast<int>(req_payload.size()))) {
+        co_return rpc::make_result(rpc::RpcResult::kMessageParseFailed);
+    }
+
+    auto uid = request.uid();
     auto& name = request.name();
     auto& hashed_password = request.hashed_password();
 
-    if (request.name().empty() || request.hashed_password().empty()) {
-        co_return util::MessageFactory::make_put_user_response(resp_payload, false, "invalid name or password");
+    const char* sql = "UPDATE user SET name = ? hashed_password = ? WHERE uid = ?;";
+    sqlite3_stmt* stat;
+    if (sqlite3_prepare_v2(db_, sql, -1, &stat, nullptr) != SQLITE_OK) {
+        LOG_ERROR("{}", sqlite3_errmsg(db_));
+        sqlite3_finalize(stat);
+        co_return util::MessageFactory::make_get_user_response(resp_payload, false, "unknown error");
     }
 
+    sqlite3_bind_text(stat, 1, name.data(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(stat, 2, hashed_password.data(), -1, SQLITE_STATIC);
+    sqlite3_bind_int(stat, 3, uid);
+    if (sqlite3_step(stat) == SQLITE_ROW) {
+        sqlite3_finalize(stat);
+
+    }
+}
+
+auto vosfs::auth::AuthServer::handle_delete_user_request(
+    std::string_view req_payload,
+    std::span<char> resp_payload) const -> kosio::async::Task<rpc::RpcResult> {
 
 }

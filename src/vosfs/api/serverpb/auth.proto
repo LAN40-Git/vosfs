@@ -40,13 +40,19 @@ message GetUserRequest {
 }
 
 message GetUserResponse {
-  uint64 uid = 1;
-  bool success = 2;
-  string msg = 3;
+  bool success = 1;
+  string msg = 2;
+  uint64 uid = 3;
+  string name = 4;
+  Role role = 5;
+  uint64 create_time = 6;
 }
 
 message UpdateUserRequest {
-  string name = 1;
+  uint64 uid = 1;
+  string name = 2;
+  string hashed_password = 3;
+  Role role = 4;
 }
 
 message UpdateUserResponse {

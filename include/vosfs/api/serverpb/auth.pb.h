@@ -1027,11 +1027,14 @@ class GetUserResponse final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kMsgFieldNumber = 3,
-    kUidFieldNumber = 1,
-    kSuccessFieldNumber = 2,
+    kMsgFieldNumber = 2,
+    kNameFieldNumber = 4,
+    kUidFieldNumber = 3,
+    kSuccessFieldNumber = 1,
+    kRoleFieldNumber = 5,
+    kCreateTimeFieldNumber = 6,
   };
-  // string msg = 3;
+  // string msg = 2;
   void clear_msg();
   const std::string& msg() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -1045,7 +1048,21 @@ class GetUserResponse final :
   std::string* _internal_mutable_msg();
   public:
 
-  // uint64 uid = 1;
+  // string name = 4;
+  void clear_name();
+  const std::string& name() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_name();
+  PROTOBUF_NODISCARD std::string* release_name();
+  void set_allocated_name(std::string* name);
+  private:
+  const std::string& _internal_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_name(const std::string& value);
+  std::string* _internal_mutable_name();
+  public:
+
+  // uint64 uid = 3;
   void clear_uid();
   uint64_t uid() const;
   void set_uid(uint64_t value);
@@ -1054,13 +1071,31 @@ class GetUserResponse final :
   void _internal_set_uid(uint64_t value);
   public:
 
-  // bool success = 2;
+  // bool success = 1;
   void clear_success();
   bool success() const;
   void set_success(bool value);
   private:
   bool _internal_success() const;
   void _internal_set_success(bool value);
+  public:
+
+  // .vosfs.auth.Role role = 5;
+  void clear_role();
+  ::vosfs::auth::Role role() const;
+  void set_role(::vosfs::auth::Role value);
+  private:
+  ::vosfs::auth::Role _internal_role() const;
+  void _internal_set_role(::vosfs::auth::Role value);
+  public:
+
+  // uint64 create_time = 6;
+  void clear_create_time();
+  uint64_t create_time() const;
+  void set_create_time(uint64_t value);
+  private:
+  uint64_t _internal_create_time() const;
+  void _internal_set_create_time(uint64_t value);
   public:
 
   // @@protoc_insertion_point(class_scope:vosfs.auth.GetUserResponse)
@@ -1072,8 +1107,11 @@ class GetUserResponse final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr msg_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
     uint64_t uid_;
     bool success_;
+    int role_;
+    uint64_t create_time_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1202,9 +1240,12 @@ class UpdateUserRequest final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kNameFieldNumber = 1,
+    kNameFieldNumber = 2,
+    kHashedPasswordFieldNumber = 3,
+    kUidFieldNumber = 1,
+    kRoleFieldNumber = 4,
   };
-  // string name = 1;
+  // string name = 2;
   void clear_name();
   const std::string& name() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -1218,6 +1259,38 @@ class UpdateUserRequest final :
   std::string* _internal_mutable_name();
   public:
 
+  // string hashed_password = 3;
+  void clear_hashed_password();
+  const std::string& hashed_password() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_hashed_password(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_hashed_password();
+  PROTOBUF_NODISCARD std::string* release_hashed_password();
+  void set_allocated_hashed_password(std::string* hashed_password);
+  private:
+  const std::string& _internal_hashed_password() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_hashed_password(const std::string& value);
+  std::string* _internal_mutable_hashed_password();
+  public:
+
+  // uint64 uid = 1;
+  void clear_uid();
+  uint64_t uid() const;
+  void set_uid(uint64_t value);
+  private:
+  uint64_t _internal_uid() const;
+  void _internal_set_uid(uint64_t value);
+  public:
+
+  // .vosfs.auth.Role role = 4;
+  void clear_role();
+  ::vosfs::auth::Role role() const;
+  void set_role(::vosfs::auth::Role value);
+  private:
+  ::vosfs::auth::Role _internal_role() const;
+  void _internal_set_role(::vosfs::auth::Role value);
+  public:
+
   // @@protoc_insertion_point(class_scope:vosfs.auth.UpdateUserRequest)
  private:
   class _Internal;
@@ -1227,6 +1300,9 @@ class UpdateUserRequest final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr hashed_password_;
+    uint64_t uid_;
+    int role_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2295,27 +2371,7 @@ inline void GetUserRequest::set_allocated_hashed_password(std::string* hashed_pa
 
 // GetUserResponse
 
-// uint64 uid = 1;
-inline void GetUserResponse::clear_uid() {
-  _impl_.uid_ = uint64_t{0u};
-}
-inline uint64_t GetUserResponse::_internal_uid() const {
-  return _impl_.uid_;
-}
-inline uint64_t GetUserResponse::uid() const {
-  // @@protoc_insertion_point(field_get:vosfs.auth.GetUserResponse.uid)
-  return _internal_uid();
-}
-inline void GetUserResponse::_internal_set_uid(uint64_t value) {
-  
-  _impl_.uid_ = value;
-}
-inline void GetUserResponse::set_uid(uint64_t value) {
-  _internal_set_uid(value);
-  // @@protoc_insertion_point(field_set:vosfs.auth.GetUserResponse.uid)
-}
-
-// bool success = 2;
+// bool success = 1;
 inline void GetUserResponse::clear_success() {
   _impl_.success_ = false;
 }
@@ -2335,7 +2391,7 @@ inline void GetUserResponse::set_success(bool value) {
   // @@protoc_insertion_point(field_set:vosfs.auth.GetUserResponse.success)
 }
 
-// string msg = 3;
+// string msg = 2;
 inline void GetUserResponse::clear_msg() {
   _impl_.msg_.ClearToEmpty();
 }
@@ -2385,11 +2441,141 @@ inline void GetUserResponse::set_allocated_msg(std::string* msg) {
   // @@protoc_insertion_point(field_set_allocated:vosfs.auth.GetUserResponse.msg)
 }
 
+// uint64 uid = 3;
+inline void GetUserResponse::clear_uid() {
+  _impl_.uid_ = uint64_t{0u};
+}
+inline uint64_t GetUserResponse::_internal_uid() const {
+  return _impl_.uid_;
+}
+inline uint64_t GetUserResponse::uid() const {
+  // @@protoc_insertion_point(field_get:vosfs.auth.GetUserResponse.uid)
+  return _internal_uid();
+}
+inline void GetUserResponse::_internal_set_uid(uint64_t value) {
+  
+  _impl_.uid_ = value;
+}
+inline void GetUserResponse::set_uid(uint64_t value) {
+  _internal_set_uid(value);
+  // @@protoc_insertion_point(field_set:vosfs.auth.GetUserResponse.uid)
+}
+
+// string name = 4;
+inline void GetUserResponse::clear_name() {
+  _impl_.name_.ClearToEmpty();
+}
+inline const std::string& GetUserResponse::name() const {
+  // @@protoc_insertion_point(field_get:vosfs.auth.GetUserResponse.name)
+  return _internal_name();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void GetUserResponse::set_name(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.auth.GetUserResponse.name)
+}
+inline std::string* GetUserResponse::mutable_name() {
+  std::string* _s = _internal_mutable_name();
+  // @@protoc_insertion_point(field_mutable:vosfs.auth.GetUserResponse.name)
+  return _s;
+}
+inline const std::string& GetUserResponse::_internal_name() const {
+  return _impl_.name_.Get();
+}
+inline void GetUserResponse::_internal_set_name(const std::string& value) {
+  
+  _impl_.name_.Set(value, GetArenaForAllocation());
+}
+inline std::string* GetUserResponse::_internal_mutable_name() {
+  
+  return _impl_.name_.Mutable(GetArenaForAllocation());
+}
+inline std::string* GetUserResponse::release_name() {
+  // @@protoc_insertion_point(field_release:vosfs.auth.GetUserResponse.name)
+  return _impl_.name_.Release();
+}
+inline void GetUserResponse::set_allocated_name(std::string* name) {
+  if (name != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.name_.SetAllocated(name, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.name_.IsDefault()) {
+    _impl_.name_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:vosfs.auth.GetUserResponse.name)
+}
+
+// .vosfs.auth.Role role = 5;
+inline void GetUserResponse::clear_role() {
+  _impl_.role_ = 0;
+}
+inline ::vosfs::auth::Role GetUserResponse::_internal_role() const {
+  return static_cast< ::vosfs::auth::Role >(_impl_.role_);
+}
+inline ::vosfs::auth::Role GetUserResponse::role() const {
+  // @@protoc_insertion_point(field_get:vosfs.auth.GetUserResponse.role)
+  return _internal_role();
+}
+inline void GetUserResponse::_internal_set_role(::vosfs::auth::Role value) {
+  
+  _impl_.role_ = value;
+}
+inline void GetUserResponse::set_role(::vosfs::auth::Role value) {
+  _internal_set_role(value);
+  // @@protoc_insertion_point(field_set:vosfs.auth.GetUserResponse.role)
+}
+
+// uint64 create_time = 6;
+inline void GetUserResponse::clear_create_time() {
+  _impl_.create_time_ = uint64_t{0u};
+}
+inline uint64_t GetUserResponse::_internal_create_time() const {
+  return _impl_.create_time_;
+}
+inline uint64_t GetUserResponse::create_time() const {
+  // @@protoc_insertion_point(field_get:vosfs.auth.GetUserResponse.create_time)
+  return _internal_create_time();
+}
+inline void GetUserResponse::_internal_set_create_time(uint64_t value) {
+  
+  _impl_.create_time_ = value;
+}
+inline void GetUserResponse::set_create_time(uint64_t value) {
+  _internal_set_create_time(value);
+  // @@protoc_insertion_point(field_set:vosfs.auth.GetUserResponse.create_time)
+}
+
 // -------------------------------------------------------------------
 
 // UpdateUserRequest
 
-// string name = 1;
+// uint64 uid = 1;
+inline void UpdateUserRequest::clear_uid() {
+  _impl_.uid_ = uint64_t{0u};
+}
+inline uint64_t UpdateUserRequest::_internal_uid() const {
+  return _impl_.uid_;
+}
+inline uint64_t UpdateUserRequest::uid() const {
+  // @@protoc_insertion_point(field_get:vosfs.auth.UpdateUserRequest.uid)
+  return _internal_uid();
+}
+inline void UpdateUserRequest::_internal_set_uid(uint64_t value) {
+  
+  _impl_.uid_ = value;
+}
+inline void UpdateUserRequest::set_uid(uint64_t value) {
+  _internal_set_uid(value);
+  // @@protoc_insertion_point(field_set:vosfs.auth.UpdateUserRequest.uid)
+}
+
+// string name = 2;
 inline void UpdateUserRequest::clear_name() {
   _impl_.name_.ClearToEmpty();
 }
@@ -2437,6 +2623,76 @@ inline void UpdateUserRequest::set_allocated_name(std::string* name) {
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:vosfs.auth.UpdateUserRequest.name)
+}
+
+// string hashed_password = 3;
+inline void UpdateUserRequest::clear_hashed_password() {
+  _impl_.hashed_password_.ClearToEmpty();
+}
+inline const std::string& UpdateUserRequest::hashed_password() const {
+  // @@protoc_insertion_point(field_get:vosfs.auth.UpdateUserRequest.hashed_password)
+  return _internal_hashed_password();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void UpdateUserRequest::set_hashed_password(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.hashed_password_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.auth.UpdateUserRequest.hashed_password)
+}
+inline std::string* UpdateUserRequest::mutable_hashed_password() {
+  std::string* _s = _internal_mutable_hashed_password();
+  // @@protoc_insertion_point(field_mutable:vosfs.auth.UpdateUserRequest.hashed_password)
+  return _s;
+}
+inline const std::string& UpdateUserRequest::_internal_hashed_password() const {
+  return _impl_.hashed_password_.Get();
+}
+inline void UpdateUserRequest::_internal_set_hashed_password(const std::string& value) {
+  
+  _impl_.hashed_password_.Set(value, GetArenaForAllocation());
+}
+inline std::string* UpdateUserRequest::_internal_mutable_hashed_password() {
+  
+  return _impl_.hashed_password_.Mutable(GetArenaForAllocation());
+}
+inline std::string* UpdateUserRequest::release_hashed_password() {
+  // @@protoc_insertion_point(field_release:vosfs.auth.UpdateUserRequest.hashed_password)
+  return _impl_.hashed_password_.Release();
+}
+inline void UpdateUserRequest::set_allocated_hashed_password(std::string* hashed_password) {
+  if (hashed_password != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.hashed_password_.SetAllocated(hashed_password, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.hashed_password_.IsDefault()) {
+    _impl_.hashed_password_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:vosfs.auth.UpdateUserRequest.hashed_password)
+}
+
+// .vosfs.auth.Role role = 4;
+inline void UpdateUserRequest::clear_role() {
+  _impl_.role_ = 0;
+}
+inline ::vosfs::auth::Role UpdateUserRequest::_internal_role() const {
+  return static_cast< ::vosfs::auth::Role >(_impl_.role_);
+}
+inline ::vosfs::auth::Role UpdateUserRequest::role() const {
+  // @@protoc_insertion_point(field_get:vosfs.auth.UpdateUserRequest.role)
+  return _internal_role();
+}
+inline void UpdateUserRequest::_internal_set_role(::vosfs::auth::Role value) {
+  
+  _impl_.role_ = value;
+}
+inline void UpdateUserRequest::set_role(::vosfs::auth::Role value) {
+  _internal_set_role(value);
+  // @@protoc_insertion_point(field_set:vosfs.auth.UpdateUserRequest.role)
 }
 
 // -------------------------------------------------------------------

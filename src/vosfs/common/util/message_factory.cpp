@@ -107,3 +107,29 @@ auto vosfs::util::MessageFactory::make_put_user_response(
     response.set_msg(std::move(msg));
     return rpc::serialize_response(response, resp_payload);
 }
+
+auto vosfs::util::MessageFactory::make_get_user_request(
+    std::string&& name,
+    std::string&& hashed_password) -> auth::GetUserRequest {
+    auth::GetUserRequest request;
+    request.set_name(std::move(name));
+    request.set_hashed_password(std::move(hashed_password));
+    return request;
+}
+
+auto vosfs::util::MessageFactory::make_get_user_response(
+    std::span<char> resp_payload,
+    bool success,
+    std::string&& msg,
+    uint64_t uid,
+    std::string&& name,
+    auth::Role role,
+    uint64_t create_time) -> rpc::RpcResult {
+    auth::GetUserResponse response;
+    response.set_success(success);
+    response.set_msg(std::move(msg));
+    response.set_uid(uid);
+    response.set_name(std::move(name));
+    response.set_create_time(create_time);
+    return rpc::serialize_response(response, resp_payload);
+}

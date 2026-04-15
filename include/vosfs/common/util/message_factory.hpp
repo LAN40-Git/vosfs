@@ -67,5 +67,20 @@ public:
         std::span<char> resp_payload,
         bool success,
         std::string&& msg) -> rpc::RpcResult;
+
+    [[nodiscard]]
+    static auto make_get_user_request(
+        std::string&& name,
+        std::string&& hashed_password) -> auth::GetUserRequest;
+
+    [[nodiscard]]
+    static auto make_get_user_response(
+        std::span<char> resp_payload,
+        bool success,
+        std::string&& msg,
+        uint64_t uid = 0,
+        std::string&& name = "",
+        auth::Role role = auth::kUser,
+        uint64_t create_time = 0) -> rpc::RpcResult;
 };
 } // namespace vosfs::util
