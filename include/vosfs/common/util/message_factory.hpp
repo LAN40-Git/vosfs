@@ -115,5 +115,15 @@ public:
         std::span<char> resp_payload,
         bool success,
         std::string&& msg) -> rpc::RpcResult;
+
+    [[nodiscard]]
+    static auto make_delete_user_request(
+        uint64_t uid) -> auth::DeleteUserRequest;
+
+    [[nodiscard]]
+    static auto make_delete_user_response(
+        std::span<char> resp_payload,
+        bool success,
+        std::string&& msg) -> rpc::RpcResult;
 };
 } // namespace vosfs::util

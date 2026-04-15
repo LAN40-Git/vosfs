@@ -47,6 +47,11 @@ private:
     auto handle_update_user_role_request(std::string_view req_payload, std::span<char> resp_payload)
         const -> kosio::async::Task<rpc::RpcResult>;
 
+    [[REMEMBER_CO_AWAIT]]
+    auto handle_delete_user_request(std::string_view req_payload, std::span<char> resp_payload)
+        const -> kosio::async::Task<rpc::RpcResult>;
+
+
 private:
     sqlite3*       db_{nullptr};
     rpc::RpcServer rpc_server_;

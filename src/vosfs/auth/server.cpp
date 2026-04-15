@@ -139,8 +139,8 @@ auto vosfs::auth::AuthServer::handle_put_user_request(
     sqlite3_bind_text(stat, 2, hashed_password.data(), static_cast<int>(hashed_password.size()), SQLITE_STATIC);
     sqlite3_bind_int(stat, 3, static_cast<int>(role));
     sqlite3_bind_int(stat, 4, static_cast<int>(status));
-    sqlite3_bind_int64(stat, 5, create_time);
-    sqlite3_bind_int64(stat, 6, modify_time);
+    sqlite3_bind_int64(stat, 5, static_cast<int>(create_time));
+    sqlite3_bind_int64(stat, 6, static_cast<int>(modify_time));
 
     if (sqlite3_step(stat) != SQLITE_DONE) {
         sqlite3_finalize(stat);
@@ -269,18 +269,18 @@ auto vosfs::auth::AuthServer::handle_update_user_name_request(
     if (sqlite3_prepare_v2(db_, sql, -1, &stat, nullptr) != SQLITE_OK) {
         LOG_ERROR("{}", sqlite3_errmsg(db_));
         sqlite3_finalize(stat);
-        co_return util::MessageFactory::make_get_user_response(resp_payload, false, "unknown error");
+        co_return util::MessageFactory::make_update_user_name_response(resp_payload, false, "unknown error");
     }
 
     sqlite3_bind_text(stat, 1, name.data(), static_cast<int>(name.size()), SQLITE_STATIC);
-    sqlite3_bind_int(stat, 2, uid);
+    sqlite3_bind_int(stat, 2, static_cast<int>(uid));
     if (sqlite3_step(stat) == SQLITE_DONE) {
         sqlite3_finalize(stat);
-        co_return util::MessageFactory::make_get_user_response(resp_payload, false, "modify failed");
+        co_return util::MessageFactory::make_update_user_name_response(resp_payload, false, "modify failed");
     }
 
     sqlite3_finalize(stat);
-    co_return util::MessageFactory::make_get_user_response(resp_payload, true, "modify success");
+    co_return util::MessageFactory::make_update_user_name_response(resp_payload, true, "modify success");
 }
 
 auto vosfs::auth::AuthServer::handle_update_user_password_request(
@@ -292,29 +292,81 @@ auto vosfs::auth::AuthServer::handle_update_user_password_request(
     }
 
     auto uid = request.uid();
-    auto& name = request.name();
+    auto& hashed_password = request.hashed_password();
 
-    const char* sql = "UPDATE user SET name = ? WHERE uid = ?;";
+    const char* sql = "UPDATE user SET hashed_password = ? WHERE uid = ?;";
     sqlite3_stmt* stat;
     if (sqlite3_prepare_v2(db_, sql, -1, &stat, nullptr) != SQLITE_OK) {
         LOG_ERROR("{}", sqlite3_errmsg(db_));
         sqlite3_finalize(stat);
-        co_return util::MessageFactory::make_get_user_response(resp_payload, false, "unknown error");
+        co_return util::MessageFactory::make_update_user_password_response(resp_payload, false, "unknown error");
     }
 
-    sqlite3_bind_text(stat, 1, name.data(), static_cast<int>(name.size()), SQLITE_STATIC);
-    sqlite3_bind_int(stat, 2, uid);
+    sqlite3_bind_text(stat, 1, hashed_password.data(), static_cast<int>(hashed_password.size()), SQLITE_STATIC);
+    sqlite3_bind_int(stat, 2, static_cast<int>(uid));
     if (sqlite3_step(stat) == SQLITE_DONE) {
         sqlite3_finalize(stat);
-        co_return util::MessageFactory::make_get_user_response(resp_payload, false, "modify failed");
+        co_return util::MessageFactory::make_update_user_password_response(resp_payload, false, "modify failed");
     }
 
     sqlite3_finalize(stat);
-    co_return util::MessageFactory::make_get_user_response(resp_payload, true, "modify success");
+    co_return util::MessageFactory::make_update_user_password_response(resp_payload, true, "modify success");
+}
+
+auto vosfs::auth::AuthServer::handle_update_user_role_request(
+    std::string_view req_payload,
+    std::span<char> resp_payload) const -> kosio::async::Task<rpc::RpcResult> {
+    UpdateUserRoleRequest request;
+    if (!request.ParseFromArray(req_payload.data(), static_cast<int>(req_payload.size()))) {
+        co_return rpc::make_result(rpc::RpcResult::kMessageParseFailed);
+    }
+
+    auto uid = request.uid();
+    auto role = request.role();
+
+    const char* sql = "UPDATE user SET role = ? WHERE uid = ?;";
+    sqlite3_stmt* stat;
+    if (sqlite3_prepare_v2(db_, sql, -1, &stat, nullptr) != SQLITE_OK) {
+        LOG_ERROR("{}", sqlite3_errmsg(db_));
+        sqlite3_finalize(stat);
+        co_return util::MessageFactory::make_update_user_role_response(resp_payload, false, "unknown error");
+    }
+
+    sqlite3_bind_int(stat, 1, static_cast<int>(role));
+    sqlite3_bind_int(stat, 2, static_cast<int>(uid));
+    if (sqlite3_step(stat) == SQLITE_DONE) {
+        sqlite3_finalize(stat);
+        co_return util::MessageFactory::make_update_user_role_response(resp_payload, false, "modify failed");
+    }
+
+    sqlite3_finalize(stat);
+    co_return util::MessageFactory::make_update_user_role_response(resp_payload, true, "modify success");
 }
 
 auto vosfs::auth::AuthServer::handle_delete_user_request(
     std::string_view req_payload,
     std::span<char> resp_payload) const -> kosio::async::Task<rpc::RpcResult> {
+    DeleteUserRequest request;
+    if (!request.ParseFromArray(req_payload.data(), static_cast<int>(req_payload.size()))) {
+        co_return rpc::make_result(rpc::RpcResult::kMessageParseFailed);
+    }
 
+    auto uid = request.uid();
+
+    const char* sql = "DELETE FROM user WHERE uid = ?;";
+    sqlite3_stmt* stat;
+    if (sqlite3_prepare_v2(db_, sql, -1, &stat, nullptr) != SQLITE_OK) {
+        LOG_ERROR("{}", sqlite3_errmsg(db_));
+        sqlite3_finalize(stat);
+        co_return util::MessageFactory::make_delete_user_response(resp_payload, false, "unknown error");
+    }
+
+    sqlite3_bind_int(stat, 1, static_cast<int>(uid));
+    if (sqlite3_step(stat) == SQLITE_DONE) {
+        sqlite3_finalize(stat);
+        co_return util::MessageFactory::make_delete_user_response(resp_payload, false, "delete failed");
+    }
+
+    sqlite3_finalize(stat);
+    co_return util::MessageFactory::make_delete_user_response(resp_payload, true, "delete success");
 }

@@ -190,3 +190,19 @@ auto vosfs::util::MessageFactory::make_update_user_role_response(
     response.set_msg(std::move(msg));
     return rpc::serialize_response(response, resp_payload);
 }
+
+auto vosfs::util::MessageFactory::make_delete_user_request(uint64_t uid) -> auth::DeleteUserRequest {
+    auth::DeleteUserRequest request;
+    request.set_uid(uid);
+    return request;
+}
+
+auto vosfs::util::MessageFactory::make_delete_user_response(
+    std::span<char> resp_payload,
+    bool success,
+    std::string&& msg) -> rpc::RpcResult {
+    auth::DeleteUserResponse response;
+    response.set_success(success);
+    response.set_msg(std::move(msg));
+    return rpc::serialize_response(response, resp_payload);
+}
