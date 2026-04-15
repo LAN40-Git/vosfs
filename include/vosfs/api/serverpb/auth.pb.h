@@ -71,9 +71,9 @@ extern UpdateUserRequestDefaultTypeInternal _UpdateUserRequest_default_instance_
 class UpdateUserResponse;
 struct UpdateUserResponseDefaultTypeInternal;
 extern UpdateUserResponseDefaultTypeInternal _UpdateUserResponse_default_instance_;
-class UserInfo;
-struct UserInfoDefaultTypeInternal;
-extern UserInfoDefaultTypeInternal _UserInfo_default_instance_;
+class User;
+struct UserDefaultTypeInternal;
+extern UserDefaultTypeInternal _User_default_instance_;
 }  // namespace auth
 }  // namespace vosfs
 PROTOBUF_NAMESPACE_OPEN
@@ -85,7 +85,7 @@ template<> ::vosfs::auth::PutUserRequest* Arena::CreateMaybeMessage<::vosfs::aut
 template<> ::vosfs::auth::PutUserResponse* Arena::CreateMaybeMessage<::vosfs::auth::PutUserResponse>(Arena*);
 template<> ::vosfs::auth::UpdateUserRequest* Arena::CreateMaybeMessage<::vosfs::auth::UpdateUserRequest>(Arena*);
 template<> ::vosfs::auth::UpdateUserResponse* Arena::CreateMaybeMessage<::vosfs::auth::UpdateUserResponse>(Arena*);
-template<> ::vosfs::auth::UserInfo* Arena::CreateMaybeMessage<::vosfs::auth::UserInfo>(Arena*);
+template<> ::vosfs::auth::User* Arena::CreateMaybeMessage<::vosfs::auth::User>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace vosfs {
 namespace auth {
@@ -142,24 +142,24 @@ inline bool Status_Parse(
 }
 // ===================================================================
 
-class UserInfo final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.auth.UserInfo) */ {
+class User final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.auth.User) */ {
  public:
-  inline UserInfo() : UserInfo(nullptr) {}
-  ~UserInfo() override;
-  explicit PROTOBUF_CONSTEXPR UserInfo(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline User() : User(nullptr) {}
+  ~User() override;
+  explicit PROTOBUF_CONSTEXPR User(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  UserInfo(const UserInfo& from);
-  UserInfo(UserInfo&& from) noexcept
-    : UserInfo() {
+  User(const User& from);
+  User(User&& from) noexcept
+    : User() {
     *this = ::std::move(from);
   }
 
-  inline UserInfo& operator=(const UserInfo& from) {
+  inline User& operator=(const User& from) {
     CopyFrom(from);
     return *this;
   }
-  inline UserInfo& operator=(UserInfo&& from) noexcept {
+  inline User& operator=(User&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -182,20 +182,20 @@ class UserInfo final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const UserInfo& default_instance() {
+  static const User& default_instance() {
     return *internal_default_instance();
   }
-  static inline const UserInfo* internal_default_instance() {
-    return reinterpret_cast<const UserInfo*>(
-               &_UserInfo_default_instance_);
+  static inline const User* internal_default_instance() {
+    return reinterpret_cast<const User*>(
+               &_User_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     0;
 
-  friend void swap(UserInfo& a, UserInfo& b) {
+  friend void swap(User& a, User& b) {
     a.Swap(&b);
   }
-  inline void Swap(UserInfo* other) {
+  inline void Swap(User* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -208,7 +208,7 @@ class UserInfo final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(UserInfo* other) {
+  void UnsafeArenaSwap(User* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -216,14 +216,14 @@ class UserInfo final :
 
   // implements Message ----------------------------------------------
 
-  UserInfo* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<UserInfo>(arena);
+  User* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<User>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const UserInfo& from);
+  void CopyFrom(const User& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const UserInfo& from) {
-    UserInfo::MergeImpl(*this, from);
+  void MergeFrom( const User& from) {
+    User::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -241,15 +241,15 @@ class UserInfo final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(UserInfo* other);
+  void InternalSwap(User* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "vosfs.auth.UserInfo";
+    return "vosfs.auth.User";
   }
   protected:
-  explicit UserInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit User(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -369,7 +369,7 @@ class UserInfo final :
   void _internal_set_last_login_time(uint64_t value);
   public:
 
-  // @@protoc_insertion_point(class_scope:vosfs.auth.UserInfo)
+  // @@protoc_insertion_point(class_scope:vosfs.auth.User)
  private:
   class _Internal;
 
@@ -683,25 +683,25 @@ class PutUserResponse final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kUserInfoFieldNumber = 1,
+    kUserFieldNumber = 1,
   };
-  // optional .vosfs.auth.UserInfo user_info = 1;
-  bool has_user_info() const;
+  // optional .vosfs.auth.User user = 1;
+  bool has_user() const;
   private:
-  bool _internal_has_user_info() const;
+  bool _internal_has_user() const;
   public:
-  void clear_user_info();
-  const ::vosfs::auth::UserInfo& user_info() const;
-  PROTOBUF_NODISCARD ::vosfs::auth::UserInfo* release_user_info();
-  ::vosfs::auth::UserInfo* mutable_user_info();
-  void set_allocated_user_info(::vosfs::auth::UserInfo* user_info);
+  void clear_user();
+  const ::vosfs::auth::User& user() const;
+  PROTOBUF_NODISCARD ::vosfs::auth::User* release_user();
+  ::vosfs::auth::User* mutable_user();
+  void set_allocated_user(::vosfs::auth::User* user);
   private:
-  const ::vosfs::auth::UserInfo& _internal_user_info() const;
-  ::vosfs::auth::UserInfo* _internal_mutable_user_info();
+  const ::vosfs::auth::User& _internal_user() const;
+  ::vosfs::auth::User* _internal_mutable_user();
   public:
-  void unsafe_arena_set_allocated_user_info(
-      ::vosfs::auth::UserInfo* user_info);
-  ::vosfs::auth::UserInfo* unsafe_arena_release_user_info();
+  void unsafe_arena_set_allocated_user(
+      ::vosfs::auth::User* user);
+  ::vosfs::auth::User* unsafe_arena_release_user();
 
   // @@protoc_insertion_point(class_scope:vosfs.auth.PutUserResponse)
  private:
@@ -713,7 +713,7 @@ class PutUserResponse final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-    ::vosfs::auth::UserInfo* user_info_;
+    ::vosfs::auth::User* user_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_auth_2eproto;
@@ -1700,64 +1700,64 @@ class DeleteUserResponse final :
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
-// UserInfo
+// User
 
 // uint64 uid = 1;
-inline void UserInfo::clear_uid() {
+inline void User::clear_uid() {
   _impl_.uid_ = uint64_t{0u};
 }
-inline uint64_t UserInfo::_internal_uid() const {
+inline uint64_t User::_internal_uid() const {
   return _impl_.uid_;
 }
-inline uint64_t UserInfo::uid() const {
-  // @@protoc_insertion_point(field_get:vosfs.auth.UserInfo.uid)
+inline uint64_t User::uid() const {
+  // @@protoc_insertion_point(field_get:vosfs.auth.User.uid)
   return _internal_uid();
 }
-inline void UserInfo::_internal_set_uid(uint64_t value) {
+inline void User::_internal_set_uid(uint64_t value) {
   
   _impl_.uid_ = value;
 }
-inline void UserInfo::set_uid(uint64_t value) {
+inline void User::set_uid(uint64_t value) {
   _internal_set_uid(value);
-  // @@protoc_insertion_point(field_set:vosfs.auth.UserInfo.uid)
+  // @@protoc_insertion_point(field_set:vosfs.auth.User.uid)
 }
 
 // string name = 2;
-inline void UserInfo::clear_name() {
+inline void User::clear_name() {
   _impl_.name_.ClearToEmpty();
 }
-inline const std::string& UserInfo::name() const {
-  // @@protoc_insertion_point(field_get:vosfs.auth.UserInfo.name)
+inline const std::string& User::name() const {
+  // @@protoc_insertion_point(field_get:vosfs.auth.User.name)
   return _internal_name();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void UserInfo::set_name(ArgT0&& arg0, ArgT... args) {
+void User::set_name(ArgT0&& arg0, ArgT... args) {
  
  _impl_.name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:vosfs.auth.UserInfo.name)
+  // @@protoc_insertion_point(field_set:vosfs.auth.User.name)
 }
-inline std::string* UserInfo::mutable_name() {
+inline std::string* User::mutable_name() {
   std::string* _s = _internal_mutable_name();
-  // @@protoc_insertion_point(field_mutable:vosfs.auth.UserInfo.name)
+  // @@protoc_insertion_point(field_mutable:vosfs.auth.User.name)
   return _s;
 }
-inline const std::string& UserInfo::_internal_name() const {
+inline const std::string& User::_internal_name() const {
   return _impl_.name_.Get();
 }
-inline void UserInfo::_internal_set_name(const std::string& value) {
+inline void User::_internal_set_name(const std::string& value) {
   
   _impl_.name_.Set(value, GetArenaForAllocation());
 }
-inline std::string* UserInfo::_internal_mutable_name() {
+inline std::string* User::_internal_mutable_name() {
   
   return _impl_.name_.Mutable(GetArenaForAllocation());
 }
-inline std::string* UserInfo::release_name() {
-  // @@protoc_insertion_point(field_release:vosfs.auth.UserInfo.name)
+inline std::string* User::release_name() {
+  // @@protoc_insertion_point(field_release:vosfs.auth.User.name)
   return _impl_.name_.Release();
 }
-inline void UserInfo::set_allocated_name(std::string* name) {
+inline void User::set_allocated_name(std::string* name) {
   if (name != nullptr) {
     
   } else {
@@ -1769,45 +1769,45 @@ inline void UserInfo::set_allocated_name(std::string* name) {
     _impl_.name_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:vosfs.auth.UserInfo.name)
+  // @@protoc_insertion_point(field_set_allocated:vosfs.auth.User.name)
 }
 
 // string hashed_password = 3;
-inline void UserInfo::clear_hashed_password() {
+inline void User::clear_hashed_password() {
   _impl_.hashed_password_.ClearToEmpty();
 }
-inline const std::string& UserInfo::hashed_password() const {
-  // @@protoc_insertion_point(field_get:vosfs.auth.UserInfo.hashed_password)
+inline const std::string& User::hashed_password() const {
+  // @@protoc_insertion_point(field_get:vosfs.auth.User.hashed_password)
   return _internal_hashed_password();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void UserInfo::set_hashed_password(ArgT0&& arg0, ArgT... args) {
+void User::set_hashed_password(ArgT0&& arg0, ArgT... args) {
  
  _impl_.hashed_password_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:vosfs.auth.UserInfo.hashed_password)
+  // @@protoc_insertion_point(field_set:vosfs.auth.User.hashed_password)
 }
-inline std::string* UserInfo::mutable_hashed_password() {
+inline std::string* User::mutable_hashed_password() {
   std::string* _s = _internal_mutable_hashed_password();
-  // @@protoc_insertion_point(field_mutable:vosfs.auth.UserInfo.hashed_password)
+  // @@protoc_insertion_point(field_mutable:vosfs.auth.User.hashed_password)
   return _s;
 }
-inline const std::string& UserInfo::_internal_hashed_password() const {
+inline const std::string& User::_internal_hashed_password() const {
   return _impl_.hashed_password_.Get();
 }
-inline void UserInfo::_internal_set_hashed_password(const std::string& value) {
+inline void User::_internal_set_hashed_password(const std::string& value) {
   
   _impl_.hashed_password_.Set(value, GetArenaForAllocation());
 }
-inline std::string* UserInfo::_internal_mutable_hashed_password() {
+inline std::string* User::_internal_mutable_hashed_password() {
   
   return _impl_.hashed_password_.Mutable(GetArenaForAllocation());
 }
-inline std::string* UserInfo::release_hashed_password() {
-  // @@protoc_insertion_point(field_release:vosfs.auth.UserInfo.hashed_password)
+inline std::string* User::release_hashed_password() {
+  // @@protoc_insertion_point(field_release:vosfs.auth.User.hashed_password)
   return _impl_.hashed_password_.Release();
 }
-inline void UserInfo::set_allocated_hashed_password(std::string* hashed_password) {
+inline void User::set_allocated_hashed_password(std::string* hashed_password) {
   if (hashed_password != nullptr) {
     
   } else {
@@ -1819,145 +1819,145 @@ inline void UserInfo::set_allocated_hashed_password(std::string* hashed_password
     _impl_.hashed_password_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:vosfs.auth.UserInfo.hashed_password)
+  // @@protoc_insertion_point(field_set_allocated:vosfs.auth.User.hashed_password)
 }
 
 // .vosfs.auth.Role role = 4;
-inline void UserInfo::clear_role() {
+inline void User::clear_role() {
   _impl_.role_ = 0;
 }
-inline ::vosfs::auth::Role UserInfo::_internal_role() const {
+inline ::vosfs::auth::Role User::_internal_role() const {
   return static_cast< ::vosfs::auth::Role >(_impl_.role_);
 }
-inline ::vosfs::auth::Role UserInfo::role() const {
-  // @@protoc_insertion_point(field_get:vosfs.auth.UserInfo.role)
+inline ::vosfs::auth::Role User::role() const {
+  // @@protoc_insertion_point(field_get:vosfs.auth.User.role)
   return _internal_role();
 }
-inline void UserInfo::_internal_set_role(::vosfs::auth::Role value) {
+inline void User::_internal_set_role(::vosfs::auth::Role value) {
   
   _impl_.role_ = value;
 }
-inline void UserInfo::set_role(::vosfs::auth::Role value) {
+inline void User::set_role(::vosfs::auth::Role value) {
   _internal_set_role(value);
-  // @@protoc_insertion_point(field_set:vosfs.auth.UserInfo.role)
+  // @@protoc_insertion_point(field_set:vosfs.auth.User.role)
 }
 
 // .vosfs.auth.Status status = 5;
-inline void UserInfo::clear_status() {
+inline void User::clear_status() {
   _impl_.status_ = 0;
 }
-inline ::vosfs::auth::Status UserInfo::_internal_status() const {
+inline ::vosfs::auth::Status User::_internal_status() const {
   return static_cast< ::vosfs::auth::Status >(_impl_.status_);
 }
-inline ::vosfs::auth::Status UserInfo::status() const {
-  // @@protoc_insertion_point(field_get:vosfs.auth.UserInfo.status)
+inline ::vosfs::auth::Status User::status() const {
+  // @@protoc_insertion_point(field_get:vosfs.auth.User.status)
   return _internal_status();
 }
-inline void UserInfo::_internal_set_status(::vosfs::auth::Status value) {
+inline void User::_internal_set_status(::vosfs::auth::Status value) {
   
   _impl_.status_ = value;
 }
-inline void UserInfo::set_status(::vosfs::auth::Status value) {
+inline void User::set_status(::vosfs::auth::Status value) {
   _internal_set_status(value);
-  // @@protoc_insertion_point(field_set:vosfs.auth.UserInfo.status)
+  // @@protoc_insertion_point(field_set:vosfs.auth.User.status)
 }
 
 // uint64 create_time = 6;
-inline void UserInfo::clear_create_time() {
+inline void User::clear_create_time() {
   _impl_.create_time_ = uint64_t{0u};
 }
-inline uint64_t UserInfo::_internal_create_time() const {
+inline uint64_t User::_internal_create_time() const {
   return _impl_.create_time_;
 }
-inline uint64_t UserInfo::create_time() const {
-  // @@protoc_insertion_point(field_get:vosfs.auth.UserInfo.create_time)
+inline uint64_t User::create_time() const {
+  // @@protoc_insertion_point(field_get:vosfs.auth.User.create_time)
   return _internal_create_time();
 }
-inline void UserInfo::_internal_set_create_time(uint64_t value) {
+inline void User::_internal_set_create_time(uint64_t value) {
   
   _impl_.create_time_ = value;
 }
-inline void UserInfo::set_create_time(uint64_t value) {
+inline void User::set_create_time(uint64_t value) {
   _internal_set_create_time(value);
-  // @@protoc_insertion_point(field_set:vosfs.auth.UserInfo.create_time)
+  // @@protoc_insertion_point(field_set:vosfs.auth.User.create_time)
 }
 
 // uint64 modify_time = 7;
-inline void UserInfo::clear_modify_time() {
+inline void User::clear_modify_time() {
   _impl_.modify_time_ = uint64_t{0u};
 }
-inline uint64_t UserInfo::_internal_modify_time() const {
+inline uint64_t User::_internal_modify_time() const {
   return _impl_.modify_time_;
 }
-inline uint64_t UserInfo::modify_time() const {
-  // @@protoc_insertion_point(field_get:vosfs.auth.UserInfo.modify_time)
+inline uint64_t User::modify_time() const {
+  // @@protoc_insertion_point(field_get:vosfs.auth.User.modify_time)
   return _internal_modify_time();
 }
-inline void UserInfo::_internal_set_modify_time(uint64_t value) {
+inline void User::_internal_set_modify_time(uint64_t value) {
   
   _impl_.modify_time_ = value;
 }
-inline void UserInfo::set_modify_time(uint64_t value) {
+inline void User::set_modify_time(uint64_t value) {
   _internal_set_modify_time(value);
-  // @@protoc_insertion_point(field_set:vosfs.auth.UserInfo.modify_time)
+  // @@protoc_insertion_point(field_set:vosfs.auth.User.modify_time)
 }
 
 // uint64 last_login_time = 8;
-inline void UserInfo::clear_last_login_time() {
+inline void User::clear_last_login_time() {
   _impl_.last_login_time_ = uint64_t{0u};
 }
-inline uint64_t UserInfo::_internal_last_login_time() const {
+inline uint64_t User::_internal_last_login_time() const {
   return _impl_.last_login_time_;
 }
-inline uint64_t UserInfo::last_login_time() const {
-  // @@protoc_insertion_point(field_get:vosfs.auth.UserInfo.last_login_time)
+inline uint64_t User::last_login_time() const {
+  // @@protoc_insertion_point(field_get:vosfs.auth.User.last_login_time)
   return _internal_last_login_time();
 }
-inline void UserInfo::_internal_set_last_login_time(uint64_t value) {
+inline void User::_internal_set_last_login_time(uint64_t value) {
   
   _impl_.last_login_time_ = value;
 }
-inline void UserInfo::set_last_login_time(uint64_t value) {
+inline void User::set_last_login_time(uint64_t value) {
   _internal_set_last_login_time(value);
-  // @@protoc_insertion_point(field_set:vosfs.auth.UserInfo.last_login_time)
+  // @@protoc_insertion_point(field_set:vosfs.auth.User.last_login_time)
 }
 
 // string last_login_ip = 9;
-inline void UserInfo::clear_last_login_ip() {
+inline void User::clear_last_login_ip() {
   _impl_.last_login_ip_.ClearToEmpty();
 }
-inline const std::string& UserInfo::last_login_ip() const {
-  // @@protoc_insertion_point(field_get:vosfs.auth.UserInfo.last_login_ip)
+inline const std::string& User::last_login_ip() const {
+  // @@protoc_insertion_point(field_get:vosfs.auth.User.last_login_ip)
   return _internal_last_login_ip();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void UserInfo::set_last_login_ip(ArgT0&& arg0, ArgT... args) {
+void User::set_last_login_ip(ArgT0&& arg0, ArgT... args) {
  
  _impl_.last_login_ip_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:vosfs.auth.UserInfo.last_login_ip)
+  // @@protoc_insertion_point(field_set:vosfs.auth.User.last_login_ip)
 }
-inline std::string* UserInfo::mutable_last_login_ip() {
+inline std::string* User::mutable_last_login_ip() {
   std::string* _s = _internal_mutable_last_login_ip();
-  // @@protoc_insertion_point(field_mutable:vosfs.auth.UserInfo.last_login_ip)
+  // @@protoc_insertion_point(field_mutable:vosfs.auth.User.last_login_ip)
   return _s;
 }
-inline const std::string& UserInfo::_internal_last_login_ip() const {
+inline const std::string& User::_internal_last_login_ip() const {
   return _impl_.last_login_ip_.Get();
 }
-inline void UserInfo::_internal_set_last_login_ip(const std::string& value) {
+inline void User::_internal_set_last_login_ip(const std::string& value) {
   
   _impl_.last_login_ip_.Set(value, GetArenaForAllocation());
 }
-inline std::string* UserInfo::_internal_mutable_last_login_ip() {
+inline std::string* User::_internal_mutable_last_login_ip() {
   
   return _impl_.last_login_ip_.Mutable(GetArenaForAllocation());
 }
-inline std::string* UserInfo::release_last_login_ip() {
-  // @@protoc_insertion_point(field_release:vosfs.auth.UserInfo.last_login_ip)
+inline std::string* User::release_last_login_ip() {
+  // @@protoc_insertion_point(field_release:vosfs.auth.User.last_login_ip)
   return _impl_.last_login_ip_.Release();
 }
-inline void UserInfo::set_allocated_last_login_ip(std::string* last_login_ip) {
+inline void User::set_allocated_last_login_ip(std::string* last_login_ip) {
   if (last_login_ip != nullptr) {
     
   } else {
@@ -1969,7 +1969,7 @@ inline void UserInfo::set_allocated_last_login_ip(std::string* last_login_ip) {
     _impl_.last_login_ip_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:vosfs.auth.UserInfo.last_login_ip)
+  // @@protoc_insertion_point(field_set_allocated:vosfs.auth.User.last_login_ip)
 }
 
 // -------------------------------------------------------------------
@@ -2080,45 +2080,45 @@ inline void PutUserRequest::set_allocated_hashed_password(std::string* hashed_pa
 
 // PutUserResponse
 
-// optional .vosfs.auth.UserInfo user_info = 1;
-inline bool PutUserResponse::_internal_has_user_info() const {
+// optional .vosfs.auth.User user = 1;
+inline bool PutUserResponse::_internal_has_user() const {
   bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
-  PROTOBUF_ASSUME(!value || _impl_.user_info_ != nullptr);
+  PROTOBUF_ASSUME(!value || _impl_.user_ != nullptr);
   return value;
 }
-inline bool PutUserResponse::has_user_info() const {
-  return _internal_has_user_info();
+inline bool PutUserResponse::has_user() const {
+  return _internal_has_user();
 }
-inline void PutUserResponse::clear_user_info() {
-  if (_impl_.user_info_ != nullptr) _impl_.user_info_->Clear();
+inline void PutUserResponse::clear_user() {
+  if (_impl_.user_ != nullptr) _impl_.user_->Clear();
   _impl_._has_bits_[0] &= ~0x00000001u;
 }
-inline const ::vosfs::auth::UserInfo& PutUserResponse::_internal_user_info() const {
-  const ::vosfs::auth::UserInfo* p = _impl_.user_info_;
-  return p != nullptr ? *p : reinterpret_cast<const ::vosfs::auth::UserInfo&>(
-      ::vosfs::auth::_UserInfo_default_instance_);
+inline const ::vosfs::auth::User& PutUserResponse::_internal_user() const {
+  const ::vosfs::auth::User* p = _impl_.user_;
+  return p != nullptr ? *p : reinterpret_cast<const ::vosfs::auth::User&>(
+      ::vosfs::auth::_User_default_instance_);
 }
-inline const ::vosfs::auth::UserInfo& PutUserResponse::user_info() const {
-  // @@protoc_insertion_point(field_get:vosfs.auth.PutUserResponse.user_info)
-  return _internal_user_info();
+inline const ::vosfs::auth::User& PutUserResponse::user() const {
+  // @@protoc_insertion_point(field_get:vosfs.auth.PutUserResponse.user)
+  return _internal_user();
 }
-inline void PutUserResponse::unsafe_arena_set_allocated_user_info(
-    ::vosfs::auth::UserInfo* user_info) {
+inline void PutUserResponse::unsafe_arena_set_allocated_user(
+    ::vosfs::auth::User* user) {
   if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.user_info_);
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.user_);
   }
-  _impl_.user_info_ = user_info;
-  if (user_info) {
+  _impl_.user_ = user;
+  if (user) {
     _impl_._has_bits_[0] |= 0x00000001u;
   } else {
     _impl_._has_bits_[0] &= ~0x00000001u;
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:vosfs.auth.PutUserResponse.user_info)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:vosfs.auth.PutUserResponse.user)
 }
-inline ::vosfs::auth::UserInfo* PutUserResponse::release_user_info() {
+inline ::vosfs::auth::User* PutUserResponse::release_user() {
   _impl_._has_bits_[0] &= ~0x00000001u;
-  ::vosfs::auth::UserInfo* temp = _impl_.user_info_;
-  _impl_.user_info_ = nullptr;
+  ::vosfs::auth::User* temp = _impl_.user_;
+  _impl_.user_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
   auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
   temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
@@ -2130,44 +2130,44 @@ inline ::vosfs::auth::UserInfo* PutUserResponse::release_user_info() {
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::vosfs::auth::UserInfo* PutUserResponse::unsafe_arena_release_user_info() {
-  // @@protoc_insertion_point(field_release:vosfs.auth.PutUserResponse.user_info)
+inline ::vosfs::auth::User* PutUserResponse::unsafe_arena_release_user() {
+  // @@protoc_insertion_point(field_release:vosfs.auth.PutUserResponse.user)
   _impl_._has_bits_[0] &= ~0x00000001u;
-  ::vosfs::auth::UserInfo* temp = _impl_.user_info_;
-  _impl_.user_info_ = nullptr;
+  ::vosfs::auth::User* temp = _impl_.user_;
+  _impl_.user_ = nullptr;
   return temp;
 }
-inline ::vosfs::auth::UserInfo* PutUserResponse::_internal_mutable_user_info() {
+inline ::vosfs::auth::User* PutUserResponse::_internal_mutable_user() {
   _impl_._has_bits_[0] |= 0x00000001u;
-  if (_impl_.user_info_ == nullptr) {
-    auto* p = CreateMaybeMessage<::vosfs::auth::UserInfo>(GetArenaForAllocation());
-    _impl_.user_info_ = p;
+  if (_impl_.user_ == nullptr) {
+    auto* p = CreateMaybeMessage<::vosfs::auth::User>(GetArenaForAllocation());
+    _impl_.user_ = p;
   }
-  return _impl_.user_info_;
+  return _impl_.user_;
 }
-inline ::vosfs::auth::UserInfo* PutUserResponse::mutable_user_info() {
-  ::vosfs::auth::UserInfo* _msg = _internal_mutable_user_info();
-  // @@protoc_insertion_point(field_mutable:vosfs.auth.PutUserResponse.user_info)
+inline ::vosfs::auth::User* PutUserResponse::mutable_user() {
+  ::vosfs::auth::User* _msg = _internal_mutable_user();
+  // @@protoc_insertion_point(field_mutable:vosfs.auth.PutUserResponse.user)
   return _msg;
 }
-inline void PutUserResponse::set_allocated_user_info(::vosfs::auth::UserInfo* user_info) {
+inline void PutUserResponse::set_allocated_user(::vosfs::auth::User* user) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
-    delete _impl_.user_info_;
+    delete _impl_.user_;
   }
-  if (user_info) {
+  if (user) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(user_info);
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(user);
     if (message_arena != submessage_arena) {
-      user_info = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, user_info, submessage_arena);
+      user = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, user, submessage_arena);
     }
     _impl_._has_bits_[0] |= 0x00000001u;
   } else {
     _impl_._has_bits_[0] &= ~0x00000001u;
   }
-  _impl_.user_info_ = user_info;
-  // @@protoc_insertion_point(field_set_allocated:vosfs.auth.PutUserResponse.user_info)
+  _impl_.user_ = user;
+  // @@protoc_insertion_point(field_set_allocated:vosfs.auth.PutUserResponse.user)
 }
 
 // -------------------------------------------------------------------

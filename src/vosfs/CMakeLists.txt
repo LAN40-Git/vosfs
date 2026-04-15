@@ -9,6 +9,7 @@ file(GLOB COMMON_SRCS
 
 file(GLOB AUTH_SRCS
         "auth/*.cpp"
+        "auth/internal/*.cpp"
 )
 
 file(GLOB RAFT_SRCS
@@ -24,6 +25,7 @@ file(GLOB RPC_SRCS
 set(VOSFS_SRCS
         ${API_SRCS}
         ${COMMON_SRCS}
+        ${AUTH_SRCS}
         ${RAFT_SRCS}
         ${RPC_SRCS}
         PARENT_SCOPE

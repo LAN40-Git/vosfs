@@ -11,7 +11,7 @@ enum Status {
   kDisabled = 1;
 }
 
-message UserInfo {
+message User {
   uint64 uid = 1;
   string name = 2;
   string hashed_password = 3;
@@ -29,7 +29,7 @@ message PutUserRequest {
 }
 
 message PutUserResponse {
-  optional UserInfo user_info = 1;
+  optional User user = 1;
 }
 
 message GetUserRequest {

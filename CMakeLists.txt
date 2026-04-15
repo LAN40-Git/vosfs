@@ -50,6 +50,8 @@ find_package(TBB REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(XXHASH REQUIRED libxxhash)
 
+find_package(SQLite3 REQUIRED)
+
 # ====== LIBRARY ======
 set(ROCKSDB_LIBRARIES
         rocksdb
@@ -63,7 +65,7 @@ set(ROCKSDB_LIBRARIES
 set(DEPEND_LIBS
         pthread
         tbb
-        mysqlclient
+        SQLite::SQLite3
         ${PROTOBUF_LIBRARIES}
         ${LIBURING_LIBRARIES}
         ${ROCKSDB_LIBRARIES}

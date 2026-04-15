@@ -17,6 +17,7 @@ public:
         kCreateRpcConsumerFailed,
         kCreateRpcProviderFailed,
         kCreateRocksDBEngineFailed,
+        kCreateSQLiteEngineFailed,
         kCreatePeerFailed,
         kQueueShutdown,
     };
@@ -44,6 +45,8 @@ public:
                 return "failed to create rpc provider";
             case kCreateRocksDBEngineFailed:
                 return "failed to create rocksdb engine";
+            case kCreateSQLiteEngineFailed:
+                return "failed to create sqlite engine";
             case kCreatePeerFailed:
                 return "failed to create peer";
             case kQueueShutdown:

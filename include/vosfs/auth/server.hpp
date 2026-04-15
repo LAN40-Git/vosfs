@@ -16,7 +16,9 @@ public:
     auto shutdown() const -> kosio::async::Task<void>;
 
 private:
-
+    [[REMEMBER_CO_AWAIT]]
+    auto handle_put_user_request(std::string_view req_payload, std::span<char> resp_payload)
+        -> kosio::async::Task<rpc::RpcResult>;
 
 private:
     rpc::RpcServer rpc_server_;
