@@ -37,13 +37,7 @@ public:
         const RpcRequestHandler& handler);
 
 public:
-    /// @brief Let provider run
-    /// @note not-thread-safe!
     auto run() -> kosio::async::Task<void>;
-
-    /// @brief Let provider shutdown
-    /// @note not-thread-safe!
-    [[REMEMBER_CO_AWAIT]]
     auto shutdown() -> kosio::async::Task<void>;
 
 private:
@@ -60,4 +54,6 @@ private:
     detail::SessionManager  session_manager_;
     detail::RpcInvoker      invoker_;
 };
+
+using RpcServer = std::unique_ptr<RpcProvider>;
 } // namespace vosfs::rpc

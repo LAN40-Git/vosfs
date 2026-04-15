@@ -16,22 +16,6 @@ auto vosfs::rpc::RpcConsumer::create(std::string_view server_host, uint16_t serv
     co_return std::move(consumer);
 }
 
-auto vosfs::rpc::RpcConsumer::send_request(
-    ServiceType service_type,
-    MethodType method_type,
-    std::string_view req_payload,
-    const RpcCallback& callback) -> kosio::async::Task<void> {
-    co_await send_request_impl(service_type, method_type, std::string{req_payload}, RpcCallback{callback});
-}
-
-auto vosfs::rpc::RpcConsumer::send_request(
-    ServiceType service_type,
-    MethodType method_type,
-    std::string&& req_payload,
-    RpcCallback&& callback) -> kosio::async::Task<void> {
-    co_await send_request_impl(service_type, method_type, std::move(req_payload), std::move(callback));
-}
-
 auto vosfs::rpc::RpcConsumer::run() -> kosio::async::Task<void> {
     co_await mutex_.lock();
     std::lock_guard lock(mutex_, std::adopt_lock);
@@ -65,6 +49,22 @@ auto vosfs::rpc::RpcConsumer::shutdown() -> kosio::async::Task<void> {
 
 auto vosfs::rpc::RpcConsumer::is_shutdown() const -> bool {
     return is_shutdown_.load(std::memory_order_acquire);
+}
+
+auto vosfs::rpc::RpcConsumer::send_request(
+    ServiceType service_type,
+    MethodType method_type,
+    std::string_view req_payload,
+    const RpcCallback& callback) -> kosio::async::Task<void> {
+    co_await send_request_impl(service_type, method_type, std::string{req_payload}, RpcCallback{callback});
+}
+
+auto vosfs::rpc::RpcConsumer::send_request(
+    ServiceType service_type,
+    MethodType method_type,
+    std::string&& req_payload,
+    RpcCallback&& callback) -> kosio::async::Task<void> {
+    co_await send_request_impl(service_type, method_type, std::move(req_payload), std::move(callback));
 }
 
 auto vosfs::rpc::RpcConsumer::send_request_impl(

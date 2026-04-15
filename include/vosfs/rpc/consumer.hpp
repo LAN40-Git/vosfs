@@ -38,6 +38,11 @@ public:
     static auto create(std::string_view server_host, uint16_t server_port) -> kosio::async::Task<kosio::Result<std::unique_ptr<RpcConsumer>>>;
 
 public:
+    auto run() -> kosio::async::Task<void>;
+    auto shutdown() -> kosio::async::Task<void>;
+    auto is_shutdown() const -> bool;
+
+public:
     [[REMEMBER_CO_AWAIT]]
     auto send_request(
         ServiceType service_type,
@@ -51,15 +56,6 @@ public:
         MethodType method_type,
         std::string&& req_payload,
         RpcCallback&& callback) -> kosio::async::Task<void>;
-
-    [[REMEMBER_CO_AWAIT]]
-    auto run() -> kosio::async::Task<void>;
-
-    [[REMEMBER_CO_AWAIT]]
-    auto shutdown() -> kosio::async::Task<void>;
-
-    [[REMEMBER_CO_AWAIT]]
-    auto is_shutdown() const -> bool;
 
 private:
     [[REMEMBER_CO_AWAIT]]
@@ -87,4 +83,6 @@ private:
     RequestMap            requests_;
     kosio::sync::Mutex    mutex_;
 };
+
+using RpcClient = std::unique_ptr<RpcConsumer>;
 } // namespace vosfs::rpc

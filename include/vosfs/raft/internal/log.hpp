@@ -13,6 +13,7 @@ private:
         , entries_(std::move(entries)) {}
 
 public:
+    [[nodiscard]]
     static auto create(const Persister& persister) -> Result<RaftLog>;
 
 public:

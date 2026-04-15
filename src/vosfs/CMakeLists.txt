@@ -7,6 +7,10 @@ file(GLOB COMMON_SRCS
         "common/*.cpp"
 )
 
+file(GLOB AUTH_SRCS
+        "auth/*.cpp"
+)
+
 file(GLOB RAFT_SRCS
         "raft/*.cpp"
         "raft/internal/*.cpp"

@@ -5,10 +5,10 @@ auto main() -> int {
     MYSQL mysql;
     mysql_init(&mysql);
 
-    if (mysql_real_connect(&mysql, "local", "root", "123456", "vosfs", 3306, NULL, 0)) {
-        std::cout << "MySQL 连接成功！\n" << std::endl;
+    if (mysql_real_connect(&mysql, "localhost", "vosfs_root", "123456", "vosfs", 0, NULL, 0)) {
+        std::cout << "连接成功！" << std::endl;
     } else {
-        std::cout << "MySQL 连接失败！\n" << std::endl;
+        std::cout << "连接失败！原因：" << mysql_error(&mysql) << std::endl;
     }
 
     mysql_close(&mysql);

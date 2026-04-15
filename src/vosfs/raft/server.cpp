@@ -4,8 +4,8 @@
 #include <kosio/signal/signal.hpp>
 
 vosfs::raft::RaftServer::RaftServer(
-    RpcServer raft_rpc_server,
-    RpcServer client_rpc_server,
+    rpc::RpcServer raft_rpc_server,
+    rpc::RpcServer client_rpc_server,
     Persister&& persister,
     detail::RaftLog&& logs,
     detail::Transport&& transport,

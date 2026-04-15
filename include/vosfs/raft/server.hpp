@@ -5,12 +5,11 @@
 
 namespace vosfs::raft {
 class RaftServer {
-    using RpcServer = std::unique_ptr<rpc::RpcProvider>;
     using SnapshotContextMap = std::unordered_map<uint64_t, uint64_t>;
 private:
     explicit RaftServer(
-        RpcServer raft_rpc_server,
-        RpcServer client_rpc_server,
+        rpc::RpcServer raft_rpc_server,
+        rpc::RpcServer client_rpc_server,
         Persister&& persister,
         detail::RaftLog&& logs,
         detail::Transport&& transport,
@@ -21,10 +20,7 @@ public:
     static auto create(std::string_view data_dir) -> kosio::async::Task<Result<std::unique_ptr<RaftServer>>>;
 
 public:
-    [[REMEMBER_CO_AWAIT]]
     auto run() -> kosio::async::Task<void>;
-
-    [[REMEMBER_CO_AWAIT]]
     auto shutdown() -> kosio::async::Task<void>;
 
 private:
@@ -66,8 +62,8 @@ private:
     kosio::sync::Latch    latch_{2}; // 两个循环协程-(election_loop 和 heartbeat_loop)
     std::atomic<bool>     is_shutdown_{false};
     std::atomic<uint64_t> last_reset_time_{0};
-    RpcServer             raft_rpc_server_;
-    RpcServer             client_rpc_server_;
+    rpc::RpcServer        raft_rpc_server_;
+    rpc::RpcServer        client_rpc_server_;
     Persister             persister_;
     StateMachine          state_machine_;
     detail::RaftLog       logs_;
