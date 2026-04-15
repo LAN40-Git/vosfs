@@ -2,7 +2,7 @@
 #include <cstdint>
 #include "vosfs/api/serverpb/raft.pb.h"
 #include "vosfs/rpc/consumer.hpp"
-#include "vosfs/raft/config.hpp"
+#include "config.hpp"
 
 namespace vosfs::raft::detail {
 class Peer {

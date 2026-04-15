@@ -63,6 +63,7 @@ set(ROCKSDB_LIBRARIES
 set(DEPEND_LIBS
         pthread
         tbb
+        mysqlclient
         ${PROTOBUF_LIBRARIES}
         ${LIBURING_LIBRARIES}
         ${ROCKSDB_LIBRARIES}

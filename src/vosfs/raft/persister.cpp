@@ -8,7 +8,7 @@ auto vosfs::raft::Persister::create(std::string_view data_dir) -> Result<Persist
     rocksdb::ReadOptions read_options;
     write_options.sync = true;
 
-    auto db_path = std::filesystem::path(data_dir) / DB_DIR;
+    auto db_path = std::filesystem::path(data_dir) / detail::DB_DIR;
     auto ret = detail::RocksDBEngine::create(db_options, write_options, read_options, db_path);
     if (!ret) {
         return std::unexpected{ret.error()};

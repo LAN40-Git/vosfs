@@ -10,10 +10,7 @@ void vosfs::raft::StateMachine::apply(const LogEntry& entry) {
     }
 
     switch (command.cmd_case()) {
-        case EntryCommand::kCreateFileCommitRequest: {
 
-            break;
-        }
         default: {
             LOG_FATAL("in command at entry {}", entry.index());
             std::abort();

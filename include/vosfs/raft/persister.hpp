@@ -1,6 +1,6 @@
 #pragma once
 #include "raft.pb.h"
-#include "vosfs/raft/config.hpp"
+#include "internal/config.hpp"
 #include "vosfs/raft/internal/rocksdb_engine.hpp"
 
 namespace vosfs::raft {

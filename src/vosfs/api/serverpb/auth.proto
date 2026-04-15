@@ -1,46 +1,62 @@
 syntax = "proto3";
 package vosfs.auth;
 
-message AccountInfo {
+enum Role {
+  kAdmin = 0;
+  kUser = 1;
+}
+
+enum Status {
+  kEnabled = 0;
+  kDisabled = 1;
+}
+
+message UserInfo {
   uint64 uid = 1;
   string name = 2;
-  string hash_password = 3;
+  string hashed_password = 3;
+  Role role = 4;
+  Status status = 5;
+  uint64 create_time = 6;
+  uint64 modify_time = 7;
+  uint64 last_login_time = 8;
+  string last_login_ip = 9;
 }
 
-message PutAccountRequest {
+message PutUserRequest {
   string name = 1;
-  string hash_password = 2;
+  string hashed_password = 2;
 }
 
-message PutAccountResponse {
-  optional AccountInfo account_info = 1;
+message PutUserResponse {
+  optional UserInfo user_info = 1;
 }
 
-message GetAccountRequest {
+message GetUserRequest {
   string name = 1;
-  string password = 2;
+  string hashed_password = 2;
 }
 
-message GetAccountResponse {
+message GetUserResponse {
   uint64 uid = 1;
   bool success = 2;
   string msg = 3;
 }
 
-message UpdateAccountRequest {
+message UpdateUserRequest {
   string name = 1;
 }
 
-message UpdateAccountResponse {
+message UpdateUserResponse {
   bool success = 1;
   string msg = 2;
 }
 
-message DeleteAccountRequest {
+message DeleteUserRequest {
   uint64 uid = 1;
 }
 
-message DeleteAccountResponse {
+message DeleteUserResponse {
   bool success = 1;
   string msg = 2;
 }

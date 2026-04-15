@@ -24,14 +24,14 @@ vosfs::raft::RaftServer::RaftServer(
 
 auto vosfs::raft::RaftServer::create(std::string_view data_dir) -> kosio::async::Task<Result<std::unique_ptr<RaftServer>>> {
     // 创建 Raft RPC 服务层
-    auto has_raft_rpc_server = co_await rpc::RpcProvider::create(RAFT_RPC_PORT);
+    auto has_raft_rpc_server = co_await rpc::RpcProvider::create(detail::RAFT_RPC_PORT);
     if (!has_raft_rpc_server) {
         co_return std::unexpected{has_raft_rpc_server.error()};
     }
     auto raft_rpc_server = std::move(has_raft_rpc_server.value());
 
     // 创建 Client RPC 服务层
-    auto has_client_rpc_server = co_await rpc::RpcProvider::create(CLIENT_RPC_PORT);
+    auto has_client_rpc_server = co_await rpc::RpcProvider::create(detail::CLIENT_RPC_PORT);
     if (!has_client_rpc_server) {
         co_return std::unexpected{has_client_rpc_server.error()};
     }
@@ -123,7 +123,7 @@ auto vosfs::raft::RaftServer::election_loop() -> kosio::async::Task<void> {
 
 auto vosfs::raft::RaftServer::heartbeat_loop() -> kosio::async::Task<void> {
     while (!is_shutdown_.load(std::memory_order_relaxed)) {
-        co_await kosio::time::sleep(HEARTBEAT_INTERVAL);
+        co_await kosio::time::sleep(detail::HEARTBEAT_INTERVAL);
 
         if (role_.load(std::memory_order_acquire) != kLeader) {
             continue;
@@ -221,7 +221,7 @@ void vosfs::raft::RaftServer::do_heartbeat() {
                 continue;
             }
 
-            auto batch_size = std::min(MAX_ENTRIES_PER_APPEND, last_log_index - next_index + 1);
+            auto batch_size = std::min(detail::MAX_ENTRIES_PER_APPEND, last_log_index - next_index + 1);
             entries = logs_.get_entries(next_index, batch_size);
         }
 
@@ -275,7 +275,7 @@ void vosfs::raft::RaftServer::apply_to_state_machine() {
     while (last_applied_ < commit_index) {
         ++last_applied_;
         state_machine_.apply(logs_.get_entry(last_applied_));
-        if (last_applied_ % SNAPSHOT_INTERVAL == 0) {
+        if (last_applied_ % detail::SNAPSHOT_INTERVAL == 0) {
             // TODO: 创建快照
 
         }
@@ -291,7 +291,7 @@ void vosfs::raft::RaftServer::send_snapshot(uint64_t member_id, uint64_t offset)
     auto leader_id = transport_.member_id();
     auto last_included_index = logs_.last_included_index();
     auto last_included_term = logs_.last_included_term();
-    auto size = std::min(MAX_SNAPSHOT_CHUNK_SIZE, snapshot_data_.size() - offset);
+    auto size = std::min(detail::MAX_SNAPSHOT_CHUNK_SIZE, snapshot_data_.size() - offset);
     auto data = snapshot_data_.substr(offset, size);
     snapshot_context_[member_id] += size;
     auto done = snapshot_context_[member_id] >= snapshot_data_.size();
