@@ -213,7 +213,6 @@ auto vosfs::auth::AuthServer::handle_get_user_request(
 
     sqlite3_bind_text(stat, 1, name.data(), static_cast<int>(name.size()), SQLITE_STATIC);
     if (sqlite3_step(stat) == SQLITE_ROW) {
-        sqlite3_finalize(stat);
         exists = true;
     }
     sqlite3_reset(stat);
@@ -252,7 +251,6 @@ auto vosfs::auth::AuthServer::handle_get_user_request(
         sqlite3_finalize(stat);
         co_return util::MessageFactory::make_put_user_response(resp_payload, false, "user has been disabled");
     }
-    sqlite3_finalize(stat);
     sqlite3_reset(stat);
     sqlite3_clear_bindings(stat);
 
@@ -265,7 +263,7 @@ auto vosfs::auth::AuthServer::handle_get_user_request(
     }
 
     auto last_login_time = kosio::util::current_ms();
-    auto last_login_ip = rpc::t_current_session->addr.to_string();
+    auto last_login_ip = rpc::get_current_session_ip();
 
     sqlite3_bind_int(stat, 1, static_cast<int>(last_login_time));
     sqlite3_bind_text(stat, 2, last_login_ip.data(), static_cast<int>(last_login_ip.size()), SQLITE_STATIC);

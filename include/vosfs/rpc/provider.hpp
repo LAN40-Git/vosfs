@@ -6,7 +6,17 @@
 #include "vosfs/rpc/internal/session_manager.hpp"
 
 namespace vosfs::rpc {
-static inline thread_local std::shared_ptr<detail::Session> t_current_session{nullptr};
+static thread_local std::string t_ip;
+
+static inline auto set_current_session_ip(std::string_view ip) {
+    pthread_setname_np(pthread_self(), ip.data());
+    t_ip = ip;
+}
+
+static inline auto get_current_session_ip() -> std::string_view {
+    return t_ip;
+}
+
 class RpcProvider {
     enum Status {
         Running = 0,
@@ -43,7 +53,6 @@ public:
 
 private:
     auto handle_request(std::shared_ptr<detail::Session> session) const -> kosio::async::Task<void>;
-
     auto send_response(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void>;
 
 private:

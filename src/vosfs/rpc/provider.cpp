@@ -116,7 +116,7 @@ auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> ses
         auto request = std::move(has_request.value());
         resp_header.request_id = htobe64(request.request_id);
         // 更新 session 缓存
-        t_current_session = session;
+        set_current_session_ip(session->addr.to_string());
         auto result = co_await invoker_.invoke(
         request.service_type,
         request.method_type,

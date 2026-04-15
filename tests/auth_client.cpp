@@ -1,3 +1,4 @@
+#include <chrono>
 #include <kosio/signal/signal.hpp>
 #include "auth.pb.h"
 #include "vosfs/rpc.hpp"
@@ -51,8 +52,43 @@ auto handle_put_user_response(std::string_view resp_payload) -> kosio::async::Ta
     LOG_INFO("{}", msg);
 }
 
+auto send_get_user_request(const std::unique_ptr<RpcConsumer>& consumer) -> kosio::async::Task<void> {
+    std::string name, password;
+    std::cout << "用户名:";
+    std::cin >> name;
+    std::cout << "密码:";
+    std::cin >> password;
+    auto request = util::MessageFactory::make_get_user_request(std::move(name), std::move(password));
+
+    co_await consumer->send_request(
+        ServiceType::kAuth,
+        MethodType::kAuthGetUser,
+        request.SerializeAsString(),
+        handle_get_user_response);
+}
+
+auto handle_get_user_response(std::string_view resp_payload) -> kosio::async::Task<void> {
+    GetUserResponse response;
+    if (!response.ParseFromArray(resp_payload.data(), static_cast<int>(resp_payload.size()))) {
+        LOG_ERROR("failed to parse rpc response");
+        co_return;
+    }
+
+    auto success = response.success();
+    auto& msg = response.msg();
+    auto uid = response.uid();
+    auto& name = response.name();
+    auto role = response.role();
+    auto role_payload = role == kAdmin ? "admin" : "user";
+    auto create_time = response.create_time();
+    LOG_INFO("{}", msg);
+    if (success) {
+        LOG_INFO("Get user: uid-{}, name-{}, role-{}, create_time-{}", uid, name, role_payload, kosio::util::format_time(create_time));
+    }
+}
+
 auto process(std::unique_ptr<RpcConsumer> consumer) -> kosio::async::Task<void> {
-    co_await send_put_user_request(consumer);
+    co_await send_get_user_request(consumer);
     co_await kosio::signal::ctrl_c();
     co_await consumer->shutdown();
 }
