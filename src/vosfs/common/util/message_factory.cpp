@@ -1,8 +1,10 @@
 #include "vosfs/common/util/message_factory.hpp"
 
 auto vosfs::util::MessageFactory::make_request_vote_request(
-    uint64_t term, uint64_t candidate_id,
-    uint64_t last_log_index, uint64_t last_log_term) -> raft::RequestVoteRequest {
+    uint64_t term,
+    uint64_t candidate_id,
+    uint64_t last_log_index,
+    uint64_t last_log_term) -> raft::RequestVoteRequest {
     raft::RequestVoteRequest request;
     request.set_term(term);
     request.set_candidate_id(candidate_id);
@@ -90,11 +92,11 @@ auto vosfs::util::MessageFactory::make_install_snapshot_response(
 auto vosfs::util::MessageFactory::make_put_user_request(
     std::string&& name,
     std::string&& hashed_password,
-    auth::Role role) -> auth::PutUserRequest {
+    int role) -> auth::PutUserRequest {
     auth::PutUserRequest request;
     request.set_name(std::move(name));
     request.set_hashed_password(std::move(hashed_password));
-    request.set_role(role);
+    request.set_role(static_cast<auth::Role>(role));
     return request;
 }
 
@@ -123,13 +125,14 @@ auto vosfs::util::MessageFactory::make_get_user_response(
     std::string&& msg,
     uint64_t uid,
     std::string&& name,
-    auth::Role role,
+    int role,
     uint64_t create_time) -> rpc::RpcResult {
     auth::GetUserResponse response;
     response.set_success(success);
     response.set_msg(std::move(msg));
     response.set_uid(uid);
     response.set_name(std::move(name));
+    response.set_role(static_cast<auth::Role>(role));
     response.set_create_time(create_time);
     return rpc::serialize_response(response, resp_payload);
 }
@@ -174,10 +177,10 @@ auto vosfs::util::MessageFactory::make_update_user_password_response(
 
 auto vosfs::util::MessageFactory::make_update_user_role_request(
     uint64_t uid,
-    auth::Role role) -> auth::UpdateUserRoleRequest {
+    int role) -> auth::UpdateUserRoleRequest {
     auth::UpdateUserRoleRequest request;
     request.set_uid(uid);
-    request.set_role(role);
+    request.set_role(static_cast<auth::Role>(role));
     return request;
 }
 

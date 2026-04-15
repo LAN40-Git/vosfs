@@ -71,9 +71,40 @@ void vosfs::auth::AuthServer::init() const {
     using rpc::ServiceType;
     using rpc::MethodType;
 
+    // put user
     rpc_server_->register_handler(ServiceType::kAuth, MethodType::kAuthPutUser,
         [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
             co_return co_await this->handle_put_user_request(req_payload, resp_payload);
+        });
+
+    // get user
+    rpc_server_->register_handler(ServiceType::kAuth, MethodType::kAuthGetUser,
+        [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
+            co_return co_await this->handle_get_user_request(req_payload, resp_payload);
+        });
+
+    // update user name
+    rpc_server_->register_handler(ServiceType::kAuth, MethodType::kAuthUpdateUserName,
+        [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
+            co_return co_await this->handle_update_user_name_request(req_payload, resp_payload);
+        });
+
+    // update user password
+    rpc_server_->register_handler(ServiceType::kAuth, MethodType::kAuthUpdateUserPassword,
+        [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
+            co_return co_await this->handle_update_user_password_request(req_payload, resp_payload);
+        });
+
+    // update user role
+    rpc_server_->register_handler(ServiceType::kAuth, MethodType::kAuthUpdateUserRole,
+        [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
+            co_return co_await this->handle_update_user_role_request(req_payload, resp_payload);
+        });
+
+    // delet
+    rpc_server_->register_handler(ServiceType::kAuth, MethodType::kAuthDeleteUser,
+        [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
+            co_return co_await this->handle_delete_user_request(req_payload, resp_payload);
         });
 }
 
@@ -103,6 +134,10 @@ auto vosfs::auth::AuthServer::handle_put_user_request(
 
     if (name.empty() || hashed_password.empty()) {
         co_return util::MessageFactory::make_put_user_response(resp_payload, false, "invalid name or password");
+    }
+
+    if (role != kAdmin && role != kUser) {
+        co_return util::MessageFactory::make_put_user_response(resp_payload, false, "invalid role");
     }
 
     // 查询用户是否存在
@@ -208,8 +243,8 @@ auto vosfs::auth::AuthServer::handle_get_user_request(
 
     // 账号密码都正确，返回用户信息
     auto uid = sqlite3_column_int(stat, 0);
-    auto role = static_cast<Role>(sqlite3_column_int(stat, 1));
-    auto status = static_cast<Status>(sqlite3_column_int(stat, 2));
+    auto role = sqlite3_column_int(stat, 1);
+    auto status = sqlite3_column_int(stat, 2);
     auto create_time = sqlite3_column_int(stat, 3);
 
     // 用户被禁用

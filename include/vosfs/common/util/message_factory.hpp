@@ -60,7 +60,7 @@ public:
     static auto make_put_user_request(
         std::string&& name,
         std::string&& hashed_password,
-        auth::Role role) -> auth::PutUserRequest;
+        int role) -> auth::PutUserRequest;
 
     [[nodiscard]]
     static auto make_put_user_response(
@@ -80,7 +80,7 @@ public:
         std::string&& msg,
         uint64_t uid = 0,
         std::string&& name = "",
-        auth::Role role = auth::kUser,
+        int role = auth::kUser,
         uint64_t create_time = 0) -> rpc::RpcResult;
 
     [[nodiscard]]
@@ -108,7 +108,7 @@ public:
     [[nodiscard]]
     static auto make_update_user_role_request(
         uint64_t uid,
-        auth::Role role) -> auth::UpdateUserRoleRequest;
+        int role) -> auth::UpdateUserRoleRequest;
 
     [[nodiscard]]
     static auto make_update_user_role_response(

@@ -1,5 +1,4 @@
 file(GLOB API_SRCS
-        "api/mathpb/*.cc"
         "api/serverpb/*.cc"
 )
 

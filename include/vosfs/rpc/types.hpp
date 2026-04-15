@@ -11,7 +11,6 @@ enum class ServiceType : uint8_t {
     kMinService = 0,
     kRaft,
     kAuth,
-    kMath, // for test
     kMaxService
 };
 
@@ -22,10 +21,10 @@ enum class MethodType : uint8_t {
     kRaftInstallSnapshot,
     kAuthPutUser,
     kAuthGetUser,
-    kAuthUpdateUser,
+    kAuthUpdateUserName,
+    kAuthUpdateUserPassword,
+    kAuthUpdateUserRole,
     kAuthDeleteUser,
-    kMathAdd,
-    kMathSub,
     kMaxMethod
 };
 
@@ -37,10 +36,9 @@ public:
             case ServiceType::kRaft:
                 return "Raft";
             case ServiceType::kAuth:
-                return "User";
-            case ServiceType::kMath:
-                return "Math";
-            default: return "Unknown service type";
+                return "Auth";
+            default:
+                return "unknown service type";
         }
     }
 
@@ -54,19 +52,19 @@ public:
             case MethodType::kRaftInstallSnapshot:
                 return "RaftInstallSnapshot";
             case MethodType::kAuthPutUser:
-                return "UserPutAccount";
+                return "AuthPutUser";
             case MethodType::kAuthGetUser:
-                return "UserGetAccount";
-            case MethodType::kAuthUpdateUser:
-                return "UserUpdateAccount";
+                return "AuthGetUser";
+            case MethodType::kAuthUpdateUserName:
+                return "AuthUpdateUserName";
+            case MethodType::kAuthUpdateUserPassword:
+                return "AuthUpdateUserPassword";
+            case MethodType::kAuthUpdateUserRole:
+                return "AuthUpdateUserRole";
             case MethodType::kAuthDeleteUser:
-                return "UserDeleteAccount";
-            case MethodType::kMathAdd:
-                return "MathAdd";
-            case MethodType::kMathSub:
-                return "MathSub";
+                return "AuthDeleteUser";
             default:
-                return "Unknown method type";
+                return "unknown method type";
         }
     }
 

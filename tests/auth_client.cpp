@@ -1,31 +1,58 @@
 #include <kosio/signal/signal.hpp>
-
 #include "auth.pb.h"
 #include "vosfs/rpc.hpp"
+#include "vosfs/common/util/message_factory.hpp"
 
 using namespace vosfs;
 using namespace vosfs::rpc;
 using namespace vosfs::auth;
 
+auto send_put_user_request(const std::unique_ptr<RpcConsumer>& consumer) -> kosio::async::Task<void>;
+auto handle_put_user_response(std::string_view resp_payload) -> kosio::async::Task<void>;
+auto send_get_user_request(const std::unique_ptr<RpcConsumer>& consumer) -> kosio::async::Task<void>;
+auto handle_get_user_response(std::string_view resp_payload) -> kosio::async::Task<void>;
+auto send_update_user_name_request(const std::unique_ptr<RpcConsumer>& consumer) -> kosio::async::Task<void>;
+auto handle_update_user_name_response(std::string_view resp_payload) -> kosio::async::Task<void>;
+auto send_update_user_password_request(const std::unique_ptr<RpcConsumer>& consumer) -> kosio::async::Task<void>;
+auto handle_update_user_password_response(std::string_view resp_payload) -> kosio::async::Task<void>;
+auto send_update_user_role_request(const std::unique_ptr<RpcConsumer>& consumer) -> kosio::async::Task<void>;
+auto handle_update_user_role_response(std::string_view resp_payload) -> kosio::async::Task<void>;
+auto send_delete_user_request(const std::unique_ptr<RpcConsumer>& consumer) -> kosio::async::Task<void>;
+auto handle_delete_user_response(std::string_view resp_payload) -> kosio::async::Task<void>;
+
+auto send_put_user_request(const std::unique_ptr<RpcConsumer>& consumer) -> kosio::async::Task<void> {
+    std::string name, password;
+    int role;
+    std::cout << "用户名:";
+    std::cin >> name;
+    std::cout << "密码:";
+    std::cin >> password;
+    std::cout << "角色(0-Admin, 1-User):";
+    std::cin >> role;
+    auto request = util::MessageFactory::make_put_user_request(std::move(name), std::move(password), role);
+
+    co_await consumer->send_request(
+        ServiceType::kAuth,
+        MethodType::kAuthPutUser,
+        request.SerializeAsString(),
+        handle_put_user_response);
+}
+
+auto handle_put_user_response(std::string_view resp_payload) -> kosio::async::Task<void> {
+    PutUserResponse response;
+    if (!response.ParseFromArray(resp_payload.data(), static_cast<int>(resp_payload.size()))) {
+        LOG_ERROR("failed to parse rpc response");
+        co_return;
+    }
+
+    [[maybe_unused]] auto success = response.success();
+    auto& msg = response.msg();
+
+    LOG_INFO("{}", msg);
+}
+
 auto process(std::unique_ptr<RpcConsumer> consumer) -> kosio::async::Task<void> {
-    co_await kosio::time::sleep(1000);
-    PutUserRequest request;
-    request.set_name("lan");
-    request.set_hashed_password("123456");
-    request.set_role(Role::kUser);
-    co_await consumer->send_request(ServiceType::kAuth, MethodType::kAuthPutUser, request.SerializeAsString(),
-        [](std::string_view resp_payload) -> kosio::async::Task<void> {
-            PutUserResponse response;
-            if (!response.ParseFromArray(resp_payload.data(), static_cast<int>(resp_payload.size()))) {
-                LOG_ERROR("failed to parse rpc response");
-                co_return;
-            }
-
-            auto success = response.success();
-            auto& msg = response.msg();
-
-            LOG_INFO("{}", msg);
-        });
+    co_await send_put_user_request(consumer);
     co_await kosio::signal::ctrl_c();
     co_await consumer->shutdown();
 }
