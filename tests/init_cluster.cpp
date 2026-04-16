@@ -52,6 +52,10 @@ auto main() -> int {
     raft_node_info.set_name("MDS_1");
     raft_node_info.set_ip("172.20.179.151");
 
+    // raft_node_info.set_id(1);
+    // raft_node_info.set_name("MDS_2");
+    // raft_node_info.set_ip("172.18.207.176");
+
     add_raft_node_info(raft_cluster_info, 0, "MDS_1", "172.20.179.151");
     add_raft_node_info(raft_cluster_info, 1, "MDS_2", "172.18.207.176");
 
