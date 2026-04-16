@@ -24,11 +24,20 @@ void vosfs::raft::Persister::init(
         LOG_FATAL("failed to clear rocksdb: {}", status.ToString());
         std::abort();
     }
-    if (raft_cluster_info.raft_node_infos_size() == 0 ||
-        data_cluster_info.data_node_infos_size() == 0) {
-        LOG_FATAL("raft cluster or data cluster should not be empty");
+
+    if (raft_cluster_info.raft_node_infos_size() == 0) {
+        LOG_FATAL("raft cluster info is empty");
         std::abort();
     }
+
+    if (data_cluster_info.data_node_infos_size() == 0) {
+        LOG_FATAL("data cluster info is empty");
+        std::abort();
+    }
+
+    // 检查集群是否有重复节点
+
+    // 检查本地节点是否存在于集群
 
     HardState hard_state;
     hard_state.set_current_term(0);

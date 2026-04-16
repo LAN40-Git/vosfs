@@ -57,6 +57,13 @@ auto vosfs::raft::detail::RocksDBEngine::create(
     rocksdb::Checkpoint* checkpoint = nullptr;
     auto status = rocksdb::DB::Open(db_options, db_path, &db);
 
+    std::error_code ec;
+    std::filesystem::create_directories(db_path, ec);
+    if (ec) {
+        LOG_ERROR("failed to create db directories: {}", ec.message());
+        return std::unexpected{make_error(Error::kCreateRocksDBEngineFailed)};
+    }
+
     if (!status.ok()) {
         LOG_ERROR("{}", status.ToString());
         return std::unexpected{make_error(Error::kCreateRocksDBEngineFailed)};
