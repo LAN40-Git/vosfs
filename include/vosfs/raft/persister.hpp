@@ -58,7 +58,7 @@ public:
 
     [[nodiscard]] auto load_snapshot_metadata() const -> Result<SnapshotMetadata>;
 
-    void save_snapshot(const std::string& snapshot_data) const;
+    void save_snapshot(const Snapshot& snapshot) const;
 
     [[nodiscard]] auto load_snapshot() const -> Result<Snapshot>;
 

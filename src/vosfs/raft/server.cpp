@@ -92,8 +92,7 @@ auto vosfs::raft::RaftNode::init() -> kosio::async::Task<void> {
     // 尝试加载快照
     if (auto has_snapshot = persister_.load_snapshot(); has_snapshot) {
         auto snapshot = std::move(has_snapshot.value());
-        co_await load_snapshot(snapshot);
-        snapshot_data_ = snapshot.SerializeAsString();
+        co_await apply_snapshot(snapshot);
     }
 
     // 注册 RPC 服务
@@ -122,7 +121,11 @@ auto vosfs::raft::RaftNode::init() -> kosio::async::Task<void> {
 
 }
 
-auto vosfs::raft::RaftNode::load_snapshot(Snapshot& snapshot) -> kosio::async::Task<void> {
+auto vosfs::raft::RaftNode::apply_snapshot(Snapshot& snapshot) -> kosio::async::Task<void> {
+    // 缓存新快照
+    snapshot_data_ = snapshot.SerializeAsString();
+    // 持久层持久化快照数据和元数据
+    persister_.save_snapshot(snapshot);
     // 状态机应用快照-更新 Inode 信息
     state_machine_.apply_snapshot(snapshot);
     // 日志层应用快照-更新快照元数据
@@ -141,6 +144,51 @@ auto vosfs::raft::RaftNode::shutdown() -> kosio::async::Task<void> {
     }
     is_shutdown_.store(true, std::memory_order_release);
     co_await latch_.wait();
+}
+
+auto vosfs::raft::RaftNode::election_loop() -> kosio::async::Task<void> {
+    kosio::util::FastRand rand;
+    while (!is_shutdown_.load(std::memory_order_relaxed)) {
+        // [150,300]ms timeout
+        auto timeout = rand.rand_range(150, 300);
+        co_await kosio::time::sleep(timeout);
+
+        if (kosio::util::current_ms() - last_reset_time_.load(std::memory_order_relaxed) < timeout ||
+            role_.load(std::memory_order_acquire) == kLeader) {
+            continue;
+            }
+
+        co_await mutex_.lock();
+        std::lock_guard lock(mutex_, std::adopt_lock);
+
+        // Check again
+        if (role_.load(std::memory_order_relaxed) == kLeader) {
+            continue;
+        }
+
+        do_election();
+    }
+    latch_.count_down();
+}
+
+auto vosfs::raft::RaftNode::heartbeat_loop() -> kosio::async::Task<void> {
+    while (!is_shutdown_.load(std::memory_order_relaxed)) {
+        co_await kosio::time::sleep(detail::HEARTBEAT_INTERVAL);
+
+        if (role_.load(std::memory_order_acquire) != kLeader) {
+            continue;
+        }
+
+        co_await mutex_.lock();
+        std::lock_guard lock(mutex_, std::adopt_lock);
+
+        if (role_.load(std::memory_order_relaxed) != kLeader) {
+            continue;
+        }
+
+        do_heartbeat();
+    }
+    latch_.count_down();
 }
 
 void vosfs::raft::RaftNode::do_election() {
@@ -289,51 +337,6 @@ void vosfs::raft::RaftNode::send_snapshot(uint64_t member_id, uint64_t offset) {
         [this](std::string_view resp_payload) -> kosio::async::Task<void> {
             co_await this->handle_install_snapshot_response(resp_payload);
         }));
-}
-
-auto vosfs::raft::RaftNode::election_loop() -> kosio::async::Task<void> {
-    kosio::util::FastRand rand;
-    while (!is_shutdown_.load(std::memory_order_relaxed)) {
-        // [150,300]ms timeout
-        auto timeout = rand.rand_range(150, 300);
-        co_await kosio::time::sleep(timeout);
-
-        if (kosio::util::current_ms() - last_reset_time_.load(std::memory_order_relaxed) < timeout ||
-            role_.load(std::memory_order_acquire) == kLeader) {
-            continue;
-            }
-
-        co_await mutex_.lock();
-        std::lock_guard lock(mutex_, std::adopt_lock);
-
-        // Check again
-        if (role_.load(std::memory_order_relaxed) == kLeader) {
-            continue;
-        }
-
-        do_election();
-    }
-    latch_.count_down();
-}
-
-auto vosfs::raft::RaftNode::heartbeat_loop() -> kosio::async::Task<void> {
-    while (!is_shutdown_.load(std::memory_order_relaxed)) {
-        co_await kosio::time::sleep(detail::HEARTBEAT_INTERVAL);
-
-        if (role_.load(std::memory_order_acquire) != kLeader) {
-            continue;
-        }
-
-        co_await mutex_.lock();
-        std::lock_guard lock(mutex_, std::adopt_lock);
-
-        if (role_.load(std::memory_order_relaxed) != kLeader) {
-            continue;
-        }
-
-        do_heartbeat();
-    }
-    latch_.count_down();
 }
 
 auto vosfs::raft::RaftNode::handle_request_vote_request(
@@ -495,15 +498,14 @@ auto vosfs::raft::RaftNode::handle_install_snapshot_request(
         co_return util::MessageFactory::make_install_snapshot_response(resp_payload, current_term);
     }
 
-    persister_.save_snapshot(snapshot_data_);
-
     Snapshot snapshot;
     if (!snapshot.ParseFromString(snapshot_data_)) {
         LOG_WARN("failed to parse from snapshot data.");
+        snapshot_data_.clear();
         co_return util::MessageFactory::make_install_snapshot_response(resp_payload, current_term);
     }
 
-    co_await load_snapshot(snapshot);
+    co_await apply_snapshot(snapshot);
     co_return util::MessageFactory::make_install_snapshot_response(resp_payload, current_term);
 }
 

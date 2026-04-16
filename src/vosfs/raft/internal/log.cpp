@@ -73,7 +73,7 @@ auto vosfs::raft::detail::RaftLog::get_entries(
 auto vosfs::raft::detail::RaftLog::get_entries_span(
     uint64_t index, std::size_t size) const -> std::span<const LogEntry> {
     assert(index > last_included_index() && index <= last_log_index());
-    auto arr_idx = index - last_included_index() - 1;
+    auto arr_idx = static_cast<int64_t>(index - last_included_index() - 1);
     return std::span{entries_.begin() + arr_idx, size};
 }
 
@@ -89,7 +89,7 @@ void vosfs::raft::detail::RaftLog::append_entries(const google::protobuf::Repeat
 
 void vosfs::raft::detail::RaftLog::truncate_entries_before(uint64_t index) {
     assert(index > last_included_index() && index <= last_log_index());
-    uint64_t arr_idx = index - last_included_index() - 1;
+    auto arr_idx = static_cast<int64_t>(index - last_included_index() - 1);
     entries_.erase(entries_.begin() + arr_idx, entries_.end());
 }
 

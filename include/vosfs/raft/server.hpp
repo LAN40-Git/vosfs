@@ -25,8 +25,10 @@ public:
 
 private:
     auto init() -> kosio::async::Task<void>;
-    auto load_snapshot(Snapshot& snapshot) -> kosio::async::Task<void>;
+    auto apply_snapshot(Snapshot& snapshot) -> kosio::async::Task<void>;
     auto shutdown() -> kosio::async::Task<void>;
+    auto election_loop() -> kosio::async::Task<void>;
+    auto heartbeat_loop() -> kosio::async::Task<void>;
 
 private:
     void do_election();
@@ -36,9 +38,6 @@ private:
     void apply_to_state_machine();
     void send_snapshot(uint64_t member_id, uint64_t offset);
 
-private:
-    auto election_loop() -> kosio::async::Task<void>;
-    auto heartbeat_loop() -> kosio::async::Task<void>;
 
 private:
     // Raft RPC

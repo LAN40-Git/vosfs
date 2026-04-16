@@ -36,7 +36,10 @@ void vosfs::raft::Persister::init(
     save_raft_node_info(raft_node_info);
     save_raft_cluster_info(raft_cluster_info);
     save_data_cluster_info(data_cluster_info);
-
+    SnapshotMetadata snapshot_metadata;
+    snapshot_metadata.set_last_included_index(0);
+    snapshot_metadata.set_last_included_term(0);
+    save_snapshot_metadata(snapshot_metadata);
 }
 
 void vosfs::raft::Persister::save_hard_state(const HardState& hard_state) const {
@@ -61,7 +64,7 @@ auto vosfs::raft::Persister::load_hard_state() const -> Result<HardState> {
 
 void vosfs::raft::Persister::save_raft_node_info(const RaftNodeInfo& raft_node_info) const {
     if (auto status = engine_.put(RAFT_NODE_INFO_KEY, raft_node_info.SerializeAsString()); !status.ok()) {
-        LOG_FATAL("failed to save raft node info : {}", status.ToString());
+        LOG_FATAL("failed to save raft node info: {}", status.ToString());
         std::abort();
     }
 }
@@ -70,7 +73,7 @@ auto vosfs::raft::Persister::load_raft_node_info() const -> Result<RaftNodeInfo>
     std::string payload;
     RaftNodeInfo raft_node_info;
     if (auto status = engine_.get(RAFT_NODE_INFO_KEY, &payload); !status.ok()) {
-        LOG_ERROR("failed to load raft node info : {}", status.ToString());
+        LOG_ERROR("failed to load raft node info: {}", status.ToString());
         return std::unexpected{make_error(Error::kRecoverFailed)};
     }
     if (!raft_node_info.ParseFromString(payload)) {
@@ -81,7 +84,7 @@ auto vosfs::raft::Persister::load_raft_node_info() const -> Result<RaftNodeInfo>
 
 void vosfs::raft::Persister::save_raft_cluster_info(const RaftClusterInfo& raft_cluster_info) const {
     if (auto status = engine_.put(RAFT_CLUSTER_INFO_KEY, raft_cluster_info.SerializeAsString()); !status.ok()) {
-        LOG_FATAL("failed to save raft cluster info : {}", status.ToString());
+        LOG_FATAL("failed to save raft cluster info: {}", status.ToString());
         std::abort();
     }
 }
@@ -90,7 +93,7 @@ auto vosfs::raft::Persister::load_raft_cluster_info() const -> Result<RaftCluste
     std::string payload;
     RaftClusterInfo raft_cluster_info;
     if (auto status = engine_.get(RAFT_CLUSTER_INFO_KEY, &payload); !status.ok()) {
-        LOG_ERROR("failed to load raft cluster info : {}", status.ToString());
+        LOG_ERROR("failed to load raft cluster info: {}", status.ToString());
         return std::unexpected{make_error(Error::kRecoverFailed)};
     }
     if (!raft_cluster_info.ParseFromString(payload)) {
@@ -104,7 +107,7 @@ auto vosfs::raft::Persister::load_raft_cluster_info() const -> Result<RaftCluste
 
 void vosfs::raft::Persister::save_data_cluster_info(const DataClusterInfo& data_cluster_info) const {
     if (auto status = engine_.put(DATA_CLUSTER_INFO_KEY, data_cluster_info.SerializeAsString()); !status.ok()) {
-        LOG_FATAL("failed to save data cluster info : {}", status.ToString());
+        LOG_FATAL("failed to save data cluster info: {}", status.ToString());
         std::abort();
     }
 }
@@ -113,7 +116,7 @@ auto vosfs::raft::Persister::load_data_cluster_info() const -> Result<DataCluste
     std::string payload;
     DataClusterInfo data_cluster_info;
     if (auto status = engine_.get(DATA_CLUSTER_INFO_KEY, &payload); !status.ok()) {
-        LOG_ERROR("failed to load data cluster info : {}", status.ToString());
+        LOG_ERROR("failed to load data cluster info: {}", status.ToString());
         return std::unexpected{make_error(Error::kRecoverFailed)};
     }
     if (!data_cluster_info.ParseFromString(payload)) {
@@ -127,7 +130,7 @@ auto vosfs::raft::Persister::load_data_cluster_info() const -> Result<DataCluste
 
 void vosfs::raft::Persister::save_snapshot_metadata(const SnapshotMetadata& snapshot_metadata) const {
     if (auto status = engine_.put(SNAPSHOT_METADATA_KEY, snapshot_metadata.SerializeAsString()); !status.ok()) {
-        LOG_FATAL("failed to save snapshot metadata : {}", status.ToString());
+        LOG_FATAL("failed to save snapshot metadata: {}", status.ToString());
         std::abort();
     }
 }
@@ -136,7 +139,7 @@ auto vosfs::raft::Persister::load_snapshot_metadata() const -> Result<SnapshotMe
     std::string payload;
     SnapshotMetadata snapshot_metadata;
     if (auto status = engine_.get(SNAPSHOT_METADATA_KEY, &payload); !status.ok()) {
-        LOG_ERROR("failed to load snapshot metadata : {}", status.ToString());
+        LOG_ERROR("failed to load snapshot metadata: {}", status.ToString());
         return std::unexpected{make_error(Error::kRecoverFailed)};
     }
     if (!snapshot_metadata.ParseFromString(payload)) {
@@ -145,11 +148,12 @@ auto vosfs::raft::Persister::load_snapshot_metadata() const -> Result<SnapshotMe
     return snapshot_metadata;
 }
 
-void vosfs::raft::Persister::save_snapshot(const std::string& snapshot_data) const {
-    if (auto status = engine_.put(SNAPSHOT_KEY, snapshot_data); !status.ok()) {
-        LOG_FATAL("failed to save snapshot : {}", status.ToString());
+void vosfs::raft::Persister::save_snapshot(const Snapshot& snapshot) const {
+    if (auto status = engine_.put(SNAPSHOT_KEY, snapshot.SerializeAsString()); !status.ok()) {
+        LOG_FATAL("failed to save snapshot: {}", status.ToString());
         std::abort();
     }
+    save_snapshot_metadata(snapshot.snapshot_metadata());
 }
 
 auto vosfs::raft::Persister::load_snapshot() const -> Result<Snapshot> {
@@ -167,7 +171,7 @@ auto vosfs::raft::Persister::load_snapshot() const -> Result<Snapshot> {
 
 void vosfs::raft::Persister::save_entry(const LogEntry& entry) const {
     if (auto status = engine_.put(get_entry_key(entry.index()), entry.SerializeAsString()); !status.ok()) {
-        LOG_FATAL("failed to save entry at {} : {}", entry.index(), status.ToString());
+        LOG_FATAL("failed to save entry at {}: {}", entry.index(), status.ToString());
         std::abort();
     }
 }
@@ -179,7 +183,7 @@ void vosfs::raft::Persister::save_entries(const google::protobuf::RepeatedPtrFie
     }
 
     if (auto status = engine_.batch_write(write_batch); !status.ok()) {
-        LOG_FATAL("failed to save entries : {}", status.ToString());
+        LOG_FATAL("failed to save entries: {}", status.ToString());
         std::abort();
     }
 }
@@ -192,7 +196,7 @@ auto vosfs::raft::Persister::load_entries(uint64_t last_included_index) const ->
         LogEntry entry;
         if (auto status = engine_.get(get_entry_key(index++), &payload); !status.ok()) {
             if (status.code() != rocksdb::Status::kNotFound) {
-                LOG_ERROR("failed to load entries : {}", status.ToString());
+                LOG_ERROR("failed to load entries: {}", status.ToString());
                 return std::unexpected{make_error(Error::kRecoverFailed)};
             }
             break;
@@ -213,7 +217,7 @@ void vosfs::raft::Persister::truncate_entries(uint64_t start_index, uint64_t end
     }
 
     if (auto status = engine_.batch_write(write_batch); !status.ok()) {
-        LOG_FATAL("failed to truncate entries from {} to {} : {}", start_index, end_index, status.ToString());
+        LOG_FATAL("failed to truncate entries from {} to {}: {}", start_index, end_index, status.ToString());
         std::abort();
     }
 }
