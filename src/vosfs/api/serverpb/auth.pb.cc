@@ -30,9 +30,9 @@ PROTOBUF_CONSTEXPR User::User(
   , /*decltype(_impl_.uid_)*/uint64_t{0u}
   , /*decltype(_impl_.role_)*/0
   , /*decltype(_impl_.status_)*/0
-  , /*decltype(_impl_.create_time_)*/uint64_t{0u}
-  , /*decltype(_impl_.modify_time_)*/uint64_t{0u}
-  , /*decltype(_impl_.last_login_time_)*/uint64_t{0u}
+  , /*decltype(_impl_.create_time_)*/int64_t{0}
+  , /*decltype(_impl_.modify_time_)*/int64_t{0}
+  , /*decltype(_impl_.last_login_time_)*/int64_t{0}
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct UserDefaultTypeInternal {
   PROTOBUF_CONSTEXPR UserDefaultTypeInternal()
@@ -93,7 +93,7 @@ PROTOBUF_CONSTEXPR GetUserResponse::GetUserResponse(
   , /*decltype(_impl_.uid_)*/uint64_t{0u}
   , /*decltype(_impl_.success_)*/false
   , /*decltype(_impl_.role_)*/0
-  , /*decltype(_impl_.create_time_)*/uint64_t{0u}
+  , /*decltype(_impl_.create_time_)*/int64_t{0}
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct GetUserResponseDefaultTypeInternal {
   PROTOBUF_CONSTEXPR GetUserResponseDefaultTypeInternal()
@@ -190,7 +190,8 @@ struct UpdateUserRoleResponseDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 UpdateUserRoleResponseDefaultTypeInternal _UpdateUserRoleResponse_default_instance_;
 PROTOBUF_CONSTEXPR DeleteUserRequest::DeleteUserRequest(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.uid_)*/uint64_t{0u}
+    /*decltype(_impl_.hashed_password_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.uid_)*/uint64_t{0u}
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct DeleteUserRequestDefaultTypeInternal {
   PROTOBUF_CONSTEXPR DeleteUserRequestDefaultTypeInternal()
@@ -329,6 +330,7 @@ const uint32_t TableStruct_auth_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pro
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::vosfs::auth::DeleteUserRequest, _impl_.uid_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::auth::DeleteUserRequest, _impl_.hashed_password_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::vosfs::auth::DeleteUserResponse, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -351,7 +353,7 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 84, -1, -1, sizeof(::vosfs::auth::UpdateUserRoleRequest)},
   { 92, -1, -1, sizeof(::vosfs::auth::UpdateUserRoleResponse)},
   { 100, -1, -1, sizeof(::vosfs::auth::DeleteUserRequest)},
-  { 107, -1, -1, sizeof(::vosfs::auth::DeleteUserResponse)},
+  { 108, -1, -1, sizeof(::vosfs::auth::DeleteUserResponse)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -375,8 +377,8 @@ const char descriptor_table_protodef_auth_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "\030\001 \001(\004\022\014\n\004name\030\002 \001(\t\022\027\n\017hashed_password\030"
   "\003 \001(\t\022\036\n\004role\030\004 \001(\0162\020.vosfs.auth.Role\022\"\n"
   "\006status\030\005 \001(\0162\022.vosfs.auth.Status\022\023\n\013cre"
-  "ate_time\030\006 \001(\004\022\023\n\013modify_time\030\007 \001(\004\022\027\n\017l"
-  "ast_login_time\030\010 \001(\004\022\025\n\rlast_login_ip\030\t "
+  "ate_time\030\006 \001(\003\022\023\n\013modify_time\030\007 \001(\003\022\027\n\017l"
+  "ast_login_time\030\010 \001(\003\022\025\n\rlast_login_ip\030\t "
   "\001(\t\"W\n\016PutUserRequest\022\014\n\004name\030\001 \001(\t\022\027\n\017h"
   "ashed_password\030\002 \001(\t\022\036\n\004role\030\003 \001(\0162\020.vos"
   "fs.auth.Role\"/\n\017PutUserResponse\022\017\n\007succe"
@@ -385,7 +387,7 @@ const char descriptor_table_protodef_auth_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "\n\017GetUserResponse\022\017\n\007success\030\001 \001(\010\022\013\n\003ms"
   "g\030\002 \001(\t\022\013\n\003uid\030\003 \001(\004\022\014\n\004name\030\004 \001(\t\022\036\n\004ro"
   "le\030\005 \001(\0162\020.vosfs.auth.Role\022\023\n\013create_tim"
-  "e\030\006 \001(\004\"2\n\025UpdateUserNameRequest\022\013\n\003uid\030"
+  "e\030\006 \001(\003\"2\n\025UpdateUserNameRequest\022\013\n\003uid\030"
   "\001 \001(\004\022\014\n\004name\030\002 \001(\t\"6\n\026UpdateUserNameRes"
   "ponse\022\017\n\007success\030\001 \001(\010\022\013\n\003msg\030\002 \001(\t\"A\n\031U"
   "pdateUserPasswordRequest\022\013\n\003uid\030\001 \001(\004\022\027\n"
@@ -394,15 +396,15 @@ const char descriptor_table_protodef_auth_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "(\t\"D\n\025UpdateUserRoleRequest\022\013\n\003uid\030\001 \001(\004"
   "\022\036\n\004role\030\002 \001(\0162\020.vosfs.auth.Role\"6\n\026Upda"
   "teUserRoleResponse\022\017\n\007success\030\001 \001(\010\022\013\n\003m"
-  "sg\030\002 \001(\t\" \n\021DeleteUserRequest\022\013\n\003uid\030\001 \001"
-  "(\004\"2\n\022DeleteUserResponse\022\017\n\007success\030\001 \001("
-  "\010\022\013\n\003msg\030\002 \001(\t*\035\n\004Role\022\n\n\006kAdmin\020\000\022\t\n\005kU"
-  "ser\020\001*%\n\006Status\022\014\n\010kEnabled\020\000\022\r\n\tkDisabl"
-  "ed\020\001b\006proto3"
+  "sg\030\002 \001(\t\"9\n\021DeleteUserRequest\022\013\n\003uid\030\001 \001"
+  "(\004\022\027\n\017hashed_password\030\002 \001(\t\"2\n\022DeleteUse"
+  "rResponse\022\017\n\007success\030\001 \001(\010\022\013\n\003msg\030\002 \001(\t*"
+  "\035\n\004Role\022\n\n\006kAdmin\020\000\022\t\n\005kUser\020\001*%\n\006Status"
+  "\022\014\n\010kEnabled\020\000\022\r\n\tkDisabled\020\001b\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_auth_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_auth_2eproto = {
-    false, false, 1092, descriptor_table_protodef_auth_2eproto,
+    false, false, 1117, descriptor_table_protodef_auth_2eproto,
     "auth.proto",
     &descriptor_table_auth_2eproto_once, nullptr, 0, 13,
     schemas, file_default_instances, TableStruct_auth_2eproto::offsets,
@@ -515,9 +517,9 @@ inline void User::SharedCtor(
     , decltype(_impl_.uid_){uint64_t{0u}}
     , decltype(_impl_.role_){0}
     , decltype(_impl_.status_){0}
-    , decltype(_impl_.create_time_){uint64_t{0u}}
-    , decltype(_impl_.modify_time_){uint64_t{0u}}
-    , decltype(_impl_.last_login_time_){uint64_t{0u}}
+    , decltype(_impl_.create_time_){int64_t{0}}
+    , decltype(_impl_.modify_time_){int64_t{0}}
+    , decltype(_impl_.last_login_time_){int64_t{0}}
     , /*decltype(_impl_._cached_size_)*/{}
   };
   _impl_.name_.InitDefault();
@@ -621,7 +623,7 @@ const char* User::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
         } else
           goto handle_unusual;
         continue;
-      // uint64 create_time = 6;
+      // int64 create_time = 6;
       case 6:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 48)) {
           _impl_.create_time_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
@@ -629,7 +631,7 @@ const char* User::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
         } else
           goto handle_unusual;
         continue;
-      // uint64 modify_time = 7;
+      // int64 modify_time = 7;
       case 7:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 56)) {
           _impl_.modify_time_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
@@ -637,7 +639,7 @@ const char* User::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
         } else
           goto handle_unusual;
         continue;
-      // uint64 last_login_time = 8;
+      // int64 last_login_time = 8;
       case 8:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 64)) {
           _impl_.last_login_time_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
@@ -724,22 +726,22 @@ uint8_t* User::_InternalSerialize(
       5, this->_internal_status(), target);
   }
 
-  // uint64 create_time = 6;
+  // int64 create_time = 6;
   if (this->_internal_create_time() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(6, this->_internal_create_time(), target);
+    target = ::_pbi::WireFormatLite::WriteInt64ToArray(6, this->_internal_create_time(), target);
   }
 
-  // uint64 modify_time = 7;
+  // int64 modify_time = 7;
   if (this->_internal_modify_time() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(7, this->_internal_modify_time(), target);
+    target = ::_pbi::WireFormatLite::WriteInt64ToArray(7, this->_internal_modify_time(), target);
   }
 
-  // uint64 last_login_time = 8;
+  // int64 last_login_time = 8;
   if (this->_internal_last_login_time() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(8, this->_internal_last_login_time(), target);
+    target = ::_pbi::WireFormatLite::WriteInt64ToArray(8, this->_internal_last_login_time(), target);
   }
 
   // string last_login_ip = 9;
@@ -806,19 +808,19 @@ size_t User::ByteSizeLong() const {
       ::_pbi::WireFormatLite::EnumSize(this->_internal_status());
   }
 
-  // uint64 create_time = 6;
+  // int64 create_time = 6;
   if (this->_internal_create_time() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_create_time());
+    total_size += ::_pbi::WireFormatLite::Int64SizePlusOne(this->_internal_create_time());
   }
 
-  // uint64 modify_time = 7;
+  // int64 modify_time = 7;
   if (this->_internal_modify_time() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_modify_time());
+    total_size += ::_pbi::WireFormatLite::Int64SizePlusOne(this->_internal_modify_time());
   }
 
-  // uint64 last_login_time = 8;
+  // int64 last_login_time = 8;
   if (this->_internal_last_login_time() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_last_login_time());
+    total_size += ::_pbi::WireFormatLite::Int64SizePlusOne(this->_internal_last_login_time());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
@@ -1734,7 +1736,7 @@ inline void GetUserResponse::SharedCtor(
     , decltype(_impl_.uid_){uint64_t{0u}}
     , decltype(_impl_.success_){false}
     , decltype(_impl_.role_){0}
-    , decltype(_impl_.create_time_){uint64_t{0u}}
+    , decltype(_impl_.create_time_){int64_t{0}}
     , /*decltype(_impl_._cached_size_)*/{}
   };
   _impl_.msg_.InitDefault();
@@ -1831,7 +1833,7 @@ const char* GetUserResponse::_InternalParse(const char* ptr, ::_pbi::ParseContex
         } else
           goto handle_unusual;
         continue;
-      // uint64 create_time = 6;
+      // int64 create_time = 6;
       case 6:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 48)) {
           _impl_.create_time_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
@@ -1907,10 +1909,10 @@ uint8_t* GetUserResponse::_InternalSerialize(
       5, this->_internal_role(), target);
   }
 
-  // uint64 create_time = 6;
+  // int64 create_time = 6;
   if (this->_internal_create_time() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(6, this->_internal_create_time(), target);
+    target = ::_pbi::WireFormatLite::WriteInt64ToArray(6, this->_internal_create_time(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -1959,9 +1961,9 @@ size_t GetUserResponse::ByteSizeLong() const {
       ::_pbi::WireFormatLite::EnumSize(this->_internal_role());
   }
 
-  // uint64 create_time = 6;
+  // int64 create_time = 6;
   if (this->_internal_create_time() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_create_time());
+    total_size += ::_pbi::WireFormatLite::Int64SizePlusOne(this->_internal_create_time());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
@@ -3421,10 +3423,19 @@ DeleteUserRequest::DeleteUserRequest(const DeleteUserRequest& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   DeleteUserRequest* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.uid_){}
+      decltype(_impl_.hashed_password_){}
+    , decltype(_impl_.uid_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.hashed_password_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.hashed_password_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_hashed_password().empty()) {
+    _this->_impl_.hashed_password_.Set(from._internal_hashed_password(), 
+      _this->GetArenaForAllocation());
+  }
   _this->_impl_.uid_ = from._impl_.uid_;
   // @@protoc_insertion_point(copy_constructor:vosfs.auth.DeleteUserRequest)
 }
@@ -3434,9 +3445,14 @@ inline void DeleteUserRequest::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.uid_){uint64_t{0u}}
+      decltype(_impl_.hashed_password_){}
+    , decltype(_impl_.uid_){uint64_t{0u}}
     , /*decltype(_impl_._cached_size_)*/{}
   };
+  _impl_.hashed_password_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.hashed_password_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
 DeleteUserRequest::~DeleteUserRequest() {
@@ -3450,6 +3466,7 @@ DeleteUserRequest::~DeleteUserRequest() {
 
 inline void DeleteUserRequest::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.hashed_password_.Destroy();
 }
 
 void DeleteUserRequest::SetCachedSize(int size) const {
@@ -3462,6 +3479,7 @@ void DeleteUserRequest::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
+  _impl_.hashed_password_.ClearToEmpty();
   _impl_.uid_ = uint64_t{0u};
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
@@ -3477,6 +3495,16 @@ const char* DeleteUserRequest::_InternalParse(const char* ptr, ::_pbi::ParseCont
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
           _impl_.uid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string hashed_password = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_hashed_password();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "vosfs.auth.DeleteUserRequest.hashed_password"));
         } else
           goto handle_unusual;
         continue;
@@ -3515,6 +3543,16 @@ uint8_t* DeleteUserRequest::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_uid(), target);
   }
 
+  // string hashed_password = 2;
+  if (!this->_internal_hashed_password().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_hashed_password().data(), static_cast<int>(this->_internal_hashed_password().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "vosfs.auth.DeleteUserRequest.hashed_password");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_hashed_password(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -3530,6 +3568,13 @@ size_t DeleteUserRequest::ByteSizeLong() const {
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
+
+  // string hashed_password = 2;
+  if (!this->_internal_hashed_password().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_hashed_password());
+  }
 
   // uint64 uid = 1;
   if (this->_internal_uid() != 0) {
@@ -3554,6 +3599,9 @@ void DeleteUserRequest::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, cons
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
+  if (!from._internal_hashed_password().empty()) {
+    _this->_internal_set_hashed_password(from._internal_hashed_password());
+  }
   if (from._internal_uid() != 0) {
     _this->_internal_set_uid(from._internal_uid());
   }
@@ -3573,7 +3621,13 @@ bool DeleteUserRequest::IsInitialized() const {
 
 void DeleteUserRequest::InternalSwap(DeleteUserRequest* other) {
   using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.hashed_password_, lhs_arena,
+      &other->_impl_.hashed_password_, rhs_arena
+  );
   swap(_impl_.uid_, other->_impl_.uid_);
 }
 

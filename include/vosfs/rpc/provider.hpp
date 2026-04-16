@@ -6,10 +6,9 @@
 #include "vosfs/rpc/internal/session_manager.hpp"
 
 namespace vosfs::rpc {
-static thread_local std::string t_ip;
+inline thread_local std::string t_ip;
 
-static inline auto set_current_session_ip(std::string_view ip) {
-    pthread_setname_np(pthread_self(), ip.data());
+static inline auto set_current_session_ip(std::string&& ip) {
     t_ip = ip;
 }
 

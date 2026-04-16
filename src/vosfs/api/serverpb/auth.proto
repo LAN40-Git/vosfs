@@ -17,9 +17,9 @@ message User {
   string hashed_password = 3;
   Role role = 4;
   Status status = 5;
-  uint64 create_time = 6;
-  uint64 modify_time = 7;
-  uint64 last_login_time = 8;
+  int64 create_time = 6;
+  int64 modify_time = 7;
+  int64 last_login_time = 8;
   string last_login_ip = 9;
 }
 
@@ -45,7 +45,7 @@ message GetUserResponse {
   uint64 uid = 3;
   string name = 4;
   Role role = 5;
-  uint64 create_time = 6;
+  int64 create_time = 6;
 }
 
 message UpdateUserNameRequest {
@@ -80,6 +80,7 @@ message UpdateUserRoleResponse {
 
 message DeleteUserRequest {
   uint64 uid = 1;
+  string hashed_password = 2;
 }
 
 message DeleteUserResponse {

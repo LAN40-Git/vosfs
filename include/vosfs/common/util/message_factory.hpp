@@ -81,7 +81,7 @@ public:
         uint64_t uid = 0,
         std::string&& name = "",
         int role = auth::kUser,
-        uint64_t create_time = 0) -> rpc::RpcResult;
+        int64_t create_time = 0) -> rpc::RpcResult;
 
     [[nodiscard]]
     static auto make_update_user_name_request(
@@ -118,7 +118,8 @@ public:
 
     [[nodiscard]]
     static auto make_delete_user_request(
-        uint64_t uid) -> auth::DeleteUserRequest;
+        uint64_t uid,
+        std::string&& hashed_password) -> auth::DeleteUserRequest;
 
     [[nodiscard]]
     static auto make_delete_user_response(

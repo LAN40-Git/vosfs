@@ -126,7 +126,7 @@ auto vosfs::util::MessageFactory::make_get_user_response(
     uint64_t uid,
     std::string&& name,
     int role,
-    uint64_t create_time) -> rpc::RpcResult {
+    int64_t create_time) -> rpc::RpcResult {
     auth::GetUserResponse response;
     response.set_success(success);
     response.set_msg(std::move(msg));
@@ -194,9 +194,12 @@ auto vosfs::util::MessageFactory::make_update_user_role_response(
     return rpc::serialize_response(response, resp_payload);
 }
 
-auto vosfs::util::MessageFactory::make_delete_user_request(uint64_t uid) -> auth::DeleteUserRequest {
+auto vosfs::util::MessageFactory::make_delete_user_request(
+    uint64_t uid,
+    std::string&& hashed_password) -> auth::DeleteUserRequest {
     auth::DeleteUserRequest request;
     request.set_uid(uid);
+    request.set_hashed_password(std::move(hashed_password));
     return request;
 }
 
