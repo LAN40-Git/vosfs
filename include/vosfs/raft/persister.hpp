@@ -6,8 +6,9 @@
 namespace vosfs::raft {
 class Persister {
     static constexpr std::string_view HARD_STATE_KEY = "raft/hard_state";
-    static constexpr std::string_view NODE_INFO_KEY = "raft/node_info";
-    static constexpr std::string_view CLUSTER_INFO_KEY = "raft/cluster_info";
+    static constexpr std::string_view RAFT_NODE_INFO_KEY = "raft/raft_node_info";
+    static constexpr std::string_view RAFT_CLUSTER_INFO_KEY = "raft/raft_cluster_info";
+    static constexpr std::string_view DATA_CLUSTER_INFO_KEY = "raft/data_cluster_info";
     static constexpr std::string_view SNAPSHOT_METADATA_KEY = "raft/snapshot_metadata";
     static constexpr std::string_view SNAPSHOT_KEY = "raft/snapshot";
 
@@ -25,35 +26,33 @@ public:
 public:
     void save_hard_state(const HardState& hard_state) const;
 
-    [[nodiscard]]
-    auto load_hard_state() const -> Result<HardState>;
+    [[nodiscard]] auto load_hard_state() const -> Result<HardState>;
 
-    void save_cluster_info(const ClusterInfo& cluster_info) const;
+    void save_raft_cluster_info(const RaftClusterInfo& cluster_info) const;
 
-    [[nodiscard]]
-    auto load_cluster_info() const -> Result<ClusterInfo>;
+    [[nodiscard]] auto load_raft_cluster_info() const -> Result<RaftClusterInfo>;
 
-    void save_node_info(const NodeInfo& node_info) const;
+    void save_raft_node_info(const RaftNodeInfo& raft_node_info) const;
 
-    [[nodiscard]]
-    auto load_node_info() const -> Result<NodeInfo>;
+    [[nodiscard]] auto load_raft_node_info() const -> Result<RaftNodeInfo>;
+
+    void save_data_cluster_info(const DataClusterInfo& data_cluster_info) const;
+
+    [[nodiscard]] auto load_data_cluster_info() const -> Result<DataClusterInfo>;
 
     void save_snapshot_metadata(const SnapshotMetadata& snapshot_metadata) const;
 
-    [[nodiscard]]
-    auto load_snapshot_metadata() const -> Result<SnapshotMetadata>;
+    [[nodiscard]] auto load_snapshot_metadata() const -> Result<SnapshotMetadata>;
 
     void save_snapshot(const std::string& snapshot_data) const;
 
-    [[nodiscard]]
-    auto load_snapshot() const -> Result<std::string>;
+    [[nodiscard]] auto load_snapshot() const -> Result<std::string>;
 
     void save_entry(const LogEntry& entry) const;
 
     void save_entries(const google::protobuf::RepeatedPtrField<LogEntry>& entries) const;
 
-    [[nodiscard]]
-    auto load_entries(uint64_t last_included_index) const -> Result<std::vector<LogEntry>>;
+    [[nodiscard]] auto load_entries(uint64_t last_included_index) const -> Result<std::vector<LogEntry>>;
 
     auto truncate_entries(uint64_t start_index, uint64_t end_index) const -> void;
 

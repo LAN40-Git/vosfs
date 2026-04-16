@@ -1,6 +1,6 @@
 # vosfs
 
- ![Static Badge](https://img.shields.io/badge/c++-23-blue?logo=cplusplus) ![Static Badge](https://img.shields.io/badge/linux-black?logo=cmake) ![Static Badge](https://img.shields.io/badge/linux-gray?logo=linux)
+ ![Static Badge](https://img.shields.io/badge/c++-23-blue?logo=cplusplus) ![Static Badge](https://img.shields.io/badge/cmake-black?logo=cmake) ![Static Badge](https://img.shields.io/badge/linux-gray?logo=linux)
 
 ## About
 

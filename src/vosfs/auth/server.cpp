@@ -201,6 +201,7 @@ auto vosfs::auth::AuthServer::handle_get_user_request(
 
     auto name = std::string{request.name()};
     auto hashed_password = std::string{request.hashed_password()};
+    auto role = request.role();
 
     if (request.name().empty() || request.hashed_password().empty()) {
         co_return util::MessageFactory::make_get_user_response(resp_payload, false, "invalid name or password");
@@ -208,7 +209,7 @@ auto vosfs::auth::AuthServer::handle_get_user_request(
 
     // 查询用户是否存在
     bool exists{false};
-    const char* sql = "SELECT 1 FROM user WHERE name = ? LIMIT 1;";
+    const char* sql = "SELECT 1 FROM user WHERE name = ? AND role = ? LIMIT 1;";
     sqlite3_stmt* stat;
     if (sqlite3_prepare_v2(db_, sql, -1, &stat, nullptr) != SQLITE_OK) {
         LOG_ERROR("{}", sqlite3_errmsg(db_));
@@ -217,6 +218,7 @@ auto vosfs::auth::AuthServer::handle_get_user_request(
     }
 
     sqlite3_bind_text(stat, 1, name.data(), static_cast<int>(name.size()), SQLITE_STATIC);
+    sqlite3_bind_int(stat, 2, role);
     if (sqlite3_step(stat) == SQLITE_ROW) {
         exists = true;
     }
@@ -229,7 +231,7 @@ auto vosfs::auth::AuthServer::handle_get_user_request(
         co_return util::MessageFactory::make_put_user_response(resp_payload, false, "user not exists");
     }
 
-    sql = "SELECT uid, role, status, create_time FROM user WHERE name = ? AND hashed_password = ? LIMIT 1;";
+    sql = "SELECT uid, status, create_time FROM user WHERE name = ? AND hashed_password = ? LIMIT 1;";
     if (sqlite3_prepare_v2(db_, sql, -1, &stat, nullptr) != SQLITE_OK) {
         LOG_ERROR("{}", sqlite3_errmsg(db_));
         sqlite3_finalize(stat);
@@ -247,9 +249,8 @@ auto vosfs::auth::AuthServer::handle_get_user_request(
 
     // 账号密码都正确，返回用户信息
     auto uid = sqlite3_column_int64(stat, 0);
-    auto role = sqlite3_column_int(stat, 1);
-    auto status = sqlite3_column_int(stat, 2);
-    auto create_time = sqlite3_column_int64(stat, 3);
+    auto status = sqlite3_column_int(stat, 1);
+    auto create_time = sqlite3_column_int64(stat, 2);
 
     // 用户被禁用
     if (status == kDisabled) {

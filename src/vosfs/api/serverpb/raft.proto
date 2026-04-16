@@ -42,15 +42,24 @@ message AppendEntriesResponse {
   optional uint64 conflict_index = 5;
 }
 
-message NodeInfo {
+message RaftNodeInfo {
   uint64 id = 1;
   string name = 2;
-  string host = 3;
+  string ip = 3;
 }
 
-message ClusterInfo {
+message RaftClusterInfo {
   uint64 id = 1;
-  repeated NodeInfo node_infos = 2;
+  repeated RaftNodeInfo raft_node_infos = 2;
+}
+
+message DataNodeInfo {
+  string ip = 1;
+  uint32 port = 2;
+}
+
+message DataClusterInfo {
+  repeated DataNodeInfo data_node_infos = 1;
 }
 
 message InstallSnapshotRequest {
@@ -68,11 +77,12 @@ message InstallSnapshotResponse {
   uint64 term = 2;
 }
 
-message Chunk {
+message ChunkMetadata {
   uint64 id = 1;
   uint64 offset = 2;
   uint64 size = 3;
   string ip = 4;
+  uint32 port = 5;
 }
 
 enum InodeType {
@@ -97,7 +107,7 @@ message Inode {
   uint64 ctime = 5;
   uint64 mtime = 6;
   InodeType type = 7;
-  repeated Chunk chunks = 8;
+  repeated ChunkMetadata chunk_metadata = 8;
   DirectoryData dir_data = 9;
 }
 
@@ -109,15 +119,15 @@ message SnapshotMetadata {
 message Snapshot {
   repeated Inode inodes = 1;
   SnapshotMetadata snapshot_metadata = 2;
-  repeated NodeInfo node_infos = 3;
+  repeated RaftNodeInfo raft_node_infos = 3;
 }
 
 message TransmitFileRequest {
-  repeated Chunk chunks = 1;
+  repeated ChunkMetadata chunk_metadata = 1;
 }
 
 message TransmitFileResponse {
-  repeated Chunk chunks = 2;
+  repeated ChunkMetadata chunk_metadata = 1;
 }
 
 message PutFileRequest {
@@ -125,7 +135,7 @@ message PutFileRequest {
   uint64 size = 2;
   string name = 3;
   bool is_dir = 4;
-  repeated Chunk slice_infos = 5;
+  repeated ChunkMetadata chunk_metadata = 5;
 }
 
 message PutFileResponse {

@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdint>
 #include <string_view>
 
 namespace vosfs::raft::detail {

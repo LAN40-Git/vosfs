@@ -9,6 +9,7 @@ vosfs::raft::RaftNode::RaftNode(
     Persister&& persister,
     detail::RaftLog&& logs,
     detail::Transport&& transport,
+    DataClusterInfo&& data_cluster_info,
     HardState&& hard_state,
     std::string&& snapshot_data)
     : raft_rpc_server_(std::move(raft_rpc_server))
@@ -16,6 +17,7 @@ vosfs::raft::RaftNode::RaftNode(
     , persister_(std::move(persister))
     , logs_(std::move(logs))
     , transport_(std::move(transport))
+    , data_cluster_info_(std::move(data_cluster_info))
     , hard_state_(std::move(hard_state))
     , snapshot_data_(std::move(snapshot_data)) {}
 
@@ -55,6 +57,13 @@ auto vosfs::raft::RaftNode::create(std::string_view data_dir) -> kosio::async::T
     }
     auto transport = std::move(has_transport.value());
 
+    // 加载数据节点信息
+    auto has_data_cluster_info = persister.load_data_cluster_info();
+    if (!has_data_cluster_info) {
+        co_return std::unexpected{has_data_cluster_info.error()};
+    }
+    auto data_cluster_info = std::move(has_data_cluster_info.value());
+
     // 加载 HardState
     auto has_hard_state = persister.load_hard_state();
     if (!has_hard_state) {
@@ -76,6 +85,7 @@ auto vosfs::raft::RaftNode::create(std::string_view data_dir) -> kosio::async::T
         std::move(persister),
         std::move(logs),
         std::move(transport),
+        std::move(data_cluster_info),
         std::move(hard_state),
         std::move(snapshot_data)});
 }
@@ -98,51 +108,6 @@ auto vosfs::raft::RaftNode::shutdown() -> kosio::async::Task<void> {
     }
     is_shutdown_.store(true, std::memory_order_release);
     co_await latch_.wait();
-}
-
-auto vosfs::raft::RaftNode::election_loop() -> kosio::async::Task<void> {
-    kosio::util::FastRand rand;
-    while (!is_shutdown_.load(std::memory_order_relaxed)) {
-        // [150,300]ms timeout
-        auto timeout = rand.rand_range(150, 300);
-        co_await kosio::time::sleep(timeout);
-
-        if (kosio::util::current_ms() - last_reset_time_.load(std::memory_order_relaxed) < timeout ||
-            role_.load(std::memory_order_acquire) == kLeader) {
-            continue;
-        }
-
-        co_await mutex_.lock();
-        std::lock_guard lock(mutex_, std::adopt_lock);
-
-        // Check again
-        if (role_.load(std::memory_order_relaxed) == kLeader) {
-            continue;
-        }
-
-        do_election();
-    }
-    latch_.count_down();
-}
-
-auto vosfs::raft::RaftNode::heartbeat_loop() -> kosio::async::Task<void> {
-    while (!is_shutdown_.load(std::memory_order_relaxed)) {
-        co_await kosio::time::sleep(detail::HEARTBEAT_INTERVAL);
-
-        if (role_.load(std::memory_order_acquire) != kLeader) {
-            continue;
-        }
-
-        co_await mutex_.lock();
-        std::lock_guard lock(mutex_, std::adopt_lock);
-
-        if (role_.load(std::memory_order_relaxed) != kLeader) {
-            continue;
-        }
-
-        do_heartbeat();
-    }
-    latch_.count_down();
 }
 
 void vosfs::raft::RaftNode::init() {
@@ -318,6 +283,51 @@ void vosfs::raft::RaftNode::send_snapshot(uint64_t member_id, uint64_t offset) {
         [this](std::string_view resp_payload) -> kosio::async::Task<void> {
             co_await this->handle_install_snapshot_response(resp_payload);
         }));
+}
+
+auto vosfs::raft::RaftNode::election_loop() -> kosio::async::Task<void> {
+    kosio::util::FastRand rand;
+    while (!is_shutdown_.load(std::memory_order_relaxed)) {
+        // [150,300]ms timeout
+        auto timeout = rand.rand_range(150, 300);
+        co_await kosio::time::sleep(timeout);
+
+        if (kosio::util::current_ms() - last_reset_time_.load(std::memory_order_relaxed) < timeout ||
+            role_.load(std::memory_order_acquire) == kLeader) {
+            continue;
+            }
+
+        co_await mutex_.lock();
+        std::lock_guard lock(mutex_, std::adopt_lock);
+
+        // Check again
+        if (role_.load(std::memory_order_relaxed) == kLeader) {
+            continue;
+        }
+
+        do_election();
+    }
+    latch_.count_down();
+}
+
+auto vosfs::raft::RaftNode::heartbeat_loop() -> kosio::async::Task<void> {
+    while (!is_shutdown_.load(std::memory_order_relaxed)) {
+        co_await kosio::time::sleep(detail::HEARTBEAT_INTERVAL);
+
+        if (role_.load(std::memory_order_acquire) != kLeader) {
+            continue;
+        }
+
+        co_await mutex_.lock();
+        std::lock_guard lock(mutex_, std::adopt_lock);
+
+        if (role_.load(std::memory_order_relaxed) != kLeader) {
+            continue;
+        }
+
+        do_heartbeat();
+    }
+    latch_.count_down();
 }
 
 auto vosfs::raft::RaftNode::handle_request_vote_request(
@@ -499,15 +509,36 @@ auto vosfs::raft::RaftNode::handle_install_snapshot_request(
 
 auto vosfs::raft::RaftNode::handle_transmit_file_request(
     std::string_view req_payload,
-    std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
+    std::span<char> resp_payload) const -> kosio::async::Task<rpc::RpcResult> {
+    thread_local kosio::util::FastRand rand;
+
     TransmitFileRequest request;
     if (!request.ParseFromArray(req_payload.data(), static_cast<int>(req_payload.size()))) {
         co_return rpc::make_result(rpc::RpcResult::kMessageParseFailed);
     }
 
-    auto* chunks = request.mutable_chunks();
-    // 为每个分片获取地址信息
+    auto* chunk_metadata = request.mutable_chunk_metadata();
+    // 为每个分片获取地址信息并存入队列
+    std::deque<ChunkMetadata*> meta_queue;
+    auto& data_node_infos = data_cluster_info_.data_node_infos();
+    auto mod = data_cluster_info_.data_node_infos().size();
+    auto n = rand.fastrand_n(UINT32_MAX);
+    while (!chunk_metadata->empty()) {
+        auto* metadata = chunk_metadata->ReleaseLast();
+        auto id = metadata->id();
+        auto index = std::hash<uint64_t>{}(n+id) % mod;
+        metadata->set_ip(data_node_infos.at(index).ip());
+        metadata->set_port(data_node_infos.at(index).port());
+        meta_queue.push_back(metadata);
+    }
 
+    TransmitFileResponse response;
+    while (!meta_queue.empty()) {
+        response.mutable_chunk_metadata()->AddAllocated(meta_queue.back());
+        meta_queue.pop_back();
+    }
+
+    co_return rpc::serialize_response(response, resp_payload);
 }
 
 auto vosfs::raft::RaftNode::handle_request_vote_response(std::string_view resp_payload) -> kosio::async::Task<void> {

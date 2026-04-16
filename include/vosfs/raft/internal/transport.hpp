@@ -8,11 +8,11 @@ class Transport {
     using PeerMap = std::unordered_map<uint64_t, Peer>;
 private:
     explicit Transport(
-        ClusterInfo&& cluster_info,
-        NodeInfo&& node_info,
+        RaftClusterInfo&& raft_cluster_info,
+        RaftNodeInfo&& node_info,
         PeerMap&& peers)
-        : cluster_info_(std::move(cluster_info))
-        , node_info_(node_info)
+        : raft_cluster_info_(std::move(raft_cluster_info))
+        , raft_node_info_(node_info)
         , peers_(std::move(peers)) {}
 
 public:
@@ -56,24 +56,24 @@ public:
 
 public:
     [[nodiscard]]
-    auto cluster_id() const noexcept -> uint64_t { return cluster_info_.id(); }
+    auto cluster_id() const noexcept -> uint64_t { return raft_node_info_.id(); }
     [[nodiscard]]
-    auto member_id() const noexcept -> uint64_t { return node_info_.id(); }
+    auto member_id() const noexcept -> uint64_t { return raft_node_info_.id(); }
     [[nodiscard]]
-    auto name() const noexcept -> std::string_view { return node_info_.name(); }
+    auto name() const noexcept -> std::string_view { return raft_node_info_.name(); }
     [[nodiscard]]
-    auto host() const noexcept -> std::string_view { return node_info_.host(); }
+    auto ip() const noexcept -> std::string_view { return raft_node_info_.ip(); }
     [[nodiscard]]
     auto peers() -> PeerMap& { return peers_; }
     [[nodiscard]]
     auto peer_count() const noexcept -> uint64_t { return peers_.size(); }
 
 private:
-    static auto build_cluster(const ClusterInfo& cluster_info, const NodeInfo& node_info) -> kosio::async::Task<Result<PeerMap>>;
+    static auto build_cluster(const RaftClusterInfo& cluster_info, const RaftNodeInfo& node_info) -> kosio::async::Task<Result<PeerMap>>;
 
 private:
-    ClusterInfo cluster_info_;
-    NodeInfo    node_info_;
-    PeerMap     peers_;
+    RaftClusterInfo raft_cluster_info_;
+    RaftNodeInfo    raft_node_info_;
+    PeerMap         peers_;
 };
 } // namespace vosfs::raft::detail

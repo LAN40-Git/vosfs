@@ -112,10 +112,12 @@ auto vosfs::util::MessageFactory::make_put_user_response(
 
 auto vosfs::util::MessageFactory::make_get_user_request(
     std::string&& name,
-    std::string&& hashed_password) -> auth::GetUserRequest {
+    std::string&& hashed_password,
+    int role) -> auth::GetUserRequest {
     auth::GetUserRequest request;
     request.set_name(std::move(name));
     request.set_hashed_password(std::move(hashed_password));
+    request.set_role(static_cast<auth::Role>(role));
     return request;
 }
 

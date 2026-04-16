@@ -76,6 +76,7 @@ PROTOBUF_CONSTEXPR GetUserRequest::GetUserRequest(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.name_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.hashed_password_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.role_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct GetUserRequestDefaultTypeInternal {
   PROTOBUF_CONSTEXPR GetUserRequestDefaultTypeInternal()
@@ -263,6 +264,7 @@ const uint32_t TableStruct_auth_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pro
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::vosfs::auth::GetUserRequest, _impl_.name_),
   PROTOBUF_FIELD_OFFSET(::vosfs::auth::GetUserRequest, _impl_.hashed_password_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::auth::GetUserRequest, _impl_.role_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::vosfs::auth::GetUserResponse, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -345,15 +347,15 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 15, -1, -1, sizeof(::vosfs::auth::PutUserRequest)},
   { 24, -1, -1, sizeof(::vosfs::auth::PutUserResponse)},
   { 32, -1, -1, sizeof(::vosfs::auth::GetUserRequest)},
-  { 40, -1, -1, sizeof(::vosfs::auth::GetUserResponse)},
-  { 52, -1, -1, sizeof(::vosfs::auth::UpdateUserNameRequest)},
-  { 60, -1, -1, sizeof(::vosfs::auth::UpdateUserNameResponse)},
-  { 68, -1, -1, sizeof(::vosfs::auth::UpdateUserPasswordRequest)},
-  { 76, -1, -1, sizeof(::vosfs::auth::UpdateUserPasswordResponse)},
-  { 84, -1, -1, sizeof(::vosfs::auth::UpdateUserRoleRequest)},
-  { 92, -1, -1, sizeof(::vosfs::auth::UpdateUserRoleResponse)},
-  { 100, -1, -1, sizeof(::vosfs::auth::DeleteUserRequest)},
-  { 108, -1, -1, sizeof(::vosfs::auth::DeleteUserResponse)},
+  { 41, -1, -1, sizeof(::vosfs::auth::GetUserResponse)},
+  { 53, -1, -1, sizeof(::vosfs::auth::UpdateUserNameRequest)},
+  { 61, -1, -1, sizeof(::vosfs::auth::UpdateUserNameResponse)},
+  { 69, -1, -1, sizeof(::vosfs::auth::UpdateUserPasswordRequest)},
+  { 77, -1, -1, sizeof(::vosfs::auth::UpdateUserPasswordResponse)},
+  { 85, -1, -1, sizeof(::vosfs::auth::UpdateUserRoleRequest)},
+  { 93, -1, -1, sizeof(::vosfs::auth::UpdateUserRoleResponse)},
+  { 101, -1, -1, sizeof(::vosfs::auth::DeleteUserRequest)},
+  { 109, -1, -1, sizeof(::vosfs::auth::DeleteUserResponse)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -382,29 +384,30 @@ const char descriptor_table_protodef_auth_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "\001(\t\"W\n\016PutUserRequest\022\014\n\004name\030\001 \001(\t\022\027\n\017h"
   "ashed_password\030\002 \001(\t\022\036\n\004role\030\003 \001(\0162\020.vos"
   "fs.auth.Role\"/\n\017PutUserResponse\022\017\n\007succe"
-  "ss\030\001 \001(\010\022\013\n\003msg\030\002 \001(\t\"7\n\016GetUserRequest\022"
-  "\014\n\004name\030\001 \001(\t\022\027\n\017hashed_password\030\002 \001(\t\"\177"
-  "\n\017GetUserResponse\022\017\n\007success\030\001 \001(\010\022\013\n\003ms"
-  "g\030\002 \001(\t\022\013\n\003uid\030\003 \001(\004\022\014\n\004name\030\004 \001(\t\022\036\n\004ro"
-  "le\030\005 \001(\0162\020.vosfs.auth.Role\022\023\n\013create_tim"
-  "e\030\006 \001(\003\"2\n\025UpdateUserNameRequest\022\013\n\003uid\030"
-  "\001 \001(\004\022\014\n\004name\030\002 \001(\t\"6\n\026UpdateUserNameRes"
-  "ponse\022\017\n\007success\030\001 \001(\010\022\013\n\003msg\030\002 \001(\t\"A\n\031U"
-  "pdateUserPasswordRequest\022\013\n\003uid\030\001 \001(\004\022\027\n"
-  "\017hashed_password\030\002 \001(\t\":\n\032UpdateUserPass"
-  "wordResponse\022\017\n\007success\030\001 \001(\010\022\013\n\003msg\030\002 \001"
-  "(\t\"D\n\025UpdateUserRoleRequest\022\013\n\003uid\030\001 \001(\004"
-  "\022\036\n\004role\030\002 \001(\0162\020.vosfs.auth.Role\"6\n\026Upda"
-  "teUserRoleResponse\022\017\n\007success\030\001 \001(\010\022\013\n\003m"
-  "sg\030\002 \001(\t\"9\n\021DeleteUserRequest\022\013\n\003uid\030\001 \001"
-  "(\004\022\027\n\017hashed_password\030\002 \001(\t\"2\n\022DeleteUse"
-  "rResponse\022\017\n\007success\030\001 \001(\010\022\013\n\003msg\030\002 \001(\t*"
-  "\035\n\004Role\022\n\n\006kAdmin\020\000\022\t\n\005kUser\020\001*%\n\006Status"
-  "\022\014\n\010kEnabled\020\000\022\r\n\tkDisabled\020\001b\006proto3"
+  "ss\030\001 \001(\010\022\013\n\003msg\030\002 \001(\t\"W\n\016GetUserRequest\022"
+  "\014\n\004name\030\001 \001(\t\022\027\n\017hashed_password\030\002 \001(\t\022\036"
+  "\n\004role\030\003 \001(\0162\020.vosfs.auth.Role\"\177\n\017GetUse"
+  "rResponse\022\017\n\007success\030\001 \001(\010\022\013\n\003msg\030\002 \001(\t\022"
+  "\013\n\003uid\030\003 \001(\004\022\014\n\004name\030\004 \001(\t\022\036\n\004role\030\005 \001(\016"
+  "2\020.vosfs.auth.Role\022\023\n\013create_time\030\006 \001(\003\""
+  "2\n\025UpdateUserNameRequest\022\013\n\003uid\030\001 \001(\004\022\014\n"
+  "\004name\030\002 \001(\t\"6\n\026UpdateUserNameResponse\022\017\n"
+  "\007success\030\001 \001(\010\022\013\n\003msg\030\002 \001(\t\"A\n\031UpdateUse"
+  "rPasswordRequest\022\013\n\003uid\030\001 \001(\004\022\027\n\017hashed_"
+  "password\030\002 \001(\t\":\n\032UpdateUserPasswordResp"
+  "onse\022\017\n\007success\030\001 \001(\010\022\013\n\003msg\030\002 \001(\t\"D\n\025Up"
+  "dateUserRoleRequest\022\013\n\003uid\030\001 \001(\004\022\036\n\004role"
+  "\030\002 \001(\0162\020.vosfs.auth.Role\"6\n\026UpdateUserRo"
+  "leResponse\022\017\n\007success\030\001 \001(\010\022\013\n\003msg\030\002 \001(\t"
+  "\"9\n\021DeleteUserRequest\022\013\n\003uid\030\001 \001(\004\022\027\n\017ha"
+  "shed_password\030\002 \001(\t\"2\n\022DeleteUserRespons"
+  "e\022\017\n\007success\030\001 \001(\010\022\013\n\003msg\030\002 \001(\t*\035\n\004Role\022"
+  "\n\n\006kAdmin\020\000\022\t\n\005kUser\020\001*%\n\006Status\022\014\n\010kEna"
+  "bled\020\000\022\r\n\tkDisabled\020\001b\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_auth_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_auth_2eproto = {
-    false, false, 1117, descriptor_table_protodef_auth_2eproto,
+    false, false, 1149, descriptor_table_protodef_auth_2eproto,
     "auth.proto",
     &descriptor_table_auth_2eproto_once, nullptr, 0, 13,
     schemas, file_default_instances, TableStruct_auth_2eproto::offsets,
@@ -1444,6 +1447,7 @@ GetUserRequest::GetUserRequest(const GetUserRequest& from)
   new (&_impl_) Impl_{
       decltype(_impl_.name_){}
     , decltype(_impl_.hashed_password_){}
+    , decltype(_impl_.role_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -1463,6 +1467,7 @@ GetUserRequest::GetUserRequest(const GetUserRequest& from)
     _this->_impl_.hashed_password_.Set(from._internal_hashed_password(), 
       _this->GetArenaForAllocation());
   }
+  _this->_impl_.role_ = from._impl_.role_;
   // @@protoc_insertion_point(copy_constructor:vosfs.auth.GetUserRequest)
 }
 
@@ -1473,6 +1478,7 @@ inline void GetUserRequest::SharedCtor(
   new (&_impl_) Impl_{
       decltype(_impl_.name_){}
     , decltype(_impl_.hashed_password_){}
+    , decltype(_impl_.role_){0}
     , /*decltype(_impl_._cached_size_)*/{}
   };
   _impl_.name_.InitDefault();
@@ -1512,6 +1518,7 @@ void GetUserRequest::Clear() {
 
   _impl_.name_.ClearToEmpty();
   _impl_.hashed_password_.ClearToEmpty();
+  _impl_.role_ = 0;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -1538,6 +1545,15 @@ const char* GetUserRequest::_InternalParse(const char* ptr, ::_pbi::ParseContext
           ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
           CHK_(::_pbi::VerifyUTF8(str, "vosfs.auth.GetUserRequest.hashed_password"));
+        } else
+          goto handle_unusual;
+        continue;
+      // .vosfs.auth.Role role = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+          _internal_set_role(static_cast<::vosfs::auth::Role>(val));
         } else
           goto handle_unusual;
         continue;
@@ -1590,6 +1606,13 @@ uint8_t* GetUserRequest::_InternalSerialize(
         2, this->_internal_hashed_password(), target);
   }
 
+  // .vosfs.auth.Role role = 3;
+  if (this->_internal_role() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteEnumToArray(
+      3, this->_internal_role(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -1620,6 +1643,12 @@ size_t GetUserRequest::ByteSizeLong() const {
         this->_internal_hashed_password());
   }
 
+  // .vosfs.auth.Role role = 3;
+  if (this->_internal_role() != 0) {
+    total_size += 1 +
+      ::_pbi::WireFormatLite::EnumSize(this->_internal_role());
+  }
+
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -1643,6 +1672,9 @@ void GetUserRequest::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const :
   }
   if (!from._internal_hashed_password().empty()) {
     _this->_internal_set_hashed_password(from._internal_hashed_password());
+  }
+  if (from._internal_role() != 0) {
+    _this->_internal_set_role(from._internal_role());
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -1671,6 +1703,7 @@ void GetUserRequest::InternalSwap(GetUserRequest* other) {
       &_impl_.hashed_password_, lhs_arena,
       &other->_impl_.hashed_password_, rhs_arena
   );
+  swap(_impl_.role_, other->_impl_.role_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata GetUserRequest::GetMetadata() const {

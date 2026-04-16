@@ -7,8 +7,8 @@
 namespace vosfs::raft::detail {
 class Peer {
 private:
-    explicit Peer(const NodeInfo& node_info, std::unique_ptr<rpc::RpcConsumer> consumer)
-        : node_info_(node_info), consumer_(std::move(consumer)) {}
+    explicit Peer(const RaftNodeInfo& raft_node_info, std::unique_ptr<rpc::RpcConsumer> consumer)
+        : raft_node_info_(raft_node_info), consumer_(std::move(consumer)) {}
 
 public:
     Peer(const Peer&) = delete;
@@ -18,15 +18,15 @@ public:
 
 public:
     [[nodiscard]]
-    auto member_id() const noexcept -> uint64_t { return node_info_.id(); }
+    auto member_id() const noexcept -> uint64_t { return raft_node_info_.id(); }
     [[nodiscard]]
-    auto name() const noexcept -> std::string_view { return node_info_.name(); }
+    auto name() const noexcept -> std::string_view { return raft_node_info_.name(); }
     [[nodiscard]]
-    auto host() const noexcept -> std::string_view { return node_info_.host(); }
+    auto ip() const noexcept -> std::string_view { return raft_node_info_.ip(); }
 
 public:
     [[REMEMBER_CO_AWAIT]]
-    static auto create(const NodeInfo& node_info) -> kosio::async::Task<Result<Peer>>;
+    static auto create(const RaftNodeInfo& node_info) -> kosio::async::Task<Result<Peer>>;
 
 public:
     [[REMEMBER_CO_AWAIT]]
@@ -48,7 +48,7 @@ public:
         rpc::RpcCallback&& callback) const -> kosio::async::Task<void>;
 
 private:
-    NodeInfo node_info_;
+    RaftNodeInfo raft_node_info_;
     // connection to this peer
     std::unique_ptr<rpc::RpcConsumer> consumer_;
 };

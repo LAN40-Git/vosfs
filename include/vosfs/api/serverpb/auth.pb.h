@@ -876,6 +876,7 @@ class GetUserRequest final :
   enum : int {
     kNameFieldNumber = 1,
     kHashedPasswordFieldNumber = 2,
+    kRoleFieldNumber = 3,
   };
   // string name = 1;
   void clear_name();
@@ -905,6 +906,15 @@ class GetUserRequest final :
   std::string* _internal_mutable_hashed_password();
   public:
 
+  // .vosfs.auth.Role role = 3;
+  void clear_role();
+  ::vosfs::auth::Role role() const;
+  void set_role(::vosfs::auth::Role value);
+  private:
+  ::vosfs::auth::Role _internal_role() const;
+  void _internal_set_role(::vosfs::auth::Role value);
+  public:
+
   // @@protoc_insertion_point(class_scope:vosfs.auth.GetUserRequest)
  private:
   class _Internal;
@@ -915,6 +925,7 @@ class GetUserRequest final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr hashed_password_;
+    int role_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -3021,6 +3032,26 @@ inline void GetUserRequest::set_allocated_hashed_password(std::string* hashed_pa
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:vosfs.auth.GetUserRequest.hashed_password)
+}
+
+// .vosfs.auth.Role role = 3;
+inline void GetUserRequest::clear_role() {
+  _impl_.role_ = 0;
+}
+inline ::vosfs::auth::Role GetUserRequest::_internal_role() const {
+  return static_cast< ::vosfs::auth::Role >(_impl_.role_);
+}
+inline ::vosfs::auth::Role GetUserRequest::role() const {
+  // @@protoc_insertion_point(field_get:vosfs.auth.GetUserRequest.role)
+  return _internal_role();
+}
+inline void GetUserRequest::_internal_set_role(::vosfs::auth::Role value) {
+  
+  _impl_.role_ = value;
+}
+inline void GetUserRequest::set_role(::vosfs::auth::Role value) {
+  _internal_set_role(value);
+  // @@protoc_insertion_point(field_set:vosfs.auth.GetUserRequest.role)
 }
 
 // -------------------------------------------------------------------

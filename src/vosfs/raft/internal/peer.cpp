@@ -1,12 +1,12 @@
 #include "vosfs/raft/internal/peer.hpp"
 
-auto vosfs::raft::detail::Peer::create(const NodeInfo& node_info) -> kosio::async::Task<Result<Peer>> {
-    // try to connect to the raft node at host:RAFT_RPC_PORT
-    auto ret = co_await rpc::RpcConsumer::create(node_info.host(), RAFT_RPC_PORT);
+auto vosfs::raft::detail::Peer::create(const RaftNodeInfo& raft_node_info) -> kosio::async::Task<Result<Peer>> {
+    // try to connect to the raft node at ip:RAFT_RPC_PORT
+    auto ret = co_await rpc::RpcConsumer::create(raft_node_info.ip(), RAFT_RPC_PORT);
     if (!ret) {
         co_return std::unexpected{make_error(Error::kCreatePeerFailed)};
     }
-    co_return Peer(node_info, std::move(ret.value()));
+    co_return Peer(raft_node_info, std::move(ret.value()));
 }
 
 auto vosfs::raft::detail::Peer::shutdown() const -> kosio::async::Task<void> {

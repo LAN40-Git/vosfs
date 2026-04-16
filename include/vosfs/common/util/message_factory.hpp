@@ -71,7 +71,8 @@ public:
     [[nodiscard]]
     static auto make_get_user_request(
         std::string&& name,
-        std::string&& hashed_password) -> auth::GetUserRequest;
+        std::string&& hashed_password,
+        int role) -> auth::GetUserRequest;
 
     [[nodiscard]]
     static auto make_get_user_response(

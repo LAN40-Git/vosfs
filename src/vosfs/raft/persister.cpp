@@ -36,44 +36,64 @@ auto vosfs::raft::Persister::load_hard_state() const -> Result<HardState> {
     return hard_state;
 }
 
-void vosfs::raft::Persister::save_cluster_info(const ClusterInfo& cluster_info) const {
-    if (auto status = engine_.put(CLUSTER_INFO_KEY, cluster_info.SerializeAsString()); !status.ok()) {
-        LOG_FATAL("failed to save cluster info : {}", status.ToString());
+void vosfs::raft::Persister::save_raft_cluster_info(const RaftClusterInfo& raft_cluster_info) const {
+    if (auto status = engine_.put(RAFT_CLUSTER_INFO_KEY, raft_cluster_info.SerializeAsString()); !status.ok()) {
+        LOG_FATAL("failed to save raft cluster info : {}", status.ToString());
         std::abort();
     }
 }
 
-auto vosfs::raft::Persister::load_cluster_info() const -> Result<ClusterInfo> {
+auto vosfs::raft::Persister::load_raft_cluster_info() const -> Result<RaftClusterInfo> {
     std::string payload;
-    ClusterInfo cluster_info;
-    if (auto status = engine_.get(CLUSTER_INFO_KEY, &payload); !status.ok()) {
-        LOG_ERROR("failed to load cluster info : {}", status.ToString());
+    RaftClusterInfo raft_cluster_info;
+    if (auto status = engine_.get(RAFT_CLUSTER_INFO_KEY, &payload); !status.ok()) {
+        LOG_ERROR("failed to load raft cluster info : {}", status.ToString());
         return std::unexpected{make_error(Error::kRecoverFailed)};
     }
-    if (!cluster_info.ParseFromString(payload)) {
+    if (!raft_cluster_info.ParseFromString(payload)) {
         return std::unexpected{make_error(Error::kProtoParseFailed)};
     }
-    return cluster_info;
+    return raft_cluster_info;
 }
 
-void vosfs::raft::Persister::save_node_info(const NodeInfo& node_info) const {
-    if (auto status = engine_.put(NODE_INFO_KEY, node_info.SerializeAsString()); !status.ok()) {
-        LOG_FATAL("failed to save node info : {}", status.ToString());
+void vosfs::raft::Persister::save_raft_node_info(const RaftNodeInfo& raft_node_info) const {
+    if (auto status = engine_.put(RAFT_NODE_INFO_KEY, raft_node_info.SerializeAsString()); !status.ok()) {
+        LOG_FATAL("failed to save raft node info : {}", status.ToString());
         std::abort();
     }
 }
 
-auto vosfs::raft::Persister::load_node_info() const -> Result<NodeInfo> {
+auto vosfs::raft::Persister::load_raft_node_info() const -> Result<RaftNodeInfo> {
     std::string payload;
-    NodeInfo node_info;
-    if (auto status = engine_.get(NODE_INFO_KEY, &payload); !status.ok()) {
-        LOG_ERROR("failed to load node info : {}", status.ToString());
+    RaftNodeInfo raft_node_info;
+    if (auto status = engine_.get(RAFT_NODE_INFO_KEY, &payload); !status.ok()) {
+        LOG_ERROR("failed to load raft node info : {}", status.ToString());
         return std::unexpected{make_error(Error::kRecoverFailed)};
     }
-    if (!node_info.ParseFromString(payload)) {
+    if (!raft_node_info.ParseFromString(payload)) {
         return std::unexpected{make_error(Error::kProtoParseFailed)};
     }
-    return node_info;
+    return raft_node_info;
+}
+
+void vosfs::raft::Persister::save_data_cluster_info(const DataClusterInfo& data_cluster_info) const {
+    if (auto status = engine_.put(DATA_CLUSTER_INFO_KEY, data_cluster_info.SerializeAsString()); !status.ok()) {
+        LOG_FATAL("failed to save data cluster info : {}", status.ToString());
+        std::abort();
+    }
+}
+
+auto vosfs::raft::Persister::load_data_cluster_info() const -> Result<DataClusterInfo> {
+    std::string payload;
+    DataClusterInfo data_cluster_info;
+    if (auto status = engine_.get(DATA_CLUSTER_INFO_KEY, &payload); !status.ok()) {
+        LOG_ERROR("failed to load data cluster info : {}", status.ToString());
+        return std::unexpected{make_error(Error::kRecoverFailed)};
+    }
+    if (!data_cluster_info.ParseFromString(payload)) {
+        return std::unexpected{make_error(Error::kProtoParseFailed)};
+    }
+    return data_cluster_info;
 }
 
 void vosfs::raft::Persister::save_snapshot_metadata(const SnapshotMetadata& snapshot_metadata) const {

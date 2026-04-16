@@ -3,14 +3,14 @@
 
 auto vosfs::raft::detail::Transport::create(const Persister& persister) -> kosio::async::Task<Result<Transport>> {
     // 恢复节点信息
-    auto has_node_info = persister.load_node_info();
+    auto has_node_info = persister.load_raft_node_info();
     if (!has_node_info) {
         co_return std::unexpected{has_node_info.error()};
     }
     auto node_info = std::move(has_node_info.value());
 
     // 恢复集群信息
-    auto has_cluster_info = persister.load_cluster_info();
+    auto has_cluster_info = persister.load_raft_cluster_info();
     if (!has_cluster_info) {
         co_return std::unexpected{has_cluster_info.error()};
     }
@@ -33,14 +33,14 @@ auto vosfs::raft::detail::Transport::shutdown() const -> kosio::async::Task<void
 auto vosfs::raft::detail::Transport::apply_snapshot(Snapshot& snapshot) -> kosio::async::Task<void> {
     co_await shutdown();
     peers_.clear();
-    auto& node_infos = snapshot.node_infos();
-    cluster_info_.mutable_node_infos()->Clear();
-    while (!node_infos.empty()) {
-        auto* node_info = snapshot.mutable_node_infos()->ReleaseLast();
-        cluster_info_.mutable_node_infos()->AddAllocated(node_info);
+    auto& raft_node_infos = snapshot.raft_node_infos();
+    raft_cluster_info_.mutable_raft_node_infos()->Clear();
+    while (!raft_node_infos.empty()) {
+        auto* node_info = snapshot.mutable_raft_node_infos()->ReleaseLast();
+        raft_cluster_info_.mutable_raft_node_infos()->AddAllocated(node_info);
     }
 
-    auto ret = co_await build_cluster(cluster_info_, node_info_);
+    auto ret = co_await build_cluster(raft_cluster_info_, raft_node_info_);
     if (!ret) {
         LOG_FATAL("{}", ret.error());
         std::abort();
@@ -92,15 +92,15 @@ auto vosfs::raft::detail::Transport::broadcast_request(
     }
 }
 
-auto vosfs::raft::detail::Transport::build_cluster(const ClusterInfo& cluster_info, const NodeInfo& node_info) -> kosio::async::Task<Result<PeerMap>> {
-    auto& node_infos = cluster_info.node_infos();
+auto vosfs::raft::detail::Transport::build_cluster(const RaftClusterInfo& raft_cluster_info, const RaftNodeInfo& raft_node_info) -> kosio::async::Task<Result<PeerMap>> {
+    auto& node_infos = raft_cluster_info.raft_node_infos();
     PeerMap peers;
     for (auto& info : node_infos) {
-        if (info.id() == node_info.id()) {
+        if (info.id() == raft_node_info.id()) {
             continue;
         }
 
-        auto ret = co_await Peer::create(std::move(info));
+        auto ret = co_await Peer::create(info);
         if (!ret) {
             co_return std::unexpected{ret.error()};
         }

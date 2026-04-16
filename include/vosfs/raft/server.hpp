@@ -13,6 +13,7 @@ private:
         Persister&& persister,
         detail::RaftLog&& logs,
         detail::Transport&& transport,
+        DataClusterInfo&& data_cluster_info,
         HardState&& hard_state,
         std::string&& snapshot_data);
 
@@ -27,10 +28,6 @@ private:
     auto shutdown() -> kosio::async::Task<void>;
 
 private:
-    auto election_loop() -> kosio::async::Task<void>;
-    auto heartbeat_loop() -> kosio::async::Task<void>;
-
-private:
     void init();
     void do_election();
     void do_heartbeat();
@@ -40,6 +37,11 @@ private:
     void send_snapshot(uint64_t member_id, uint64_t offset);
 
 private:
+    auto election_loop() -> kosio::async::Task<void>;
+    auto heartbeat_loop() -> kosio::async::Task<void>;
+
+private:
+    // Raft RPC
     [[REMEMBER_CO_AWAIT]]
     auto handle_request_vote_request(std::string_view req_payload, std::span<char> resp_payload)
         -> kosio::async::Task<rpc::RpcResult>;
@@ -49,9 +51,11 @@ private:
     [[REMEMBER_CO_AWAIT]]
     auto handle_install_snapshot_request(std::string_view req_payload, std::span<char> resp_payload)
         -> kosio::async::Task<rpc::RpcResult>;
+
+    // Client RPC
     [[REMEMBER_CO_AWAIT]]
     auto handle_transmit_file_request(std::string_view req_payload, std::span<char> resp_payload)
-        -> kosio::async::Task<rpc::RpcResult>;
+        const -> kosio::async::Task<rpc::RpcResult>;
 
 private:
     [[REMEMBER_CO_AWAIT]]
@@ -74,6 +78,7 @@ private:
     StateMachine          state_machine_;
     detail::RaftLog       logs_;
     detail::Transport     transport_;
+    DataClusterInfo       data_cluster_info_;
 
     /* RaftState from https://raft.github.io/raft.pdf */
     // Persistent state on all servers
@@ -92,4 +97,5 @@ private:
     std::unordered_map<uint64_t, uint64_t> next_index_{};
     std::unordered_map<uint64_t, uint64_t> match_index_{};
 };
+using MetaServer = RaftNode;
 } // namespace vosfs::raft

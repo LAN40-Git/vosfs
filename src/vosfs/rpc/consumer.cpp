@@ -1,8 +1,8 @@
 #include "vosfs/rpc/consumer.hpp"
 
-auto vosfs::rpc::RpcConsumer::create(std::string_view server_host, uint16_t server_port)
+auto vosfs::rpc::RpcConsumer::create(std::string_view server_ip, uint16_t server_port)
 -> kosio::async::Task<kosio::Result<std::unique_ptr<RpcConsumer>>> {
-    auto has_addr = kosio::net::SocketAddr::parse(server_host, server_port);
+    auto has_addr = kosio::net::SocketAddr::parse(server_ip, server_port);
     if (!has_addr) {
         co_return std::unexpected{has_addr.error()};
     }
@@ -11,7 +11,7 @@ auto vosfs::rpc::RpcConsumer::create(std::string_view server_host, uint16_t serv
         co_return std::unexpected{has_stream.error()};
     }
 
-    auto consumer = std::unique_ptr<RpcConsumer>(new RpcConsumer(server_host, server_port, std::move(has_stream.value())));
+    auto consumer = std::unique_ptr<RpcConsumer>(new RpcConsumer(server_ip, server_port, std::move(has_stream.value())));
     kosio::spawn(consumer->handle_response());
     co_return std::move(consumer);
 }
@@ -23,7 +23,7 @@ auto vosfs::rpc::RpcConsumer::run() -> kosio::async::Task<void> {
         co_return;
     }
 
-    auto has_addr = kosio::net::SocketAddr::parse(server_host_, server_port_);
+    auto has_addr = kosio::net::SocketAddr::parse(server_ip_, server_port_);
     assert(has_addr);
     auto has_stream = co_await kosio::net::TcpStream::connect(has_addr.value());
     if (!has_stream) {

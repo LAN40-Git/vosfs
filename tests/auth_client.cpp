@@ -55,11 +55,14 @@ auto handle_put_user_response(std::string_view resp_payload) -> kosio::async::Ta
 
 auto send_get_user_request(const std::unique_ptr<RpcConsumer>& consumer) -> kosio::async::Task<void> {
     std::string name, password;
+    int role;
     std::cout << "用户名:";
     std::cin >> name;
     std::cout << "密码:";
     std::cin >> password;
-    auto request = util::MessageFactory::make_get_user_request(std::move(name), std::move(password));
+    std::cout << "角色:";
+    std::cin >> role;
+    auto request = util::MessageFactory::make_get_user_request(std::move(name), std::move(password), role);
 
     co_await consumer->send_request(
         ServiceType::kAuth,

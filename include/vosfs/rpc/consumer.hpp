@@ -19,8 +19,8 @@ class RpcConsumer {
     using RequestMap = std::unordered_map<uint64_t, RpcRequest>;
 
 private:
-    explicit RpcConsumer(std::string_view server_host, uint16_t server_port, kosio::net::TcpStream stream)
-        : server_host_(server_host), server_port_(server_port), stream_(std::move(stream)) {
+    explicit RpcConsumer(std::string_view server_ip, uint16_t server_port, kosio::net::TcpStream stream)
+        : server_ip_(server_ip), server_port_(server_port), stream_(std::move(stream)) {
         requests_.rehash(4096);
     }
 
@@ -35,7 +35,7 @@ public:
 
 public:
     [[REMEMBER_CO_AWAIT]]
-    static auto create(std::string_view server_host, uint16_t server_port) -> kosio::async::Task<kosio::Result<std::unique_ptr<RpcConsumer>>>;
+    static auto create(std::string_view server_ip, uint16_t server_port) -> kosio::async::Task<kosio::Result<std::unique_ptr<RpcConsumer>>>;
 
 public:
     auto run() -> kosio::async::Task<void>;
@@ -75,7 +75,7 @@ private:
     auto handle_response() -> kosio::async::Task<void>;
 
 private:
-    std::string           server_host_;
+    std::string           server_ip_;
     uint16_t              server_port_;
     kosio::net::TcpStream stream_;
     uint64_t              request_id_{0}; // current request id
