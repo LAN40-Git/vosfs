@@ -1,5 +1,8 @@
 #include "auth.pb.h"
 #include "vosfs/auth/server.hpp"
+
+#include <kosio/signal/signal.hpp>
+
 #include "vosfs/common/util/message_factory.hpp"
 
 vosfs::auth::AuthServer::AuthServer(
@@ -66,6 +69,13 @@ auto vosfs::auth::AuthServer::create(uint16_t port) -> kosio::async::Task<Result
     co_return AuthServer{db, std::move(rpc_server)};
 }
 
+auto vosfs::auth::AuthServer::run() const -> kosio::async::Task<void> {
+    init();
+    kosio::spawn(rpc_server_->run());
+    co_await kosio::signal::ctrl_c();
+    co_await shutdown();
+}
+
 void vosfs::auth::AuthServer::init() const {
     // 注册 RPC 服务
     using rpc::ServiceType;
@@ -101,16 +111,11 @@ void vosfs::auth::AuthServer::init() const {
             co_return co_await this->handle_update_user_role_request(req_payload, resp_payload);
         });
 
-    // delet
+    // delete user
     rpc_server_->register_handler(ServiceType::kAuth, MethodType::kAuthDeleteUser,
         [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
             co_return co_await this->handle_delete_user_request(req_payload, resp_payload);
         });
-}
-
-auto vosfs::auth::AuthServer::run() const -> kosio::async::Task<void> {
-    init();
-    co_await rpc_server_->run();
 }
 
 auto vosfs::auth::AuthServer::shutdown() const -> kosio::async::Task<void> {

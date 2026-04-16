@@ -22,8 +22,11 @@ public:
     static auto create(uint16_t port) -> kosio::async::Task<Result<AuthServer>>;
 
 public:
-    void init() const; // 禁止放入构造函数
+    [[REMEMBER_CO_AWAIT]]
     auto run() const -> kosio::async::Task<void>;
+
+private:
+    void init() const; // 禁止放入构造函数
     auto shutdown() const -> kosio::async::Task<void>;
 
 private:

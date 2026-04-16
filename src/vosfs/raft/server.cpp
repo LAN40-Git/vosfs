@@ -84,14 +84,20 @@ auto vosfs::raft::RaftServer::run() -> kosio::async::Task<void> {
     init();
     kosio::spawn(raft_rpc_server_->run());
     kosio::spawn(client_rpc_server_->run());
-    co_await latch_.wait();
+    co_await kosio::signal::ctrl_c();
+    co_await shutdown();
 }
 
 auto vosfs::raft::RaftServer::shutdown() -> kosio::async::Task<void> {
-    co_await transport_.shutdown();
-    co_await raft_rpc_server_->shutdown();
-    co_await client_rpc_server_->shutdown();
+    {
+        co_await mutex_.lock();
+        std::lock_guard lock(mutex_, std::adopt_lock);
+        co_await transport_.shutdown();
+        co_await raft_rpc_server_->shutdown();
+        co_await client_rpc_server_->shutdown();
+    }
     is_shutdown_.store(true, std::memory_order_release);
+    co_await latch_.wait();
 }
 
 auto vosfs::raft::RaftServer::election_loop() -> kosio::async::Task<void> {

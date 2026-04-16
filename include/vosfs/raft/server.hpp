@@ -20,7 +20,10 @@ public:
     static auto create(std::string_view data_dir) -> kosio::async::Task<Result<std::unique_ptr<RaftServer>>>;
 
 public:
+    [[REMEMBER_CO_AWAIT]]
     auto run() -> kosio::async::Task<void>;
+
+private:
     auto shutdown() -> kosio::async::Task<void>;
 
 private:

@@ -9,9 +9,7 @@ auto server() -> kosio::async::Task<void> {
     }
 
     auto auth_server = std::move(has_auth_server.value());
-    kosio::spawn(auth_server.run());
-    co_await kosio::signal::ctrl_c();
-    co_await auth_server.shutdown();
+    co_await auth_server.run();
 }
 
 auto main() -> int {

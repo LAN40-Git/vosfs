@@ -9,7 +9,6 @@ namespace vosfs::raft {
 class StateMachine {
 public:
     void apply(const LogEntry& entry);
-
     void apply_snapshot(const Snapshot& snapshot);
 
 private:
