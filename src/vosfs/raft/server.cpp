@@ -285,6 +285,7 @@ void vosfs::raft::RaftNode::become_leader() {
     role_.store(kLeader, std::memory_order_release);
     persister_.save_hard_state(hard_state_);
     leader_id_ = transport_.member_id();
+    LOG_VERBOSE("become leader, current_term: {}", hard_state_.current_term());
     // 更新每个Raft节点的 next_index 和 match_index
     auto& peers = transport_.peers();
     for (const auto& peer : peers | std::views::values) {
@@ -413,6 +414,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
 
     leader_id_ = leader_id;
     last_reset_time_.store(kosio::util::current_ms(), std::memory_order_relaxed);
+    LOG_VERBOSE("receive heartbeat from {}, current_term: {}", leader_id_.value(), hard_state_.current_term());
 
     // 判断追加日志的上一条日志是否存在与本地日志中
     bool log_ok{false};

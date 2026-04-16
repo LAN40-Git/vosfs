@@ -38,7 +38,7 @@ void add_data_node_info(DataClusterInfo& data_cluster_info, std::string&& ip, ui
 }
 
 auto main() -> int {
-    auto has_persister = Persister::create("");
+    auto has_persister = Persister::create("vosfs");
     if (!has_persister) {
         LOG_ERROR("{}", has_persister.error());
         return -1;
@@ -53,6 +53,10 @@ auto main() -> int {
     raft_node_info.set_ip("172.20.179.151");
 
     add_raft_node_info(raft_cluster_info, 0, "MDS_1", "172.20.179.151");
+    add_raft_node_info(raft_cluster_info, 1, "MDS_2", "172.18.207.176");
+
+    add_data_node_info(data_cluster_info, "172.20.179.151", 8080);
+    add_data_node_info(data_cluster_info, "172.18.207.176", 8080);
 
     persister.init(raft_node_info, raft_cluster_info, data_cluster_info);
 }

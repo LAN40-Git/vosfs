@@ -38,7 +38,9 @@ void vosfs::raft::Persister::init(
     // 检查本地节点是否存在于集群
     bool node_found = false;
     for (const auto& node : raft_cluster_info.raft_node_infos()) {
-        if (node.id() == raft_node_info.id()) {
+        if (node.id() == raft_node_info.id() &&
+            node.name() == raft_node_info.name() &&
+            node.ip() == raft_node_info.ip()) {
             node_found = true;
             break;
         }
