@@ -72,7 +72,7 @@ auto vosfs::raft::detail::Transport::unicast_request(uint64_t peer_id, rpc::Serv
     }
 
     auto& peer = it->second;
-    co_await peer.send_request(service_type, method_type, std::move(req_payload), callback);
+    co_await peer.send_request(service_type, method_type, std::move(req_payload), std::move(callback));
 }
 
 auto vosfs::raft::detail::Transport::broadcast_request(rpc::ServiceType service_type, rpc::MethodType method_type,
@@ -88,14 +88,14 @@ auto vosfs::raft::detail::Transport::broadcast_request(
     std::string&& req_payload, rpc::RpcCallback&& callback)
     -> kosio::async::Task<void> {
     for (auto& peer : peers_ | std::views::values) {
-        co_await peer.send_request(service_type, method_type, std::move(req_payload), callback);
+        co_await peer.send_request(service_type, method_type, std::move(req_payload), std::move(callback));
     }
 }
 
 auto vosfs::raft::detail::Transport::build_cluster(const RaftClusterInfo& raft_cluster_info, const RaftNodeInfo& raft_node_info) -> kosio::async::Task<Result<PeerMap>> {
-    auto& node_infos = raft_cluster_info.raft_node_infos();
+    auto& raft_node_infos = raft_cluster_info.raft_node_infos();
     PeerMap peers;
-    for (auto& info : node_infos) {
+    for (auto& info : raft_node_infos) {
         if (info.id() == raft_node_info.id()) {
             continue;
         }

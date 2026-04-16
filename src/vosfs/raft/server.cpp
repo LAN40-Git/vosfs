@@ -84,7 +84,9 @@ auto vosfs::raft::RaftNode::run() -> kosio::async::Task<void> {
     co_await init();
     kosio::spawn(raft_rpc_server_->run());
     kosio::spawn(client_rpc_server_->run());
-    co_await kosio::time::sleep(1000);
+    kosio::spawn(election_loop());
+    kosio::spawn(heartbeat_loop());
+    co_await kosio::signal::ctrl_c();
     co_await shutdown();
 }
 
@@ -156,7 +158,7 @@ auto vosfs::raft::RaftNode::election_loop() -> kosio::async::Task<void> {
         if (kosio::util::current_ms() - last_reset_time_.load(std::memory_order_relaxed) < timeout ||
             role_.load(std::memory_order_acquire) == kLeader) {
             continue;
-            }
+        }
 
         co_await mutex_.lock();
         std::lock_guard lock(mutex_, std::adopt_lock);
@@ -216,7 +218,7 @@ void vosfs::raft::RaftNode::do_election() {
 
     // 为自己投票并尝试成为 Leader（当只有一个节点时生效）
     ++votes_;
-    if (votes_ > transport_.peer_count() / 2 &&
+    if (votes_ > transport_.cluster_size() / 2 &&
             role_.load(std::memory_order_relaxed) == kCandidate) {
         become_leader();
     }
@@ -607,7 +609,7 @@ auto vosfs::raft::RaftNode::handle_request_vote_response(std::string_view resp_p
     }
 
     if (vote_granted) {
-        if (++votes_ > transport_.peer_count() / 2 &&
+        if (++votes_ > transport_.cluster_size() / 2 &&
             role_.load(std::memory_order_relaxed) == kCandidate) {
             become_leader();
         }
@@ -655,7 +657,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_response(std::string_view resp
     match_index_[id] = last_log_index;
     next_index_[id] = last_log_index + 1;
     std::vector<uint64_t> idxs{};
-    idxs.reserve(transport_.peer_count());
+    idxs.reserve(transport_.cluster_size());
     for (auto idx: match_index_ | std::views::values) {
         idxs.push_back(idx);
     }

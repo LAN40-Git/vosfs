@@ -68,7 +68,7 @@ public:
     [[nodiscard]]
     auto peers() -> PeerMap& { return peers_; }
     [[nodiscard]]
-    auto peer_count() const noexcept -> uint64_t { return peers_.size(); }
+    auto cluster_size() const noexcept -> uint64_t { return raft_cluster_info_.raft_node_infos_size(); }
 
 private:
     static auto build_cluster(const RaftClusterInfo& cluster_info, const RaftNodeInfo& node_info) -> kosio::async::Task<Result<PeerMap>>;
