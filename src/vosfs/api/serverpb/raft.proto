@@ -68,22 +68,37 @@ message InstallSnapshotResponse {
   uint64 term = 2;
 }
 
-message SliceInfo {
+message Chunk {
   uint64 id = 1;
-  uint64 size = 2;
-  string address = 3; // 分片存储地址
+  uint64 offset = 2;
+  uint64 size = 3;
+  string ip = 4;
+}
+
+enum InodeType {
+  kFile = 0;
+  kDir = 1;
+}
+
+message DirectoryEntry {
+  uint64 ino = 1;
+  string name = 2;
+}
+
+message DirectoryData {
+  repeated DirectoryEntry entries = 1;
 }
 
 message Inode {
   uint64 ino = 1;
   uint64 parent_ino = 2;
-  repeated uint64 child_ino = 3;
-  uint64 size = 4;
-  string name = 5;
-  uint64 ctime = 6;
-  uint64 mtime = 7;
-  bool   is_dir = 8;
-  repeated SliceInfo slice_infos = 9;
+  uint64 size = 3;
+  string name = 4;
+  uint64 ctime = 5;
+  uint64 mtime = 6;
+  InodeType type = 7;
+  repeated Chunk chunks = 8;
+  DirectoryData dir_data = 9;
 }
 
 message SnapshotMetadata {
@@ -98,21 +113,19 @@ message Snapshot {
 }
 
 message TransmitFileRequest {
-  repeated SliceInfo slice_infos = 1;
+  repeated Chunk chunks = 1;
 }
 
 message TransmitFileResponse {
-  uint64 ino = 1;
-  repeated SliceInfo slice_infos = 2;
+  repeated Chunk chunks = 2;
 }
 
 message PutFileRequest {
-  uint64 ino = 1;
-  uint64 parent_ino = 2;
-  uint64 size = 3;
-  string name = 4;
-  bool   is_dir = 5;
-  repeated SliceInfo slice_infos = 6;
+  uint64 parent_ino = 1;
+  uint64 size = 2;
+  string name = 3;
+  bool is_dir = 4;
+  repeated Chunk slice_infos = 5;
 }
 
 message PutFileResponse {

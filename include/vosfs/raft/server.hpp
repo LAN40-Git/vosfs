@@ -4,10 +4,10 @@
 #include "state_machine.hpp"
 
 namespace vosfs::raft {
-class RaftServer {
+class RaftNode {
     using SnapshotContextMap = std::unordered_map<uint64_t, uint64_t>;
 private:
-    explicit RaftServer(
+    explicit RaftNode(
         rpc::RpcServer raft_rpc_server,
         rpc::RpcServer client_rpc_server,
         Persister&& persister,
@@ -17,7 +17,7 @@ private:
         std::string&& snapshot_data);
 
 public:
-    static auto create(std::string_view data_dir) -> kosio::async::Task<Result<std::unique_ptr<RaftServer>>>;
+    static auto create(std::string_view data_dir) -> kosio::async::Task<Result<std::unique_ptr<RaftNode>>>;
 
 public:
     [[REMEMBER_CO_AWAIT]]
@@ -48,6 +48,9 @@ private:
         -> kosio::async::Task<rpc::RpcResult>;
     [[REMEMBER_CO_AWAIT]]
     auto handle_install_snapshot_request(std::string_view req_payload, std::span<char> resp_payload)
+        -> kosio::async::Task<rpc::RpcResult>;
+    [[REMEMBER_CO_AWAIT]]
+    auto handle_transmit_file_request(std::string_view req_payload, std::span<char> resp_payload)
         -> kosio::async::Task<rpc::RpcResult>;
 
 private:
