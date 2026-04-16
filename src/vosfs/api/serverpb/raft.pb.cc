@@ -305,6 +305,7 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORIT
 PROTOBUF_CONSTEXPR TransmitFileRequest::TransmitFileRequest(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.chunk_metadata_)*/{}
+  , /*decltype(_impl_.parent_ino_)*/uint64_t{0u}
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct TransmitFileRequestDefaultTypeInternal {
   PROTOBUF_CONSTEXPR TransmitFileRequestDefaultTypeInternal()
@@ -318,6 +319,8 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORIT
 PROTOBUF_CONSTEXPR TransmitFileResponse::TransmitFileResponse(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.chunk_metadata_)*/{}
+  , /*decltype(_impl_.path_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.success_)*/false
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct TransmitFileResponseDefaultTypeInternal {
   PROTOBUF_CONSTEXPR TransmitFileResponseDefaultTypeInternal()
@@ -562,6 +565,7 @@ const uint32_t TableStruct_raft_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pro
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::TransmitFileRequest, _impl_.parent_ino_),
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::TransmitFileRequest, _impl_.chunk_metadata_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::TransmitFileResponse, _internal_metadata_),
@@ -569,6 +573,8 @@ const uint32_t TableStruct_raft_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pro
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::TransmitFileResponse, _impl_.success_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::TransmitFileResponse, _impl_.path_),
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::TransmitFileResponse, _impl_.chunk_metadata_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::PutFileRequest, _internal_metadata_),
@@ -617,10 +623,10 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 160, -1, -1, sizeof(::vosfs::raft::SnapshotMetadata)},
   { 168, -1, -1, sizeof(::vosfs::raft::Snapshot)},
   { 177, -1, -1, sizeof(::vosfs::raft::TransmitFileRequest)},
-  { 184, -1, -1, sizeof(::vosfs::raft::TransmitFileResponse)},
-  { 191, -1, -1, sizeof(::vosfs::raft::PutFileRequest)},
-  { 202, -1, -1, sizeof(::vosfs::raft::PutFileResponse)},
-  { 209, -1, -1, sizeof(::vosfs::raft::EntryCommand)},
+  { 185, -1, -1, sizeof(::vosfs::raft::TransmitFileResponse)},
+  { 194, -1, -1, sizeof(::vosfs::raft::PutFileRequest)},
+  { 205, -1, -1, sizeof(::vosfs::raft::PutFileResponse)},
+  { 212, -1, -1, sizeof(::vosfs::raft::EntryCommand)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -694,21 +700,23 @@ const char descriptor_table_protodef_raft_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "s.raft.Inode\0227\n\021snapshot_metadata\030\002 \001(\0132"
   "\034.vosfs.raft.SnapshotMetadata\0221\n\017raft_no"
   "de_infos\030\003 \003(\0132\030.vosfs.raft.RaftNodeInfo"
-  "\"H\n\023TransmitFileRequest\0221\n\016chunk_metadat"
-  "a\030\001 \003(\0132\031.vosfs.raft.ChunkMetadata\"I\n\024Tr"
-  "ansmitFileResponse\0221\n\016chunk_metadata\030\001 \003"
-  "(\0132\031.vosfs.raft.ChunkMetadata\"\203\001\n\016PutFil"
-  "eRequest\022\022\n\nparent_ino\030\001 \001(\004\022\014\n\004size\030\002 \001"
-  "(\004\022\014\n\004name\030\003 \001(\t\022\016\n\006is_dir\030\004 \001(\010\0221\n\016chun"
-  "k_metadata\030\005 \003(\0132\031.vosfs.raft.ChunkMetad"
-  "ata\"\"\n\017PutFileResponse\022\017\n\007success\030\001 \001(\010\""
-  "E\n\014EntryCommand\022.\n\010put_file\030\001 \001(\0132\032.vosf"
-  "s.raft.PutFileRequestH\000B\005\n\003cmd* \n\tInodeT"
-  "ype\022\t\n\005kFile\020\000\022\010\n\004kDir\020\001b\006proto3"
+  "\"\\\n\023TransmitFileRequest\022\022\n\nparent_ino\030\001 "
+  "\001(\004\0221\n\016chunk_metadata\030\002 \003(\0132\031.vosfs.raft"
+  ".ChunkMetadata\"h\n\024TransmitFileResponse\022\017"
+  "\n\007success\030\001 \001(\010\022\014\n\004path\030\002 \001(\t\0221\n\016chunk_m"
+  "etadata\030\003 \003(\0132\031.vosfs.raft.ChunkMetadata"
+  "\"\203\001\n\016PutFileRequest\022\022\n\nparent_ino\030\001 \001(\004\022"
+  "\014\n\004size\030\002 \001(\004\022\014\n\004name\030\003 \001(\t\022\016\n\006is_dir\030\004 "
+  "\001(\010\0221\n\016chunk_metadata\030\005 \003(\0132\031.vosfs.raft"
+  ".ChunkMetadata\"\"\n\017PutFileResponse\022\017\n\007suc"
+  "cess\030\001 \001(\010\"E\n\014EntryCommand\022.\n\010put_file\030\001"
+  " \001(\0132\032.vosfs.raft.PutFileRequestH\000B\005\n\003cm"
+  "d* \n\tInodeType\022\t\n\005kFile\020\000\022\010\n\004kDir\020\001b\006pro"
+  "to3"
   ;
 static ::_pbi::once_flag descriptor_table_raft_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_raft_2eproto = {
-    false, false, 2192, descriptor_table_protodef_raft_2eproto,
+    false, false, 2243, descriptor_table_protodef_raft_2eproto,
     "raft.proto",
     &descriptor_table_raft_2eproto_once, nullptr, 0, 23,
     schemas, file_default_instances, TableStruct_raft_2eproto::offsets,
@@ -5450,9 +5458,11 @@ TransmitFileRequest::TransmitFileRequest(const TransmitFileRequest& from)
   TransmitFileRequest* const _this = this; (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.chunk_metadata_){from._impl_.chunk_metadata_}
+    , decltype(_impl_.parent_ino_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _this->_impl_.parent_ino_ = from._impl_.parent_ino_;
   // @@protoc_insertion_point(copy_constructor:vosfs.raft.TransmitFileRequest)
 }
 
@@ -5462,6 +5472,7 @@ inline void TransmitFileRequest::SharedCtor(
   (void)is_message_owned;
   new (&_impl_) Impl_{
       decltype(_impl_.chunk_metadata_){arena}
+    , decltype(_impl_.parent_ino_){uint64_t{0u}}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -5491,6 +5502,7 @@ void TransmitFileRequest::Clear() {
   (void) cached_has_bits;
 
   _impl_.chunk_metadata_.Clear();
+  _impl_.parent_ino_ = uint64_t{0u};
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -5500,16 +5512,24 @@ const char* TransmitFileRequest::_InternalParse(const char* ptr, ::_pbi::ParseCo
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // repeated .vosfs.raft.ChunkMetadata chunk_metadata = 1;
+      // uint64 parent_ino = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.parent_ino_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated .vosfs.raft.ChunkMetadata chunk_metadata = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
           ptr -= 1;
           do {
             ptr += 1;
             ptr = ctx->ParseMessage(_internal_add_chunk_metadata(), ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<10>(ptr));
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
         } else
           goto handle_unusual;
         continue;
@@ -5542,12 +5562,18 @@ uint8_t* TransmitFileRequest::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // repeated .vosfs.raft.ChunkMetadata chunk_metadata = 1;
+  // uint64 parent_ino = 1;
+  if (this->_internal_parent_ino() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_parent_ino(), target);
+  }
+
+  // repeated .vosfs.raft.ChunkMetadata chunk_metadata = 2;
   for (unsigned i = 0,
       n = static_cast<unsigned>(this->_internal_chunk_metadata_size()); i < n; i++) {
     const auto& repfield = this->_internal_chunk_metadata(i);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-        InternalWriteMessage(1, repfield, repfield.GetCachedSize(), target, stream);
+        InternalWriteMessage(2, repfield, repfield.GetCachedSize(), target, stream);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -5566,11 +5592,16 @@ size_t TransmitFileRequest::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated .vosfs.raft.ChunkMetadata chunk_metadata = 1;
+  // repeated .vosfs.raft.ChunkMetadata chunk_metadata = 2;
   total_size += 1UL * this->_internal_chunk_metadata_size();
   for (const auto& msg : this->_impl_.chunk_metadata_) {
     total_size +=
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // uint64 parent_ino = 1;
+  if (this->_internal_parent_ino() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_parent_ino());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
@@ -5592,6 +5623,9 @@ void TransmitFileRequest::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, co
   (void) cached_has_bits;
 
   _this->_impl_.chunk_metadata_.MergeFrom(from._impl_.chunk_metadata_);
+  if (from._internal_parent_ino() != 0) {
+    _this->_internal_set_parent_ino(from._internal_parent_ino());
+  }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -5610,6 +5644,7 @@ void TransmitFileRequest::InternalSwap(TransmitFileRequest* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   _impl_.chunk_metadata_.InternalSwap(&other->_impl_.chunk_metadata_);
+  swap(_impl_.parent_ino_, other->_impl_.parent_ino_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata TransmitFileRequest::GetMetadata() const {
@@ -5635,9 +5670,20 @@ TransmitFileResponse::TransmitFileResponse(const TransmitFileResponse& from)
   TransmitFileResponse* const _this = this; (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.chunk_metadata_){from._impl_.chunk_metadata_}
+    , decltype(_impl_.path_){}
+    , decltype(_impl_.success_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.path_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.path_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_path().empty()) {
+    _this->_impl_.path_.Set(from._internal_path(), 
+      _this->GetArenaForAllocation());
+  }
+  _this->_impl_.success_ = from._impl_.success_;
   // @@protoc_insertion_point(copy_constructor:vosfs.raft.TransmitFileResponse)
 }
 
@@ -5647,8 +5693,14 @@ inline void TransmitFileResponse::SharedCtor(
   (void)is_message_owned;
   new (&_impl_) Impl_{
       decltype(_impl_.chunk_metadata_){arena}
+    , decltype(_impl_.path_){}
+    , decltype(_impl_.success_){false}
     , /*decltype(_impl_._cached_size_)*/{}
   };
+  _impl_.path_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.path_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
 TransmitFileResponse::~TransmitFileResponse() {
@@ -5663,6 +5715,7 @@ TransmitFileResponse::~TransmitFileResponse() {
 inline void TransmitFileResponse::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   _impl_.chunk_metadata_.~RepeatedPtrField();
+  _impl_.path_.Destroy();
 }
 
 void TransmitFileResponse::SetCachedSize(int size) const {
@@ -5676,6 +5729,8 @@ void TransmitFileResponse::Clear() {
   (void) cached_has_bits;
 
   _impl_.chunk_metadata_.Clear();
+  _impl_.path_.ClearToEmpty();
+  _impl_.success_ = false;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -5685,16 +5740,34 @@ const char* TransmitFileResponse::_InternalParse(const char* ptr, ::_pbi::ParseC
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // repeated .vosfs.raft.ChunkMetadata chunk_metadata = 1;
+      // bool success = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.success_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string path = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_path();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "vosfs.raft.TransmitFileResponse.path"));
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated .vosfs.raft.ChunkMetadata chunk_metadata = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
           ptr -= 1;
           do {
             ptr += 1;
             ptr = ctx->ParseMessage(_internal_add_chunk_metadata(), ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<10>(ptr));
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<26>(ptr));
         } else
           goto handle_unusual;
         continue;
@@ -5727,12 +5800,28 @@ uint8_t* TransmitFileResponse::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // repeated .vosfs.raft.ChunkMetadata chunk_metadata = 1;
+  // bool success = 1;
+  if (this->_internal_success() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(1, this->_internal_success(), target);
+  }
+
+  // string path = 2;
+  if (!this->_internal_path().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_path().data(), static_cast<int>(this->_internal_path().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "vosfs.raft.TransmitFileResponse.path");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_path(), target);
+  }
+
+  // repeated .vosfs.raft.ChunkMetadata chunk_metadata = 3;
   for (unsigned i = 0,
       n = static_cast<unsigned>(this->_internal_chunk_metadata_size()); i < n; i++) {
     const auto& repfield = this->_internal_chunk_metadata(i);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-        InternalWriteMessage(1, repfield, repfield.GetCachedSize(), target, stream);
+        InternalWriteMessage(3, repfield, repfield.GetCachedSize(), target, stream);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -5751,11 +5840,23 @@ size_t TransmitFileResponse::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated .vosfs.raft.ChunkMetadata chunk_metadata = 1;
+  // repeated .vosfs.raft.ChunkMetadata chunk_metadata = 3;
   total_size += 1UL * this->_internal_chunk_metadata_size();
   for (const auto& msg : this->_impl_.chunk_metadata_) {
     total_size +=
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // string path = 2;
+  if (!this->_internal_path().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_path());
+  }
+
+  // bool success = 1;
+  if (this->_internal_success() != 0) {
+    total_size += 1 + 1;
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
@@ -5777,6 +5878,12 @@ void TransmitFileResponse::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, c
   (void) cached_has_bits;
 
   _this->_impl_.chunk_metadata_.MergeFrom(from._impl_.chunk_metadata_);
+  if (!from._internal_path().empty()) {
+    _this->_internal_set_path(from._internal_path());
+  }
+  if (from._internal_success() != 0) {
+    _this->_internal_set_success(from._internal_success());
+  }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -5793,8 +5900,15 @@ bool TransmitFileResponse::IsInitialized() const {
 
 void TransmitFileResponse::InternalSwap(TransmitFileResponse* other) {
   using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   _impl_.chunk_metadata_.InternalSwap(&other->_impl_.chunk_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.path_, lhs_arena,
+      &other->_impl_.path_, rhs_arena
+  );
+  swap(_impl_.success_, other->_impl_.success_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata TransmitFileResponse::GetMetadata() const {

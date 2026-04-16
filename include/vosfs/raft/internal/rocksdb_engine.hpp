@@ -37,6 +37,8 @@ public:
     void set_read_options(const rocksdb::ReadOptions &read_options);
 
 public:
+    auto clear() const -> rocksdb::Status;
+
     [[nodiscard]]
     auto create_checkpoint(const std::filesystem::path& snap_path) const -> rocksdb::Status;
 

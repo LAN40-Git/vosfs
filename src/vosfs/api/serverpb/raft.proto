@@ -123,11 +123,14 @@ message Snapshot {
 }
 
 message TransmitFileRequest {
-  repeated ChunkMetadata chunk_metadata = 1;
+  uint64 parent_ino = 1;
+  repeated ChunkMetadata chunk_metadata = 2;
 }
 
 message TransmitFileResponse {
-  repeated ChunkMetadata chunk_metadata = 1;
+  bool success = 1;
+  string path = 2;
+  repeated ChunkMetadata chunk_metadata = 3;
 }
 
 message PutFileRequest {

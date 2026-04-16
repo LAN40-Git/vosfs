@@ -82,6 +82,21 @@ void vosfs::raft::detail::RocksDBEngine::set_read_options(
     read_options_ = read_options;
 }
 
+auto vosfs::raft::detail::RocksDBEngine::clear() const -> rocksdb::Status {
+    rocksdb::WriteBatch batch;
+    std::unique_ptr<rocksdb::Iterator> it(db_->NewIterator(read_options_));
+
+    for (it->SeekToFirst(); it->Valid(); it->Next()) {
+        batch.Delete(it->key());
+    }
+
+    if (auto status = it->status(); !status.ok()) {
+        return status;
+    }
+
+    return db_->Write(write_options_, &batch);
+}
+
 auto vosfs::raft::detail::RocksDBEngine::create_checkpoint(const std::filesystem::path& snap_path) const -> rocksdb::Status {
     return checkpoint_->CreateCheckpoint(snap_path);
 }

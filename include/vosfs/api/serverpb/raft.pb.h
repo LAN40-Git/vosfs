@@ -3573,9 +3573,10 @@ class TransmitFileRequest final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kChunkMetadataFieldNumber = 1,
+    kChunkMetadataFieldNumber = 2,
+    kParentInoFieldNumber = 1,
   };
-  // repeated .vosfs.raft.ChunkMetadata chunk_metadata = 1;
+  // repeated .vosfs.raft.ChunkMetadata chunk_metadata = 2;
   int chunk_metadata_size() const;
   private:
   int _internal_chunk_metadata_size() const;
@@ -3593,6 +3594,15 @@ class TransmitFileRequest final :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::ChunkMetadata >&
       chunk_metadata() const;
 
+  // uint64 parent_ino = 1;
+  void clear_parent_ino();
+  uint64_t parent_ino() const;
+  void set_parent_ino(uint64_t value);
+  private:
+  uint64_t _internal_parent_ino() const;
+  void _internal_set_parent_ino(uint64_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:vosfs.raft.TransmitFileRequest)
  private:
   class _Internal;
@@ -3602,6 +3612,7 @@ class TransmitFileRequest final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::ChunkMetadata > chunk_metadata_;
+    uint64_t parent_ino_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -3730,9 +3741,11 @@ class TransmitFileResponse final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kChunkMetadataFieldNumber = 1,
+    kChunkMetadataFieldNumber = 3,
+    kPathFieldNumber = 2,
+    kSuccessFieldNumber = 1,
   };
-  // repeated .vosfs.raft.ChunkMetadata chunk_metadata = 1;
+  // repeated .vosfs.raft.ChunkMetadata chunk_metadata = 3;
   int chunk_metadata_size() const;
   private:
   int _internal_chunk_metadata_size() const;
@@ -3750,6 +3763,29 @@ class TransmitFileResponse final :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::ChunkMetadata >&
       chunk_metadata() const;
 
+  // string path = 2;
+  void clear_path();
+  const std::string& path() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_path(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_path();
+  PROTOBUF_NODISCARD std::string* release_path();
+  void set_allocated_path(std::string* path);
+  private:
+  const std::string& _internal_path() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_path(const std::string& value);
+  std::string* _internal_mutable_path();
+  public:
+
+  // bool success = 1;
+  void clear_success();
+  bool success() const;
+  void set_success(bool value);
+  private:
+  bool _internal_success() const;
+  void _internal_set_success(bool value);
+  public:
+
   // @@protoc_insertion_point(class_scope:vosfs.raft.TransmitFileResponse)
  private:
   class _Internal;
@@ -3759,6 +3795,8 @@ class TransmitFileResponse final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::ChunkMetadata > chunk_metadata_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr path_;
+    bool success_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -6151,7 +6189,27 @@ Snapshot::raft_node_infos() const {
 
 // TransmitFileRequest
 
-// repeated .vosfs.raft.ChunkMetadata chunk_metadata = 1;
+// uint64 parent_ino = 1;
+inline void TransmitFileRequest::clear_parent_ino() {
+  _impl_.parent_ino_ = uint64_t{0u};
+}
+inline uint64_t TransmitFileRequest::_internal_parent_ino() const {
+  return _impl_.parent_ino_;
+}
+inline uint64_t TransmitFileRequest::parent_ino() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.TransmitFileRequest.parent_ino)
+  return _internal_parent_ino();
+}
+inline void TransmitFileRequest::_internal_set_parent_ino(uint64_t value) {
+  
+  _impl_.parent_ino_ = value;
+}
+inline void TransmitFileRequest::set_parent_ino(uint64_t value) {
+  _internal_set_parent_ino(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.TransmitFileRequest.parent_ino)
+}
+
+// repeated .vosfs.raft.ChunkMetadata chunk_metadata = 2;
 inline int TransmitFileRequest::_internal_chunk_metadata_size() const {
   return _impl_.chunk_metadata_.size();
 }
@@ -6195,7 +6253,77 @@ TransmitFileRequest::chunk_metadata() const {
 
 // TransmitFileResponse
 
-// repeated .vosfs.raft.ChunkMetadata chunk_metadata = 1;
+// bool success = 1;
+inline void TransmitFileResponse::clear_success() {
+  _impl_.success_ = false;
+}
+inline bool TransmitFileResponse::_internal_success() const {
+  return _impl_.success_;
+}
+inline bool TransmitFileResponse::success() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.TransmitFileResponse.success)
+  return _internal_success();
+}
+inline void TransmitFileResponse::_internal_set_success(bool value) {
+  
+  _impl_.success_ = value;
+}
+inline void TransmitFileResponse::set_success(bool value) {
+  _internal_set_success(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.TransmitFileResponse.success)
+}
+
+// string path = 2;
+inline void TransmitFileResponse::clear_path() {
+  _impl_.path_.ClearToEmpty();
+}
+inline const std::string& TransmitFileResponse::path() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.TransmitFileResponse.path)
+  return _internal_path();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void TransmitFileResponse::set_path(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.path_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.raft.TransmitFileResponse.path)
+}
+inline std::string* TransmitFileResponse::mutable_path() {
+  std::string* _s = _internal_mutable_path();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.TransmitFileResponse.path)
+  return _s;
+}
+inline const std::string& TransmitFileResponse::_internal_path() const {
+  return _impl_.path_.Get();
+}
+inline void TransmitFileResponse::_internal_set_path(const std::string& value) {
+  
+  _impl_.path_.Set(value, GetArenaForAllocation());
+}
+inline std::string* TransmitFileResponse::_internal_mutable_path() {
+  
+  return _impl_.path_.Mutable(GetArenaForAllocation());
+}
+inline std::string* TransmitFileResponse::release_path() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.TransmitFileResponse.path)
+  return _impl_.path_.Release();
+}
+inline void TransmitFileResponse::set_allocated_path(std::string* path) {
+  if (path != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.path_.SetAllocated(path, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.path_.IsDefault()) {
+    _impl_.path_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.TransmitFileResponse.path)
+}
+
+// repeated .vosfs.raft.ChunkMetadata chunk_metadata = 3;
 inline int TransmitFileResponse::_internal_chunk_metadata_size() const {
   return _impl_.chunk_metadata_.size();
 }

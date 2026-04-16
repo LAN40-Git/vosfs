@@ -10,16 +10,14 @@ vosfs::raft::RaftNode::RaftNode(
     detail::RaftLog&& logs,
     detail::Transport&& transport,
     DataClusterInfo&& data_cluster_info,
-    HardState&& hard_state,
-    std::string&& snapshot_data)
+    HardState&& hard_state)
     : raft_rpc_server_(std::move(raft_rpc_server))
     , client_rpc_server_(std::move(client_rpc_server))
     , persister_(std::move(persister))
     , logs_(std::move(logs))
     , transport_(std::move(transport))
     , data_cluster_info_(std::move(data_cluster_info))
-    , hard_state_(std::move(hard_state))
-    , snapshot_data_(std::move(snapshot_data)) {}
+    , hard_state_(std::move(hard_state)) {}
 
 auto vosfs::raft::RaftNode::create(std::string_view data_dir) -> kosio::async::Task<Result<std::unique_ptr<RaftNode>>> {
     // 创建 Raft RPC 服务层
@@ -71,13 +69,6 @@ auto vosfs::raft::RaftNode::create(std::string_view data_dir) -> kosio::async::T
     }
     auto hard_state = std::move(has_hard_state.value());
 
-    // 加载快照
-    auto has_snapshot_data = persister.load_snapshot();
-    if (!has_snapshot_data) {
-        co_return std::unexpected{has_snapshot_data.error()};
-    }
-    auto snapshot_data = std::move(has_snapshot_data.value());
-
     // 创建节点
     co_return std::unique_ptr<RaftNode>(new RaftNode{
         std::move(raft_rpc_server),
@@ -86,31 +77,25 @@ auto vosfs::raft::RaftNode::create(std::string_view data_dir) -> kosio::async::T
         std::move(logs),
         std::move(transport),
         std::move(data_cluster_info),
-        std::move(hard_state),
-        std::move(snapshot_data)});
+        std::move(hard_state)});
 }
 
 auto vosfs::raft::RaftNode::run() -> kosio::async::Task<void> {
-    init();
+    co_await init();
     kosio::spawn(raft_rpc_server_->run());
     kosio::spawn(client_rpc_server_->run());
     co_await kosio::signal::ctrl_c();
     co_await shutdown();
 }
 
-auto vosfs::raft::RaftNode::shutdown() -> kosio::async::Task<void> {
-    {
-        co_await mutex_.lock();
-        std::lock_guard lock(mutex_, std::adopt_lock);
-        co_await transport_.shutdown();
-        co_await raft_rpc_server_->shutdown();
-        co_await client_rpc_server_->shutdown();
+auto vosfs::raft::RaftNode::init() -> kosio::async::Task<void> {
+    // 尝试加载快照
+    if (auto has_snapshot = persister_.load_snapshot(); has_snapshot) {
+        auto snapshot = std::move(has_snapshot.value());
+        co_await load_snapshot(snapshot);
+        snapshot_data_ = snapshot.SerializeAsString();
     }
-    is_shutdown_.store(true, std::memory_order_release);
-    co_await latch_.wait();
-}
 
-void vosfs::raft::RaftNode::init() {
     // 注册 RPC 服务
     using rpc::ServiceType;
     using rpc::MethodType;
@@ -135,6 +120,27 @@ void vosfs::raft::RaftNode::init() {
 
     // ========== Client RPC ==========
 
+}
+
+auto vosfs::raft::RaftNode::load_snapshot(Snapshot& snapshot) -> kosio::async::Task<void> {
+    // 状态机应用快照-更新 Inode 信息
+    state_machine_.apply_snapshot(snapshot);
+    // 日志层应用快照-更新快照元数据
+    logs_.apply_snapshot(snapshot);
+    // 通信层应用快照-集群配置
+    co_await transport_.apply_snapshot(snapshot);
+}
+
+auto vosfs::raft::RaftNode::shutdown() -> kosio::async::Task<void> {
+    {
+        co_await mutex_.lock();
+        std::lock_guard lock(mutex_, std::adopt_lock);
+        co_await transport_.shutdown();
+        co_await raft_rpc_server_->shutdown();
+        co_await client_rpc_server_->shutdown();
+    }
+    is_shutdown_.store(true, std::memory_order_release);
+    co_await latch_.wait();
 }
 
 void vosfs::raft::RaftNode::do_election() {
@@ -497,19 +503,13 @@ auto vosfs::raft::RaftNode::handle_install_snapshot_request(
         co_return util::MessageFactory::make_install_snapshot_response(resp_payload, current_term);
     }
 
-    // 状态机应用快照-更新 Inode 信息
-    state_machine_.apply_snapshot(snapshot);
-    // 日志层应用快照-更新快照元数据
-    logs_.apply_snapshot(snapshot);
-    // 通信层应用快照-集群配置
-    co_await transport_.apply_snapshot(snapshot);
-
+    co_await load_snapshot(snapshot);
     co_return util::MessageFactory::make_install_snapshot_response(resp_payload, current_term);
 }
 
 auto vosfs::raft::RaftNode::handle_transmit_file_request(
     std::string_view req_payload,
-    std::span<char> resp_payload) const -> kosio::async::Task<rpc::RpcResult> {
+    std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
     thread_local kosio::util::FastRand rand;
 
     TransmitFileRequest request;
@@ -517,28 +517,58 @@ auto vosfs::raft::RaftNode::handle_transmit_file_request(
         co_return rpc::make_result(rpc::RpcResult::kMessageParseFailed);
     }
 
+    co_await mutex_.lock();
+    std::lock_guard lock(mutex_, std::adopt_lock);
+
+    if (role_ != kLeader) {
+        co_return util::MessageFactory::make_transmit_file_response(resp_payload, false, "", nullptr);
+    }
+
+    /*
+     * 1. 获取分片存储的目录
+     * 2. 获取分片存储的地址
+     */
+
+    std::filesystem::path path{};
+    std::deque<std::string> name_queue{};
+    auto parent_ino = request.parent_ino();
+
+    const auto& inodes = state_machine_.inodes();
+    while (true) {
+        auto it = inodes.find(parent_ino);
+        if (it == inodes.end()) {
+            break;
+        }
+        auto& inode = it->second;
+        name_queue.push_front(inode.name());
+        parent_ino = inode.parent_ino();
+        if (parent_ino == 0) {
+            break;
+        }
+    }
+
+    if (name_queue.empty()) {
+        co_return util::MessageFactory::make_transmit_file_response(resp_payload, false, "", nullptr);
+    }
+
+    while (!name_queue.empty()) {
+        path /= name_queue.front();
+        name_queue.pop_front();
+    }
+
     auto* chunk_metadata = request.mutable_chunk_metadata();
-    // 为每个分片获取地址信息并存入队列
-    std::deque<ChunkMetadata*> meta_queue;
     auto& data_node_infos = data_cluster_info_.data_node_infos();
     auto mod = data_cluster_info_.data_node_infos().size();
     auto n = rand.fastrand_n(UINT32_MAX);
-    while (!chunk_metadata->empty()) {
-        auto* metadata = chunk_metadata->ReleaseLast();
-        auto id = metadata->id();
+    for (int i = 0; i < chunk_metadata->size(); ++i) {
+        auto& metadata = chunk_metadata->at(i);
+        auto id = metadata.id();
         auto index = std::hash<uint64_t>{}(n+id) % mod;
-        metadata->set_ip(data_node_infos.at(index).ip());
-        metadata->set_port(data_node_infos.at(index).port());
-        meta_queue.push_back(metadata);
+        metadata.set_ip(data_node_infos.at(index).ip());
+        metadata.set_port(data_node_infos.at(index).port());
     }
 
-    TransmitFileResponse response;
-    while (!meta_queue.empty()) {
-        response.mutable_chunk_metadata()->AddAllocated(meta_queue.back());
-        meta_queue.pop_back();
-    }
-
-    co_return rpc::serialize_response(response, resp_payload);
+    co_return util::MessageFactory::make_transmit_file_response(resp_payload, true, path.string(), chunk_metadata);
 }
 
 auto vosfs::raft::RaftNode::handle_request_vote_response(std::string_view resp_payload) -> kosio::async::Task<void> {

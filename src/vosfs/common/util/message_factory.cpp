@@ -89,6 +89,31 @@ auto vosfs::util::MessageFactory::make_install_snapshot_response(
     return rpc::serialize_response(response, resp_payload);
 }
 
+auto vosfs::util::MessageFactory::make_transmit_file_request(
+    uint64_t parent_ino,
+    google::protobuf::RepeatedPtrField<raft::ChunkMetadata>* chunk_metadata) -> raft::TransmitFileRequest {
+    raft::TransmitFileRequest request;
+    request.set_parent_ino(parent_ino);
+    if (chunk_metadata) {
+        request.mutable_chunk_metadata()->Swap(chunk_metadata);
+    }
+    return request;
+}
+
+auto vosfs::util::MessageFactory::make_transmit_file_response(
+    std::span<char> resp_payload,
+    bool success,
+    std::string&& path,
+    google::protobuf::RepeatedPtrField<raft::ChunkMetadata>* chunk_metadata) -> rpc::RpcResult {
+    raft::TransmitFileResponse response;
+    response.set_success(success);
+    response.set_path(std::move(path));
+    if (chunk_metadata) {
+        response.mutable_chunk_metadata()->Swap(chunk_metadata);
+    }
+    return rpc::serialize_response(response, resp_payload);
+}
+
 auto vosfs::util::MessageFactory::make_put_user_request(
     std::string&& name,
     std::string&& hashed_password,

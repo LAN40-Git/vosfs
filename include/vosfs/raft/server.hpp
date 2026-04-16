@@ -14,8 +14,7 @@ private:
         detail::RaftLog&& logs,
         detail::Transport&& transport,
         DataClusterInfo&& data_cluster_info,
-        HardState&& hard_state,
-        std::string&& snapshot_data);
+        HardState&& hard_state);
 
 public:
     static auto create(std::string_view data_dir) -> kosio::async::Task<Result<std::unique_ptr<RaftNode>>>;
@@ -25,10 +24,11 @@ public:
     auto run() -> kosio::async::Task<void>;
 
 private:
+    auto init() -> kosio::async::Task<void>;
+    auto load_snapshot(Snapshot& snapshot) -> kosio::async::Task<void>;
     auto shutdown() -> kosio::async::Task<void>;
 
 private:
-    void init();
     void do_election();
     void do_heartbeat();
     void increase_term_to(uint64_t term);
@@ -55,7 +55,7 @@ private:
     // Client RPC
     [[REMEMBER_CO_AWAIT]]
     auto handle_transmit_file_request(std::string_view req_payload, std::span<char> resp_payload)
-        const -> kosio::async::Task<rpc::RpcResult>;
+        -> kosio::async::Task<rpc::RpcResult>;
 
 private:
     [[REMEMBER_CO_AWAIT]]
@@ -78,7 +78,7 @@ private:
     StateMachine          state_machine_;
     detail::RaftLog       logs_;
     detail::Transport     transport_;
-    DataClusterInfo       data_cluster_info_;
+    const DataClusterInfo data_cluster_info_;
 
     /* RaftState from https://raft.github.io/raft.pdf */
     // Persistent state on all servers

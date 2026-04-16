@@ -1,4 +1,5 @@
 #pragma once
+#include <deque>
 #include "raft.pb.h"
 #include "auth.pb.h"
 #include "vosfs/rpc/types.hpp"
@@ -55,6 +56,18 @@ public:
     static auto make_install_snapshot_response(
         std::span<char> resp_payload,
         uint64_t term) -> rpc::RpcResult;
+
+    [[nodiscard]]
+    static auto make_transmit_file_request(
+        uint64_t parent_ino,
+        google::protobuf::RepeatedPtrField<raft::ChunkMetadata>* chunk_metadata) -> raft::TransmitFileRequest;
+
+    [[nodiscard]]
+    static auto make_transmit_file_response(
+        std::span<char> resp_payload,
+        bool success,
+        std::string&& path,
+        google::protobuf::RepeatedPtrField<raft::ChunkMetadata>* chunk_metadata) -> rpc::RpcResult;
 
     [[nodiscard]]
     static auto make_put_user_request(
