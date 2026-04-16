@@ -53,22 +53,13 @@ pkg_check_modules(XXHASH REQUIRED libxxhash)
 find_package(SQLite3 REQUIRED)
 
 # ====== LIBRARY ======
-set(ROCKSDB_LIBRARIES
-        rocksdb
-        snappy
-        z
-        bz2
-        lz4
-        zstd
-)
-
 set(DEPEND_LIBS
         pthread
         tbb
         SQLite::SQLite3
+        rocksdb
         ${PROTOBUF_LIBRARIES}
         ${LIBURING_LIBRARIES}
-        ${ROCKSDB_LIBRARIES}
         ${XXHASH_LIBRARIES}
 )
 
