@@ -105,7 +105,7 @@ auto vosfs::raft::detail::Transport::build_cluster(const RaftClusterInfo& raft_c
             co_return std::unexpected{ret.error()};
         }
         auto peer = std::move(ret.value());
-        peers.emplace(peer.member_id(), std::move(ret.value()));
+        peers.emplace(peer.member_id(), std::move(peer));
     }
     co_return peers;
 }

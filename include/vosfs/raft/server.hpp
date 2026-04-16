@@ -22,11 +22,12 @@ public:
 public:
     [[REMEMBER_CO_AWAIT]]
     auto run() -> kosio::async::Task<void>;
+    [[REMEMBER_CO_AWAIT]]
+    auto shutdown() -> kosio::async::Task<void>;
 
 private:
     auto init() -> kosio::async::Task<void>;
     auto apply_snapshot(Snapshot& snapshot) -> kosio::async::Task<void>;
-    auto shutdown() -> kosio::async::Task<void>;
     auto election_loop() -> kosio::async::Task<void>;
     auto heartbeat_loop() -> kosio::async::Task<void>;
 

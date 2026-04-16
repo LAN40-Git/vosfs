@@ -180,7 +180,7 @@ auto vosfs::raft::Persister::load_snapshot() const -> Result<Snapshot> {
     std::string payload;
     Snapshot snapshot;
     if (auto status = engine_.get(SNAPSHOT_KEY, &payload); !status.ok()) {
-        LOG_ERROR("failed to load snapshot : {}", status.ToString());
+        // LOG_ERROR("failed to load snapshot: {}", status.ToString());
         return std::unexpected{make_error(Error::kRecoverFailed)};
     }
     if (!snapshot.ParseFromString(payload)) {

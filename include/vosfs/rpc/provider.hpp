@@ -48,6 +48,7 @@ public:
 
 public:
     auto run() -> kosio::async::Task<void>;
+    [[REMEMBER_CO_AWAIT]]
     auto shutdown() -> kosio::async::Task<void>;
 
 private:

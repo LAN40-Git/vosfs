@@ -84,8 +84,20 @@ auto vosfs::raft::RaftNode::run() -> kosio::async::Task<void> {
     co_await init();
     kosio::spawn(raft_rpc_server_->run());
     kosio::spawn(client_rpc_server_->run());
-    co_await kosio::signal::ctrl_c();
+    co_await kosio::time::sleep(1000);
     co_await shutdown();
+}
+
+auto vosfs::raft::RaftNode::shutdown() -> kosio::async::Task<void> {
+    {
+        co_await mutex_.lock();
+        std::lock_guard lock(mutex_, std::adopt_lock);
+        co_await transport_.shutdown();
+        co_await raft_rpc_server_->shutdown();
+        co_await client_rpc_server_->shutdown();
+    }
+    is_shutdown_.store(true, std::memory_order_release);
+    co_await latch_.wait();
 }
 
 auto vosfs::raft::RaftNode::init() -> kosio::async::Task<void> {
@@ -132,18 +144,6 @@ auto vosfs::raft::RaftNode::apply_snapshot(Snapshot& snapshot) -> kosio::async::
     logs_.apply_snapshot(snapshot);
     // 通信层应用快照-集群配置
     co_await transport_.apply_snapshot(snapshot);
-}
-
-auto vosfs::raft::RaftNode::shutdown() -> kosio::async::Task<void> {
-    {
-        co_await mutex_.lock();
-        std::lock_guard lock(mutex_, std::adopt_lock);
-        co_await transport_.shutdown();
-        co_await raft_rpc_server_->shutdown();
-        co_await client_rpc_server_->shutdown();
-    }
-    is_shutdown_.store(true, std::memory_order_release);
-    co_await latch_.wait();
 }
 
 auto vosfs::raft::RaftNode::election_loop() -> kosio::async::Task<void> {

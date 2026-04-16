@@ -19,10 +19,10 @@ class RpcConsumer {
     using RequestMap = std::unordered_map<uint64_t, RpcRequest>;
 
 private:
-    explicit RpcConsumer(std::string_view server_ip, uint16_t server_port, kosio::net::TcpStream stream)
-        : server_ip_(server_ip), server_port_(server_port), stream_(std::move(stream)) {
-        requests_.rehash(4096);
-    }
+    explicit RpcConsumer(std::string_view server_ip, uint16_t server_port)
+        : server_ip_(server_ip)
+        , server_port_(server_port)
+        , stream_(kosio::net::TcpStream{kosio::net::detail::Socket{-1}}) { requests_.rehash(4096); }
 
 public:
     // Delete copy
@@ -38,8 +38,10 @@ public:
     static auto create(std::string_view server_ip, uint16_t server_port) -> kosio::async::Task<kosio::Result<std::unique_ptr<RpcConsumer>>>;
 
 public:
+    [[REMEMBER_CO_AWAIT]]
     auto run() -> kosio::async::Task<void>;
-    auto shutdown() -> kosio::async::Task<void>;
+    [[REMEMBER_CO_AWAIT]]
+    auto shutdown() const -> kosio::async::Task<void>;
     auto is_shutdown() const -> bool;
 
 public:
@@ -75,11 +77,12 @@ private:
     auto handle_response() -> kosio::async::Task<void>;
 
 private:
+
     std::string           server_ip_;
     uint16_t              server_port_;
     kosio::net::TcpStream stream_;
     uint64_t              request_id_{0}; // current request id
-    std::atomic<bool>     is_shutdown_{false};
+    std::atomic<bool>     is_shutdown_{true};
     RequestMap            requests_;
     kosio::sync::Mutex    mutex_;
 };

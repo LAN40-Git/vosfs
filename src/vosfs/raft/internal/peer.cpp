@@ -18,9 +18,6 @@ auto vosfs::raft::detail::Peer::send_request(
     rpc::MethodType method_type,
     std::string_view req_payload,
     const rpc::RpcCallback& callback) const -> kosio::async::Task<void> {
-    if (consumer_->is_shutdown()) {
-        co_await consumer_->run();
-    }
     co_await consumer_->send_request(service_type, method_type, req_payload, callback);
 }
 
@@ -29,8 +26,5 @@ auto vosfs::raft::detail::Peer::send_request(
     rpc::MethodType method_type,
     std::string&& req_payload,
     rpc::RpcCallback&& callback) const -> kosio::async::Task<void> {
-    if (consumer_->is_shutdown()) {
-        co_await consumer_->run();
-    }
     co_await consumer_->send_request(service_type, method_type, std::move(req_payload), std::move(callback));
 }

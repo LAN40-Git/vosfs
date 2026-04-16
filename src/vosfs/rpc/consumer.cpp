@@ -6,14 +6,7 @@ auto vosfs::rpc::RpcConsumer::create(std::string_view server_ip, uint16_t server
     if (!has_addr) {
         co_return std::unexpected{has_addr.error()};
     }
-    auto has_stream = co_await kosio::net::TcpStream::connect(has_addr.value());
-    if (!has_stream) {
-        co_return std::unexpected{has_stream.error()};
-    }
-
-    auto consumer = std::unique_ptr<RpcConsumer>(new RpcConsumer(server_ip, server_port, std::move(has_stream.value())));
-    kosio::spawn(consumer->handle_response());
-    co_return std::move(consumer);
+    co_return std::unique_ptr<RpcConsumer>(new RpcConsumer(server_ip, server_port));
 }
 
 auto vosfs::rpc::RpcConsumer::run() -> kosio::async::Task<void> {
@@ -35,10 +28,8 @@ auto vosfs::rpc::RpcConsumer::run() -> kosio::async::Task<void> {
     kosio::spawn(handle_response());
 }
 
-auto vosfs::rpc::RpcConsumer::shutdown() -> kosio::async::Task<void> {
-    is_shutdown_.store(true, std::memory_order_release);
-
-    while (stream_.is_valid()) {
+auto vosfs::rpc::RpcConsumer::shutdown() const -> kosio::async::Task<void> {
+    while (!is_shutdown_.load(std::memory_order_acquire)) {
         if (auto ret = co_await kosio::io::cancel(stream_.fd(), IORING_ASYNC_CANCEL_ALL); !ret) {
             LOG_ERROR("{}", ret.error());
         }
@@ -72,6 +63,10 @@ auto vosfs::rpc::RpcConsumer::send_request_impl(
     MethodType method_type,
     std::string&& req_payload,
     RpcCallback&& callback) -> kosio::async::Task<void> {
+    if (is_shutdown()) {
+        co_await run();
+    }
+
     co_await mutex_.lock();
     std::lock_guard lock(mutex_, std::adopt_lock);
 
@@ -121,7 +116,7 @@ auto vosfs::rpc::RpcConsumer::remove_request(uint64_t request_id) -> kosio::asyn
 auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
     std::vector<char> buf(detail::MAX_RPC_MESSAGE_SIZE);
 
-    while (!is_shutdown_.load(std::memory_order_acquire)) {
+    while (true) {
         // receive fixed response header
         detail::FixedRpcResponseHeader resp_header;
         auto ret = co_await stream_.read_exact(

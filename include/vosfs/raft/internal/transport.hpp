@@ -19,8 +19,10 @@ public:
     static auto create(const Persister& persister) -> kosio::async::Task<Result<Transport>>;
 
 public:
+    [[REMEMBER_CO_AWAIT]]
     auto shutdown() const -> kosio::async::Task<void>;
 
+    [[REMEMBER_CO_AWAIT]]
     auto apply_snapshot(Snapshot& snapshot) -> kosio::async::Task<void>;
 
 public:

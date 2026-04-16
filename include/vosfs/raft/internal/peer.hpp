@@ -48,8 +48,7 @@ public:
         rpc::RpcCallback&& callback) const -> kosio::async::Task<void>;
 
 private:
-    RaftNodeInfo raft_node_info_;
-    // connection to this peer
+    RaftNodeInfo                      raft_node_info_;
     std::unique_ptr<rpc::RpcConsumer> consumer_;
 };
 } // namespace vosfs::raft::detail
