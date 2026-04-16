@@ -35,9 +35,18 @@ void vosfs::raft::Persister::init(
         std::abort();
     }
 
-    // 检查集群是否有重复节点
-
     // 检查本地节点是否存在于集群
+    bool node_found = false;
+    for (const auto& node : raft_cluster_info.raft_node_infos()) {
+        if (node.id() == raft_node_info.id()) {
+            node_found = true;
+            break;
+        }
+    }
+    if (!node_found) {
+        LOG_FATAL("local node {} not found in raft cluster", raft_node_info.id());
+        std::abort();
+    }
 
     HardState hard_state;
     hard_state.set_current_term(0);
