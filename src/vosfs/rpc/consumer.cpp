@@ -47,18 +47,39 @@ auto vosfs::rpc::RpcConsumer::send_request(
     MethodType method_type,
     std::string_view req_payload,
     const RpcCallback& callback) -> kosio::async::Task<void> {
-    co_await send_request_impl(service_type, method_type, std::string{req_payload}, RpcCallback{callback});
+    if (is_shutdown()) {
+        co_await run();
+    }
+
+    co_await mutex_.lock();
+    std::lock_guard lock(mutex_, std::adopt_lock);
+
+    if (is_shutdown_.load(std::memory_order_relaxed)) {
+        LOG_ERROR("failed to send rpc request: consumer has shutdown");
+        co_return;
+    }
+
+    // Make fixed request header
+    detail::FixedRpcRequestHeader req_header;
+    req_header.request_id = htobe64(request_id_);
+    req_header.payload_size = htobe32(req_payload.size());
+    req_header.service_type = service_type;
+    req_header.method_type = method_type;
+
+    auto ret = co_await stream_.write_vectored(
+        std::span<const char>(reinterpret_cast<char*>(&req_header), sizeof(req_header)),
+        std::span<const char>(req_payload.data(), be32toh(req_header.payload_size))
+    );
+
+    if (!ret) {
+        LOG_ERROR("failed to send rpc request: {}", ret.error());
+        co_return;
+    }
+
+    callbacks_.emplace(request_id_++, callback);
 }
 
 auto vosfs::rpc::RpcConsumer::send_request(
-    ServiceType service_type,
-    MethodType method_type,
-    std::string&& req_payload,
-    RpcCallback&& callback) -> kosio::async::Task<void> {
-    co_await send_request_impl(service_type, method_type, std::move(req_payload), std::move(callback));
-}
-
-auto vosfs::rpc::RpcConsumer::send_request_impl(
     ServiceType service_type,
     MethodType method_type,
     std::string&& req_payload,
@@ -92,25 +113,25 @@ auto vosfs::rpc::RpcConsumer::send_request_impl(
         co_return;
     }
 
-    requests_.emplace(request_id_++, RpcRequest{service_type, method_type, std::move(req_payload), std::move(callback)});
+    callbacks_.emplace(request_id_++, std::move(callback));
 }
 
 auto vosfs::rpc::RpcConsumer::trigger_callback(uint64_t request_id, std::string_view resp_payload) -> kosio::async::Task<void> {
     co_await mutex_.lock();
     std::lock_guard lock(mutex_, std::adopt_lock);
 
-    auto it = requests_.find(request_id);
-    if (it != requests_.end()) {
-        auto request = it->second;
-        co_await request.callback(resp_payload);
-        requests_.erase(request_id);
+    auto it = callbacks_.find(request_id);
+    if (it != callbacks_.end()) {
+        auto& callback = it->second;
+        co_await callback(resp_payload);
+        callbacks_.erase(request_id);
     }
 }
 
-auto vosfs::rpc::RpcConsumer::remove_request(uint64_t request_id) -> kosio::async::Task<void> {
+auto vosfs::rpc::RpcConsumer::remove_callback(uint64_t request_id) -> kosio::async::Task<void> {
     co_await mutex_.lock();
     std::lock_guard lock(mutex_, std::adopt_lock);
-    requests_.erase(request_id);
+    callbacks_.erase(request_id);
 }
 
 auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
@@ -130,7 +151,7 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
         auto status = resp_header.status;
         if (payload_size > detail::MAX_RPC_MESSAGE_SIZE) {
             LOG_ERROR("receive unusual rpc message, request_id: {}, payload_size: {}.", request_id, payload_size);
-            co_await remove_request(request_id);
+            co_await remove_callback(request_id);
             break;
         }
 
@@ -143,21 +164,11 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
             }
         }
 
-        // remove callback when rpc request not success
         if (status != RpcResult::kSuccess) {
-            co_await remove_request(request_id);
+            LOG_ERROR("rpc result: {}", make_result(status));
         }
 
-        switch (status) {
-            case RpcResult::kSuccess: {
-                co_await trigger_callback(request_id, {buf.data(), payload_size});
-                break;
-            }
-            default: {
-                LOG_ERROR("rpc result: {}", make_result(status));
-                break;
-            }
-        }
+        co_await trigger_callback(request_id, {buf.data(), payload_size});
     }
 
     if (auto ret = co_await stream_.close(); !ret) {

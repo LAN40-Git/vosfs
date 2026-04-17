@@ -10,19 +10,13 @@
 namespace vosfs::rpc {
 using RpcCallback = std::function<kosio::async::Task<void>(std::string_view resp_payload)>;
 class RpcConsumer {
-    struct RpcRequest {
-        ServiceType service_type{};
-        MethodType  method_type{};
-        std::string req_payload{};
-        RpcCallback callback{};
-    };
-    using RequestMap = std::unordered_map<uint64_t, RpcRequest>;
+    using RpcCallbackMap = std::unordered_map<uint64_t, RpcCallback>;
 
 private:
     explicit RpcConsumer(std::string_view server_ip, uint16_t server_port)
         : server_ip_(server_ip)
         , server_port_(server_port)
-        , stream_(kosio::net::TcpStream{kosio::net::detail::Socket{-1}}) { requests_.rehash(4096); }
+        , stream_(kosio::net::TcpStream{kosio::net::detail::Socket{-1}}) { callbacks_.rehash(4096); }
 
 public:
     // Delete copy
@@ -61,17 +55,10 @@ public:
 
 private:
     [[REMEMBER_CO_AWAIT]]
-    auto send_request_impl(
-        ServiceType service_type,
-        MethodType method_type,
-        std::string&& req_payload,
-        RpcCallback&& callback) -> kosio::async::Task<void>;
+    auto remove_callback(uint64_t request_id) -> kosio::async::Task<void>;
 
     [[REMEMBER_CO_AWAIT]]
     auto trigger_callback(uint64_t request_id, std::string_view resp_payload) -> kosio::async::Task<void>;
-
-    [[REMEMBER_CO_AWAIT]]
-    auto remove_request(uint64_t request_id) -> kosio::async::Task<void>;
 
     [[REMEMBER_CO_AWAIT]]
     auto handle_response() -> kosio::async::Task<void>;
@@ -83,7 +70,7 @@ private:
     kosio::net::TcpStream stream_;
     uint64_t              request_id_{0}; // current request id
     std::atomic<bool>     is_shutdown_{true};
-    RequestMap            requests_;
+    RpcCallbackMap        callbacks_;
     kosio::sync::Mutex    mutex_;
 };
 
