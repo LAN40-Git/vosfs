@@ -13,9 +13,9 @@ class RpcConsumer {
     using RpcCallbackMap = tbb::concurrent_hash_map<uint64_t, RpcCallback>;
 
 private:
-    explicit RpcConsumer(const kosio::net::SocketAddr& server_addr)
+    explicit RpcConsumer(const kosio::net::SocketAddr& server_addr, kosio::net::TcpStream stream)
         : server_addr_(server_addr)
-        , stream_(kosio::net::TcpStream{kosio::net::detail::Socket{-1}})
+        , stream_(std::move(stream))
         , request_buf_(detail::MAX_RPC_MESSAGE_SIZE) { callbacks_.rehash(4096); }
 
 public:
