@@ -7,11 +7,6 @@ auto vosfs::rpc::RpcConsumer::create(std::string_view server_ip, uint16_t server
         co_return std::unexpected{make_error(Error::kCreateRpcConsumerFailed)};
     }
     auto server_addr_ = has_addr.value();
-    auto has_stream = co_await kosio::net::TcpStream::connect(server_addr_);
-    if (!has_stream) {
-        LOG_ERROR("{}", has_stream.error());
-        co_return std::unexpected{make_error(Error::kCreateRpcConsumerFailed)};
-    }
     co_return std::unique_ptr<RpcConsumer>(new RpcConsumer(server_addr_));
 }
 
