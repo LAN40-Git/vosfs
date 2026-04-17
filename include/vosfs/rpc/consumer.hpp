@@ -34,10 +34,9 @@ public:
 
 public:
     [[REMEMBER_CO_AWAIT]]
-    auto run() -> kosio::async::Task<void>;
+    auto connect() -> kosio::async::Task<void>;
     [[REMEMBER_CO_AWAIT]]
-    auto shutdown() const -> kosio::async::Task<void>;
-    auto is_shutdown() const -> bool;
+    auto shutdown() -> kosio::async::Task<void>;
 
 public:
     template <typename Request>
@@ -47,16 +46,14 @@ public:
         MethodType method_type,
         const Request& request,
         const RpcCallback& callback) -> kosio::async::Task<void> {
-        if (is_shutdown()) {
-            co_await run();
-        }
-
         co_await mutex_.lock();
         std::lock_guard lock(mutex_, std::adopt_lock);
-
-        if (is_shutdown_.load(std::memory_order_relaxed)) {
-            LOG_ERROR("failed to send rpc request: consumer has shutdown");
+        if (is_shutdown_) {
             co_return;
+        }
+
+        if (!is_connected_) {
+            co_await connect();
         }
 
         auto payload_size = request.ByteSizeLong();
@@ -77,12 +74,15 @@ public:
             std::span<const char>(request_buf_.data(), payload_size)
         );
 
+        callbacks_.emplace(request_id_, callback);
+
         if (!ret) {
             LOG_ERROR("failed to send rpc request: {}", ret.error());
+            callbacks_.erase(request_id_);
             co_return;
         }
 
-        callbacks_.emplace(request_id_++, callback);
+        ++request_id_;
     }
 
     template <typename Request>
@@ -92,16 +92,14 @@ public:
         MethodType method_type,
         const Request& request,
         RpcCallback&& callback) -> kosio::async::Task<void> {
-        if (is_shutdown()) {
-            co_await run();
-        }
-
         co_await mutex_.lock();
         std::lock_guard lock(mutex_, std::adopt_lock);
-
-        if (is_shutdown_.load(std::memory_order_relaxed)) {
-            LOG_ERROR("failed to send rpc request: consumer has shutdown");
+        if (is_shutdown_) {
             co_return;
+        }
+
+        if (!is_connected_) {
+            co_await connect();
         }
 
         auto payload_size = request.ByteSizeLong();
@@ -122,12 +120,15 @@ public:
             std::span<const char>(request_buf_.data(), payload_size)
         );
 
+        callbacks_.emplace(request_id_, std::move(callback));
+
         if (!ret) {
             LOG_ERROR("failed to send rpc request: {}", ret.error());
+            callbacks_.erase(request_id_);
             co_return;
         }
 
-        callbacks_.emplace(request_id_++, std::move(callback));
+        ++request_id_;
     }
 
 private:
@@ -138,15 +139,15 @@ private:
     auto handle_response() -> kosio::async::Task<void>;
 
 private:
-
+    kosio::sync::Mutex    mutex_;
+    bool                  is_connected_{false};
+    bool                  is_shutdown_{false};
+    kosio::net::TcpStream stream_;
     std::string           server_ip_;
     uint16_t              server_port_;
-    kosio::net::TcpStream stream_;
     uint64_t              request_id_{0}; // current request id
-    std::atomic<bool>     is_shutdown_{true};
-    RpcCallbackMap        callbacks_;
-    kosio::sync::Mutex    mutex_;
     std::vector<char>     request_buf_;
+    RpcCallbackMap        callbacks_;
 };
 
 using RpcClient = std::unique_ptr<RpcConsumer>;

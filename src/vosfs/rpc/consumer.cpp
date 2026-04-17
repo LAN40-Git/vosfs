@@ -9,13 +9,7 @@ auto vosfs::rpc::RpcConsumer::create(std::string_view server_ip, uint16_t server
     co_return std::unique_ptr<RpcConsumer>(new RpcConsumer(server_ip, server_port));
 }
 
-auto vosfs::rpc::RpcConsumer::run() -> kosio::async::Task<void> {
-    co_await mutex_.lock();
-    std::lock_guard lock(mutex_, std::adopt_lock);
-    if (!is_shutdown_.load(std::memory_order_relaxed)) {
-        co_return;
-    }
-
+auto vosfs::rpc::RpcConsumer::connect() -> kosio::async::Task<void> {
     auto has_addr = kosio::net::SocketAddr::parse(server_ip_, server_port_);
     assert(has_addr);
     auto has_stream = co_await kosio::net::TcpStream::connect(has_addr.value());
@@ -24,22 +18,21 @@ auto vosfs::rpc::RpcConsumer::run() -> kosio::async::Task<void> {
         co_return;
     }
     stream_ = std::move(has_stream.value());
-    is_shutdown_.store(false, std::memory_order_release);
+    is_connected_ = true;
     kosio::spawn(handle_response());
 }
 
-auto vosfs::rpc::RpcConsumer::shutdown() const -> kosio::async::Task<void> {
-    while (!is_shutdown_.load(std::memory_order_acquire)) {
-        if (auto ret = co_await kosio::io::cancel(stream_.fd(), IORING_ASYNC_CANCEL_ALL); !ret) {
-            LOG_ERROR("{}", ret.error());
-        }
-
+auto vosfs::rpc::RpcConsumer::shutdown() -> kosio::async::Task<void> {
+    while (true) {
+        co_await kosio::io::cancel(stream_.fd(), IORING_ASYNC_CANCEL_ALL);
         co_await kosio::time::sleep(50);
+        co_await mutex_.lock();
+        std::lock_guard lock{mutex_, std::adopt_lock};
+        is_shutdown_ = true;
+        if (!is_connected_) {
+            break;
+        }
     }
-}
-
-auto vosfs::rpc::RpcConsumer::is_shutdown() const -> bool {
-    return is_shutdown_.load(std::memory_order_acquire);
 }
 
 auto vosfs::rpc::RpcConsumer::trigger_callback(uint64_t request_id, std::string_view resp_payload) -> kosio::async::Task<void> {
@@ -92,9 +85,8 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
 
         co_await trigger_callback(request_id, {buf.data(), payload_size});
     }
-
-    if (auto ret = co_await stream_.close(); !ret) {
-        LOG_ERROR("{}", ret.error());
-    }
-    is_shutdown_.store(true, std::memory_order_release);
+    co_await stream_.close();
+    co_await mutex_.lock();
+    std::lock_guard lock{mutex_, std::adopt_lock};
+    is_connected_ = false;
 }
