@@ -37,7 +37,7 @@ auto send_put_user_request(const std::unique_ptr<RpcConsumer>& consumer) -> kosi
     co_await consumer->send_request(
         ServiceType::kAuth,
         MethodType::kAuthPutUser,
-        request.SerializeAsString(),
+        request,
         handle_put_user_response);
 }
 
@@ -67,7 +67,7 @@ auto send_get_user_request(const std::unique_ptr<RpcConsumer>& consumer) -> kosi
     co_await consumer->send_request(
         ServiceType::kAuth,
         MethodType::kAuthGetUser,
-        request.SerializeAsString(),
+        request,
         handle_get_user_response);
 }
 
@@ -101,7 +101,7 @@ auto send_update_user_name_request(const std::unique_ptr<RpcConsumer>& consumer)
     co_await consumer->send_request(
         ServiceType::kAuth,
         MethodType::kAuthUpdateUserName,
-        request.SerializeAsString(),
+        request,
         handle_update_user_name_response);
 }
 
@@ -125,7 +125,7 @@ auto send_update_user_password_request(const std::unique_ptr<RpcConsumer>& consu
     co_await consumer->send_request(
         ServiceType::kAuth,
         MethodType::kAuthUpdateUserPassword,
-        request.SerializeAsString(),
+        request,
         handle_update_user_password_response);
 }
 
@@ -149,7 +149,7 @@ auto send_update_user_role_request(const std::unique_ptr<RpcConsumer>& consumer)
     co_await consumer->send_request(
         ServiceType::kAuth,
         MethodType::kAuthUpdateUserRole,
-        request.SerializeAsString(),
+        request,
         handle_update_user_role_response);
 }
 
@@ -173,7 +173,7 @@ auto send_delete_user_request(const std::unique_ptr<RpcConsumer>& consumer) -> k
     co_await consumer->send_request(
         ServiceType::kAuth,
         MethodType::kAuthDeleteUser,
-        request.SerializeAsString(),
+        request,
         handle_delete_user_response);
 }
 

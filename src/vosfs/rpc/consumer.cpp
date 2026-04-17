@@ -42,80 +42,6 @@ auto vosfs::rpc::RpcConsumer::is_shutdown() const -> bool {
     return is_shutdown_.load(std::memory_order_acquire);
 }
 
-auto vosfs::rpc::RpcConsumer::send_request(
-    ServiceType service_type,
-    MethodType method_type,
-    std::string_view req_payload,
-    const RpcCallback& callback) -> kosio::async::Task<void> {
-    if (is_shutdown()) {
-        co_await run();
-    }
-
-    co_await mutex_.lock();
-    std::lock_guard lock(mutex_, std::adopt_lock);
-
-    if (is_shutdown_.load(std::memory_order_relaxed)) {
-        LOG_ERROR("failed to send rpc request: consumer has shutdown");
-        co_return;
-    }
-
-    // Make fixed request header
-    detail::FixedRpcRequestHeader req_header;
-    req_header.request_id = htobe64(request_id_);
-    req_header.payload_size = htobe32(req_payload.size());
-    req_header.service_type = service_type;
-    req_header.method_type = method_type;
-
-    auto ret = co_await stream_.write_vectored(
-        std::span<const char>(reinterpret_cast<char*>(&req_header), sizeof(req_header)),
-        std::span<const char>(req_payload.data(), be32toh(req_header.payload_size))
-    );
-
-    if (!ret) {
-        LOG_ERROR("failed to send rpc request: {}", ret.error());
-        co_return;
-    }
-
-    callbacks_.emplace(request_id_++, callback);
-}
-
-auto vosfs::rpc::RpcConsumer::send_request(
-    ServiceType service_type,
-    MethodType method_type,
-    std::string&& req_payload,
-    RpcCallback&& callback) -> kosio::async::Task<void> {
-    if (is_shutdown()) {
-        co_await run();
-    }
-
-    co_await mutex_.lock();
-    std::lock_guard lock(mutex_, std::adopt_lock);
-
-    if (is_shutdown_.load(std::memory_order_relaxed)) {
-        LOG_ERROR("failed to send rpc request: consumer has shutdown");
-        co_return;
-    }
-
-    // Make fixed request header
-    detail::FixedRpcRequestHeader req_header;
-    req_header.request_id = htobe64(request_id_);
-    req_header.payload_size = htobe32(req_payload.size());
-    req_header.service_type = service_type;
-    req_header.method_type = method_type;
-
-    auto ret = co_await stream_.write_vectored(
-        std::span<const char>(reinterpret_cast<char*>(&req_header), sizeof(req_header)),
-        std::span<const char>(req_payload.data(), be32toh(req_header.payload_size))
-    );
-
-    if (!ret) {
-        LOG_ERROR("failed to send rpc request: {}", ret.error());
-        co_return;
-    }
-
-    callbacks_.emplace(request_id_++, std::move(callback));
-}
-
 auto vosfs::rpc::RpcConsumer::trigger_callback(uint64_t request_id, std::string_view resp_payload) -> kosio::async::Task<void> {
     co_await mutex_.lock();
     std::lock_guard lock(mutex_, std::adopt_lock);
@@ -129,8 +55,6 @@ auto vosfs::rpc::RpcConsumer::trigger_callback(uint64_t request_id, std::string_
 }
 
 auto vosfs::rpc::RpcConsumer::remove_callback(uint64_t request_id) -> kosio::async::Task<void> {
-    co_await mutex_.lock();
-    std::lock_guard lock(mutex_, std::adopt_lock);
     callbacks_.erase(request_id);
 }
 

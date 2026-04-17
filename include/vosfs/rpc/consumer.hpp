@@ -10,13 +10,14 @@
 namespace vosfs::rpc {
 using RpcCallback = std::function<kosio::async::Task<void>(std::string_view resp_payload)>;
 class RpcConsumer {
-    using RpcCallbackMap = std::unordered_map<uint64_t, RpcCallback>;
+    using RpcCallbackMap = tbb::concurrent_hash_map<uint64_t, RpcCallback>;
 
 private:
     explicit RpcConsumer(std::string_view server_ip, uint16_t server_port)
         : server_ip_(server_ip)
         , server_port_(server_port)
-        , stream_(kosio::net::TcpStream{kosio::net::detail::Socket{-1}}) { callbacks_.rehash(4096); }
+        , stream_(kosio::net::TcpStream{kosio::net::detail::Socket{-1}})
+        , request_buf_(detail::MAX_RPC_MESSAGE_SIZE) { callbacks_.rehash(4096); }
 
 public:
     // Delete copy
@@ -39,23 +40,99 @@ public:
     auto is_shutdown() const -> bool;
 
 public:
+    template <typename Request>
     [[REMEMBER_CO_AWAIT]]
     auto send_request(
         ServiceType service_type,
         MethodType method_type,
-        std::string_view req_payload,
-        const RpcCallback& callback) -> kosio::async::Task<void>;
+        const Request& request,
+        const RpcCallback& callback) -> kosio::async::Task<void> {
+        if (is_shutdown()) {
+            co_await run();
+        }
 
+        co_await mutex_.lock();
+        std::lock_guard lock(mutex_, std::adopt_lock);
+
+        if (is_shutdown_.load(std::memory_order_relaxed)) {
+            LOG_ERROR("failed to send rpc request: consumer has shutdown");
+            co_return;
+        }
+
+        auto payload_size = request.ByteSizeLong();
+
+        if (!request.SerializeToArray(request_buf_.data(), static_cast<int>(payload_size))) {
+            LOG_ERROR("failed to serialize request");
+            co_return;
+        }
+
+        detail::FixedRpcRequestHeader req_header;
+        req_header.request_id = htobe64(request_id_);
+        req_header.payload_size = htobe32(payload_size);
+        req_header.service_type = service_type;
+        req_header.method_type = method_type;
+
+        auto ret = co_await stream_.write_vectored(
+            std::span<const char>(reinterpret_cast<char*>(&req_header), sizeof(req_header)),
+            std::span<const char>(request_buf_.data(), payload_size)
+        );
+
+        if (!ret) {
+            LOG_ERROR("failed to send rpc request: {}", ret.error());
+            co_return;
+        }
+
+        callbacks_.emplace(request_id_++, callback);
+    }
+
+    template <typename Request>
     [[REMEMBER_CO_AWAIT]]
     auto send_request(
         ServiceType service_type,
         MethodType method_type,
-        std::string&& req_payload,
-        RpcCallback&& callback) -> kosio::async::Task<void>;
+        const Request& request,
+        RpcCallback&& callback) -> kosio::async::Task<void> {
+        if (is_shutdown()) {
+            co_await run();
+        }
+
+        co_await mutex_.lock();
+        std::lock_guard lock(mutex_, std::adopt_lock);
+
+        if (is_shutdown_.load(std::memory_order_relaxed)) {
+            LOG_ERROR("failed to send rpc request: consumer has shutdown");
+            co_return;
+        }
+
+        auto payload_size = request.ByteSizeLong();
+
+        if (!request.SerializeToArray(request_buf_.data(), static_cast<int>(payload_size))) {
+            LOG_ERROR("failed to serialize request");
+            co_return;
+        }
+
+        detail::FixedRpcRequestHeader req_header;
+        req_header.request_id = htobe64(request_id_);
+        req_header.payload_size = htobe32(payload_size);
+        req_header.service_type = service_type;
+        req_header.method_type = method_type;
+
+        auto ret = co_await stream_.write_vectored(
+            std::span<const char>(reinterpret_cast<char*>(&req_header), sizeof(req_header)),
+            std::span<const char>(request_buf_.data(), payload_size)
+        );
+
+        if (!ret) {
+            LOG_ERROR("failed to send rpc request: {}", ret.error());
+            co_return;
+        }
+
+        callbacks_.emplace(request_id_++, std::move(callback));
+    }
 
 private:
     [[REMEMBER_CO_AWAIT]]
-    auto remove_callback(uint64_t request_id) -> kosio::async::Task<void>;
+    void remove_callback(uint64_t request_id);
 
     [[REMEMBER_CO_AWAIT]]
     auto trigger_callback(uint64_t request_id, std::string_view resp_payload) -> kosio::async::Task<void>;
@@ -72,6 +149,7 @@ private:
     std::atomic<bool>     is_shutdown_{true};
     RpcCallbackMap        callbacks_;
     kosio::sync::Mutex    mutex_;
+    std::vector<char>     request_buf_;
 };
 
 using RpcClient = std::unique_ptr<RpcConsumer>;

@@ -12,10 +12,10 @@ file(GLOB AUTH_SRCS
         "auth/internal/*.cpp"
 )
 
-file(GLOB RAFT_SRCS
-        "raft/*.cpp"
-        "raft/internal/*.cpp"
-)
+#file(GLOB RAFT_SRCS
+#        "raft/*.cpp"
+#        "raft/internal/*.cpp"
+#)
 
 file(GLOB RPC_SRCS
         "rpc/*.cpp"
