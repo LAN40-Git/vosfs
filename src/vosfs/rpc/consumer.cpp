@@ -16,6 +16,7 @@ auto vosfs::rpc::RpcConsumer::connect() -> kosio::async::Task<void> {
         LOG_ERROR("{}", has_stream.error());
         co_return;
     }
+    LOG_INFO("connect to {}", server_addr_);
     stream_ = std::move(has_stream.value());
     is_connected_ = true;
     kosio::spawn(handle_response_loop());
