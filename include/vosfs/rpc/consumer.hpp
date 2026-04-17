@@ -13,9 +13,8 @@ class RpcConsumer {
     using RpcCallbackMap = tbb::concurrent_hash_map<uint64_t, RpcCallback>;
 
 private:
-    explicit RpcConsumer(std::string_view server_ip, uint16_t server_port)
-        : server_ip_(server_ip)
-        , server_port_(server_port)
+    explicit RpcConsumer(const kosio::net::SocketAddr& server_addr)
+        : server_addr_(server_addr)
         , stream_(kosio::net::TcpStream{kosio::net::detail::Socket{-1}})
         , request_buf_(detail::MAX_RPC_MESSAGE_SIZE) { callbacks_.rehash(4096); }
 
@@ -30,7 +29,7 @@ public:
 
 public:
     [[REMEMBER_CO_AWAIT]]
-    static auto create(std::string_view server_ip, uint16_t server_port) -> kosio::async::Task<kosio::Result<std::unique_ptr<RpcConsumer>>>;
+    static auto create(std::string_view server_ip, uint16_t server_port) -> kosio::async::Task<Result<std::unique_ptr<RpcConsumer>>>;
 
 public:
     [[REMEMBER_CO_AWAIT]]
@@ -147,15 +146,14 @@ private:
     auto handle_response_loop() -> kosio::async::Task<void>;
 
 private:
-    kosio::sync::Mutex    mutex_;
-    bool                  is_connected_{false};
-    bool                  is_shutdown_{false};
-    kosio::net::TcpStream stream_;
-    std::string           server_ip_;
-    uint16_t              server_port_;
-    uint64_t              request_id_{0}; // current request id
-    std::vector<char>     request_buf_;
-    RpcCallbackMap        callbacks_;
+    kosio::sync::Mutex     mutex_;
+    bool                   is_connected_{false};
+    bool                   is_shutdown_{false};
+    kosio::net::SocketAddr server_addr_;
+    kosio::net::TcpStream  stream_;
+    uint64_t               request_id_{0}; // current request id
+    std::vector<char>      request_buf_;
+    RpcCallbackMap         callbacks_;
 };
 
 using RpcClient = std::unique_ptr<RpcConsumer>;

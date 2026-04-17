@@ -30,7 +30,7 @@ public:
         // try to connect to the raft node at ip:RAFT_RPC_PORT
         auto ret = co_await rpc::RpcConsumer::create(raft_node_info.ip(), RAFT_RPC_PORT);
         if (!ret) {
-            co_return std::unexpected{make_error(Error::kCreatePeerFailed)};
+            co_return std::unexpected{ret.error()};
         }
         co_return Peer(raft_node_info, std::move(ret.value()));
     }
