@@ -15,7 +15,7 @@ Tips：`vosfs` 只支持 `linux` 系统
 ```shell
 sudo apt update
 # 安装依赖
-sudo apt install -y build-essential git cmake pkg-config liburing-dev protobuf-compiler libprotobuf-dev librocksdb-dev libtbb-dev libxxhash-dev libsqlite3-dev
+sudo apt install -y build-essential git cmake pkg-config liburing-dev protobuf-compiler libprotobuf-dev librocksdb-dev libtbb-dev libxxhash-dev libsqlite3-dev libspdlog-dev
 # 安装 kosio
 git clone git@github.com:LAN40-Git/kosio.git
 cd kosio

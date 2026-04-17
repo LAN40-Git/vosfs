@@ -6,15 +6,13 @@ auto vosfs::rpc::RpcConsumer::create(std::string_view server_ip, uint16_t server
     if (!has_addr) {
         co_return std::unexpected{make_error(Error::kCreateRpcConsumerFailed)};
     }
-    auto server_addr_ = has_addr.value();
-    co_return std::unique_ptr<RpcConsumer>(new RpcConsumer(server_addr_, kosio::net::TcpStream{kosio::net::detail::Socket{-1}}));
+    auto server_addr = has_addr.value();
+    co_return std::unique_ptr<RpcConsumer>(new RpcConsumer(server_addr, kosio::net::TcpStream{kosio::net::detail::Socket{-1}}));
 }
 
 auto vosfs::rpc::RpcConsumer::connect() -> kosio::async::Task<void> {
-    LOG_INFO("try to connect to {}", server_addr_);
-    auto has_stream = co_await kosio::net::TcpStream::connect(server_addr_);
+    auto has_stream = co_await kosio::net::TcpStream::connect(server_addr_).set_timeout(detail::CONNECT_TIMEOUT);
     if (!has_stream) {
-        LOG_ERROR("{}", has_stream.error());
         co_return;
     }
     LOG_INFO("connect to {}", server_addr_);
