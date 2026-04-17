@@ -48,50 +48,6 @@ auto vosfs::raft::detail::Transport::apply_snapshot(Snapshot& snapshot) -> kosio
     peers_ = std::move(ret.value());
 }
 
-auto vosfs::raft::detail::Transport::unicast_request(
-    uint64_t peer_id, rpc::ServiceType service_type,
-    rpc::MethodType method_type, std::string_view req_payload, const rpc::RpcCallback& callback)
-    -> kosio::async::Task<void> {
-    auto it = peers_.find(peer_id);
-    if (it == peers_.end()) {
-        LOG_ERROR("peer {} not found", peer_id);
-        co_return;
-    }
-
-    auto& peer = it->second;
-    co_await peer.send_request(service_type, method_type, req_payload, callback);
-}
-
-auto vosfs::raft::detail::Transport::unicast_request(uint64_t peer_id, rpc::ServiceType service_type,
-    rpc::MethodType method_type, std::string&& req_payload, rpc::RpcCallback&& callback)
-    -> kosio::async::Task<void> {
-    auto it = peers_.find(peer_id);
-    if (it == peers_.end()) {
-        LOG_ERROR("peer {} not found", peer_id);
-        co_return;
-    }
-
-    auto& peer = it->second;
-    co_await peer.send_request(service_type, method_type, std::move(req_payload), std::move(callback));
-}
-
-auto vosfs::raft::detail::Transport::broadcast_request(rpc::ServiceType service_type, rpc::MethodType method_type,
-    std::string_view req_payload, const rpc::RpcCallback& callback)
-    -> kosio::async::Task<void> {
-    for (auto& peer : peers_ | std::views::values) {
-        co_await peer.send_request(service_type, method_type, req_payload, callback);
-    }
-}
-
-auto vosfs::raft::detail::Transport::broadcast_request(
-    rpc::ServiceType service_type, rpc::MethodType method_type,
-    std::string&& req_payload, rpc::RpcCallback&& callback)
-    -> kosio::async::Task<void> {
-    for (auto& peer : peers_ | std::views::values) {
-        co_await peer.send_request(service_type, method_type, std::move(req_payload), std::move(callback));
-    }
-}
-
 auto vosfs::raft::detail::Transport::build_cluster(const RaftClusterInfo& raft_cluster_info, const RaftNodeInfo& raft_node_info) -> kosio::async::Task<Result<PeerMap>> {
     auto& raft_node_infos = raft_cluster_info.raft_node_infos();
     PeerMap peers;

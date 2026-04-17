@@ -26,26 +26,41 @@ public:
 
 public:
     [[REMEMBER_CO_AWAIT]]
-    static auto create(const RaftNodeInfo& node_info) -> kosio::async::Task<Result<Peer>>;
+    static auto create(const RaftNodeInfo& raft_node_info) -> kosio::async::Task<Result<Peer>> {
+        // try to connect to the raft node at ip:RAFT_RPC_PORT
+        auto ret = co_await rpc::RpcConsumer::create(raft_node_info.ip(), RAFT_RPC_PORT);
+        if (!ret) {
+            co_return std::unexpected{make_error(Error::kCreatePeerFailed)};
+        }
+        co_return Peer(raft_node_info, std::move(ret.value()));
+    }
 
 public:
     [[REMEMBER_CO_AWAIT]]
-    auto shutdown() const -> kosio::async::Task<void>;
+    auto shutdown() const -> kosio::async::Task<void> {
+        co_await consumer_->shutdown();
+    }
 
 public:
+    template <typename Request>
     [[REMEMBER_CO_AWAIT]]
     auto send_request(
         rpc::ServiceType service_type,
         rpc::MethodType method_type,
-        std::string_view req_payload,
-        const rpc::RpcCallback& callback) const -> kosio::async::Task<void>;
+        const Request& request,
+        const rpc::RpcCallback& callback) -> kosio::async::Task<void> {
+        co_await consumer_->send_request(service_type, method_type, request, callback);
+    }
 
+    template <typename Request>
     [[REMEMBER_CO_AWAIT]]
     auto send_request(
         rpc::ServiceType service_type,
         rpc::MethodType method_type,
-        std::string&& req_payload,
-        rpc::RpcCallback&& callback) const -> kosio::async::Task<void>;
+        const Request& request,
+        rpc::RpcCallback&& callback) -> kosio::async::Task<void> {
+        co_await consumer_->send_request(service_type, method_type, request, std::move(callback));
+    }
 
 private:
     RaftNodeInfo                      raft_node_info_;

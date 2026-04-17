@@ -19,7 +19,7 @@ auto vosfs::rpc::RpcConsumer::connect() -> kosio::async::Task<void> {
     }
     stream_ = std::move(has_stream.value());
     is_connected_ = true;
-    kosio::spawn(handle_response());
+    kosio::spawn(handle_response_loop());
 }
 
 auto vosfs::rpc::RpcConsumer::shutdown() -> kosio::async::Task<void> {
@@ -49,7 +49,7 @@ auto vosfs::rpc::RpcConsumer::trigger_callback(uint64_t request_id, std::string_
     callbacks_.erase(request_id);
 }
 
-auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
+auto vosfs::rpc::RpcConsumer::handle_response_loop() -> kosio::async::Task<void> {
     std::vector<char> buf(detail::MAX_RPC_MESSAGE_SIZE);
 
     while (true) {

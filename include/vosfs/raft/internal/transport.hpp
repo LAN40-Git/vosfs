@@ -1,4 +1,5 @@
 #pragma once
+#include <ranges>
 #include "vosfs/rpc/provider.hpp"
 #include "vosfs/raft/internal/peer.hpp"
 #include "vosfs/raft/persister.hpp"
@@ -26,35 +27,53 @@ public:
     auto apply_snapshot(Snapshot& snapshot) -> kosio::async::Task<void>;
 
 public:
+    template <typename Request>
     [[REMEMBER_CO_AWAIT]]
     auto unicast_request(
         uint64_t peer_id,
         rpc::ServiceType service_type,
         rpc::MethodType method_type,
-        std::string_view req_payload,
-        const rpc::RpcCallback& callback) -> kosio::async::Task<void>;
+        const Request& request,
+        const rpc::RpcCallback& callback) -> kosio::async::Task<void> {
+        auto it = peers_.find(peer_id);
+        if (it == peers_.end()) {
+            LOG_ERROR("peer {} not found", peer_id);
+            co_return;
+        }
 
+        auto& peer = it->second;
+        co_await peer.send_request(service_type, method_type, request, callback);
+    }
+
+    template <typename Request>
     [[REMEMBER_CO_AWAIT]]
     auto unicast_request(
         uint64_t peer_id,
         rpc::ServiceType service_type,
         rpc::MethodType method_type,
-        std::string&& req_payload,
-        rpc::RpcCallback&& callback) -> kosio::async::Task<void>;
+        const Request& request,
+        rpc::RpcCallback&& callback) -> kosio::async::Task<void> {
+        auto it = peers_.find(peer_id);
+        if (it == peers_.end()) {
+            LOG_ERROR("peer {} not found", peer_id);
+            co_return;
+        }
 
+        auto& peer = it->second;
+        co_await peer.send_request(service_type, method_type, request, std::move(callback));
+    }
+
+    template <typename Request>
     [[REMEMBER_CO_AWAIT]]
     auto broadcast_request(
         rpc::ServiceType service_type,
         rpc::MethodType method_type,
-        std::string_view req_payload,
-        const rpc::RpcCallback& callback) -> kosio::async::Task<void>;
-
-    // use kosio::spawn
-    auto broadcast_request(
-        rpc::ServiceType service_type,
-        rpc::MethodType method_type,
-        std::string&& req_payload,
-        rpc::RpcCallback&& callback) -> kosio::async::Task<void>;
+        const Request& request,
+        const rpc::RpcCallback& callback) -> kosio::async::Task<void> {
+        for (auto& peer : peers_ | std::views::values) {
+            co_await peer.send_request(service_type, method_type, request, callback);
+        }
+    }
 
 public:
     [[nodiscard]]

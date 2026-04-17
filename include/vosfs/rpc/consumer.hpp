@@ -56,6 +56,10 @@ public:
             co_await connect();
         }
 
+        if (!is_connected_) {
+            co_return;
+        }
+
         auto payload_size = request.ByteSizeLong();
 
         if (!request.SerializeToArray(request_buf_.data(), static_cast<int>(payload_size))) {
@@ -102,6 +106,10 @@ public:
             co_await connect();
         }
 
+        if (!is_connected_) {
+            co_return;
+        }
+
         auto payload_size = request.ByteSizeLong();
 
         if (!request.SerializeToArray(request_buf_.data(), static_cast<int>(payload_size))) {
@@ -136,7 +144,7 @@ private:
     auto trigger_callback(uint64_t request_id, std::string_view resp_payload) -> kosio::async::Task<void>;
 
     [[REMEMBER_CO_AWAIT]]
-    auto handle_response() -> kosio::async::Task<void>;
+    auto handle_response_loop() -> kosio::async::Task<void>;
 
 private:
     kosio::sync::Mutex    mutex_;
