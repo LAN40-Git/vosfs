@@ -52,8 +52,8 @@ public:
     auto shutdown() -> kosio::async::Task<void>;
 
 private:
-    auto handle_request(std::shared_ptr<detail::Session> session) const -> kosio::async::Task<void>;
-    auto send_response(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void>;
+    auto handle_request_loop(std::shared_ptr<detail::Session> session) const -> kosio::async::Task<void>;
+    auto send_response_loop(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void>;
 
 private:
     using RpcRequest = detail::RpcInvoker::Request;

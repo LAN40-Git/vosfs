@@ -36,8 +36,8 @@ auto vosfs::rpc::RpcProvider::run() -> kosio::async::Task<void> {
 
         auto session = session_manager_.assign_session(std::move(stream), peer_addr);
         LOG_INFO("accept connection from {}, session_id: {}", peer_addr, session->id);
-        kosio::spawn(handle_request(session));
-        kosio::spawn(send_response(session));
+        kosio::spawn(handle_request_loop(session));
+        kosio::spawn(send_response_loop(session));
     }
 }
 
@@ -57,7 +57,7 @@ auto vosfs::rpc::RpcProvider::shutdown() -> kosio::async::Task<void> {
     LOG_INFO("stop rpc service on port {}", port_);
 }
 
-auto vosfs::rpc::RpcProvider::handle_request(std::shared_ptr<detail::Session> session) const -> kosio::async::Task<void> {
+auto vosfs::rpc::RpcProvider::handle_request_loop(std::shared_ptr<detail::Session> session) const -> kosio::async::Task<void> {
     auto& stream = session->stream;
     auto& requests = session->requests;
     std::vector<char> buf(detail::MAX_RPC_MESSAGE_SIZE);
@@ -101,7 +101,7 @@ auto vosfs::rpc::RpcProvider::handle_request(std::shared_ptr<detail::Session> se
     co_await requests.shutdown();
 }
 
-auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void> {
+auto vosfs::rpc::RpcProvider::send_response_loop(std::shared_ptr<detail::Session> session) -> kosio::async::Task<void> {
     auto& stream = session->stream;
     auto& requests = session->requests;
     std::vector<char> buf(detail::MAX_RPC_MESSAGE_SIZE);
@@ -124,6 +124,8 @@ auto vosfs::rpc::RpcProvider::send_response(std::shared_ptr<detail::Session> ses
         {buf.data(), buf.capacity()});
         resp_header.status = static_cast<RpcResult::Status>(result.value());
         resp_header.payload_size = htobe32(result.size());
+
+        // 外部应保证消息大
 
         auto ret = co_await stream.write_vectored(
             std::span<const char>(reinterpret_cast<char*>(&resp_header), sizeof(resp_header)),

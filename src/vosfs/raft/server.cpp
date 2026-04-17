@@ -168,7 +168,34 @@ auto vosfs::raft::RaftNode::election_loop() -> kosio::async::Task<void> {
             continue;
         }
 
-        do_election();
+        votes_ = 0;
+        auto current_term = hard_state_.current_term();
+        hard_state_.set_current_term(current_term+1);
+        hard_state_.set_voted_for(transport_.member_id());
+        role_.store(kCandidate, std::memory_order_relaxed);
+        persister_.save_hard_state(hard_state_);
+
+        // 广播选举请求
+        auto request = util::MessageFactory::make_request_vote_request(
+            hard_state_.current_term(),
+            transport_.member_id(),
+            logs_.last_log_index(),
+            logs_.last_log_term());
+
+        kosio::spawn(transport_.broadcast_request(
+            rpc::ServiceType::kRaft,
+            rpc::MethodType::kRaftRequestVote,
+            request.SerializeAsString(),
+            [this](std::string_view resp_payload) -> kosio::async::Task<void> {
+                co_await this->handle_request_vote_response(resp_payload);
+            }));
+
+        // 为自己投票并尝试成为 Leader（当只有一个节点时生效）
+        ++votes_;
+        if (votes_ > transport_.cluster_size() / 2 &&
+            role_.load(std::memory_order_relaxed) == kCandidate) {
+            become_leader();
+        }
     }
     latch_.count_down();
 }
@@ -191,37 +218,6 @@ auto vosfs::raft::RaftNode::heartbeat_loop() -> kosio::async::Task<void> {
         do_heartbeat();
     }
     latch_.count_down();
-}
-
-void vosfs::raft::RaftNode::do_election() {
-    votes_ = 0;
-    auto current_term = hard_state_.current_term();
-    hard_state_.set_current_term(current_term+1);
-    hard_state_.set_voted_for(transport_.member_id());
-    role_.store(kCandidate, std::memory_order_relaxed);
-    persister_.save_hard_state(hard_state_);
-
-    // 广播选举请求
-    auto request = util::MessageFactory::make_request_vote_request(
-        hard_state_.current_term(),
-        transport_.member_id(),
-        logs_.last_log_index(),
-        logs_.last_log_term());
-
-    kosio::spawn(transport_.broadcast_request(
-        rpc::ServiceType::kRaft,
-        rpc::MethodType::kRaftRequestVote,
-        request.SerializeAsString(),
-        [this](std::string_view resp_payload) -> kosio::async::Task<void> {
-            co_await this->handle_request_vote_response(resp_payload);
-        }));
-
-    // 为自己投票并尝试成为 Leader（当只有一个节点时生效）
-    ++votes_;
-    if (votes_ > transport_.cluster_size() / 2 &&
-            role_.load(std::memory_order_relaxed) == kCandidate) {
-        become_leader();
-    }
 }
 
 void vosfs::raft::RaftNode::do_heartbeat() {
