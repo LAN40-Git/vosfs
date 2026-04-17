@@ -4,9 +4,9 @@
 
 namespace vosfs::raft::detail {
 // ====== Port configuration ======
-constexpr uint16_t RAFT_RPC_PORT = 8080;
+constexpr uint16_t RAFT_RPC_PORT = 8888;
 
-constexpr uint16_t CLIENT_RPC_PORT = 9090;
+constexpr uint16_t CLIENT_RPC_PORT = 9999;
 
 // ====== Raft internal configuration ======
 constexpr std::size_t HEARTBEAT_INTERVAL = 100;

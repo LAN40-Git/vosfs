@@ -11,6 +11,7 @@ auto vosfs::rpc::RpcConsumer::create(std::string_view server_ip, uint16_t server
 }
 
 auto vosfs::rpc::RpcConsumer::connect() -> kosio::async::Task<void> {
+    LOG_INFO("try to connect to {}", server_addr_);
     auto has_stream = co_await kosio::net::TcpStream::connect(server_addr_);
     if (!has_stream) {
         LOG_ERROR("{}", has_stream.error());
