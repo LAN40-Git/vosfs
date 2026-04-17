@@ -132,9 +132,6 @@ public:
 
 private:
     [[REMEMBER_CO_AWAIT]]
-    void remove_callback(uint64_t request_id);
-
-    [[REMEMBER_CO_AWAIT]]
     auto trigger_callback(uint64_t request_id, std::string_view resp_payload) -> kosio::async::Task<void>;
 
     [[REMEMBER_CO_AWAIT]]

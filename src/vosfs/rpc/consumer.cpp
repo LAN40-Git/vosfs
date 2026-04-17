@@ -43,18 +43,16 @@ auto vosfs::rpc::RpcConsumer::is_shutdown() const -> bool {
 }
 
 auto vosfs::rpc::RpcConsumer::trigger_callback(uint64_t request_id, std::string_view resp_payload) -> kosio::async::Task<void> {
-    co_await mutex_.lock();
-    std::lock_guard lock(mutex_, std::adopt_lock);
-
-    auto it = callbacks_.find(request_id);
-    if (it != callbacks_.end()) {
-        auto& callback = it->second;
-        co_await callback(resp_payload);
-        callbacks_.erase(request_id);
+    RpcCallback callback;
+    {
+        RpcCallbackMap::accessor acc;
+        if (!callbacks_.find(acc, request_id)) {
+            co_return;
+        }
+        callback = acc->second;
     }
-}
 
-auto vosfs::rpc::RpcConsumer::remove_callback(uint64_t request_id) -> kosio::async::Task<void> {
+    co_await callback(resp_payload);
     callbacks_.erase(request_id);
 }
 
@@ -75,7 +73,7 @@ auto vosfs::rpc::RpcConsumer::handle_response() -> kosio::async::Task<void> {
         auto status = resp_header.status;
         if (payload_size > detail::MAX_RPC_MESSAGE_SIZE) {
             LOG_ERROR("receive unusual rpc message, request_id: {}, payload_size: {}.", request_id, payload_size);
-            co_await remove_callback(request_id);
+            callbacks_.erase(request_id);
             break;
         }
 
