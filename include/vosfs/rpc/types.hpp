@@ -6,7 +6,6 @@
 
 namespace vosfs::rpc {
 using RpcRequestHandler = std::function<kosio::async::Task<RpcResult>(std::string_view, std::span<char>)>;
-
 enum class ServiceType : uint8_t {
     kMinService = 0,
     kRaft,

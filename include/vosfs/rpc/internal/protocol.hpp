@@ -1,5 +1,6 @@
 #pragma once
 #include "vosfs/rpc/types.hpp"
+#include "vosfs/rpc/status.hpp"
 
 namespace vosfs::rpc::detail {
 struct FixedRpcRequestHeader {
@@ -11,9 +12,9 @@ struct FixedRpcRequestHeader {
 };
 
 struct FixedRpcResponseHeader {
-    uint64_t          request_id{0};   // 8 bytes
-    uint32_t          payload_size{0}; // 4 bytes
-    RpcResult::Status status{0};       // 1 byte
+    uint64_t   request_id{0};   // 8 bytes
+    uint32_t   payload_size{0}; // 4 bytes
+    StatusCode code{0};         // 1 byte
     // 13 bytes total
 };
 } // namespace vosfs::rpc::detail
