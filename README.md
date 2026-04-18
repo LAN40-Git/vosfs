@@ -1,6 +1,6 @@
 # vosfs
 
- ![Static Badge](https://img.shields.io/badge/c++-23-blue?logo=cplusplus) ![Static Badge](https://img.shields.io/badge/cmake-black?logo=cmake) ![Static Badge](https://img.shields.io/badge/linux-gray?logo=linux)
+ ![Static Badge](https://img.shields.io/badge/standard-c++23-blue?logo=cplusplus) ![Static Badge](https://img.shields.io/badge/cmake-black?logo=cmake) ![Static Badge](https://img.shields.io/badge/linux-gray?logo=linux)
 
 ## About
 
@@ -15,7 +15,7 @@ Tips：`vosfs` 只支持 `linux` 系统
 ```shell
 sudo apt update
 # 安装依赖
-sudo apt install -y build-essential git cmake pkg-config liburing-dev protobuf-compiler libprotobuf-dev librocksdb-dev libtbb-dev libxxhash-dev libsqlite3-dev libspdlog-dev
+sudo apt install -y build-essential git cmake pkg-config liburing-dev protobuf-compiler libprotobuf-dev librocksdb-dev libtbb-dev libsqlite3-dev libspdlog-dev libhiredis-dev
 # 安装 kosio
 git clone git@github.com:LAN40-Git/kosio.git
 cd kosio
@@ -34,6 +34,20 @@ sudo make install
 ```
 
 ### 部署
+
+#### 认证服务器
+
+部署 `redis` 服务器
+
+```shell
+sudo apt install redis-server
+sudo systemctl start redis-server
+sudo systemctl enable redis-server
+sudo systemctl status redis-server
+# 默认端口为 6379
+```
+
+
 
 
 

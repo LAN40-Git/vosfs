@@ -36,6 +36,8 @@ public:
     auto connect() -> kosio::async::Task<void>;
     [[REMEMBER_CO_AWAIT]]
     auto shutdown() -> kosio::async::Task<void>;
+    [[nodiscard]]
+    auto server_addr() const noexcept -> kosio::net::SocketAddr { return server_addr_; }
 
 public:
     template <typename Request>

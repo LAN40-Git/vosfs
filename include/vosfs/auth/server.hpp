@@ -1,6 +1,7 @@
 #pragma once
 #include <sqlite3.h>
 #include "vosfs/rpc/provider.hpp"
+#include "vosfs/common/util/token_manager.hpp"
 
 namespace vosfs::auth {
 class AuthServer {

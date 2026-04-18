@@ -31,26 +31,18 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/vosfs/api/mathpb)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/vosfs/api/serverpb)
 
 find_package(PkgConfig REQUIRED)
+# liburing
 pkg_check_modules(LIBURING REQUIRED liburing)
-
+# protobuf
 find_package(Protobuf REQUIRED)
-if (Protobuf_FOUND)
-    message(STATUS "Protobuf version: ${Protobuf_VERSION}")
-else ()
-    message(FATAL_ERROR "Protobuf not found")
-endif ()
-
+# rocksdb
 find_package(RocksDB REQUIRED)
-if (RocksDB_FOUND)
-    message(STATUS "RocksDB version: ${RocksDB_VERSION}")
-endif ()
-
+# tbb
 find_package(TBB REQUIRED)
-
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(XXHASH REQUIRED libxxhash)
-
+# sqlite
 find_package(SQLite3 REQUIRED)
+# redis
+pkg_check_modules(Hiredis REQUIRED hiredis)
 
 # ====== LIBRARY ======
 set(DEPEND_LIBS
@@ -60,7 +52,7 @@ set(DEPEND_LIBS
         rocksdb
         ${PROTOBUF_LIBRARIES}
         ${LIBURING_LIBRARIES}
-        ${XXHASH_LIBRARIES}
+        ${Hiredis_LIBRARIES}
 )
 
 add_subdirectory(src/vosfs)
