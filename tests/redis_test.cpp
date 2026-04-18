@@ -1,7 +1,7 @@
 #include <iostream>
 #include <hiredis/hiredis.h>
 
-int main() {
+auto main() -> int {
     // 连接 Redis
     redisContext* ctx = redisConnect("127.0.0.1", 6379);
     if (ctx == nullptr || ctx->err) {
