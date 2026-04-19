@@ -1,7 +1,7 @@
 #pragma once
 #include "raft.pb.h"
-#include "internal/config.hpp"
-#include "vosfs/raft/internal/rocksdb_engine.hpp"
+#include "detail/config.hpp"
+#include "vosfs/raft/detail/rocksdb_engine.hpp"
 
 namespace vosfs::raft {
 class Persister {

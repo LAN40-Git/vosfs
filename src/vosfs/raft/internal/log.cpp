@@ -1,4 +1,4 @@
-#include "vosfs/raft/internal/log.hpp"
+#include "vosfs/raft/detail/log.hpp"
 #include <kosio/common/debug.hpp>
 
 auto vosfs::raft::detail::RaftLog::create(const Persister& persister) -> Result<RaftLog> {

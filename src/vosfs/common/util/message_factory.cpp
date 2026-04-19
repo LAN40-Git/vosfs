@@ -17,7 +17,7 @@ auto vosfs::util::MessageFactory::make_request_vote_response(
     std::span<char> resp_payload,
     uint64_t id,
     uint64_t term,
-    bool vote_granted) -> rpc::RpcResult {
+    bool vote_granted) -> vrpc::InvokeResult {
     raft::RequestVoteResponse response;
     response.set_id(id);
     response.set_term(term);
@@ -50,7 +50,7 @@ auto vosfs::util::MessageFactory::make_append_entries_response(
     uint64_t term,
     bool success,
     uint64_t last_log_index,
-    std::optional<uint64_t> conflict_index) -> rpc::RpcResult {
+    std::optional<uint64_t> conflict_index) -> vrpc::InvokeResult {
     raft::AppendEntriesResponse response;
     response.set_id(id);
     response.set_term(term);
@@ -83,7 +83,7 @@ auto vosfs::util::MessageFactory::make_install_snapshot_request(
 
 auto vosfs::util::MessageFactory::make_install_snapshot_response(
     std::span<char> resp_payload,
-    uint64_t term) -> rpc::RpcResult {
+    uint64_t term) -> vrpc::InvokeResult {
     raft::InstallSnapshotResponse response;
     response.set_term(term);
     return rpc::serialize_response(response, resp_payload);
@@ -104,7 +104,7 @@ auto vosfs::util::MessageFactory::make_transmit_file_response(
     std::span<char> resp_payload,
     bool success,
     std::string&& path,
-    google::protobuf::RepeatedPtrField<raft::ChunkMetadata>* chunk_metadata) -> rpc::RpcResult {
+    google::protobuf::RepeatedPtrField<raft::ChunkMetadata>* chunk_metadata) -> vrpc::InvokeResult {
     raft::TransmitFileResponse response;
     response.set_success(success);
     response.set_path(std::move(path));
@@ -128,7 +128,7 @@ auto vosfs::util::MessageFactory::make_put_user_request(
 auto vosfs::util::MessageFactory::make_put_user_response(
     std::span<char> resp_payload,
     bool success,
-    std::string&& msg) -> rpc::RpcResult {
+    std::string&& msg) -> vrpc::InvokeResult {
     auth::PutUserResponse response;
     response.set_success(success);
     response.set_msg(std::move(msg));
@@ -153,7 +153,7 @@ auto vosfs::util::MessageFactory::make_get_user_response(
     uint64_t uid,
     std::string&& name,
     int role,
-    int64_t create_time) -> rpc::RpcResult {
+    int64_t create_time) -> vrpc::InvokeResult {
     auth::GetUserResponse response;
     response.set_success(success);
     response.set_msg(std::move(msg));
@@ -176,7 +176,7 @@ auto vosfs::util::MessageFactory::make_update_user_name_request(
 auto vosfs::util::MessageFactory::make_update_user_name_response(
     std::span<char> resp_payload,
     bool success,
-    std::string&& msg) -> rpc::RpcResult {
+    std::string&& msg) -> vrpc::InvokeResult {
     auth::UpdateUserNameResponse response;
     response.set_success(success);
     response.set_msg(std::move(msg));
@@ -195,7 +195,7 @@ auto vosfs::util::MessageFactory::make_update_user_password_request(
 auto vosfs::util::MessageFactory::make_update_user_password_response(
     std::span<char> resp_payload,
     bool success,
-    std::string&& msg) -> rpc::RpcResult {
+    std::string&& msg) -> vrpc::InvokeResult {
     auth::UpdateUserPasswordResponse response;
     response.set_success(success);
     response.set_msg(std::move(msg));
@@ -214,7 +214,7 @@ auto vosfs::util::MessageFactory::make_update_user_role_request(
 auto vosfs::util::MessageFactory::make_update_user_role_response(
     std::span<char> resp_payload,
     bool success,
-    std::string&& msg) -> rpc::RpcResult {
+    std::string&& msg) -> vrpc::InvokeResult {
     auth::UpdateUserRoleResponse response;
     response.set_success(success);
     response.set_msg(std::move(msg));
@@ -233,7 +233,7 @@ auto vosfs::util::MessageFactory::make_delete_user_request(
 auto vosfs::util::MessageFactory::make_delete_user_response(
     std::span<char> resp_payload,
     bool success,
-    std::string&& msg) -> rpc::RpcResult {
+    std::string&& msg) -> vrpc::InvokeResult {
     auth::DeleteUserResponse response;
     response.set_success(success);
     response.set_msg(std::move(msg));

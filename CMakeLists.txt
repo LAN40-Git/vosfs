@@ -26,7 +26,9 @@ message(STATUS "C++ standard: " "${CMAKE_CXX_STANDARD}")
 message(STATUS "Compiler: " "${CMAKE_CXX_COMPILER_ID}")
 message(STATUS "Build type: " "${CMAKE_BUILD_TYPE}")
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/api)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third-party)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/vosfs/api/mathpb)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/vosfs/api/serverpb)
 
@@ -56,6 +58,6 @@ set(DEPEND_LIBS
 )
 
 add_subdirectory(src/vosfs)
-
+add_subdirectory(src/vosfs-auth)
 # ====== TEST ======
 add_subdirectory(tests)

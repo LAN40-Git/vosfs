@@ -131,30 +131,30 @@ inline bool Role_Parse(
   return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<Role>(
     Role_descriptor(), name, value);
 }
-enum Status : int {
+enum UserStatus : int {
   kEnabled = 0,
   kDisabled = 1,
-  Status_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
-  Status_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
+  UserStatus_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
+  UserStatus_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
-bool Status_IsValid(int value);
-constexpr Status Status_MIN = kEnabled;
-constexpr Status Status_MAX = kDisabled;
-constexpr int Status_ARRAYSIZE = Status_MAX + 1;
+bool UserStatus_IsValid(int value);
+constexpr UserStatus UserStatus_MIN = kEnabled;
+constexpr UserStatus UserStatus_MAX = kDisabled;
+constexpr int UserStatus_ARRAYSIZE = UserStatus_MAX + 1;
 
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Status_descriptor();
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* UserStatus_descriptor();
 template<typename T>
-inline const std::string& Status_Name(T enum_t_value) {
-  static_assert(::std::is_same<T, Status>::value ||
+inline const std::string& UserStatus_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, UserStatus>::value ||
     ::std::is_integral<T>::value,
-    "Incorrect type passed to function Status_Name.");
+    "Incorrect type passed to function UserStatus_Name.");
   return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
-    Status_descriptor(), enum_t_value);
+    UserStatus_descriptor(), enum_t_value);
 }
-inline bool Status_Parse(
-    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, Status* value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<Status>(
-    Status_descriptor(), name, value);
+inline bool UserStatus_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, UserStatus* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<UserStatus>(
+    UserStatus_descriptor(), name, value);
 }
 // ===================================================================
 
@@ -349,13 +349,13 @@ class User final :
   void _internal_set_role(::vosfs::auth::Role value);
   public:
 
-  // .vosfs.auth.Status status = 5;
+  // .vosfs.auth.UserStatus status = 5;
   void clear_status();
-  ::vosfs::auth::Status status() const;
-  void set_status(::vosfs::auth::Status value);
+  ::vosfs::auth::UserStatus status() const;
+  void set_status(::vosfs::auth::UserStatus value);
   private:
-  ::vosfs::auth::Status _internal_status() const;
-  void _internal_set_status(::vosfs::auth::Status value);
+  ::vosfs::auth::UserStatus _internal_status() const;
+  void _internal_set_status(::vosfs::auth::UserStatus value);
   public:
 
   // int64 create_time = 6;
@@ -1056,10 +1056,10 @@ class GetUserResponse final :
   enum : int {
     kMsgFieldNumber = 2,
     kNameFieldNumber = 4,
+    kCreateTimeFieldNumber = 6,
     kUidFieldNumber = 3,
     kSuccessFieldNumber = 1,
     kRoleFieldNumber = 5,
-    kCreateTimeFieldNumber = 6,
   };
   // string msg = 2;
   void clear_msg();
@@ -1089,6 +1089,20 @@ class GetUserResponse final :
   std::string* _internal_mutable_name();
   public:
 
+  // string create_time = 6;
+  void clear_create_time();
+  const std::string& create_time() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_create_time(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_create_time();
+  PROTOBUF_NODISCARD std::string* release_create_time();
+  void set_allocated_create_time(std::string* create_time);
+  private:
+  const std::string& _internal_create_time() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_create_time(const std::string& value);
+  std::string* _internal_mutable_create_time();
+  public:
+
   // uint64 uid = 3;
   void clear_uid();
   uint64_t uid() const;
@@ -1116,15 +1130,6 @@ class GetUserResponse final :
   void _internal_set_role(::vosfs::auth::Role value);
   public:
 
-  // int64 create_time = 6;
-  void clear_create_time();
-  int64_t create_time() const;
-  void set_create_time(int64_t value);
-  private:
-  int64_t _internal_create_time() const;
-  void _internal_set_create_time(int64_t value);
-  public:
-
   // @@protoc_insertion_point(class_scope:vosfs.auth.GetUserResponse)
  private:
   class _Internal;
@@ -1135,10 +1140,10 @@ class GetUserResponse final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr msg_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr create_time_;
     uint64_t uid_;
     bool success_;
     int role_;
-    int64_t create_time_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2602,22 +2607,22 @@ inline void User::set_role(::vosfs::auth::Role value) {
   // @@protoc_insertion_point(field_set:vosfs.auth.User.role)
 }
 
-// .vosfs.auth.Status status = 5;
+// .vosfs.auth.UserStatus status = 5;
 inline void User::clear_status() {
   _impl_.status_ = 0;
 }
-inline ::vosfs::auth::Status User::_internal_status() const {
-  return static_cast< ::vosfs::auth::Status >(_impl_.status_);
+inline ::vosfs::auth::UserStatus User::_internal_status() const {
+  return static_cast< ::vosfs::auth::UserStatus >(_impl_.status_);
 }
-inline ::vosfs::auth::Status User::status() const {
+inline ::vosfs::auth::UserStatus User::status() const {
   // @@protoc_insertion_point(field_get:vosfs.auth.User.status)
   return _internal_status();
 }
-inline void User::_internal_set_status(::vosfs::auth::Status value) {
+inline void User::_internal_set_status(::vosfs::auth::UserStatus value) {
   
   _impl_.status_ = value;
 }
-inline void User::set_status(::vosfs::auth::Status value) {
+inline void User::set_status(::vosfs::auth::UserStatus value) {
   _internal_set_status(value);
   // @@protoc_insertion_point(field_set:vosfs.auth.User.status)
 }
@@ -3218,24 +3223,54 @@ inline void GetUserResponse::set_role(::vosfs::auth::Role value) {
   // @@protoc_insertion_point(field_set:vosfs.auth.GetUserResponse.role)
 }
 
-// int64 create_time = 6;
+// string create_time = 6;
 inline void GetUserResponse::clear_create_time() {
-  _impl_.create_time_ = int64_t{0};
+  _impl_.create_time_.ClearToEmpty();
 }
-inline int64_t GetUserResponse::_internal_create_time() const {
-  return _impl_.create_time_;
-}
-inline int64_t GetUserResponse::create_time() const {
+inline const std::string& GetUserResponse::create_time() const {
   // @@protoc_insertion_point(field_get:vosfs.auth.GetUserResponse.create_time)
   return _internal_create_time();
 }
-inline void GetUserResponse::_internal_set_create_time(int64_t value) {
-  
-  _impl_.create_time_ = value;
-}
-inline void GetUserResponse::set_create_time(int64_t value) {
-  _internal_set_create_time(value);
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void GetUserResponse::set_create_time(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.create_time_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:vosfs.auth.GetUserResponse.create_time)
+}
+inline std::string* GetUserResponse::mutable_create_time() {
+  std::string* _s = _internal_mutable_create_time();
+  // @@protoc_insertion_point(field_mutable:vosfs.auth.GetUserResponse.create_time)
+  return _s;
+}
+inline const std::string& GetUserResponse::_internal_create_time() const {
+  return _impl_.create_time_.Get();
+}
+inline void GetUserResponse::_internal_set_create_time(const std::string& value) {
+  
+  _impl_.create_time_.Set(value, GetArenaForAllocation());
+}
+inline std::string* GetUserResponse::_internal_mutable_create_time() {
+  
+  return _impl_.create_time_.Mutable(GetArenaForAllocation());
+}
+inline std::string* GetUserResponse::release_create_time() {
+  // @@protoc_insertion_point(field_release:vosfs.auth.GetUserResponse.create_time)
+  return _impl_.create_time_.Release();
+}
+inline void GetUserResponse::set_allocated_create_time(std::string* create_time) {
+  if (create_time != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.create_time_.SetAllocated(create_time, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.create_time_.IsDefault()) {
+    _impl_.create_time_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:vosfs.auth.GetUserResponse.create_time)
 }
 
 // -------------------------------------------------------------------
@@ -3840,10 +3875,10 @@ template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::vosfs::auth::Role>() {
   return ::vosfs::auth::Role_descriptor();
 }
-template <> struct is_proto_enum< ::vosfs::auth::Status> : ::std::true_type {};
+template <> struct is_proto_enum< ::vosfs::auth::UserStatus> : ::std::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::vosfs::auth::Status>() {
-  return ::vosfs::auth::Status_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::vosfs::auth::UserStatus>() {
+  return ::vosfs::auth::UserStatus_descriptor();
 }
 
 PROTOBUF_NAMESPACE_CLOSE

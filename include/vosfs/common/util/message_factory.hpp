@@ -22,7 +22,7 @@ public:
         std::span<char> resp_payload,
         uint64_t id,
         uint64_t term,
-        bool vote_granted) -> rpc::RpcResult;
+        bool vote_granted) -> vrpc::InvokeResult;
 
     [[nodiscard]]
     static auto make_append_entries_request(
@@ -40,7 +40,7 @@ public:
         uint64_t term,
         bool success,
         uint64_t last_log_index,
-        std::optional<uint64_t> conflict_index = std::nullopt) -> rpc::RpcResult;
+        std::optional<uint64_t> conflict_index = std::nullopt) -> vrpc::InvokeResult;
 
     [[nodiscard]]
     static auto make_install_snapshot_request(
@@ -55,7 +55,7 @@ public:
     [[nodiscard]]
     static auto make_install_snapshot_response(
         std::span<char> resp_payload,
-        uint64_t term) -> rpc::RpcResult;
+        uint64_t term) -> vrpc::InvokeResult;
 
     [[nodiscard]]
     static auto make_transmit_file_request(
@@ -67,7 +67,7 @@ public:
         std::span<char> resp_payload,
         bool success,
         std::string&& path,
-        google::protobuf::RepeatedPtrField<raft::ChunkMetadata>* chunk_metadata) -> rpc::RpcResult;
+        google::protobuf::RepeatedPtrField<raft::ChunkMetadata>* chunk_metadata) -> vrpc::InvokeResult;
 
     [[nodiscard]]
     static auto make_put_user_request(
@@ -79,7 +79,7 @@ public:
     static auto make_put_user_response(
         std::span<char> resp_payload,
         bool success,
-        std::string&& msg) -> rpc::RpcResult;
+        std::string&& msg) -> vrpc::InvokeResult;
 
     [[nodiscard]]
     static auto make_get_user_request(
@@ -95,7 +95,7 @@ public:
         uint64_t uid = 0,
         std::string&& name = "",
         int role = auth::kUser,
-        int64_t create_time = 0) -> rpc::RpcResult;
+        int64_t create_time = 0) -> vrpc::InvokeResult;
 
     [[nodiscard]]
     static auto make_update_user_name_request(
@@ -106,7 +106,7 @@ public:
     static auto make_update_user_name_response(
         std::span<char> resp_payload,
         bool success,
-        std::string&& msg) -> rpc::RpcResult;
+        std::string&& msg) -> vrpc::InvokeResult;
 
     [[nodiscard]]
     static auto make_update_user_password_request(
@@ -117,7 +117,7 @@ public:
     static auto make_update_user_password_response(
         std::span<char> resp_payload,
         bool success,
-        std::string&& msg) -> rpc::RpcResult;
+        std::string&& msg) -> vrpc::InvokeResult;
 
     [[nodiscard]]
     static auto make_update_user_role_request(
@@ -128,7 +128,7 @@ public:
     static auto make_update_user_role_response(
         std::span<char> resp_payload,
         bool success,
-        std::string&& msg) -> rpc::RpcResult;
+        std::string&& msg) -> vrpc::InvokeResult;
 
     [[nodiscard]]
     static auto make_delete_user_request(
@@ -139,6 +139,6 @@ public:
     static auto make_delete_user_response(
         std::span<char> resp_payload,
         bool success,
-        std::string&& msg) -> rpc::RpcResult;
+        std::string&& msg) -> vrpc::InvokeResult;
 };
 } // namespace vosfs::util

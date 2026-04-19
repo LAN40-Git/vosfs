@@ -50,7 +50,7 @@ message RaftNodeInfo {
 
 message RaftClusterInfo {
   uint64 id = 1;
-  repeated RaftNodeInfo raft_node_infos = 2;
+  repeated RaftNodeInfo infos = 2;
 }
 
 message DataNodeInfo {
@@ -59,7 +59,7 @@ message DataNodeInfo {
 }
 
 message DataClusterInfo {
-  repeated DataNodeInfo data_node_infos = 1;
+  repeated DataNodeInfo infos = 1;
 }
 
 message InstallSnapshotRequest {

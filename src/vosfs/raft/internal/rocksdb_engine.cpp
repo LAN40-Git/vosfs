@@ -1,4 +1,4 @@
-#include "vosfs/raft/internal/rocksdb_engine.hpp"
+#include "vosfs/raft/detail/rocksdb_engine.hpp"
 #include <kosio/common/debug.hpp>
 
 vosfs::raft::detail::RocksDBEngine::~RocksDBEngine() {

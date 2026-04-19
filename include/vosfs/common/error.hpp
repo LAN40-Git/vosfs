@@ -8,65 +8,52 @@
 namespace vosfs {
 class Error {
 public:
-    enum ErrorCode {
-        kUnknown = 8000,
-        kProtoSerializeFailed,
-        kProtoParseFailed,
-        kTruncateFailed,
-        kRecoverFailed,
-        kCreateRpcConsumerFailed,
-        kCreateRpcProviderFailed,
-        kCreateRocksDBEngineFailed,
-        kCreateAuthServerFailed,
-        kQueueShutdown,
+    enum Code {
+        // ====== 数据库错误 ======
+        kDatabaseConnectionFailed = 0,
+        kDatabaseQueryFailed,
+        kDatabaseInsertFailed,
+        kDatabaseUpdateFailed,
+        kDatabaseDeleteFailed,
+        kMaxErrorCode
     };
 
 public:
-    explicit Error(int error_code) : error_code_(error_code) {}
+    explicit Error(int code) : code_(code) {}
 
 public:
     [[nodiscard]]
-    auto message() const noexcept -> std::string_view {
-        switch (error_code_) {
-            case kUnknown:
-                return "unknown error";
-            case kProtoSerializeFailed:
-                return "failed to serialize proto";
-            case kProtoParseFailed:
-                return "failed to parse proto";
-            case kTruncateFailed:
-                return "failed to truncate data";
-            case kRecoverFailed:
-                return "failed to recover data";
-            case kCreateRpcConsumerFailed:
-                return "failed to create rpc consumer";
-            case kCreateRpcProviderFailed:
-                return "failed to create rpc provider";
-            case kCreateRocksDBEngineFailed:
-                return "failed to create rocksdb engine";
-            case kCreateAuthServerFailed:
-                return "failed to create auth server";
-            case kQueueShutdown:
-                return "shutdown queue";
-            default:
-                return strerror(error_code_);
-        }
+    auto code() const noexcept -> int {
+        return code_;
     }
 
     [[nodiscard]]
-    auto value() const noexcept -> int {
-        return error_code_;
+    auto message() const noexcept -> std::string_view {
+        switch (code_) {
+        case kDatabaseConnectionFailed:
+            return "database connection failed";
+        case kDatabaseQueryFailed:
+            return "database query execution failed";
+        case kDatabaseInsertFailed:
+            return "database insert operation failed";
+        case kDatabaseUpdateFailed:
+            return "database update operation failed";
+        case kDatabaseDeleteFailed:
+            return "database delete operation failed";
+        default:
+            return "unknown error";
+        }
     }
 
 private:
-    int error_code_;
+    int code_;
 };
 
 template <typename T>
 using Result = std::expected<T, Error>;
 
-static auto make_error(int error_code) -> Error {
-    return Error{error_code};
+static auto make_error(int code) -> Error {
+    return Error{code};
 }
 } // namespace vosfs
 
@@ -88,7 +75,7 @@ public:
     }
 
     auto format(const vosfs::Error &error, auto &context) const noexcept {
-        return format_to(context.out(), "{} (error {})", error.message(), error.value());
+        return format_to(context.out(), "{} (error {})", error.message(), error.code());
     }
 };
 } // namespace std

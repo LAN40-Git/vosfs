@@ -5,39 +5,18 @@
 
 #include "vosfs/common/util/message_factory.hpp"
 
-vosfs::auth::AuthServer::AuthServer(
+vosfs::auth::Server::Server(
     sqlite3* db, rpc::RpcServer rpc_server)
     : db_(db)
     , rpc_server_(std::move(rpc_server)) {}
 
-vosfs::auth::AuthServer::~AuthServer() {
+vosfs::auth::Server::~Server() {
     if (db_) {
         sqlite3_close(db_);
     }
 }
 
-vosfs::auth::AuthServer::AuthServer(AuthServer&& other) noexcept
-    : db_(other.db_)
-    , rpc_server_(std::move(other.rpc_server_)) {
-    other.db_ = nullptr;
-}
-
-auto vosfs::auth::AuthServer::operator=(AuthServer&& other) noexcept -> AuthServer& {
-    if (this == &other) {
-        return *this;
-    }
-
-    if (db_) {
-        sqlite3_close(db_);
-    }
-
-    db_ = other.db_;
-    other.db_ = nullptr;
-    rpc_server_ = std::move(other.rpc_server_);
-    return *this;
-}
-
-auto vosfs::auth::AuthServer::create(uint16_t port) -> kosio::async::Task<Result<AuthServer>> {
+auto vosfs::auth::Server::create(uint16_t port) -> kosio::async::Task<Result<Server>> {
     sqlite3* db;
     if (sqlite3_open(DB_PATH.data(), &db) != SQLITE_OK) {
         co_return std::unexpected{make_error(Error::kCreateAuthServerFailed)};
@@ -66,68 +45,66 @@ auto vosfs::auth::AuthServer::create(uint16_t port) -> kosio::async::Task<Result
         co_return std::unexpected{has_rpc_server.error()};
     }
     auto rpc_server = std::move(has_rpc_server.value());
-    co_return AuthServer{db, std::move(rpc_server)};
+    co_return Server{db, std::move(rpc_server)};
 }
 
-auto vosfs::auth::AuthServer::run() const -> kosio::async::Task<void> {
+auto vosfs::auth::Server::run() -> kosio::async::Task<void> {
     init();
-    kosio::spawn(rpc_server_->run());
-    co_await kosio::signal::ctrl_c();
-    co_await shutdown();
+    co_await rpc_server_.wait();
 }
 
-void vosfs::auth::AuthServer::init() const {
+void vosfs::auth::Server::init() const {
     // 注册 RPC 服务
     using rpc::ServiceType;
-    using rpc::MethodType;
+    using rpc::InvokeType;
 
     // put user
-    rpc_server_->register_handler(ServiceType::kAuth, MethodType::kAuthPutUser,
-        [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
+    rpc_server_->register_invoke(ServiceType::kAuth, InvokeType::kAuthPutUser,
+        [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<vrpc::InvokeResult> {
             co_return co_await this->handle_put_user_request(req_payload, resp_payload);
         });
 
     // get user
-    rpc_server_->register_handler(ServiceType::kAuth, MethodType::kAuthGetUser,
-        [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
+    rpc_server_->register_invoke(ServiceType::kAuth, InvokeType::kAuthGetUser,
+        [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<vrpc::InvokeResult> {
             co_return co_await this->handle_get_user_request(req_payload, resp_payload);
         });
 
     // update user name
-    rpc_server_->register_handler(ServiceType::kAuth, MethodType::kAuthUpdateUserName,
-        [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
+    rpc_server_->register_invoke(ServiceType::kAuth, InvokeType::kAuthUpdateUserName,
+        [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<vrpc::InvokeResult> {
             co_return co_await this->handle_update_user_name_request(req_payload, resp_payload);
         });
 
     // update user password
-    rpc_server_->register_handler(ServiceType::kAuth, MethodType::kAuthUpdateUserPassword,
-        [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
+    rpc_server_->register_invoke(ServiceType::kAuth, InvokeType::kAuthUpdateUserPassword,
+        [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<vrpc::InvokeResult> {
             co_return co_await this->handle_update_user_password_request(req_payload, resp_payload);
         });
 
     // update user role
-    rpc_server_->register_handler(ServiceType::kAuth, MethodType::kAuthUpdateUserRole,
-        [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
+    rpc_server_->register_invoke(ServiceType::kAuth, InvokeType::kAuthUpdateUserRole,
+        [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<vrpc::InvokeResult> {
             co_return co_await this->handle_update_user_role_request(req_payload, resp_payload);
         });
 
     // delete user
-    rpc_server_->register_handler(ServiceType::kAuth, MethodType::kAuthDeleteUser,
-        [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
+    rpc_server_->register_invoke(ServiceType::kAuth, InvokeType::kAuthDeleteUser,
+        [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<vrpc::InvokeResult> {
             co_return co_await this->handle_delete_user_request(req_payload, resp_payload);
         });
 }
 
-auto vosfs::auth::AuthServer::shutdown() const -> kosio::async::Task<void> {
+auto vosfs::auth::Server::shutdown() const -> kosio::async::Task<void> {
     co_await rpc_server_->shutdown();
 }
 
-auto vosfs::auth::AuthServer::handle_put_user_request(
+auto vosfs::auth::Server::handle_put_user_request(
     std::string_view req_payload,
-    std::span<char> resp_payload) const -> kosio::async::Task<rpc::RpcResult> {
+    std::span<char> resp_payload) const -> kosio::async::Task<vrpc::InvokeResult> {
     PutUserRequest request;
     if (!request.ParseFromArray(req_payload.data(), static_cast<int>(req_payload.size()))) {
-        co_return rpc::make_result(rpc::RpcResult::kMessageParseFailed);
+        co_return rpc::make_result(vrpc::InvokeResult::kMessageParseFailed);
     }
 
     auto& name = request.name();
@@ -191,12 +168,12 @@ auto vosfs::auth::AuthServer::handle_put_user_request(
     co_return util::MessageFactory::make_put_user_response(resp_payload, true, "register success");
 }
 
-auto vosfs::auth::AuthServer::handle_get_user_request(
+auto vosfs::auth::Server::handle_get_user_request(
     std::string_view req_payload,
-    std::span<char> resp_payload) const -> kosio::async::Task<rpc::RpcResult> {
+    std::span<char> resp_payload) const -> kosio::async::Task<vrpc::InvokeResult> {
     GetUserRequest request;
     if (!request.ParseFromArray(req_payload.data(), static_cast<int>(req_payload.size()))) {
-        co_return rpc::make_result(rpc::RpcResult::kMessageParseFailed);
+        co_return rpc::make_result(vrpc::InvokeResult::kMessageParseFailed);
     }
 
     auto name = std::string{request.name()};
@@ -292,12 +269,12 @@ auto vosfs::auth::AuthServer::handle_get_user_request(
         create_time);
 }
 
-auto vosfs::auth::AuthServer::handle_update_user_name_request(
+auto vosfs::auth::Server::handle_update_user_name_request(
     std::string_view req_payload,
-    std::span<char> resp_payload) const -> kosio::async::Task<rpc::RpcResult> {
+    std::span<char> resp_payload) const -> kosio::async::Task<vrpc::InvokeResult> {
     UpdateUserNameRequest request;
     if (!request.ParseFromArray(req_payload.data(), static_cast<int>(req_payload.size()))) {
-        co_return rpc::make_result(rpc::RpcResult::kMessageParseFailed);
+        co_return rpc::make_result(vrpc::InvokeResult::kMessageParseFailed);
     }
 
     auto uid = static_cast<int64_t>(request.uid());
@@ -322,12 +299,12 @@ auto vosfs::auth::AuthServer::handle_update_user_name_request(
     co_return util::MessageFactory::make_update_user_name_response(resp_payload, true, "modify success");
 }
 
-auto vosfs::auth::AuthServer::handle_update_user_password_request(
+auto vosfs::auth::Server::handle_update_user_password_request(
     std::string_view req_payload,
-    std::span<char> resp_payload) const -> kosio::async::Task<rpc::RpcResult> {
+    std::span<char> resp_payload) const -> kosio::async::Task<vrpc::InvokeResult> {
     UpdateUserPasswordRequest request;
     if (!request.ParseFromArray(req_payload.data(), static_cast<int>(req_payload.size()))) {
-        co_return rpc::make_result(rpc::RpcResult::kMessageParseFailed);
+        co_return rpc::make_result(vrpc::InvokeResult::kMessageParseFailed);
     }
 
     auto uid = static_cast<int64_t>(request.uid());
@@ -352,12 +329,12 @@ auto vosfs::auth::AuthServer::handle_update_user_password_request(
     co_return util::MessageFactory::make_update_user_password_response(resp_payload, true, "modify success");
 }
 
-auto vosfs::auth::AuthServer::handle_update_user_role_request(
+auto vosfs::auth::Server::handle_update_user_role_request(
     std::string_view req_payload,
-    std::span<char> resp_payload) const -> kosio::async::Task<rpc::RpcResult> {
+    std::span<char> resp_payload) const -> kosio::async::Task<vrpc::InvokeResult> {
     UpdateUserRoleRequest request;
     if (!request.ParseFromArray(req_payload.data(), static_cast<int>(req_payload.size()))) {
-        co_return rpc::make_result(rpc::RpcResult::kMessageParseFailed);
+        co_return rpc::make_result(vrpc::InvokeResult::kMessageParseFailed);
     }
 
     auto uid = static_cast<int64_t>(request.uid());
@@ -382,12 +359,12 @@ auto vosfs::auth::AuthServer::handle_update_user_role_request(
     co_return util::MessageFactory::make_update_user_role_response(resp_payload, true, "modify success");
 }
 
-auto vosfs::auth::AuthServer::handle_delete_user_request(
+auto vosfs::auth::Server::handle_delete_user_request(
     std::string_view req_payload,
-    std::span<char> resp_payload) const -> kosio::async::Task<rpc::RpcResult> {
+    std::span<char> resp_payload) const -> kosio::async::Task<vrpc::InvokeResult> {
     DeleteUserRequest request;
     if (!request.ParseFromArray(req_payload.data(), static_cast<int>(req_payload.size()))) {
-        co_return rpc::make_result(rpc::RpcResult::kMessageParseFailed);
+        co_return rpc::make_result(vrpc::InvokeResult::kMessageParseFailed);
     }
 
     auto uid = static_cast<int64_t>(request.uid());

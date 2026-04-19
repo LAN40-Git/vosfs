@@ -1573,26 +1573,26 @@ class RaftClusterInfo final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kRaftNodeInfosFieldNumber = 2,
+    kInfosFieldNumber = 2,
     kIdFieldNumber = 1,
   };
-  // repeated .vosfs.raft.RaftNodeInfo raft_node_infos = 2;
-  int raft_node_infos_size() const;
+  // repeated .vosfs.raft.RaftNodeInfo infos = 2;
+  int infos_size() const;
   private:
-  int _internal_raft_node_infos_size() const;
+  int _internal_infos_size() const;
   public:
-  void clear_raft_node_infos();
-  ::vosfs::raft::RaftNodeInfo* mutable_raft_node_infos(int index);
+  void clear_infos();
+  ::vosfs::raft::RaftNodeInfo* mutable_infos(int index);
   ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::RaftNodeInfo >*
-      mutable_raft_node_infos();
+      mutable_infos();
   private:
-  const ::vosfs::raft::RaftNodeInfo& _internal_raft_node_infos(int index) const;
-  ::vosfs::raft::RaftNodeInfo* _internal_add_raft_node_infos();
+  const ::vosfs::raft::RaftNodeInfo& _internal_infos(int index) const;
+  ::vosfs::raft::RaftNodeInfo* _internal_add_infos();
   public:
-  const ::vosfs::raft::RaftNodeInfo& raft_node_infos(int index) const;
-  ::vosfs::raft::RaftNodeInfo* add_raft_node_infos();
+  const ::vosfs::raft::RaftNodeInfo& infos(int index) const;
+  ::vosfs::raft::RaftNodeInfo* add_infos();
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::RaftNodeInfo >&
-      raft_node_infos() const;
+      infos() const;
 
   // uint64 id = 1;
   void clear_id();
@@ -1611,7 +1611,7 @@ class RaftClusterInfo final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::RaftNodeInfo > raft_node_infos_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::RaftNodeInfo > infos_;
     uint64_t id_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -1905,25 +1905,25 @@ class DataClusterInfo final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kDataNodeInfosFieldNumber = 1,
+    kInfosFieldNumber = 1,
   };
-  // repeated .vosfs.raft.DataNodeInfo data_node_infos = 1;
-  int data_node_infos_size() const;
+  // repeated .vosfs.raft.DataNodeInfo infos = 1;
+  int infos_size() const;
   private:
-  int _internal_data_node_infos_size() const;
+  int _internal_infos_size() const;
   public:
-  void clear_data_node_infos();
-  ::vosfs::raft::DataNodeInfo* mutable_data_node_infos(int index);
+  void clear_infos();
+  ::vosfs::raft::DataNodeInfo* mutable_infos(int index);
   ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::DataNodeInfo >*
-      mutable_data_node_infos();
+      mutable_infos();
   private:
-  const ::vosfs::raft::DataNodeInfo& _internal_data_node_infos(int index) const;
-  ::vosfs::raft::DataNodeInfo* _internal_add_data_node_infos();
+  const ::vosfs::raft::DataNodeInfo& _internal_infos(int index) const;
+  ::vosfs::raft::DataNodeInfo* _internal_add_infos();
   public:
-  const ::vosfs::raft::DataNodeInfo& data_node_infos(int index) const;
-  ::vosfs::raft::DataNodeInfo* add_data_node_infos();
+  const ::vosfs::raft::DataNodeInfo& infos(int index) const;
+  ::vosfs::raft::DataNodeInfo* add_infos();
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::DataNodeInfo >&
-      data_node_infos() const;
+      infos() const;
 
   // @@protoc_insertion_point(class_scope:vosfs.raft.DataClusterInfo)
  private:
@@ -1933,7 +1933,7 @@ class DataClusterInfo final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::DataNodeInfo > data_node_infos_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::DataNodeInfo > infos_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -5035,44 +5035,44 @@ inline void RaftClusterInfo::set_id(uint64_t value) {
   // @@protoc_insertion_point(field_set:vosfs.raft.RaftClusterInfo.id)
 }
 
-// repeated .vosfs.raft.RaftNodeInfo raft_node_infos = 2;
-inline int RaftClusterInfo::_internal_raft_node_infos_size() const {
-  return _impl_.raft_node_infos_.size();
+// repeated .vosfs.raft.RaftNodeInfo infos = 2;
+inline int RaftClusterInfo::_internal_infos_size() const {
+  return _impl_.infos_.size();
 }
-inline int RaftClusterInfo::raft_node_infos_size() const {
-  return _internal_raft_node_infos_size();
+inline int RaftClusterInfo::infos_size() const {
+  return _internal_infos_size();
 }
-inline void RaftClusterInfo::clear_raft_node_infos() {
-  _impl_.raft_node_infos_.Clear();
+inline void RaftClusterInfo::clear_infos() {
+  _impl_.infos_.Clear();
 }
-inline ::vosfs::raft::RaftNodeInfo* RaftClusterInfo::mutable_raft_node_infos(int index) {
-  // @@protoc_insertion_point(field_mutable:vosfs.raft.RaftClusterInfo.raft_node_infos)
-  return _impl_.raft_node_infos_.Mutable(index);
+inline ::vosfs::raft::RaftNodeInfo* RaftClusterInfo::mutable_infos(int index) {
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.RaftClusterInfo.infos)
+  return _impl_.infos_.Mutable(index);
 }
 inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::RaftNodeInfo >*
-RaftClusterInfo::mutable_raft_node_infos() {
-  // @@protoc_insertion_point(field_mutable_list:vosfs.raft.RaftClusterInfo.raft_node_infos)
-  return &_impl_.raft_node_infos_;
+RaftClusterInfo::mutable_infos() {
+  // @@protoc_insertion_point(field_mutable_list:vosfs.raft.RaftClusterInfo.infos)
+  return &_impl_.infos_;
 }
-inline const ::vosfs::raft::RaftNodeInfo& RaftClusterInfo::_internal_raft_node_infos(int index) const {
-  return _impl_.raft_node_infos_.Get(index);
+inline const ::vosfs::raft::RaftNodeInfo& RaftClusterInfo::_internal_infos(int index) const {
+  return _impl_.infos_.Get(index);
 }
-inline const ::vosfs::raft::RaftNodeInfo& RaftClusterInfo::raft_node_infos(int index) const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.RaftClusterInfo.raft_node_infos)
-  return _internal_raft_node_infos(index);
+inline const ::vosfs::raft::RaftNodeInfo& RaftClusterInfo::infos(int index) const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.RaftClusterInfo.infos)
+  return _internal_infos(index);
 }
-inline ::vosfs::raft::RaftNodeInfo* RaftClusterInfo::_internal_add_raft_node_infos() {
-  return _impl_.raft_node_infos_.Add();
+inline ::vosfs::raft::RaftNodeInfo* RaftClusterInfo::_internal_add_infos() {
+  return _impl_.infos_.Add();
 }
-inline ::vosfs::raft::RaftNodeInfo* RaftClusterInfo::add_raft_node_infos() {
-  ::vosfs::raft::RaftNodeInfo* _add = _internal_add_raft_node_infos();
-  // @@protoc_insertion_point(field_add:vosfs.raft.RaftClusterInfo.raft_node_infos)
+inline ::vosfs::raft::RaftNodeInfo* RaftClusterInfo::add_infos() {
+  ::vosfs::raft::RaftNodeInfo* _add = _internal_add_infos();
+  // @@protoc_insertion_point(field_add:vosfs.raft.RaftClusterInfo.infos)
   return _add;
 }
 inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::RaftNodeInfo >&
-RaftClusterInfo::raft_node_infos() const {
-  // @@protoc_insertion_point(field_list:vosfs.raft.RaftClusterInfo.raft_node_infos)
-  return _impl_.raft_node_infos_;
+RaftClusterInfo::infos() const {
+  // @@protoc_insertion_point(field_list:vosfs.raft.RaftClusterInfo.infos)
+  return _impl_.infos_;
 }
 
 // -------------------------------------------------------------------
@@ -5153,44 +5153,44 @@ inline void DataNodeInfo::set_port(uint32_t value) {
 
 // DataClusterInfo
 
-// repeated .vosfs.raft.DataNodeInfo data_node_infos = 1;
-inline int DataClusterInfo::_internal_data_node_infos_size() const {
-  return _impl_.data_node_infos_.size();
+// repeated .vosfs.raft.DataNodeInfo infos = 1;
+inline int DataClusterInfo::_internal_infos_size() const {
+  return _impl_.infos_.size();
 }
-inline int DataClusterInfo::data_node_infos_size() const {
-  return _internal_data_node_infos_size();
+inline int DataClusterInfo::infos_size() const {
+  return _internal_infos_size();
 }
-inline void DataClusterInfo::clear_data_node_infos() {
-  _impl_.data_node_infos_.Clear();
+inline void DataClusterInfo::clear_infos() {
+  _impl_.infos_.Clear();
 }
-inline ::vosfs::raft::DataNodeInfo* DataClusterInfo::mutable_data_node_infos(int index) {
-  // @@protoc_insertion_point(field_mutable:vosfs.raft.DataClusterInfo.data_node_infos)
-  return _impl_.data_node_infos_.Mutable(index);
+inline ::vosfs::raft::DataNodeInfo* DataClusterInfo::mutable_infos(int index) {
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.DataClusterInfo.infos)
+  return _impl_.infos_.Mutable(index);
 }
 inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::DataNodeInfo >*
-DataClusterInfo::mutable_data_node_infos() {
-  // @@protoc_insertion_point(field_mutable_list:vosfs.raft.DataClusterInfo.data_node_infos)
-  return &_impl_.data_node_infos_;
+DataClusterInfo::mutable_infos() {
+  // @@protoc_insertion_point(field_mutable_list:vosfs.raft.DataClusterInfo.infos)
+  return &_impl_.infos_;
 }
-inline const ::vosfs::raft::DataNodeInfo& DataClusterInfo::_internal_data_node_infos(int index) const {
-  return _impl_.data_node_infos_.Get(index);
+inline const ::vosfs::raft::DataNodeInfo& DataClusterInfo::_internal_infos(int index) const {
+  return _impl_.infos_.Get(index);
 }
-inline const ::vosfs::raft::DataNodeInfo& DataClusterInfo::data_node_infos(int index) const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.DataClusterInfo.data_node_infos)
-  return _internal_data_node_infos(index);
+inline const ::vosfs::raft::DataNodeInfo& DataClusterInfo::infos(int index) const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.DataClusterInfo.infos)
+  return _internal_infos(index);
 }
-inline ::vosfs::raft::DataNodeInfo* DataClusterInfo::_internal_add_data_node_infos() {
-  return _impl_.data_node_infos_.Add();
+inline ::vosfs::raft::DataNodeInfo* DataClusterInfo::_internal_add_infos() {
+  return _impl_.infos_.Add();
 }
-inline ::vosfs::raft::DataNodeInfo* DataClusterInfo::add_data_node_infos() {
-  ::vosfs::raft::DataNodeInfo* _add = _internal_add_data_node_infos();
-  // @@protoc_insertion_point(field_add:vosfs.raft.DataClusterInfo.data_node_infos)
+inline ::vosfs::raft::DataNodeInfo* DataClusterInfo::add_infos() {
+  ::vosfs::raft::DataNodeInfo* _add = _internal_add_infos();
+  // @@protoc_insertion_point(field_add:vosfs.raft.DataClusterInfo.infos)
   return _add;
 }
 inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::DataNodeInfo >&
-DataClusterInfo::data_node_infos() const {
-  // @@protoc_insertion_point(field_list:vosfs.raft.DataClusterInfo.data_node_infos)
-  return _impl_.data_node_infos_;
+DataClusterInfo::infos() const {
+  // @@protoc_insertion_point(field_list:vosfs.raft.DataClusterInfo.infos)
+  return _impl_.infos_;
 }
 
 // -------------------------------------------------------------------

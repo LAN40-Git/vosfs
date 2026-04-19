@@ -1,15 +1,14 @@
 #pragma once
-#include "vosfs/raft/internal/log.hpp"
-#include "vosfs/raft/internal/transport.hpp"
+#include <vrpc/server.hpp>
+#include "vosfs/raft/detail/log.hpp"
+#include "vosfs/raft/detail/transport.hpp"
 #include "state_machine.hpp"
 
 namespace vosfs::raft {
-class RaftNode {
+class RaftServer {
     using SnapshotContextMap = std::unordered_map<uint64_t, uint64_t>;
 private:
-    explicit RaftNode(
-        rpc::RpcServer raft_rpc_server,
-        rpc::RpcServer client_rpc_server,
+    explicit RaftServer(
         Persister&& persister,
         detail::RaftLog&& logs,
         detail::Transport&& transport,
@@ -17,7 +16,7 @@ private:
         HardState&& hard_state);
 
 public:
-    static auto create(std::string_view data_dir) -> kosio::async::Task<Result<std::unique_ptr<RaftNode>>>;
+    static auto create(std::string_view data_dir) -> kosio::async::Task<Result<std::unique_ptr<RaftServer>>>;
 
 public:
     [[REMEMBER_CO_AWAIT]]
@@ -41,18 +40,18 @@ private:
     // Raft RPC
     [[REMEMBER_CO_AWAIT]]
     auto handle_request_vote_request(std::string_view req_payload, std::span<char> resp_payload)
-        -> kosio::async::Task<rpc::RpcResult>;
+        -> kosio::async::Task<vrpc::InvokeResult>;
     [[REMEMBER_CO_AWAIT]]
     auto handle_append_entries_request(std::string_view req_payload, std::span<char> resp_payload)
-        -> kosio::async::Task<rpc::RpcResult>;
+        -> kosio::async::Task<vrpc::InvokeResult>;
     [[REMEMBER_CO_AWAIT]]
     auto handle_install_snapshot_request(std::string_view req_payload, std::span<char> resp_payload)
-        -> kosio::async::Task<rpc::RpcResult>;
+        -> kosio::async::Task<vrpc::InvokeResult>;
 
     // Client RPC
     [[REMEMBER_CO_AWAIT]]
     auto handle_transmit_file_request(std::string_view req_payload, std::span<char> resp_payload)
-        -> kosio::async::Task<rpc::RpcResult>;
+        -> kosio::async::Task<vrpc::InvokeResult>;
 
 private:
     [[REMEMBER_CO_AWAIT]]
@@ -66,11 +65,11 @@ private:
     enum Role { kLeader, kFollower, kCandidate };
 
     kosio::sync::Mutex    mutex_;
-    kosio::sync::Latch    latch_{2}; // 两个循环协程-(election_loop 和 heartbeat_loop)
+    kosio::sync::Latch    latch_{2};
     std::atomic<bool>     is_shutdown_{false};
     std::atomic<uint64_t> last_reset_time_{0};
-    rpc::RpcServer        raft_rpc_server_;
-    rpc::RpcServer        client_rpc_server_;
+    vrpc::Server          raft_rpc_server_;
+    vrpc::Server          fs_rpc_server_;
     Persister             persister_;
     StateMachine          state_machine_;
     detail::RaftLog       logs_;
@@ -94,5 +93,4 @@ private:
     std::unordered_map<uint64_t, uint64_t> next_index_{};
     std::unordered_map<uint64_t, uint64_t> match_index_{};
 };
-using MetaServer = RaftNode;
 } // namespace vosfs::raft

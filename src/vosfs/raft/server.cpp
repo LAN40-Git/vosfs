@@ -3,37 +3,21 @@
 #include <ranges>
 #include <kosio/signal/signal.hpp>
 
-vosfs::raft::RaftNode::RaftNode(
-    rpc::RpcServer raft_rpc_server,
-    rpc::RpcServer client_rpc_server,
+vosfs::raft::RaftServer::RaftServer(
     Persister&& persister,
     detail::RaftLog&& logs,
     detail::Transport&& transport,
     DataClusterInfo&& data_cluster_info,
     HardState&& hard_state)
-    : raft_rpc_server_(std::move(raft_rpc_server))
-    , client_rpc_server_(std::move(client_rpc_server))
+    : raft_rpc_server_(detail::RAFT_RPC_PORT)
+    , fs_rpc_server_(detail::FS_RPC_PORT)
     , persister_(std::move(persister))
     , logs_(std::move(logs))
     , transport_(std::move(transport))
     , data_cluster_info_(std::move(data_cluster_info))
     , hard_state_(std::move(hard_state)) {}
 
-auto vosfs::raft::RaftNode::create(std::string_view data_dir) -> kosio::async::Task<Result<std::unique_ptr<RaftNode>>> {
-    // 创建 Raft RPC 服务层
-    auto has_raft_rpc_server = co_await rpc::RpcProvider::create(detail::RAFT_RPC_PORT);
-    if (!has_raft_rpc_server) {
-        co_return std::unexpected{has_raft_rpc_server.error()};
-    }
-    auto raft_rpc_server = std::move(has_raft_rpc_server.value());
-
-    // 创建 Client RPC 服务层
-    auto has_client_rpc_server = co_await rpc::RpcProvider::create(detail::CLIENT_RPC_PORT);
-    if (!has_client_rpc_server) {
-        co_return std::unexpected{has_client_rpc_server.error()};
-    }
-    auto client_rpc_server = std::move(has_client_rpc_server.value());
-
+auto vosfs::raft::RaftServer::create(std::string_view data_dir) -> kosio::async::Task<Result<std::unique_ptr<RaftServer>>> {
     // 创建持久层
     auto has_persister = Persister::create(data_dir);
     if (!has_persister) {
@@ -70,9 +54,7 @@ auto vosfs::raft::RaftNode::create(std::string_view data_dir) -> kosio::async::T
     auto hard_state = std::move(has_hard_state.value());
 
     // 创建节点
-    co_return std::unique_ptr<RaftNode>(new RaftNode{
-        std::move(raft_rpc_server),
-        std::move(client_rpc_server),
+    co_return std::unique_ptr<RaftServer>(new RaftServer{
         std::move(persister),
         std::move(logs),
         std::move(transport),
@@ -80,62 +62,62 @@ auto vosfs::raft::RaftNode::create(std::string_view data_dir) -> kosio::async::T
         std::move(hard_state)});
 }
 
-auto vosfs::raft::RaftNode::run() -> kosio::async::Task<void> {
+auto vosfs::raft::RaftServer::run() -> kosio::async::Task<void> {
     co_await init();
-    kosio::spawn(raft_rpc_server_->run());
-    kosio::spawn(client_rpc_server_->run());
+    kosio::spawn(raft_rpc_server_.wait());
+    kosio::spawn(fs_rpc_server_.wait());
     kosio::spawn(election_loop());
     kosio::spawn(heartbeat_loop());
     co_await kosio::signal::ctrl_c();
     co_await shutdown();
 }
 
-auto vosfs::raft::RaftNode::shutdown() -> kosio::async::Task<void> {
+auto vosfs::raft::RaftServer::shutdown() -> kosio::async::Task<void> {
     {
         co_await mutex_.lock();
         std::lock_guard lock(mutex_, std::adopt_lock);
         co_await transport_.shutdown();
-        co_await raft_rpc_server_->shutdown();
-        co_await client_rpc_server_->shutdown();
+        co_await raft_rpc_server_.shutdown();
+        co_await fs_rpc_server_.shutdown();
     }
     is_shutdown_.store(true, std::memory_order_release);
     co_await latch_.wait();
 }
 
-auto vosfs::raft::RaftNode::init() -> kosio::async::Task<void> {
+auto vosfs::raft::RaftServer::init() -> kosio::async::Task<void> {
     // 尝试加载快照
     if (auto has_snapshot = persister_.load_snapshot(); has_snapshot) {
         auto snapshot = std::move(has_snapshot.value());
         co_await apply_snapshot(snapshot);
     }
 
+    using detail::ServiceType;
+    using detail::InvokeType;
     // 注册 RPC 服务
-    using rpc::ServiceType;
-    using rpc::MethodType;
     // ========== Raft RPC ==========
     // 选举
-    raft_rpc_server_->register_handler(ServiceType::kRaft, MethodType::kRaftRequestVote,
-        [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
+    raft_rpc_server_.register_invoke(ServiceType::kRaft, InvokeType::kRaftRequestVote,
+        [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<vrpc::InvokeResult> {
             co_return co_await this->handle_request_vote_request(req_payload, resp_payload);
         });
 
     // 日志同步
-    raft_rpc_server_->register_handler(ServiceType::kRaft, MethodType::kRaftAppendEntries,
-        [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
+    raft_rpc_server_.register_invoke(ServiceType::kRaft, InvokeType::kRaftAppendEntries,
+        [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<vrpc::InvokeResult> {
             co_return co_await this->handle_append_entries_request(req_payload, resp_payload);
         });
 
     // 快照安装
-    raft_rpc_server_->register_handler(ServiceType::kRaft, MethodType::kRaftInstallSnapshot,
-        [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
+    raft_rpc_server_.register_invoke(ServiceType::kRaft, InvokeType::kRaftInstallSnapshot,
+        [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<vrpc::InvokeResult> {
             co_return co_await this->handle_install_snapshot_request(req_payload, resp_payload);
         });
 
-    // ========== Client RPC ==========
+    // ========== FS RPC ==========
 
 }
 
-auto vosfs::raft::RaftNode::apply_snapshot(Snapshot& snapshot) -> kosio::async::Task<void> {
+auto vosfs::raft::RaftServer::apply_snapshot(Snapshot& snapshot) -> kosio::async::Task<void> {
     // 缓存新快照
     snapshot_data_ = snapshot.SerializeAsString();
     // 持久层持久化快照数据和元数据
@@ -148,7 +130,7 @@ auto vosfs::raft::RaftNode::apply_snapshot(Snapshot& snapshot) -> kosio::async::
     co_await transport_.apply_snapshot(snapshot);
 }
 
-auto vosfs::raft::RaftNode::election_loop() -> kosio::async::Task<void> {
+auto vosfs::raft::RaftServer::election_loop() -> kosio::async::Task<void> {
     kosio::util::FastRand rand;
     while (!is_shutdown_.load(std::memory_order_relaxed)) {
         // [150,300]ms timeout
@@ -186,24 +168,24 @@ auto vosfs::raft::RaftNode::election_loop() -> kosio::async::Task<void> {
         }
 
         // 广播选举请求
-        auto request = util::MessageFactory::make_request_vote_request(
-            current_term,
-            member_id,
-            last_log_index,
-            last_log_term);
+        RequestVoteRequest request;
+        request.set_term(current_term);
+        request.set_candidate_id(member_id);
+        request.set_last_log_index(last_log_index);
+        request.set_last_log_term(last_log_term);
 
         co_await transport_.broadcast_request(
-            rpc::ServiceType::kRaft,
-            rpc::MethodType::kRaftRequestVote,
+            detail::ServiceType::kRaft,
+            detail::InvokeType::kRaftRequestVote,
             request,
-            [this](std::string_view resp_payload) -> kosio::async::Task<void> {
+            [this](vrpc::StatusCode code, std::string_view resp_payload) -> kosio::async::Task<void> {
                 co_await this->handle_request_vote_response(resp_payload);
             });
     }
     latch_.count_down();
 }
 
-auto vosfs::raft::RaftNode::heartbeat_loop() -> kosio::async::Task<void> {
+auto vosfs::raft::RaftServer::heartbeat_loop() -> kosio::async::Task<void> {
     while (!is_shutdown_.load(std::memory_order_relaxed)) {
         co_await kosio::time::sleep(detail::HEARTBEAT_INTERVAL);
 
@@ -248,23 +230,28 @@ auto vosfs::raft::RaftNode::heartbeat_loop() -> kosio::async::Task<void> {
             auto prev_log_index = next_index - 1;
             auto prev_log_term = logs_.get_term(prev_log_index);
 
-            requests.emplace(member_id, util::MessageFactory::make_append_entries_request(
-                current_term,
-                leader_id,
-                prev_log_index,
-                prev_log_term,
-                entries,
-                commit_index));
+            AppendEntriesRequest request;
+            request.set_term(current_term);
+            request.set_leader_id(leader_id);
+            request.set_prev_log_index(prev_log_index);
+            request.set_prev_log_term(prev_log_term);
+            for (auto& entry : entries) {
+                request.mutable_entries()->Add(std::move(entry));
+            }
+            request.set_leader_commit(commit_index);
+
+            requests.emplace(member_id, request);
+
         }
 
         // 发送日志同步请求（心跳）
         for (const auto& [member_id, request] : requests) {
             co_await transport_.unicast_request(
                 member_id,
-                rpc::ServiceType::kRaft,
-                rpc::MethodType::kRaftAppendEntries,
+                detail::ServiceType::kRaft,
+                detail::InvokeType::kRaftAppendEntries,
                 request,
-                [this](std::string_view resp_payload) -> kosio::async::Task<void> {
+                [this](vrpc::StatusCode code, std::string_view resp_payload) -> kosio::async::Task<void> {
                     co_await this->handle_append_entries_response(resp_payload);
                 });
         }
@@ -272,7 +259,7 @@ auto vosfs::raft::RaftNode::heartbeat_loop() -> kosio::async::Task<void> {
     latch_.count_down();
 }
 
-auto vosfs::raft::RaftNode::send_snapshot(uint64_t member_id, uint64_t offset) -> kosio::async::Task<void> {
+auto vosfs::raft::RaftServer::send_snapshot(uint64_t member_id, uint64_t offset) -> kosio::async::Task<void> {
     if (snapshot_data_.empty()) {
         co_return;
     }
@@ -298,15 +285,15 @@ auto vosfs::raft::RaftNode::send_snapshot(uint64_t member_id, uint64_t offset) -
 
     co_await transport_.unicast_request(
         member_id,
-        rpc::ServiceType::kRaft,
-        rpc::MethodType::kRaftInstallSnapshot,
+        detail::ServiceType::kRaft,
+        detail::InvokeType::kRaftInstallSnapshot,
         request,
-        [this](std::string_view resp_payload) -> kosio::async::Task<void> {
+        [this](vrpc::StatusCode code, std::string_view resp_payload) -> kosio::async::Task<void> {
             co_await this->handle_install_snapshot_response(resp_payload);
         });
 }
 
-void vosfs::raft::RaftNode::increase_term_to(uint64_t term) {
+void vosfs::raft::RaftServer::increase_term_to(uint64_t term) {
     votes_ = 0;
     hard_state_.clear_voted_for();
     hard_state_.set_current_term(term);
@@ -314,7 +301,7 @@ void vosfs::raft::RaftNode::increase_term_to(uint64_t term) {
     persister_.save_hard_state(hard_state_);
 }
 
-void vosfs::raft::RaftNode::become_leader() {
+void vosfs::raft::RaftServer::become_leader() {
     votes_ = 0;
     hard_state_.clear_voted_for();
     role_.store(kLeader, std::memory_order_release);
@@ -324,12 +311,12 @@ void vosfs::raft::RaftNode::become_leader() {
     // 更新每个Raft节点的 next_index 和 match_index
     auto& peers = transport_.peers();
     for (const auto& peer : peers | std::views::values) {
-        next_index_[peer.member_id()] = logs_.last_log_index() + 1;
-        match_index_[peer.member_id()] = 0;
+        next_index_[peer->id()] = logs_.last_log_index() + 1;
+        match_index_[peer->id()] = 0;
     }
 }
 
-void vosfs::raft::RaftNode::apply_to_state_machine() {
+void vosfs::raft::RaftServer::apply_to_state_machine() {
     auto commit_index = commit_index_;
     while (last_applied_ < commit_index) {
         ++last_applied_;
@@ -341,11 +328,11 @@ void vosfs::raft::RaftNode::apply_to_state_machine() {
     }
 }
 
-auto vosfs::raft::RaftNode::handle_request_vote_request(
-    std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
+auto vosfs::raft::RaftServer::handle_request_vote_request(
+    std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<vrpc::InvokeResult> {
     RequestVoteRequest request;
     if (!request.ParseFromArray(req_payload.data(), static_cast<int>(req_payload.size()))) {
-        co_return rpc::make_result(rpc::RpcResult::kMessageParseFailed);
+        co_return vrpc::make_result(vrpc::StatusCode::kInvalidArgument);
     }
 
     auto term = request.term();
@@ -384,12 +371,12 @@ auto vosfs::raft::RaftNode::handle_request_vote_request(
     co_return util::MessageFactory::make_request_vote_response(resp_payload, transport_.member_id(), current_term, can_vote);
 }
 
-auto vosfs::raft::RaftNode::handle_append_entries_request(
+auto vosfs::raft::RaftServer::handle_append_entries_request(
     std::string_view req_payload,
-    std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
+    std::span<char> resp_payload) -> kosio::async::Task<vrpc::InvokeResult> {
     AppendEntriesRequest request;
     if (!request.ParseFromArray(req_payload.data(), static_cast<int>(req_payload.size()))) {
-        co_return rpc::make_result(rpc::RpcResult::kMessageParseFailed);
+        co_return vrpc::make_result(vrpc::StatusCode::kInvalidArgument);
     }
 
     auto leader_id = request.leader_id();
@@ -459,12 +446,12 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
         resp_payload, transport_.member_id(), current_term, true, logs_.last_log_index());
 }
 
-auto vosfs::raft::RaftNode::handle_install_snapshot_request(
+auto vosfs::raft::RaftServer::handle_install_snapshot_request(
     std::string_view req_payload,
-    std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
+    std::span<char> resp_payload) -> kosio::async::Task<vrpc::InvokeResult> {
     InstallSnapshotRequest request;
     if (!request.ParseFromArray(req_payload.data(), static_cast<int>(req_payload.size()))) {
-        co_return rpc::make_result(rpc::RpcResult::kMessageParseFailed);
+        co_return vrpc::make_result(vrpc::StatusCode::kInvalidArgument);
     }
 
     auto term = request.term();
@@ -512,14 +499,14 @@ auto vosfs::raft::RaftNode::handle_install_snapshot_request(
     co_return util::MessageFactory::make_install_snapshot_response(resp_payload, current_term);
 }
 
-auto vosfs::raft::RaftNode::handle_transmit_file_request(
+auto vosfs::raft::RaftServer::handle_transmit_file_request(
     std::string_view req_payload,
-    std::span<char> resp_payload) -> kosio::async::Task<rpc::RpcResult> {
+    std::span<char> resp_payload) -> kosio::async::Task<vrpc::InvokeResult> {
     thread_local kosio::util::FastRand rand;
 
     TransmitFileRequest request;
     if (!request.ParseFromArray(req_payload.data(), static_cast<int>(req_payload.size()))) {
-        co_return rpc::make_result(rpc::RpcResult::kMessageParseFailed);
+        co_return vrpc::make_result(vrpc::StatusCode::kInvalidArgument);
     }
 
     co_await mutex_.lock();
@@ -562,20 +549,20 @@ auto vosfs::raft::RaftNode::handle_transmit_file_request(
     }
 
     auto* chunk_metadata = request.mutable_chunk_metadata();
-    auto& data_node_infos = data_cluster_info_.data_node_infos();
-    auto mod = data_cluster_info_.data_node_infos().size();
+    auto& infos = data_cluster_info_.infos();
+    auto mod = data_cluster_info_.infos_size();
     auto n = rand.fastrand_n(UINT32_MAX);
     for (auto& metadata : *chunk_metadata) {
         auto id = metadata.id();
         auto index = std::hash<uint64_t>{}(n+id) % mod;
-        metadata.set_ip(data_node_infos.at(static_cast<int>(index)).ip());
-        metadata.set_port(data_node_infos.at(static_cast<int>(index)).port());
+        metadata.set_ip(infos.at(static_cast<int>(index)).ip());
+        metadata.set_port(infos.at(static_cast<int>(index)).port());
     }
 
     co_return util::MessageFactory::make_transmit_file_response(resp_payload, true, path.string(), chunk_metadata);
 }
 
-auto vosfs::raft::RaftNode::handle_request_vote_response(std::string_view resp_payload) -> kosio::async::Task<void> {
+auto vosfs::raft::RaftServer::handle_request_vote_response(std::string_view resp_payload) -> kosio::async::Task<void> {
     RequestVoteResponse response;
     if (!response.ParseFromArray(resp_payload.data(), static_cast<int>(resp_payload.size()))) {
         co_return;
@@ -614,7 +601,7 @@ auto vosfs::raft::RaftNode::handle_request_vote_response(std::string_view resp_p
     }
 }
 
-auto vosfs::raft::RaftNode::handle_append_entries_response(std::string_view resp_payload) -> kosio::async::Task<void> {
+auto vosfs::raft::RaftServer::handle_append_entries_response(std::string_view resp_payload) -> kosio::async::Task<void> {
     AppendEntriesResponse response;
     if (!response.ParseFromArray(resp_payload.data(), static_cast<int>(resp_payload.size()))) {
         LOG_WARN("failed to parse request vote response");
@@ -666,7 +653,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_response(std::string_view resp
     }
 }
 
-auto vosfs::raft::RaftNode::handle_install_snapshot_response(std::string_view resp_payload) -> kosio::async::Task<void> {
+auto vosfs::raft::RaftServer::handle_install_snapshot_response(std::string_view resp_payload) -> kosio::async::Task<void> {
     InstallSnapshotResponse response;
     if (!response.ParseFromArray(resp_payload.data(), static_cast<int>(resp_payload.size()))) {
         LOG_WARN("failed to parse request vote response");

@@ -1,5 +1,22 @@
-#include "vosfs/raft/internal/transport.hpp"
+#include "vosfs/raft/detail/transport.hpp"
 #include <ranges>
+
+vosfs::raft::detail::Transport::Transport(
+    uint64_t member_id,
+    std::string_view name,
+    std::string_view ip,
+    const RaftClusterInfo& cluster_info)
+    : cluster_id_(cluster_info.id())
+    , cluster_size_(cluster_info.infos_size())
+    , member_id_(member_id)
+    , name_(name)
+    , ip_(ip) {
+    auto& infos = cluster_info.infos();
+    for (const auto& info : infos) {
+        peers_.emplace(info.id(),
+            std::make_unique<Peer>(info.id(), info.name(), info.ip()));
+    }
+}
 
 auto vosfs::raft::detail::Transport::create(const Persister& persister) -> kosio::async::Task<Result<Transport>> {
     // 恢复节点信息

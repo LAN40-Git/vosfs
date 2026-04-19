@@ -136,7 +136,7 @@ struct RaftNodeInfoDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 RaftNodeInfoDefaultTypeInternal _RaftNodeInfo_default_instance_;
 PROTOBUF_CONSTEXPR RaftClusterInfo::RaftClusterInfo(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.raft_node_infos_)*/{}
+    /*decltype(_impl_.infos_)*/{}
   , /*decltype(_impl_.id_)*/uint64_t{0u}
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct RaftClusterInfoDefaultTypeInternal {
@@ -164,7 +164,7 @@ struct DataNodeInfoDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 DataNodeInfoDefaultTypeInternal _DataNodeInfo_default_instance_;
 PROTOBUF_CONSTEXPR DataClusterInfo::DataClusterInfo(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.data_node_infos_)*/{}
+    /*decltype(_impl_.infos_)*/{}
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct DataClusterInfoDefaultTypeInternal {
   PROTOBUF_CONSTEXPR DataClusterInfoDefaultTypeInternal()
@@ -464,7 +464,7 @@ const uint32_t TableStruct_raft_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pro
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::RaftClusterInfo, _impl_.id_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::RaftClusterInfo, _impl_.raft_node_infos_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::RaftClusterInfo, _impl_.infos_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::DataNodeInfo, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -479,7 +479,7 @@ const uint32_t TableStruct_raft_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pro
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::DataClusterInfo, _impl_.data_node_infos_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::DataClusterInfo, _impl_.infos_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::InstallSnapshotRequest, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -673,50 +673,49 @@ const char descriptor_table_protodef_raft_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "s\030\003 \001(\010\022\026\n\016last_log_index\030\004 \001(\004\022\033\n\016confl"
   "ict_index\030\005 \001(\004H\000\210\001\001B\021\n\017_conflict_index\""
   "4\n\014RaftNodeInfo\022\n\n\002id\030\001 \001(\004\022\014\n\004name\030\002 \001("
-  "\t\022\n\n\002ip\030\003 \001(\t\"P\n\017RaftClusterInfo\022\n\n\002id\030\001"
-  " \001(\004\0221\n\017raft_node_infos\030\002 \003(\0132\030.vosfs.ra"
-  "ft.RaftNodeInfo\"(\n\014DataNodeInfo\022\n\n\002ip\030\001 "
-  "\001(\t\022\014\n\004port\030\002 \001(\r\"D\n\017DataClusterInfo\0221\n\017"
-  "data_node_infos\030\001 \003(\0132\030.vosfs.raft.DataN"
-  "odeInfo\"\236\001\n\026InstallSnapshotRequest\022\014\n\004te"
-  "rm\030\001 \001(\004\022\021\n\tleader_id\030\002 \001(\004\022\033\n\023last_incl"
-  "uded_index\030\003 \001(\004\022\032\n\022last_included_term\030\004"
-  " \001(\004\022\016\n\006offset\030\005 \001(\004\022\014\n\004data\030\006 \001(\014\022\014\n\004do"
-  "ne\030\007 \001(\010\"3\n\027InstallSnapshotResponse\022\n\n\002i"
-  "d\030\001 \001(\004\022\014\n\004term\030\002 \001(\004\"S\n\rChunkMetadata\022\n"
-  "\n\002id\030\001 \001(\004\022\016\n\006offset\030\002 \001(\004\022\014\n\004size\030\003 \001(\004"
-  "\022\n\n\002ip\030\004 \001(\t\022\014\n\004port\030\005 \001(\r\"+\n\016DirectoryE"
-  "ntry\022\013\n\003ino\030\001 \001(\004\022\014\n\004name\030\002 \001(\t\"<\n\rDirec"
-  "toryData\022+\n\007entries\030\001 \003(\0132\032.vosfs.raft.D"
-  "irectoryEntry\"\347\001\n\005Inode\022\013\n\003ino\030\001 \001(\004\022\022\n\n"
-  "parent_ino\030\002 \001(\004\022\014\n\004size\030\003 \001(\004\022\014\n\004name\030\004"
-  " \001(\t\022\r\n\005ctime\030\005 \001(\004\022\r\n\005mtime\030\006 \001(\004\022#\n\004ty"
-  "pe\030\007 \001(\0162\025.vosfs.raft.InodeType\0221\n\016chunk"
-  "_metadata\030\010 \003(\0132\031.vosfs.raft.ChunkMetada"
-  "ta\022+\n\010dir_data\030\t \001(\0132\031.vosfs.raft.Direct"
-  "oryData\"K\n\020SnapshotMetadata\022\033\n\023last_incl"
-  "uded_index\030\001 \001(\004\022\032\n\022last_included_term\030\002"
-  " \001(\004\"\231\001\n\010Snapshot\022!\n\006inodes\030\001 \003(\0132\021.vosf"
-  "s.raft.Inode\0227\n\021snapshot_metadata\030\002 \001(\0132"
-  "\034.vosfs.raft.SnapshotMetadata\0221\n\017raft_no"
-  "de_infos\030\003 \003(\0132\030.vosfs.raft.RaftNodeInfo"
-  "\"\\\n\023TransmitFileRequest\022\022\n\nparent_ino\030\001 "
-  "\001(\004\0221\n\016chunk_metadata\030\002 \003(\0132\031.vosfs.raft"
-  ".ChunkMetadata\"h\n\024TransmitFileResponse\022\017"
-  "\n\007success\030\001 \001(\010\022\014\n\004path\030\002 \001(\t\0221\n\016chunk_m"
-  "etadata\030\003 \003(\0132\031.vosfs.raft.ChunkMetadata"
-  "\"\203\001\n\016PutFileRequest\022\022\n\nparent_ino\030\001 \001(\004\022"
-  "\014\n\004size\030\002 \001(\004\022\014\n\004name\030\003 \001(\t\022\016\n\006is_dir\030\004 "
-  "\001(\010\0221\n\016chunk_metadata\030\005 \003(\0132\031.vosfs.raft"
-  ".ChunkMetadata\"\"\n\017PutFileResponse\022\017\n\007suc"
-  "cess\030\001 \001(\010\"E\n\014EntryCommand\022.\n\010put_file\030\001"
-  " \001(\0132\032.vosfs.raft.PutFileRequestH\000B\005\n\003cm"
-  "d* \n\tInodeType\022\t\n\005kFile\020\000\022\010\n\004kDir\020\001b\006pro"
-  "to3"
+  "\t\022\n\n\002ip\030\003 \001(\t\"F\n\017RaftClusterInfo\022\n\n\002id\030\001"
+  " \001(\004\022\'\n\005infos\030\002 \003(\0132\030.vosfs.raft.RaftNod"
+  "eInfo\"(\n\014DataNodeInfo\022\n\n\002ip\030\001 \001(\t\022\014\n\004por"
+  "t\030\002 \001(\r\":\n\017DataClusterInfo\022\'\n\005infos\030\001 \003("
+  "\0132\030.vosfs.raft.DataNodeInfo\"\236\001\n\026InstallS"
+  "napshotRequest\022\014\n\004term\030\001 \001(\004\022\021\n\tleader_i"
+  "d\030\002 \001(\004\022\033\n\023last_included_index\030\003 \001(\004\022\032\n\022"
+  "last_included_term\030\004 \001(\004\022\016\n\006offset\030\005 \001(\004"
+  "\022\014\n\004data\030\006 \001(\014\022\014\n\004done\030\007 \001(\010\"3\n\027InstallS"
+  "napshotResponse\022\n\n\002id\030\001 \001(\004\022\014\n\004term\030\002 \001("
+  "\004\"S\n\rChunkMetadata\022\n\n\002id\030\001 \001(\004\022\016\n\006offset"
+  "\030\002 \001(\004\022\014\n\004size\030\003 \001(\004\022\n\n\002ip\030\004 \001(\t\022\014\n\004port"
+  "\030\005 \001(\r\"+\n\016DirectoryEntry\022\013\n\003ino\030\001 \001(\004\022\014\n"
+  "\004name\030\002 \001(\t\"<\n\rDirectoryData\022+\n\007entries\030"
+  "\001 \003(\0132\032.vosfs.raft.DirectoryEntry\"\347\001\n\005In"
+  "ode\022\013\n\003ino\030\001 \001(\004\022\022\n\nparent_ino\030\002 \001(\004\022\014\n\004"
+  "size\030\003 \001(\004\022\014\n\004name\030\004 \001(\t\022\r\n\005ctime\030\005 \001(\004\022"
+  "\r\n\005mtime\030\006 \001(\004\022#\n\004type\030\007 \001(\0162\025.vosfs.raf"
+  "t.InodeType\0221\n\016chunk_metadata\030\010 \003(\0132\031.vo"
+  "sfs.raft.ChunkMetadata\022+\n\010dir_data\030\t \001(\013"
+  "2\031.vosfs.raft.DirectoryData\"K\n\020SnapshotM"
+  "etadata\022\033\n\023last_included_index\030\001 \001(\004\022\032\n\022"
+  "last_included_term\030\002 \001(\004\"\231\001\n\010Snapshot\022!\n"
+  "\006inodes\030\001 \003(\0132\021.vosfs.raft.Inode\0227\n\021snap"
+  "shot_metadata\030\002 \001(\0132\034.vosfs.raft.Snapsho"
+  "tMetadata\0221\n\017raft_node_infos\030\003 \003(\0132\030.vos"
+  "fs.raft.RaftNodeInfo\"\\\n\023TransmitFileRequ"
+  "est\022\022\n\nparent_ino\030\001 \001(\004\0221\n\016chunk_metadat"
+  "a\030\002 \003(\0132\031.vosfs.raft.ChunkMetadata\"h\n\024Tr"
+  "ansmitFileResponse\022\017\n\007success\030\001 \001(\010\022\014\n\004p"
+  "ath\030\002 \001(\t\0221\n\016chunk_metadata\030\003 \003(\0132\031.vosf"
+  "s.raft.ChunkMetadata\"\203\001\n\016PutFileRequest\022"
+  "\022\n\nparent_ino\030\001 \001(\004\022\014\n\004size\030\002 \001(\004\022\014\n\004nam"
+  "e\030\003 \001(\t\022\016\n\006is_dir\030\004 \001(\010\0221\n\016chunk_metadat"
+  "a\030\005 \003(\0132\031.vosfs.raft.ChunkMetadata\"\"\n\017Pu"
+  "tFileResponse\022\017\n\007success\030\001 \001(\010\"E\n\014EntryC"
+  "ommand\022.\n\010put_file\030\001 \001(\0132\032.vosfs.raft.Pu"
+  "tFileRequestH\000B\005\n\003cmd* \n\tInodeType\022\t\n\005kF"
+  "ile\020\000\022\010\n\004kDir\020\001b\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_raft_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_raft_2eproto = {
-    false, false, 2243, descriptor_table_protodef_raft_2eproto,
+    false, false, 2223, descriptor_table_protodef_raft_2eproto,
     "raft.proto",
     &descriptor_table_raft_2eproto_once, nullptr, 0, 23,
     schemas, file_default_instances, TableStruct_raft_2eproto::offsets,
@@ -2630,7 +2629,7 @@ RaftClusterInfo::RaftClusterInfo(const RaftClusterInfo& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   RaftClusterInfo* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.raft_node_infos_){from._impl_.raft_node_infos_}
+      decltype(_impl_.infos_){from._impl_.infos_}
     , decltype(_impl_.id_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
@@ -2644,7 +2643,7 @@ inline void RaftClusterInfo::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.raft_node_infos_){arena}
+      decltype(_impl_.infos_){arena}
     , decltype(_impl_.id_){uint64_t{0u}}
     , /*decltype(_impl_._cached_size_)*/{}
   };
@@ -2661,7 +2660,7 @@ RaftClusterInfo::~RaftClusterInfo() {
 
 inline void RaftClusterInfo::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.raft_node_infos_.~RepeatedPtrField();
+  _impl_.infos_.~RepeatedPtrField();
 }
 
 void RaftClusterInfo::SetCachedSize(int size) const {
@@ -2674,7 +2673,7 @@ void RaftClusterInfo::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  _impl_.raft_node_infos_.Clear();
+  _impl_.infos_.Clear();
   _impl_.id_ = uint64_t{0u};
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
@@ -2693,13 +2692,13 @@ const char* RaftClusterInfo::_InternalParse(const char* ptr, ::_pbi::ParseContex
         } else
           goto handle_unusual;
         continue;
-      // repeated .vosfs.raft.RaftNodeInfo raft_node_infos = 2;
+      // repeated .vosfs.raft.RaftNodeInfo infos = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
           ptr -= 1;
           do {
             ptr += 1;
-            ptr = ctx->ParseMessage(_internal_add_raft_node_infos(), ptr);
+            ptr = ctx->ParseMessage(_internal_add_infos(), ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
           } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
@@ -2741,10 +2740,10 @@ uint8_t* RaftClusterInfo::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_id(), target);
   }
 
-  // repeated .vosfs.raft.RaftNodeInfo raft_node_infos = 2;
+  // repeated .vosfs.raft.RaftNodeInfo infos = 2;
   for (unsigned i = 0,
-      n = static_cast<unsigned>(this->_internal_raft_node_infos_size()); i < n; i++) {
-    const auto& repfield = this->_internal_raft_node_infos(i);
+      n = static_cast<unsigned>(this->_internal_infos_size()); i < n; i++) {
+    const auto& repfield = this->_internal_infos(i);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
         InternalWriteMessage(2, repfield, repfield.GetCachedSize(), target, stream);
   }
@@ -2765,9 +2764,9 @@ size_t RaftClusterInfo::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated .vosfs.raft.RaftNodeInfo raft_node_infos = 2;
-  total_size += 1UL * this->_internal_raft_node_infos_size();
-  for (const auto& msg : this->_impl_.raft_node_infos_) {
+  // repeated .vosfs.raft.RaftNodeInfo infos = 2;
+  total_size += 1UL * this->_internal_infos_size();
+  for (const auto& msg : this->_impl_.infos_) {
     total_size +=
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
@@ -2795,7 +2794,7 @@ void RaftClusterInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const 
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  _this->_impl_.raft_node_infos_.MergeFrom(from._impl_.raft_node_infos_);
+  _this->_impl_.infos_.MergeFrom(from._impl_.infos_);
   if (from._internal_id() != 0) {
     _this->_internal_set_id(from._internal_id());
   }
@@ -2816,7 +2815,7 @@ bool RaftClusterInfo::IsInitialized() const {
 void RaftClusterInfo::InternalSwap(RaftClusterInfo* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  _impl_.raft_node_infos_.InternalSwap(&other->_impl_.raft_node_infos_);
+  _impl_.infos_.InternalSwap(&other->_impl_.infos_);
   swap(_impl_.id_, other->_impl_.id_);
 }
 
@@ -3072,7 +3071,7 @@ DataClusterInfo::DataClusterInfo(const DataClusterInfo& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   DataClusterInfo* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.data_node_infos_){from._impl_.data_node_infos_}
+      decltype(_impl_.infos_){from._impl_.infos_}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -3084,7 +3083,7 @@ inline void DataClusterInfo::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.data_node_infos_){arena}
+      decltype(_impl_.infos_){arena}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -3100,7 +3099,7 @@ DataClusterInfo::~DataClusterInfo() {
 
 inline void DataClusterInfo::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.data_node_infos_.~RepeatedPtrField();
+  _impl_.infos_.~RepeatedPtrField();
 }
 
 void DataClusterInfo::SetCachedSize(int size) const {
@@ -3113,7 +3112,7 @@ void DataClusterInfo::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  _impl_.data_node_infos_.Clear();
+  _impl_.infos_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -3123,13 +3122,13 @@ const char* DataClusterInfo::_InternalParse(const char* ptr, ::_pbi::ParseContex
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // repeated .vosfs.raft.DataNodeInfo data_node_infos = 1;
+      // repeated .vosfs.raft.DataNodeInfo infos = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
           ptr -= 1;
           do {
             ptr += 1;
-            ptr = ctx->ParseMessage(_internal_add_data_node_infos(), ptr);
+            ptr = ctx->ParseMessage(_internal_add_infos(), ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
           } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<10>(ptr));
@@ -3165,10 +3164,10 @@ uint8_t* DataClusterInfo::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // repeated .vosfs.raft.DataNodeInfo data_node_infos = 1;
+  // repeated .vosfs.raft.DataNodeInfo infos = 1;
   for (unsigned i = 0,
-      n = static_cast<unsigned>(this->_internal_data_node_infos_size()); i < n; i++) {
-    const auto& repfield = this->_internal_data_node_infos(i);
+      n = static_cast<unsigned>(this->_internal_infos_size()); i < n; i++) {
+    const auto& repfield = this->_internal_infos(i);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
         InternalWriteMessage(1, repfield, repfield.GetCachedSize(), target, stream);
   }
@@ -3189,9 +3188,9 @@ size_t DataClusterInfo::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated .vosfs.raft.DataNodeInfo data_node_infos = 1;
-  total_size += 1UL * this->_internal_data_node_infos_size();
-  for (const auto& msg : this->_impl_.data_node_infos_) {
+  // repeated .vosfs.raft.DataNodeInfo infos = 1;
+  total_size += 1UL * this->_internal_infos_size();
+  for (const auto& msg : this->_impl_.infos_) {
     total_size +=
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
@@ -3214,7 +3213,7 @@ void DataClusterInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const 
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  _this->_impl_.data_node_infos_.MergeFrom(from._impl_.data_node_infos_);
+  _this->_impl_.infos_.MergeFrom(from._impl_.infos_);
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -3232,7 +3231,7 @@ bool DataClusterInfo::IsInitialized() const {
 void DataClusterInfo::InternalSwap(DataClusterInfo* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  _impl_.data_node_infos_.InternalSwap(&other->_impl_.data_node_infos_);
+  _impl_.infos_.InternalSwap(&other->_impl_.infos_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata DataClusterInfo::GetMetadata() const {
