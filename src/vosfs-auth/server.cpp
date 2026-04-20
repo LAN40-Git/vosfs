@@ -51,9 +51,20 @@ void vosfs::auth::Server::init() {
         [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<vrpc::InvokeResult> {
             co_return co_await this->handle_register_user_request(req_payload, resp_payload);
     });
+
+    rpc_server_.register_invoke(ServiceType::kUser, InvokeType::kDeleteUser,
+        [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<vrpc::InvokeResult> {
+            co_return co_await this->handle_delete_user_request(req_payload, resp_payload);
+    });
+
+    rpc_server_.register_invoke(ServiceType::kUser, InvokeType::kLoginUserByUserName,
+        [this](std::string_view req_payload, std::span<char> resp_payload) -> kosio::async::Task<vrpc::InvokeResult> {
+            co_return co_await this->handle_login_user_by_user_name_request(req_payload, resp_payload);
+    });
 }
 
 auto vosfs::auth::Server::wait() -> kosio::async::Task<void> {
+    init();
     co_await rpc_server_.wait();
 }
 
@@ -103,13 +114,14 @@ auto vosfs::auth::Server::handle_register_user_request(
     }
 
     sqlite3_bind_text(stat, 1, user_name.data(), static_cast<int>(user_name.size()), SQLITE_STATIC);
-    co_await mutex_.lock_shared();
-    if (sqlite3_step(stat) == SQLITE_ROW) {
-        co_await mutex_.unlock_shared();
-        sqlite3_finalize(stat);
-        co_return vrpc::make_result(vrpc::StatusCode::kAlreadyExists);
+    {
+        co_await mutex_.lock();
+        std::lock_guard lock{mutex_, std::adopt_lock};
+        if (sqlite3_step(stat) == SQLITE_ROW) {
+            sqlite3_finalize(stat);
+            co_return vrpc::make_result(vrpc::StatusCode::kAlreadyExists);
+        }
     }
-    co_await mutex_.unlock_shared();
     sqlite3_reset(stat);
     sqlite3_clear_bindings(stat);
 
@@ -118,7 +130,7 @@ auto vosfs::auth::Server::handle_register_user_request(
         INSERT INTO user (
             user_name, avatar, email, phone, password, role, status, quota,
             create_time, modify_time, last_access_time, last_access_ip
-        ) VALUES (?, '', '', '', ?, ?, ?, '', ?, ?, ?, ?);
+        ) VALUES (?, '', '', '', ?, ?, ?, ?, ?, ?, ?, ?);
     )";
 
     if (sqlite3_prepare_v2(db_, sql, -1, &stat, nullptr) != SQLITE_OK) {
@@ -137,13 +149,14 @@ auto vosfs::auth::Server::handle_register_user_request(
     sqlite3_bind_int64(stat, 8, last_access_time);
     sqlite3_bind_text(stat, 9, last_access_ip.data(), static_cast<int>(last_access_ip.size()), SQLITE_STATIC);
 
-    co_await mutex_.lock();
-    if (sqlite3_step(stat) != SQLITE_DONE) {
-        co_await mutex_.unlock();
-        sqlite3_finalize(stat);
-        co_return vrpc::make_result(vrpc::StatusCode::kUnknown);
+    {
+        co_await mutex_.lock();
+        std::lock_guard lock{mutex_, std::adopt_lock};
+        if (sqlite3_step(stat) != SQLITE_DONE) {
+            sqlite3_finalize(stat);
+            co_return vrpc::make_result(vrpc::StatusCode::kUnknown);
+        }
     }
-    co_await mutex_.unlock();
 
     sqlite3_finalize(stat);
     co_return vrpc::make_result(vrpc::StatusCode::kOk);
@@ -160,7 +173,6 @@ auto vosfs::auth::Server::handle_delete_user_request(
     auto& token = request.token();
     auto password = request.password();
     int64_t uid{};
-    User_Role role{};
 
     // 校验 token
     try {
@@ -189,13 +201,14 @@ auto vosfs::auth::Server::handle_delete_user_request(
     sqlite3_bind_int64(stat, 1, uid);
     sqlite3_bind_text(stat, 2, password.data(), static_cast<int>(password.size()), SQLITE_STATIC);
 
-    co_await mutex_.lock();
-    if (sqlite3_step(stat) != SQLITE_DONE) {
-        co_await mutex_.unlock();
-        sqlite3_finalize(stat);
-        co_return vrpc::make_result(vrpc::StatusCode::kUnknown);
+    {
+        co_await mutex_.lock();
+        std::lock_guard lock{mutex_, std::adopt_lock};
+        if (sqlite3_step(stat) != SQLITE_DONE) {
+            sqlite3_finalize(stat);
+            co_return vrpc::make_result(vrpc::StatusCode::kUnknown);
+        }
     }
-    co_await mutex_.unlock();
 
     sqlite3_finalize(stat);
     co_return vrpc::make_result(vrpc::StatusCode::kOk);
@@ -225,16 +238,14 @@ auto vosfs::auth::Server::handle_login_user_by_user_name_request(
     sqlite3_bind_text(stat, 1, user_name.data(), static_cast<int>(user_name.size()), SQLITE_STATIC);
     sqlite3_bind_text(stat, 2, password.data(), static_cast<int>(password.size()), SQLITE_STATIC);
     sqlite3_bind_int(stat, 3, role);
-    co_await mutex_.lock_shared();
-    if (sqlite3_step(stat) != SQLITE_ROW) {
-        // 登录失败
-        co_await mutex_.unlock_shared();
-        sqlite3_finalize(stat);
-        co_return vrpc::make_result(vrpc::StatusCode::kInvalidArgument);
+    {
+        co_await mutex_.lock();
+        std::lock_guard lock{mutex_, std::adopt_lock};
+        if (sqlite3_step(stat) != SQLITE_ROW) {
+            sqlite3_finalize(stat);
+            co_return vrpc::make_result(vrpc::StatusCode::kInvalidArgument);
+        }
     }
-    co_await mutex_.unlock_shared();
-    sqlite3_reset(stat);
-    sqlite3_clear_bindings(stat);
 
     auto uid = sqlite3_column_int64(stat, 0);
     auto* avatar = sqlite3_column_blob(stat, 1);
@@ -251,6 +262,7 @@ auto vosfs::auth::Server::handle_login_user_by_user_name_request(
     if (!User_Status_IsValid(status) ||
         status == User_Status_kDisabled ||
         status == User_Status_kDeleted) {
+        sqlite3_finalize(stat);
         co_return vrpc::make_result(vrpc::StatusCode::kPermissionDenied);
     }
 
@@ -264,15 +276,21 @@ auto vosfs::auth::Server::handle_login_user_by_user_name_request(
         .set_payload_claim("quota", jwt::claim(std::to_string(quota)))
         .sign(jwt::algorithm::hs256{util::DEFAULT_JWT_ISSUER_SECRET});
 
+    auto decoded = jwt::decode(token);
+    auto quota_str = decoded.get_payload_claim("quota").as_string();
+    LOG_INFO("SHIT: {}-{}", quota, quota_str);
+
     // 生成回复
     LoginUserByNameResponse response;
-    response.set_token(std::move(token));
+    response.set_token(token);
     response.set_user_name(user_name);
     response.set_avatar(std::string(static_cast<const char*>(avatar), avatar_bytes));
     response.set_email(std::string(reinterpret_cast<const char*>(email), email_bytes));
     response.set_phone(std::string(reinterpret_cast<const char*>(phone), phone_bytes));
     response.set_create_time(kosio::util::format_time(create_time));
 
+    sqlite3_reset(stat);
+    sqlite3_clear_bindings(stat);
     // 更新登录信息
     auto last_access_time = kosio::util::current_ms();
     auto context = vrpc::get_context();
@@ -290,11 +308,13 @@ auto vosfs::auth::Server::handle_login_user_by_user_name_request(
     sqlite3_bind_int64(stat, 1, last_access_time);
     sqlite3_bind_text(stat, 2, last_access_ip.data(), static_cast<int>(last_access_ip.size()), SQLITE_STATIC);
     sqlite3_bind_int64(stat, 3, uid);
-    co_await mutex_.lock();
-    if (sqlite3_step(stat) != SQLITE_DONE) {
-        LOG_WARN("failed to update last access info of user-{}-{}", uid, user_name);
+    {
+        co_await mutex_.lock();
+        std::lock_guard lock{mutex_, std::adopt_lock};
+        if (sqlite3_step(stat) != SQLITE_DONE) {
+            LOG_WARN("failed to update last access info of user-{}-{}", uid, user_name);
+        }
     }
-    co_await mutex_.unlock();
     sqlite3_finalize(stat);
     co_return vrpc::make_result(response, resp_payload);
 }

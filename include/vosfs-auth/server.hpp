@@ -81,8 +81,8 @@ private:
     //     -> kosio::async::Task<vrpc::InvokeResult>;
 
 private:
-    kosio::sync::SharedMutex mutex_;
-    sqlite3*                 db_{nullptr};
-    vrpc::Server             rpc_server_;
+    kosio::sync::Mutex mutex_;
+    sqlite3*           db_{nullptr};
+    vrpc::Server       rpc_server_;
 };
 } // namespace vosfs::auth

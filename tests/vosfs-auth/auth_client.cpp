@@ -24,7 +24,7 @@ private:
                 break;
             }
             default: {
-                LOG_INFO("未知错误");
+                LOG_INFO("未知错误：{}", static_cast<uint8_t>(code));
                 break;
             }
         }
@@ -43,7 +43,7 @@ private:
                 break;
             }
             default: {
-                LOG_INFO("未知错误");
+                LOG_INFO("未知错误：{}", static_cast<uint8_t>(code));
                 break;
             }
         }
@@ -61,10 +61,10 @@ private:
         switch (code) {
             case vrpc::StatusCode::kOk: {
                 session_.token = response.token();
-                auto decode = jwt::decode(session_.token);
-                session_.uid = std::stoll(decode.get_payload_claim("uid").as_string());
-                session_.role = static_cast<vosfs::auth::User_Role>(std::stoi(decode.get_payload_claim("role").as_string()));
-                session_.quota = std::stoull(decode.get_payload_claim("quota").as_string());
+                auto decoded = jwt::decode(session_.token);
+                session_.uid = std::stoll(decoded.get_payload_claim("uid").as_string());
+                session_.role = static_cast<User_Role>(std::stoi(decoded.get_payload_claim("role").as_string()));
+                session_.quota = std::stoull(decoded.get_payload_claim("quota").as_string());
                 session_.user_name = response.user_name();
                 session_.avatar = response.avatar();
                 session_.email = response.email();
@@ -82,7 +82,7 @@ private:
                 break;
             }
             default: {
-                LOG_INFO("未知错误");
+                LOG_INFO("未知错误：{}", static_cast<uint8_t>(code));
                 break;
             }
         }
