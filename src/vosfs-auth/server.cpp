@@ -172,7 +172,7 @@ auto vosfs::auth::Server::handle_login_user_by_user_name_request(
     auto& password = request.password();
     auto role = request.role();
 
-    // 尝试登陆
+    // 尝试登录
     const char* sql = "SELECT uid, avatar, email, phone, status, quota, create_time, modify_time FROM user WHERE user_name = ? AND password = ? AND role = ? LIMIT 1;";
     sqlite3_stmt* stat;
     if (sqlite3_prepare_v2(db_, sql, -1, &stat, nullptr) != SQLITE_OK) {
@@ -191,7 +191,6 @@ auto vosfs::auth::Server::handle_login_user_by_user_name_request(
     }
     co_await mutex_.unlock_shared();
 
-    // 生成 token
     auto uid = sqlite3_column_int64(stat, 0);
     auto avatar = sqlite3_column_blob(stat, 1);
     auto email = sqlite3_column_text(stat, 2);
@@ -201,10 +200,22 @@ auto vosfs::auth::Server::handle_login_user_by_user_name_request(
     auto create_time = sqlite3_column_int64(stat, 6);
     auto modify_time = sqlite3_column_int64(stat, 7);
 
-    // TODO: 生成 token
+    // 校验 status
+    if (!User_Status_IsValid(status) || status == User_Status_kDisabled) {
+        co_return vrpc::make_result(vrpc::StatusCode::kPermissionDenied);
+    }
+
+    // 生成 token
+    auto token = jwt::create()
+        .set_type("JWS")
+        .set_issuer(detail::DEFAULT_JWT_ISSUER)
+        .set_payload_claim("uid", jwt::claim(std::to_string(uid)))
+        .set_payload_claim("role", jwt::claim(std::to_string(role)))
+        .set_payload_claim("quota", jwt::claim(std::to_string(quota)))
+        .sign(jwt::algorithm::hs256{"secret"});
+
 
     sqlite3_reset(stat);
     sqlite3_clear_bindings(stat);
-
 
 }

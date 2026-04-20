@@ -26,12 +26,6 @@ message(STATUS "C++ standard: " "${CMAKE_CXX_STANDARD}")
 message(STATUS "Compiler: " "${CMAKE_CXX_COMPILER_ID}")
 message(STATUS "Build type: " "${CMAKE_BUILD_TYPE}")
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/api)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third-party)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/vosfs/api/mathpb)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/vosfs/api/serverpb)
-
 find_package(PkgConfig REQUIRED)
 # liburing
 pkg_check_modules(LIBURING REQUIRED liburing)
@@ -45,16 +39,25 @@ find_package(TBB REQUIRED)
 find_package(SQLite3 REQUIRED)
 # redis
 pkg_check_modules(Hiredis REQUIRED hiredis)
+# openssl
+find_package(OpenSSL REQUIRED)
+# jwt-cpp
+find_package(jwt-cpp CONFIG REQUIRED)
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/api)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/vosfs/api/mathpb)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/vosfs/api/serverpb)
 
 # ====== LIBRARY ======
 set(DEPEND_LIBS
-        pthread
+        ${LIBURING_LIBRARIES}
+        ${PROTOBUF_LIBRARIES}
+        rocksdb
         tbb
         SQLite::SQLite3
-        rocksdb
-        ${PROTOBUF_LIBRARIES}
-        ${LIBURING_LIBRARIES}
         ${Hiredis_LIBRARIES}
+        jwt-cpp::jwt-cpp
 )
 
 add_subdirectory(src/vosfs)
