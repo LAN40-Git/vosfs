@@ -1,11 +1,11 @@
 #pragma once
 #include <cstdint>
+#include <string>
+#include <string_view>
 
 namespace vosfs::auth::detail {
 // 用户默认配额（100 GB）
 constexpr uint64_t DEFAULT_USER_QUOTA_BYTES = 100ULL * 1024 * 1024 * 1024;
 // 默认管理员密钥
 constexpr std::string_view DEFAULT_ADMIN_SECRET = "123456";
-// 默认签发者
-constexpr std::string DEFAULT_JWT_ISSUER = "auther";
 } // namespace vosfs::auth::detail

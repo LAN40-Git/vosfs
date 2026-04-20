@@ -19,12 +19,12 @@ message User {
   enum Status {
     kEnabled = 0;
     kDisabled = 1;
+    kDeleted = 2;
   }
 
   enum Role {
     kAdmin = 0;
     kUser = 1;
-    kGuest = 2;
   }
 }
 
@@ -48,6 +48,11 @@ message LoginUserByNameRequest {
 
 message LoginUserByNameResponse {
   string token = 1;
+  string user_name = 2;
+  bytes avatar = 3;
+  string email = 4;
+  string phone = 5;
+  string create_time = 6;
 }
 
 message LogoutUserRequest {
