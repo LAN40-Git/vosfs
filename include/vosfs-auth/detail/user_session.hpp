@@ -5,12 +5,12 @@ namespace vosfs::auth::detail {
 struct UserSession {
     std::string token;
     int64_t     uid;
-    User_Role   role;
-    uint64_t    quota;
     std::string user_name;
     std::string avatar;
     std::string email;
     std::string phone;
+    User_Role   role;
+    uint64_t    quota;
     std::string create_time;
 
     void reset() {
