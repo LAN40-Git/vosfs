@@ -1,4 +1,5 @@
 file(GLOB AUTH_SRCS
+        "../../api/authpb/*.cc"
         "*.cpp"
 )
 

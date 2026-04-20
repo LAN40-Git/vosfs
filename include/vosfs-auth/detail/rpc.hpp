@@ -12,6 +12,7 @@ enum class InvokeType : vrpc::Type {
     kDeleteUser,
     kLoginUserByUserName,
     kLoginUserByEmail,
+    kLoginUserByPhone,
     kLogoutUser,
     kUpdateUserName,
     kUpdateUserAvatar,

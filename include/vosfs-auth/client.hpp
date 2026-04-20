@@ -1,6 +1,7 @@
 #pragma once
 #include <jwt-cpp/jwt.h>
 #include <vrpc/client.hpp>
+#include <openssl/evp.h>
 #include "vosfs/common/error.hpp"
 #include "vosfs-auth/detail/rpc.hpp"
 #include "vosfs-auth/detail/user_session.hpp"
@@ -14,10 +15,10 @@ public:
 
 public:
     [[REMEMBER_CO_AWAIT]]
-    auto send_register_user_request(std::string user_name, std::string password, int role, std::string admin_secret = "") -> kosio::async::Task<void> {
+    auto send_register_user_request(const std::string& user_name, const std::string& password, int role, std::string admin_secret = "") -> kosio::async::Task<void> {
         RegisterUserRequest request;
         request.set_user_name(std::move(user_name));
-        request.set_password(std::move(password));
+        request.set_password(sha256(password));
         request.set_role(static_cast<User_Role>(role));
         request.set_admin_secret(std::move(admin_secret));
         co_await rpc_client_.call(
@@ -25,51 +26,84 @@ public:
             detail::InvokeType::kRegisterUser,
             request,
             [this](vrpc::StatusCode code, std::string_view resp_payload) -> kosio::async::Task<void> {
-                co_await this->handle_register_user_response(code, resp_payload);
+                co_await static_cast<Client*>(this)->handle_register_user_response(code, resp_payload);
             });
     }
 
     [[REMEMBER_CO_AWAIT]]
-    auto send_delete_user_request(std::string password) -> kosio::async::Task<void> {
-
+    auto send_delete_user_request(const std::string& password) -> kosio::async::Task<void> {
+        DeleteUserRequest request;
+        request.set_token(session_.token);
+        request.set_password(sha256(password));
+        co_await rpc_client_.call(
+            detail::ServiceType::kUser,
+            detail::InvokeType::kDeleteUser,
+            request,
+            [this](vrpc::StatusCode code, std::string_view resp_payload) -> kosio::async::Task<void> {
+                co_await static_cast<Client*>(this)->handle_delete_user_response(code, resp_payload);
+            });
     }
 
     [[REMEMBER_CO_AWAIT]]
-    auto send_login_user_by_name_request(std::string user_name, std::string password) -> kosio::async::Task<void>;
-
-public:
-    [[REMEMBER_CO_AWAIT]]
-    auto handle_register_user_response(vrpc::StatusCode code, std::string_view resp_payload) -> kosio::async::Task<void> {
-        co_await static_cast<Client*>(this)->handle_response(code, resp_payload);
-    }
-
-    [[REMEMBER_CO_AWAIT]]
-    auto handle_delete_user_response(vrpc::StatusCode code, std::string_view resp_payload) -> kosio::async::Task<void> {
-        co_await static_cast<Client*>(this)->handle_response(code);
-    }
-
-    [[REMEMBER_CO_AWAIT]]
-    auto handle_login_user_by_name_response(vrpc::StatusCode code, std::string_view resp_payload) -> kosio::async::Task<void> {
-        LoginUserByNameResponse response;
-        if (response.ParseFromArray(resp_payload.data(), static_cast<int>(resp_payload.size()))) {
-            co_await mutex_.lock();
-            session_.token = response.token();
-            auto decoded = jwt::decode(session_.token);
-            session_.uid = std::stoll(decoded.get_payload_claim("uid"));
-            session_.role = std::stoi(decoded.get_payload_claim("role"));
-            session_.quota = std::stoull(decoded.get_payload_claim("quota"));
-            session_.user_name = response.user_name();
-            session_.avatar = response.avatar();
-            session_.email = response.email();
-            session_.phone = response.phone();
-            co_await mutex_.unlock();
-        }
-        co_await static_cast<Client*>(this)->handle_response(code);
+    auto send_login_user_by_name_request(const std::string& user_name, const std::string& password, int role) -> kosio::async::Task<void> {
+        LoginUserByNameRequest request;
+        request.set_user_name(user_name);
+        request.set_password(sha256(password));
+        request.set_role(static_cast<User_Role>(role));
+        co_await rpc_client_.call(
+            detail::ServiceType::kUser,
+            detail::InvokeType::kLoginUserByUserName,
+            request,
+            [this](vrpc::StatusCode code, std::string_view resp_payload) -> kosio::async::Task<void> {
+                co_await static_cast<Client*>(this)->handle_login_user_by_name_response(code, resp_payload);
+            });
     }
 
 private:
-    kosio::sync::SharedMutex mutex_;
-    detail::UserSession      session_;
-    vrpc::Client             rpc_client_;
+    // [[REMEMBER_CO_AWAIT]]
+    // auto handle_register_user_response(vrpc::StatusCode code, std::string_view resp_payload) -> kosio::async::Task<void> {
+    //     co_await static_cast<Client*>(this)->handle_response(code);
+    // }
+    //
+    // [[REMEMBER_CO_AWAIT]]
+    // auto handle_delete_user_response(vrpc::StatusCode code, std::string_view resp_payload) -> kosio::async::Task<void> {
+    //     co_await static_cast<Client*>(this)->handle_response(code);
+    // }
+    //
+    // [[REMEMBER_CO_AWAIT]]
+    // auto handle_login_user_by_name_response(vrpc::StatusCode code, std::string_view resp_payload) -> kosio::async::Task<void> {
+    //     co_await static_cast<Client*>(this)->handle_response(code);
+    // }
+
+private:
+    [[nodiscard]]
+    static auto sha256(const std::string& input) -> std::string {
+        EVP_MD_CTX* ctx = EVP_MD_CTX_new();
+        if (!ctx) {
+            return "";
+        }
+
+        EVP_DigestInit_ex(ctx, EVP_sha256(), nullptr);
+        EVP_DigestUpdate(ctx, input.c_str(), input.size());
+
+        unsigned char hash[EVP_MAX_MD_SIZE];
+        unsigned int length = 0;
+        EVP_DigestFinal_ex(ctx, hash, &length);
+
+        EVP_MD_CTX_free(ctx);
+
+        std::stringstream ss;
+        for (unsigned int i = 0; i < length; ++i) {
+            ss << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(hash[i]);
+        }
+
+        return ss.str();
+    }
+
+protected:
+    detail::UserSession session_{};
+
+private:
+    vrpc::Client rpc_client_;
 };
 } // namespace vosfs::auth

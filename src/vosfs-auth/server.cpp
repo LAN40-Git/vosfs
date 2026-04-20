@@ -89,7 +89,7 @@ auto vosfs::auth::Server::handle_register_user_request(
 
     if (role == User_Role_kAdmin) {
         if (admin_secret != detail::DEFAULT_ADMIN_SECRET) {
-            co_return vrpc::make_result(vrpc::StatusCode::kPermissionDenied);
+            co_return vrpc::make_result(vrpc::StatusCode::kInvalidArgument);
         }
     }
 
@@ -173,30 +173,12 @@ auto vosfs::auth::Server::handle_delete_user_request(
         verifier.verify(decoded);
 
         std::string uid_str = decoded.get_payload_claim("uid").as_string();
-        std::string role_str = decoded.get_payload_claim("role").as_string();
         uid = std::stoull(uid_str);
-        role = static_cast<User_Role>(std::stoi(role_str));
     } catch (...) {
         co_return vrpc::make_result(vrpc::StatusCode::kPermissionDenied);
     }
 
-    // 用户为管理员的时候为强删除，为普通用户的时候为软删除
-    const char* sql{nullptr};
-    if (!User_Role_IsValid(role)) {
-        co_return vrpc::make_result(vrpc::StatusCode::kPermissionDenied);
-    }
-
-    switch (role) {
-        case User_Role_kAdmin:
-            sql = "DELETE FROM user WHERE uid = ? AND password = ?;";
-            break;
-        case User_Role_kUser:
-            sql = "UPDATE user SET status = ? WHERE uid = ? AND password = ?;";
-            break;
-        default:
-            co_return vrpc::make_result(vrpc::StatusCode::kPermissionDenied);
-    }
-
+    const char* sql = "DELETE FROM user WHERE uid = ? AND password = ?;";
     sqlite3_stmt* stat;
     if (sqlite3_prepare_v2(db_, sql, -1, &stat, nullptr) != SQLITE_OK) {
         LOG_ERROR("{}", sqlite3_errmsg(db_));
@@ -204,19 +186,8 @@ auto vosfs::auth::Server::handle_delete_user_request(
         co_return vrpc::make_result(vrpc::StatusCode::kUnknown);
     }
 
-    switch (role) {
-        case User_Role_kAdmin:
-            sqlite3_bind_int64(stat, 1, uid);
-            sqlite3_bind_text(stat, 2, password.data(), static_cast<int>(password.size()), SQLITE_STATIC);
-            break;
-        case User_Role_kUser:
-            sqlite3_bind_int(stat, 1, User_Status_kDeleted);
-            sqlite3_bind_int64(stat, 2, uid);
-            sqlite3_bind_text(stat, 3, password.data(), static_cast<int>(password.size()), SQLITE_STATIC);
-            break;
-        default:
-            co_return vrpc::make_result(vrpc::StatusCode::kPermissionDenied);
-    }
+    sqlite3_bind_int64(stat, 1, uid);
+    sqlite3_bind_text(stat, 2, password.data(), static_cast<int>(password.size()), SQLITE_STATIC);
 
     co_await mutex_.lock();
     if (sqlite3_step(stat) != SQLITE_DONE) {
@@ -277,7 +248,9 @@ auto vosfs::auth::Server::handle_login_user_by_user_name_request(
     auto create_time = sqlite3_column_int64(stat, 6);
 
     // 校验 status
-    if (!User_Status_IsValid(status) || status == User_Status_kDisabled) {
+    if (!User_Status_IsValid(status) ||
+        status == User_Status_kDisabled ||
+        status == User_Status_kDeleted) {
         co_return vrpc::make_result(vrpc::StatusCode::kPermissionDenied);
     }
 
