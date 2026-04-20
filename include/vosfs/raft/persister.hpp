@@ -1,5 +1,5 @@
 #pragma once
-#include "raft.pb.h"
+#include "raftpb/raft.pb.h"
 #include "detail/config.hpp"
 #include "vosfs/raft/detail/rocksdb_engine.hpp"
 

@@ -46,8 +46,6 @@ find_package(jwt-cpp CONFIG REQUIRED)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/api)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/vosfs/api/mathpb)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/vosfs/api/serverpb)
 
 # ====== LIBRARY ======
 set(DEPEND_LIBS

@@ -1,9 +1,6 @@
 #pragma once
-#include <span>
-#include <coroutine>
 #include <unordered_map>
-#include "vosfs/api/serverpb/raft.pb.h"
-#include "vosfs/rpc/result.hpp"
+#include "raftpb/raft.pb.h"
 
 namespace vosfs::raft {
 class StateMachine {

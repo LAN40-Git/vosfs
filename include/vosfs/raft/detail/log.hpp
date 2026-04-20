@@ -1,6 +1,5 @@
 #pragma once
 #include <span>
-#include "raft.pb.h"
 #include "vosfs/raft/persister.hpp"
 
 namespace vosfs::raft::detail {

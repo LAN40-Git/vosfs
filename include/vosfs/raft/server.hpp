@@ -2,7 +2,7 @@
 #include <vrpc/server.hpp>
 #include "vosfs/raft/detail/log.hpp"
 #include "vosfs/raft/detail/transport.hpp"
-#include "state_machine.hpp"
+#include "vosfs/raft/state_machine.hpp"
 
 namespace vosfs::raft {
 class RaftServer {

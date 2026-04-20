@@ -1,7 +1,6 @@
 #pragma once
 #include <vrpc/client.hpp>
 #include "vosfs/raft/detail/rpc.hpp"
-#include "vosfs/api/serverpb/raft.pb.h"
 #include "vosfs/raft/detail/config.hpp"
 
 namespace vosfs::raft::detail {

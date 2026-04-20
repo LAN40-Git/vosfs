@@ -4,7 +4,6 @@
 #include <rocksdb/db.h>
 #include <rocksdb/utilities/checkpoint.h>
 #include <filesystem>
-#include <utility>
 
 namespace vosfs::raft::detail {
 class RocksDBEngine : util::Noncopyable {
