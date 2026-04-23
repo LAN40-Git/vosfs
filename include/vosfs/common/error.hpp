@@ -41,7 +41,7 @@ public:
         case kDatabaseDeleteFailed:
             return "database delete operation failed";
         default:
-            return "unknown error";
+            return strerror(code_);
         }
     }
 

@@ -1,7 +1,7 @@
 #pragma once
 #include <ranges>
-#include "vosfs/raft/detail/peer.hpp"
-#include "vosfs/raft/persister.hpp"
+#include "peer.hpp"
+#include "persister.hpp"
 
 namespace vosfs::raft::detail {
 class Transport {
@@ -24,34 +24,29 @@ public:
     auto apply_snapshot(Snapshot& snapshot) -> kosio::async::Task<void>;
 
 public:
-    template <typename T>
     [[REMEMBER_CO_AWAIT]]
-    auto unicast_request(
-        uint64_t peer_id,
-        ServiceType service_type,
-        InvokeType invoke_type,
-        const T& request,
-        const vrpc::Callback& callback) -> kosio::async::Task<void> {
-        auto it = peers_.find(peer_id);
-        if (it == peers_.end()) {
-            LOG_ERROR("peer {} not found", peer_id);
-            co_return;
+    auto broadcast_request_vote_request(
+        const RequestVoteRequest& request,
+        const std::function<Task<void>(const vrpc::Status& status, const RequestVoteResponse& response)>& callback) -> Task<void> {
+        for (auto& peer : peers_ | std::views::values) {
+            co_await peer->send_request_vote_request(request, callback);
         }
-
-        auto& peer = it->second;
-        co_await peer->call(service_type, invoke_type, request, callback);
     }
 
-    template <typename T>
     [[REMEMBER_CO_AWAIT]]
-    auto broadcast_request(
-        ServiceType service_type,
-        InvokeType invoke_type,
-        const T& request,
-        const vrpc::Callback& callback) -> kosio::async::Task<void> {
-        for (auto& peer : peers_ | std::views::values) {
-            co_await peer->call(service_type, invoke_type, request, callback);
-        }
+    auto unicast_append_entries_request(
+        uint64_t member_id,
+        const AppendEntriesRequest& request,
+        const std::function<Task<void>(const vrpc::Status& status, const AppendEntriesResponse& response)>& callback) -> Task<void> {
+        co_await peers_[member_id]->send_append_entries_request(request, callback);
+    }
+
+    [[REMEMBER_CO_AWAIT]]
+    auto unicast_install_snapshot_request(
+        uint64_t member_id,
+        const InstallSnapshotRequest& request,
+        const std::function<Task<void>(const vrpc::Status& status, const InstallSnapshotResponse& response)>& callback) -> Task<void> {
+        co_await peers_[member_id]->send_install_snapshot_request(request, callback);
     }
 
 public:

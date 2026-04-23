@@ -5,8 +5,6 @@ message User {
   int64 uid = 1;
   string user_name = 2;
   bytes avatar = 3;
-  string email = 4;
-  string phone = 5;
   string password = 6;
   Role role = 7;
   Status status = 8;
@@ -35,9 +33,19 @@ message RegisterUserRequest {
   string admin_secret = 4;
 }
 
+message RegisterUserResponse {
+  uint32 status_code = 1;
+  string message = 2;
+}
+
 message DeleteUserRequest {
   string token = 1;
   string password = 2;
+}
+
+message DeleteUserResponse {
+  uint32 status_code = 1;
+  string message = 2;
 }
 
 message LoginUserByNameRequest {
@@ -47,12 +55,12 @@ message LoginUserByNameRequest {
 }
 
 message LoginUserByNameResponse {
-  string token = 1;
-  string user_name = 2;
-  bytes avatar = 3;
-  string email = 4;
-  string phone = 5;
-  string create_time = 6;
+  uint32 status_code = 1;
+  string message = 2;
+  string token = 3;
+  string user_name = 4;
+  bytes avatar = 5;
+  string create_time = 8;
 }
 
 message LogoutUserRequest {

@@ -1,19 +1,21 @@
 #pragma once
 #include <sqlite3.h>
-#include <vrpc/server.hpp>
+#include <vrpc/net/tcp/tcp_server.hpp>
+#include "authpb/auth.pb.h"
 #include "vosfs/common/error.hpp"
 
 namespace vosfs::auth {
-class Server {
+class AuthServer {
 private:
-    explicit Server(sqlite3* db, uint16_t port, std::string_view ip = "0.0.0.0")
+    explicit AuthServer(sqlite3* db, uint16_t port, std::string_view ip = "0.0.0.0")
         : db_(db)
-        , rpc_server_(port, ip) {
+        , port_(port)
+        , ip_(ip) {
         assert(db_);
     }
 
 public:
-    ~Server() {
+    ~AuthServer() {
         if (db_) {
             sqlite3_close(db_);
         }
@@ -24,29 +26,23 @@ public:
     static auto create(
         std::string_view db_path,
         uint16_t port,
-        std::string_view ip = "0.0.0.0") -> Result<std::unique_ptr<Server>>;
+        std::string_view ip = "0.0.0.0") -> Result<std::unique_ptr<AuthServer>>;
 
 public:
-    void init();
-
-    [[REMEMBER_CO_AWAIT]]
-    auto wait() -> kosio::async::Task<void>;
-
-    [[REMEMBER_CO_AWAIT]]
-    auto shutdown() -> kosio::async::Task<void>;
+    void wait();
 
 private:
     [[REMEMBER_CO_AWAIT]]
-    auto handle_register_user_request(std::string_view req_payload, std::span<char> resp_payload)
-        -> kosio::async::Task<vrpc::InvokeResult>;
+    auto handle_register_user_request(const RegisterUserRequest& request)
+        -> kosio::async::Task<RegisterUserResponse>;
 
     [[REMEMBER_CO_AWAIT]]
-    auto handle_delete_user_request(std::string_view req_payload, std::span<char> resp_payload)
-        -> kosio::async::Task<vrpc::InvokeResult>;
+    auto handle_delete_user_request(const DeleteUserRequest& request)
+        -> kosio::async::Task<DeleteUserResponse>;
 
     [[REMEMBER_CO_AWAIT]]
-    auto handle_login_user_by_user_name_request(std::string_view req_payload, std::span<char> resp_payload)
-        -> kosio::async::Task<vrpc::InvokeResult>;
+    auto handle_login_user_by_user_name_request(const LoginUserByNameRequest& request)
+        -> kosio::async::Task<LoginUserByNameResponse>;
 
     // [[REMEMBER_CO_AWAIT]]
     // auto handle_login_user_by_email_request(std::string_view req_payload, std::span<char> resp_payload)
@@ -83,6 +79,7 @@ private:
 private:
     kosio::sync::Mutex mutex_;
     sqlite3*           db_{nullptr};
-    vrpc::Server       rpc_server_;
+    uint16_t           port_;
+    std::string        ip_;
 };
 } // namespace vosfs::auth

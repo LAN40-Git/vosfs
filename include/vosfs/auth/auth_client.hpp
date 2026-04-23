@@ -1,10 +1,10 @@
 #pragma once
 #include <jwt-cpp/jwt.h>
-#include <vrpc/client.hpp>
 #include <openssl/evp.h>
+#include <vrpc/net/tcp/tcp_client.hpp>
 #include "vosfs/common/error.hpp"
-#include "vosfs-auth/detail/rpc.hpp"
-#include "vosfs-auth/detail/user_session.hpp"
+#include "status.hpp"
+#include "vosfs/auth/detail/user_session.hpp"
 
 namespace vosfs::auth {
 template <typename Client>
@@ -21,12 +21,11 @@ public:
         request.set_password(sha256(password));
         request.set_role(static_cast<User_Role>(role));
         request.set_admin_secret(std::move(admin_secret));
-        co_await rpc_client_.call(
-            detail::ServiceType::kUser,
-            detail::InvokeType::kRegisterUser,
-            request,
-            [this](vrpc::StatusCode code, std::string_view resp_payload) -> kosio::async::Task<void> {
-                co_await static_cast<Client*>(this)->handle_register_user_response(code, resp_payload);
+        co_await rpc_client_.call_method<RegisterUserRequest, RegisterUserResponse>(
+            "user", "register", request,
+            [this](const vrpc::Status& status, const RegisterUserResponse& response) -> kosio::async::Task<void> {
+                static_cast<Client*>(this)->handle_register_user_response(status, response);
+                co_return;
             });
     }
 
@@ -35,12 +34,11 @@ public:
         DeleteUserRequest request;
         request.set_token(session_.token);
         request.set_password(sha256(password));
-        co_await rpc_client_.call(
-            detail::ServiceType::kUser,
-            detail::InvokeType::kDeleteUser,
-            request,
-            [this](vrpc::StatusCode code, std::string_view resp_payload) -> kosio::async::Task<void> {
-                co_await static_cast<Client*>(this)->handle_delete_user_response(code, resp_payload);
+        co_await rpc_client_.call_method<DeleteUserRequest, DeleteUserResponse>(
+            "user", "delete", request,
+            [this](const vrpc::Status& status, const DeleteUserResponse& response) -> kosio::async::Task<void> {
+                static_cast<Client*>(this)->handle_delete_user_response(status, response);
+                co_return;
             });
     }
 
@@ -50,12 +48,11 @@ public:
         request.set_user_name(user_name);
         request.set_password(sha256(password));
         request.set_role(static_cast<User_Role>(role));
-        co_await rpc_client_.call(
-            detail::ServiceType::kUser,
-            detail::InvokeType::kLoginUserByUserName,
-            request,
-            [this](vrpc::StatusCode code, std::string_view resp_payload) -> kosio::async::Task<void> {
-                co_await static_cast<Client*>(this)->handle_login_user_by_name_response(code, resp_payload);
+        co_await rpc_client_.call_method<LoginUserByNameRequest, LoginUserByNameResponse>(
+            "user", "loginbyname", request,
+            [this](const vrpc::Status& status, const LoginUserByNameResponse& response) -> kosio::async::Task<void> {
+                static_cast<Client*>(this)->handle_login_user_by_name_response(status, response);
+                co_return;
             });
     }
 
@@ -104,6 +101,6 @@ protected:
     detail::UserSession session_{};
 
 private:
-    vrpc::Client rpc_client_;
+    vrpc::TcpClient rpc_client_;
 };
 } // namespace vosfs::auth

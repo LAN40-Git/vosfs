@@ -26,8 +26,6 @@ PROTOBUF_CONSTEXPR User::User(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.user_name_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.avatar_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
-  , /*decltype(_impl_.email_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
-  , /*decltype(_impl_.phone_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.password_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.last_access_ip_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.uid_)*/int64_t{0}
@@ -63,6 +61,20 @@ struct RegisterUserRequestDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 RegisterUserRequestDefaultTypeInternal _RegisterUserRequest_default_instance_;
+PROTOBUF_CONSTEXPR RegisterUserResponse::RegisterUserResponse(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.message_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.status_code_)*/0u
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct RegisterUserResponseDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR RegisterUserResponseDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~RegisterUserResponseDefaultTypeInternal() {}
+  union {
+    RegisterUserResponse _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 RegisterUserResponseDefaultTypeInternal _RegisterUserResponse_default_instance_;
 PROTOBUF_CONSTEXPR DeleteUserRequest::DeleteUserRequest(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.token_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
@@ -77,6 +89,20 @@ struct DeleteUserRequestDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 DeleteUserRequestDefaultTypeInternal _DeleteUserRequest_default_instance_;
+PROTOBUF_CONSTEXPR DeleteUserResponse::DeleteUserResponse(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.message_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.status_code_)*/0u
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct DeleteUserResponseDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR DeleteUserResponseDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~DeleteUserResponseDefaultTypeInternal() {}
+  union {
+    DeleteUserResponse _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 DeleteUserResponseDefaultTypeInternal _DeleteUserResponse_default_instance_;
 PROTOBUF_CONSTEXPR LoginUserByNameRequest::LoginUserByNameRequest(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.user_name_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
@@ -94,12 +120,12 @@ struct LoginUserByNameRequestDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 LoginUserByNameRequestDefaultTypeInternal _LoginUserByNameRequest_default_instance_;
 PROTOBUF_CONSTEXPR LoginUserByNameResponse::LoginUserByNameResponse(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.token_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+    /*decltype(_impl_.message_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.token_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.user_name_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.avatar_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
-  , /*decltype(_impl_.email_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
-  , /*decltype(_impl_.phone_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.create_time_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.status_code_)*/0u
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct LoginUserByNameResponseDefaultTypeInternal {
   PROTOBUF_CONSTEXPR LoginUserByNameResponseDefaultTypeInternal()
@@ -211,7 +237,7 @@ struct UpdateQuotaRequestDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 UpdateQuotaRequestDefaultTypeInternal _UpdateQuotaRequest_default_instance_;
 }  // namespace auth
 }  // namespace vosfs
-static ::_pb::Metadata file_level_metadata_auth_2eproto[12];
+static ::_pb::Metadata file_level_metadata_auth_2eproto[14];
 static const ::_pb::EnumDescriptor* file_level_enum_descriptors_auth_2eproto[2];
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_auth_2eproto = nullptr;
 
@@ -225,8 +251,6 @@ const uint32_t TableStruct_auth_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pro
   PROTOBUF_FIELD_OFFSET(::vosfs::auth::User, _impl_.uid_),
   PROTOBUF_FIELD_OFFSET(::vosfs::auth::User, _impl_.user_name_),
   PROTOBUF_FIELD_OFFSET(::vosfs::auth::User, _impl_.avatar_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::auth::User, _impl_.email_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::auth::User, _impl_.phone_),
   PROTOBUF_FIELD_OFFSET(::vosfs::auth::User, _impl_.password_),
   PROTOBUF_FIELD_OFFSET(::vosfs::auth::User, _impl_.role_),
   PROTOBUF_FIELD_OFFSET(::vosfs::auth::User, _impl_.status_),
@@ -246,6 +270,14 @@ const uint32_t TableStruct_auth_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pro
   PROTOBUF_FIELD_OFFSET(::vosfs::auth::RegisterUserRequest, _impl_.role_),
   PROTOBUF_FIELD_OFFSET(::vosfs::auth::RegisterUserRequest, _impl_.admin_secret_),
   ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::vosfs::auth::RegisterUserResponse, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::vosfs::auth::RegisterUserResponse, _impl_.status_code_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::auth::RegisterUserResponse, _impl_.message_),
+  ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::vosfs::auth::DeleteUserRequest, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
@@ -253,6 +285,14 @@ const uint32_t TableStruct_auth_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pro
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::vosfs::auth::DeleteUserRequest, _impl_.token_),
   PROTOBUF_FIELD_OFFSET(::vosfs::auth::DeleteUserRequest, _impl_.password_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::vosfs::auth::DeleteUserResponse, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::vosfs::auth::DeleteUserResponse, _impl_.status_code_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::auth::DeleteUserResponse, _impl_.message_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::vosfs::auth::LoginUserByNameRequest, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -268,11 +308,11 @@ const uint32_t TableStruct_auth_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pro
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::vosfs::auth::LoginUserByNameResponse, _impl_.status_code_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::auth::LoginUserByNameResponse, _impl_.message_),
   PROTOBUF_FIELD_OFFSET(::vosfs::auth::LoginUserByNameResponse, _impl_.token_),
   PROTOBUF_FIELD_OFFSET(::vosfs::auth::LoginUserByNameResponse, _impl_.user_name_),
   PROTOBUF_FIELD_OFFSET(::vosfs::auth::LoginUserByNameResponse, _impl_.avatar_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::auth::LoginUserByNameResponse, _impl_.email_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::auth::LoginUserByNameResponse, _impl_.phone_),
   PROTOBUF_FIELD_OFFSET(::vosfs::auth::LoginUserByNameResponse, _impl_.create_time_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::vosfs::auth::LogoutUserRequest, _internal_metadata_),
@@ -334,23 +374,27 @@ const uint32_t TableStruct_auth_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pro
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::vosfs::auth::User)},
-  { 19, -1, -1, sizeof(::vosfs::auth::RegisterUserRequest)},
-  { 29, -1, -1, sizeof(::vosfs::auth::DeleteUserRequest)},
-  { 37, -1, -1, sizeof(::vosfs::auth::LoginUserByNameRequest)},
-  { 46, -1, -1, sizeof(::vosfs::auth::LoginUserByNameResponse)},
-  { 58, -1, -1, sizeof(::vosfs::auth::LogoutUserRequest)},
-  { 65, -1, -1, sizeof(::vosfs::auth::UpdateUserNameRequest)},
-  { 74, -1, -1, sizeof(::vosfs::auth::UpdateUserAvatarRequest)},
-  { 83, -1, -1, sizeof(::vosfs::auth::UpdateUserPasswordRequest)},
-  { 91, -1, -1, sizeof(::vosfs::auth::UpdateUserRoleRequest)},
-  { 99, -1, -1, sizeof(::vosfs::auth::UpdateStatusRequest)},
-  { 107, -1, -1, sizeof(::vosfs::auth::UpdateQuotaRequest)},
+  { 17, -1, -1, sizeof(::vosfs::auth::RegisterUserRequest)},
+  { 27, -1, -1, sizeof(::vosfs::auth::RegisterUserResponse)},
+  { 35, -1, -1, sizeof(::vosfs::auth::DeleteUserRequest)},
+  { 43, -1, -1, sizeof(::vosfs::auth::DeleteUserResponse)},
+  { 51, -1, -1, sizeof(::vosfs::auth::LoginUserByNameRequest)},
+  { 60, -1, -1, sizeof(::vosfs::auth::LoginUserByNameResponse)},
+  { 72, -1, -1, sizeof(::vosfs::auth::LogoutUserRequest)},
+  { 79, -1, -1, sizeof(::vosfs::auth::UpdateUserNameRequest)},
+  { 88, -1, -1, sizeof(::vosfs::auth::UpdateUserAvatarRequest)},
+  { 97, -1, -1, sizeof(::vosfs::auth::UpdateUserPasswordRequest)},
+  { 105, -1, -1, sizeof(::vosfs::auth::UpdateUserRoleRequest)},
+  { 113, -1, -1, sizeof(::vosfs::auth::UpdateStatusRequest)},
+  { 121, -1, -1, sizeof(::vosfs::auth::UpdateQuotaRequest)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
   &::vosfs::auth::_User_default_instance_._instance,
   &::vosfs::auth::_RegisterUserRequest_default_instance_._instance,
+  &::vosfs::auth::_RegisterUserResponse_default_instance_._instance,
   &::vosfs::auth::_DeleteUserRequest_default_instance_._instance,
+  &::vosfs::auth::_DeleteUserResponse_default_instance_._instance,
   &::vosfs::auth::_LoginUserByNameRequest_default_instance_._instance,
   &::vosfs::auth::_LoginUserByNameResponse_default_instance_._instance,
   &::vosfs::auth::_LogoutUserRequest_default_instance_._instance,
@@ -363,44 +407,47 @@ static const ::_pb::Message* const file_default_instances[] = {
 };
 
 const char descriptor_table_protodef_auth_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\nauth.proto\022\nvosfs.auth\"\363\002\n\004User\022\013\n\003uid"
+  "\n\nauth.proto\022\nvosfs.auth\"\325\002\n\004User\022\013\n\003uid"
   "\030\001 \001(\003\022\021\n\tuser_name\030\002 \001(\t\022\016\n\006avatar\030\003 \001("
-  "\014\022\r\n\005email\030\004 \001(\t\022\r\n\005phone\030\005 \001(\t\022\020\n\010passw"
-  "ord\030\006 \001(\t\022#\n\004role\030\007 \001(\0162\025.vosfs.auth.Use"
-  "r.Role\022\'\n\006status\030\010 \001(\0162\027.vosfs.auth.User"
-  ".Status\022\r\n\005quota\030\t \001(\004\022\023\n\013create_time\030\n "
-  "\001(\003\022\023\n\013modify_time\030\013 \001(\003\022\030\n\020last_access_"
-  "time\030\014 \001(\003\022\026\n\016last_access_ip\030\r \001(\t\"3\n\006St"
-  "atus\022\014\n\010kEnabled\020\000\022\r\n\tkDisabled\020\001\022\014\n\010kDe"
-  "leted\020\002\"\035\n\004Role\022\n\n\006kAdmin\020\000\022\t\n\005kUser\020\001\"u"
-  "\n\023RegisterUserRequest\022\021\n\tuser_name\030\001 \001(\t"
-  "\022\020\n\010password\030\002 \001(\t\022#\n\004role\030\003 \001(\0162\025.vosfs"
-  ".auth.User.Role\022\024\n\014admin_secret\030\004 \001(\t\"4\n"
-  "\021DeleteUserRequest\022\r\n\005token\030\001 \001(\t\022\020\n\010pas"
-  "sword\030\002 \001(\t\"b\n\026LoginUserByNameRequest\022\021\n"
-  "\tuser_name\030\001 \001(\t\022\020\n\010password\030\002 \001(\t\022#\n\004ro"
-  "le\030\003 \001(\0162\025.vosfs.auth.User.Role\"~\n\027Login"
-  "UserByNameResponse\022\r\n\005token\030\001 \001(\t\022\021\n\tuse"
-  "r_name\030\002 \001(\t\022\016\n\006avatar\030\003 \001(\014\022\r\n\005email\030\004 "
-  "\001(\t\022\r\n\005phone\030\005 \001(\t\022\023\n\013create_time\030\006 \001(\t\""
-  "\"\n\021LogoutUserRequest\022\r\n\005token\030\001 \001(\t\"J\n\025U"
-  "pdateUserNameRequest\022\013\n\003uid\030\001 \001(\003\022\025\n\rnew"
-  "_user_name\030\002 \001(\t\022\r\n\005token\030\003 \001(\t\"I\n\027Updat"
-  "eUserAvatarRequest\022\013\n\003uid\030\001 \001(\003\022\022\n\nnew_a"
-  "vatar\030\002 \001(\014\022\r\n\005token\030\003 \001(\t\"@\n\031UpdateUser"
-  "PasswordRequest\022\r\n\005token\030\001 \001(\t\022\024\n\014new_pa"
-  "ssword\030\002 \001(\t\"O\n\025UpdateUserRoleRequest\022\r\n"
-  "\005token\030\001 \001(\t\022\'\n\010new_role\030\002 \001(\0162\025.vosfs.a"
-  "uth.User.Role\"Q\n\023UpdateStatusRequest\022\r\n\005"
-  "token\030\001 \001(\t\022+\n\nnew_status\030\002 \001(\0162\027.vosfs."
-  "auth.User.Status\"6\n\022UpdateQuotaRequest\022\r"
-  "\n\005token\030\001 \001(\t\022\021\n\tnew_quota\030\002 \001(\003b\006proto3"
+  "\014\022\020\n\010password\030\006 \001(\t\022#\n\004role\030\007 \001(\0162\025.vosf"
+  "s.auth.User.Role\022\'\n\006status\030\010 \001(\0162\027.vosfs"
+  ".auth.User.Status\022\r\n\005quota\030\t \001(\004\022\023\n\013crea"
+  "te_time\030\n \001(\003\022\023\n\013modify_time\030\013 \001(\003\022\030\n\020la"
+  "st_access_time\030\014 \001(\003\022\026\n\016last_access_ip\030\r"
+  " \001(\t\"3\n\006Status\022\014\n\010kEnabled\020\000\022\r\n\tkDisable"
+  "d\020\001\022\014\n\010kDeleted\020\002\"\035\n\004Role\022\n\n\006kAdmin\020\000\022\t\n"
+  "\005kUser\020\001\"u\n\023RegisterUserRequest\022\021\n\tuser_"
+  "name\030\001 \001(\t\022\020\n\010password\030\002 \001(\t\022#\n\004role\030\003 \001"
+  "(\0162\025.vosfs.auth.User.Role\022\024\n\014admin_secre"
+  "t\030\004 \001(\t\"<\n\024RegisterUserResponse\022\023\n\013statu"
+  "s_code\030\001 \001(\r\022\017\n\007message\030\002 \001(\t\"4\n\021DeleteU"
+  "serRequest\022\r\n\005token\030\001 \001(\t\022\020\n\010password\030\002 "
+  "\001(\t\":\n\022DeleteUserResponse\022\023\n\013status_code"
+  "\030\001 \001(\r\022\017\n\007message\030\002 \001(\t\"b\n\026LoginUserByNa"
+  "meRequest\022\021\n\tuser_name\030\001 \001(\t\022\020\n\010password"
+  "\030\002 \001(\t\022#\n\004role\030\003 \001(\0162\025.vosfs.auth.User.R"
+  "ole\"\206\001\n\027LoginUserByNameResponse\022\023\n\013statu"
+  "s_code\030\001 \001(\r\022\017\n\007message\030\002 \001(\t\022\r\n\005token\030\003"
+  " \001(\t\022\021\n\tuser_name\030\004 \001(\t\022\016\n\006avatar\030\005 \001(\014\022"
+  "\023\n\013create_time\030\010 \001(\t\"\"\n\021LogoutUserReques"
+  "t\022\r\n\005token\030\001 \001(\t\"J\n\025UpdateUserNameReques"
+  "t\022\013\n\003uid\030\001 \001(\003\022\025\n\rnew_user_name\030\002 \001(\t\022\r\n"
+  "\005token\030\003 \001(\t\"I\n\027UpdateUserAvatarRequest\022"
+  "\013\n\003uid\030\001 \001(\003\022\022\n\nnew_avatar\030\002 \001(\014\022\r\n\005toke"
+  "n\030\003 \001(\t\"@\n\031UpdateUserPasswordRequest\022\r\n\005"
+  "token\030\001 \001(\t\022\024\n\014new_password\030\002 \001(\t\"O\n\025Upd"
+  "ateUserRoleRequest\022\r\n\005token\030\001 \001(\t\022\'\n\010new"
+  "_role\030\002 \001(\0162\025.vosfs.auth.User.Role\"Q\n\023Up"
+  "dateStatusRequest\022\r\n\005token\030\001 \001(\t\022+\n\nnew_"
+  "status\030\002 \001(\0162\027.vosfs.auth.User.Status\"6\n"
+  "\022UpdateQuotaRequest\022\r\n\005token\030\001 \001(\t\022\021\n\tne"
+  "w_quota\030\002 \001(\003b\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_auth_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_auth_2eproto = {
-    false, false, 1280, descriptor_table_protodef_auth_2eproto,
+    false, false, 1381, descriptor_table_protodef_auth_2eproto,
     "auth.proto",
-    &descriptor_table_auth_2eproto_once, nullptr, 0, 12,
+    &descriptor_table_auth_2eproto_once, nullptr, 0, 14,
     schemas, file_default_instances, TableStruct_auth_2eproto::offsets,
     file_level_metadata_auth_2eproto, file_level_enum_descriptors_auth_2eproto,
     file_level_service_descriptors_auth_2eproto,
@@ -476,8 +523,6 @@ User::User(const User& from)
   new (&_impl_) Impl_{
       decltype(_impl_.user_name_){}
     , decltype(_impl_.avatar_){}
-    , decltype(_impl_.email_){}
-    , decltype(_impl_.phone_){}
     , decltype(_impl_.password_){}
     , decltype(_impl_.last_access_ip_){}
     , decltype(_impl_.uid_){}
@@ -504,22 +549,6 @@ User::User(const User& from)
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_avatar().empty()) {
     _this->_impl_.avatar_.Set(from._internal_avatar(), 
-      _this->GetArenaForAllocation());
-  }
-  _impl_.email_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.email_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (!from._internal_email().empty()) {
-    _this->_impl_.email_.Set(from._internal_email(), 
-      _this->GetArenaForAllocation());
-  }
-  _impl_.phone_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.phone_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (!from._internal_phone().empty()) {
-    _this->_impl_.phone_.Set(from._internal_phone(), 
       _this->GetArenaForAllocation());
   }
   _impl_.password_.InitDefault();
@@ -551,8 +580,6 @@ inline void User::SharedCtor(
   new (&_impl_) Impl_{
       decltype(_impl_.user_name_){}
     , decltype(_impl_.avatar_){}
-    , decltype(_impl_.email_){}
-    , decltype(_impl_.phone_){}
     , decltype(_impl_.password_){}
     , decltype(_impl_.last_access_ip_){}
     , decltype(_impl_.uid_){int64_t{0}}
@@ -571,14 +598,6 @@ inline void User::SharedCtor(
   _impl_.avatar_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
     _impl_.avatar_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  _impl_.email_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.email_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  _impl_.phone_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.phone_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   _impl_.password_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -603,8 +622,6 @@ inline void User::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   _impl_.user_name_.Destroy();
   _impl_.avatar_.Destroy();
-  _impl_.email_.Destroy();
-  _impl_.phone_.Destroy();
   _impl_.password_.Destroy();
   _impl_.last_access_ip_.Destroy();
 }
@@ -621,8 +638,6 @@ void User::Clear() {
 
   _impl_.user_name_.ClearToEmpty();
   _impl_.avatar_.ClearToEmpty();
-  _impl_.email_.ClearToEmpty();
-  _impl_.phone_.ClearToEmpty();
   _impl_.password_.ClearToEmpty();
   _impl_.last_access_ip_.ClearToEmpty();
   ::memset(&_impl_.uid_, 0, static_cast<size_t>(
@@ -661,26 +676,6 @@ const char* User::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
           auto str = _internal_mutable_avatar();
           ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // string email = 4;
-      case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 34)) {
-          auto str = _internal_mutable_email();
-          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(ptr);
-          CHK_(::_pbi::VerifyUTF8(str, "vosfs.auth.User.email"));
-        } else
-          goto handle_unusual;
-        continue;
-      // string phone = 5;
-      case 5:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 42)) {
-          auto str = _internal_mutable_phone();
-          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(ptr);
-          CHK_(::_pbi::VerifyUTF8(str, "vosfs.auth.User.phone"));
         } else
           goto handle_unusual;
         continue;
@@ -805,26 +800,6 @@ uint8_t* User::_InternalSerialize(
         3, this->_internal_avatar(), target);
   }
 
-  // string email = 4;
-  if (!this->_internal_email().empty()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_email().data(), static_cast<int>(this->_internal_email().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "vosfs.auth.User.email");
-    target = stream->WriteStringMaybeAliased(
-        4, this->_internal_email(), target);
-  }
-
-  // string phone = 5;
-  if (!this->_internal_phone().empty()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_phone().data(), static_cast<int>(this->_internal_phone().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "vosfs.auth.User.phone");
-    target = stream->WriteStringMaybeAliased(
-        5, this->_internal_phone(), target);
-  }
-
   // string password = 6;
   if (!this->_internal_password().empty()) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
@@ -913,20 +888,6 @@ size_t User::ByteSizeLong() const {
         this->_internal_avatar());
   }
 
-  // string email = 4;
-  if (!this->_internal_email().empty()) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->_internal_email());
-  }
-
-  // string phone = 5;
-  if (!this->_internal_phone().empty()) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->_internal_phone());
-  }
-
   // string password = 6;
   if (!this->_internal_password().empty()) {
     total_size += 1 +
@@ -1002,12 +963,6 @@ void User::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_
   if (!from._internal_avatar().empty()) {
     _this->_internal_set_avatar(from._internal_avatar());
   }
-  if (!from._internal_email().empty()) {
-    _this->_internal_set_email(from._internal_email());
-  }
-  if (!from._internal_phone().empty()) {
-    _this->_internal_set_phone(from._internal_phone());
-  }
   if (!from._internal_password().empty()) {
     _this->_internal_set_password(from._internal_password());
   }
@@ -1061,14 +1016,6 @@ void User::InternalSwap(User* other) {
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
       &_impl_.avatar_, lhs_arena,
       &other->_impl_.avatar_, rhs_arena
-  );
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &_impl_.email_, lhs_arena,
-      &other->_impl_.email_, rhs_arena
-  );
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &_impl_.phone_, lhs_arena,
-      &other->_impl_.phone_, rhs_arena
   );
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
       &_impl_.password_, lhs_arena,
@@ -1427,6 +1374,236 @@ void RegisterUserRequest::InternalSwap(RegisterUserRequest* other) {
 
 // ===================================================================
 
+class RegisterUserResponse::_Internal {
+ public:
+};
+
+RegisterUserResponse::RegisterUserResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:vosfs.auth.RegisterUserResponse)
+}
+RegisterUserResponse::RegisterUserResponse(const RegisterUserResponse& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  RegisterUserResponse* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.message_){}
+    , decltype(_impl_.status_code_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.message_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.message_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_message().empty()) {
+    _this->_impl_.message_.Set(from._internal_message(), 
+      _this->GetArenaForAllocation());
+  }
+  _this->_impl_.status_code_ = from._impl_.status_code_;
+  // @@protoc_insertion_point(copy_constructor:vosfs.auth.RegisterUserResponse)
+}
+
+inline void RegisterUserResponse::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.message_){}
+    , decltype(_impl_.status_code_){0u}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+  _impl_.message_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.message_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+
+RegisterUserResponse::~RegisterUserResponse() {
+  // @@protoc_insertion_point(destructor:vosfs.auth.RegisterUserResponse)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void RegisterUserResponse::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.message_.Destroy();
+}
+
+void RegisterUserResponse::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void RegisterUserResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:vosfs.auth.RegisterUserResponse)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.message_.ClearToEmpty();
+  _impl_.status_code_ = 0u;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* RegisterUserResponse::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // uint32 status_code = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.status_code_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string message = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_message();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "vosfs.auth.RegisterUserResponse.message"));
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* RegisterUserResponse::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:vosfs.auth.RegisterUserResponse)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint32 status_code = 1;
+  if (this->_internal_status_code() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(1, this->_internal_status_code(), target);
+  }
+
+  // string message = 2;
+  if (!this->_internal_message().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_message().data(), static_cast<int>(this->_internal_message().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "vosfs.auth.RegisterUserResponse.message");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_message(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:vosfs.auth.RegisterUserResponse)
+  return target;
+}
+
+size_t RegisterUserResponse::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:vosfs.auth.RegisterUserResponse)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string message = 2;
+  if (!this->_internal_message().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_message());
+  }
+
+  // uint32 status_code = 1;
+  if (this->_internal_status_code() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_status_code());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData RegisterUserResponse::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    RegisterUserResponse::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*RegisterUserResponse::GetClassData() const { return &_class_data_; }
+
+
+void RegisterUserResponse::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<RegisterUserResponse*>(&to_msg);
+  auto& from = static_cast<const RegisterUserResponse&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:vosfs.auth.RegisterUserResponse)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_message().empty()) {
+    _this->_internal_set_message(from._internal_message());
+  }
+  if (from._internal_status_code() != 0) {
+    _this->_internal_set_status_code(from._internal_status_code());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void RegisterUserResponse::CopyFrom(const RegisterUserResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:vosfs.auth.RegisterUserResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool RegisterUserResponse::IsInitialized() const {
+  return true;
+}
+
+void RegisterUserResponse::InternalSwap(RegisterUserResponse* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.message_, lhs_arena,
+      &other->_impl_.message_, rhs_arena
+  );
+  swap(_impl_.status_code_, other->_impl_.status_code_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata RegisterUserResponse::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_auth_2eproto_getter, &descriptor_table_auth_2eproto_once,
+      file_level_metadata_auth_2eproto[2]);
+}
+
+// ===================================================================
+
 class DeleteUserRequest::_Internal {
  public:
 };
@@ -1675,7 +1852,237 @@ void DeleteUserRequest::InternalSwap(DeleteUserRequest* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata DeleteUserRequest::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_auth_2eproto_getter, &descriptor_table_auth_2eproto_once,
-      file_level_metadata_auth_2eproto[2]);
+      file_level_metadata_auth_2eproto[3]);
+}
+
+// ===================================================================
+
+class DeleteUserResponse::_Internal {
+ public:
+};
+
+DeleteUserResponse::DeleteUserResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:vosfs.auth.DeleteUserResponse)
+}
+DeleteUserResponse::DeleteUserResponse(const DeleteUserResponse& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  DeleteUserResponse* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.message_){}
+    , decltype(_impl_.status_code_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.message_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.message_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_message().empty()) {
+    _this->_impl_.message_.Set(from._internal_message(), 
+      _this->GetArenaForAllocation());
+  }
+  _this->_impl_.status_code_ = from._impl_.status_code_;
+  // @@protoc_insertion_point(copy_constructor:vosfs.auth.DeleteUserResponse)
+}
+
+inline void DeleteUserResponse::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.message_){}
+    , decltype(_impl_.status_code_){0u}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+  _impl_.message_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.message_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+
+DeleteUserResponse::~DeleteUserResponse() {
+  // @@protoc_insertion_point(destructor:vosfs.auth.DeleteUserResponse)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void DeleteUserResponse::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.message_.Destroy();
+}
+
+void DeleteUserResponse::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void DeleteUserResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:vosfs.auth.DeleteUserResponse)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.message_.ClearToEmpty();
+  _impl_.status_code_ = 0u;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* DeleteUserResponse::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // uint32 status_code = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.status_code_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string message = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_message();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "vosfs.auth.DeleteUserResponse.message"));
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* DeleteUserResponse::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:vosfs.auth.DeleteUserResponse)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint32 status_code = 1;
+  if (this->_internal_status_code() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(1, this->_internal_status_code(), target);
+  }
+
+  // string message = 2;
+  if (!this->_internal_message().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_message().data(), static_cast<int>(this->_internal_message().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "vosfs.auth.DeleteUserResponse.message");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_message(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:vosfs.auth.DeleteUserResponse)
+  return target;
+}
+
+size_t DeleteUserResponse::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:vosfs.auth.DeleteUserResponse)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string message = 2;
+  if (!this->_internal_message().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_message());
+  }
+
+  // uint32 status_code = 1;
+  if (this->_internal_status_code() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_status_code());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData DeleteUserResponse::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    DeleteUserResponse::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*DeleteUserResponse::GetClassData() const { return &_class_data_; }
+
+
+void DeleteUserResponse::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<DeleteUserResponse*>(&to_msg);
+  auto& from = static_cast<const DeleteUserResponse&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:vosfs.auth.DeleteUserResponse)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_message().empty()) {
+    _this->_internal_set_message(from._internal_message());
+  }
+  if (from._internal_status_code() != 0) {
+    _this->_internal_set_status_code(from._internal_status_code());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void DeleteUserResponse::CopyFrom(const DeleteUserResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:vosfs.auth.DeleteUserResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool DeleteUserResponse::IsInitialized() const {
+  return true;
+}
+
+void DeleteUserResponse::InternalSwap(DeleteUserResponse* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.message_, lhs_arena,
+      &other->_impl_.message_, rhs_arena
+  );
+  swap(_impl_.status_code_, other->_impl_.status_code_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata DeleteUserResponse::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_auth_2eproto_getter, &descriptor_table_auth_2eproto_once,
+      file_level_metadata_auth_2eproto[4]);
 }
 
 // ===================================================================
@@ -1958,7 +2365,7 @@ void LoginUserByNameRequest::InternalSwap(LoginUserByNameRequest* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata LoginUserByNameRequest::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_auth_2eproto_getter, &descriptor_table_auth_2eproto_once,
-      file_level_metadata_auth_2eproto[3]);
+      file_level_metadata_auth_2eproto[5]);
 }
 
 // ===================================================================
@@ -1977,15 +2384,23 @@ LoginUserByNameResponse::LoginUserByNameResponse(const LoginUserByNameResponse& 
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   LoginUserByNameResponse* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.token_){}
+      decltype(_impl_.message_){}
+    , decltype(_impl_.token_){}
     , decltype(_impl_.user_name_){}
     , decltype(_impl_.avatar_){}
-    , decltype(_impl_.email_){}
-    , decltype(_impl_.phone_){}
     , decltype(_impl_.create_time_){}
+    , decltype(_impl_.status_code_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.message_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.message_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_message().empty()) {
+    _this->_impl_.message_.Set(from._internal_message(), 
+      _this->GetArenaForAllocation());
+  }
   _impl_.token_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
     _impl_.token_.Set("", GetArenaForAllocation());
@@ -2010,22 +2425,6 @@ LoginUserByNameResponse::LoginUserByNameResponse(const LoginUserByNameResponse& 
     _this->_impl_.avatar_.Set(from._internal_avatar(), 
       _this->GetArenaForAllocation());
   }
-  _impl_.email_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.email_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (!from._internal_email().empty()) {
-    _this->_impl_.email_.Set(from._internal_email(), 
-      _this->GetArenaForAllocation());
-  }
-  _impl_.phone_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.phone_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (!from._internal_phone().empty()) {
-    _this->_impl_.phone_.Set(from._internal_phone(), 
-      _this->GetArenaForAllocation());
-  }
   _impl_.create_time_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
     _impl_.create_time_.Set("", GetArenaForAllocation());
@@ -2034,6 +2433,7 @@ LoginUserByNameResponse::LoginUserByNameResponse(const LoginUserByNameResponse& 
     _this->_impl_.create_time_.Set(from._internal_create_time(), 
       _this->GetArenaForAllocation());
   }
+  _this->_impl_.status_code_ = from._impl_.status_code_;
   // @@protoc_insertion_point(copy_constructor:vosfs.auth.LoginUserByNameResponse)
 }
 
@@ -2042,14 +2442,18 @@ inline void LoginUserByNameResponse::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.token_){}
+      decltype(_impl_.message_){}
+    , decltype(_impl_.token_){}
     , decltype(_impl_.user_name_){}
     , decltype(_impl_.avatar_){}
-    , decltype(_impl_.email_){}
-    , decltype(_impl_.phone_){}
     , decltype(_impl_.create_time_){}
+    , decltype(_impl_.status_code_){0u}
     , /*decltype(_impl_._cached_size_)*/{}
   };
+  _impl_.message_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.message_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   _impl_.token_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
     _impl_.token_.Set("", GetArenaForAllocation());
@@ -2061,14 +2465,6 @@ inline void LoginUserByNameResponse::SharedCtor(
   _impl_.avatar_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
     _impl_.avatar_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  _impl_.email_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.email_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  _impl_.phone_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.phone_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   _impl_.create_time_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -2087,11 +2483,10 @@ LoginUserByNameResponse::~LoginUserByNameResponse() {
 
 inline void LoginUserByNameResponse::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.message_.Destroy();
   _impl_.token_.Destroy();
   _impl_.user_name_.Destroy();
   _impl_.avatar_.Destroy();
-  _impl_.email_.Destroy();
-  _impl_.phone_.Destroy();
   _impl_.create_time_.Destroy();
 }
 
@@ -2105,12 +2500,12 @@ void LoginUserByNameResponse::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
+  _impl_.message_.ClearToEmpty();
   _impl_.token_.ClearToEmpty();
   _impl_.user_name_.ClearToEmpty();
   _impl_.avatar_.ClearToEmpty();
-  _impl_.email_.ClearToEmpty();
-  _impl_.phone_.ClearToEmpty();
   _impl_.create_time_.ClearToEmpty();
+  _impl_.status_code_ = 0u;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -2120,9 +2515,27 @@ const char* LoginUserByNameResponse::_InternalParse(const char* ptr, ::_pbi::Par
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // string token = 1;
+      // uint32 status_code = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.status_code_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string message = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_message();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "vosfs.auth.LoginUserByNameResponse.message"));
+        } else
+          goto handle_unusual;
+        continue;
+      // string token = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
           auto str = _internal_mutable_token();
           ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
@@ -2130,9 +2543,9 @@ const char* LoginUserByNameResponse::_InternalParse(const char* ptr, ::_pbi::Par
         } else
           goto handle_unusual;
         continue;
-      // string user_name = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+      // string user_name = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 34)) {
           auto str = _internal_mutable_user_name();
           ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
@@ -2140,38 +2553,18 @@ const char* LoginUserByNameResponse::_InternalParse(const char* ptr, ::_pbi::Par
         } else
           goto handle_unusual;
         continue;
-      // bytes avatar = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
+      // bytes avatar = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 42)) {
           auto str = _internal_mutable_avatar();
           ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // string email = 4;
-      case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 34)) {
-          auto str = _internal_mutable_email();
-          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(ptr);
-          CHK_(::_pbi::VerifyUTF8(str, "vosfs.auth.LoginUserByNameResponse.email"));
-        } else
-          goto handle_unusual;
-        continue;
-      // string phone = 5;
-      case 5:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 42)) {
-          auto str = _internal_mutable_phone();
-          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(ptr);
-          CHK_(::_pbi::VerifyUTF8(str, "vosfs.auth.LoginUserByNameResponse.phone"));
-        } else
-          goto handle_unusual;
-        continue;
-      // string create_time = 6;
-      case 6:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 50)) {
+      // string create_time = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 66)) {
           auto str = _internal_mutable_create_time();
           ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
@@ -2208,60 +2601,56 @@ uint8_t* LoginUserByNameResponse::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // string token = 1;
+  // uint32 status_code = 1;
+  if (this->_internal_status_code() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(1, this->_internal_status_code(), target);
+  }
+
+  // string message = 2;
+  if (!this->_internal_message().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_message().data(), static_cast<int>(this->_internal_message().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "vosfs.auth.LoginUserByNameResponse.message");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_message(), target);
+  }
+
+  // string token = 3;
   if (!this->_internal_token().empty()) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_token().data(), static_cast<int>(this->_internal_token().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
       "vosfs.auth.LoginUserByNameResponse.token");
     target = stream->WriteStringMaybeAliased(
-        1, this->_internal_token(), target);
+        3, this->_internal_token(), target);
   }
 
-  // string user_name = 2;
+  // string user_name = 4;
   if (!this->_internal_user_name().empty()) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_user_name().data(), static_cast<int>(this->_internal_user_name().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
       "vosfs.auth.LoginUserByNameResponse.user_name");
     target = stream->WriteStringMaybeAliased(
-        2, this->_internal_user_name(), target);
+        4, this->_internal_user_name(), target);
   }
 
-  // bytes avatar = 3;
+  // bytes avatar = 5;
   if (!this->_internal_avatar().empty()) {
     target = stream->WriteBytesMaybeAliased(
-        3, this->_internal_avatar(), target);
+        5, this->_internal_avatar(), target);
   }
 
-  // string email = 4;
-  if (!this->_internal_email().empty()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_email().data(), static_cast<int>(this->_internal_email().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "vosfs.auth.LoginUserByNameResponse.email");
-    target = stream->WriteStringMaybeAliased(
-        4, this->_internal_email(), target);
-  }
-
-  // string phone = 5;
-  if (!this->_internal_phone().empty()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_phone().data(), static_cast<int>(this->_internal_phone().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "vosfs.auth.LoginUserByNameResponse.phone");
-    target = stream->WriteStringMaybeAliased(
-        5, this->_internal_phone(), target);
-  }
-
-  // string create_time = 6;
+  // string create_time = 8;
   if (!this->_internal_create_time().empty()) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_create_time().data(), static_cast<int>(this->_internal_create_time().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
       "vosfs.auth.LoginUserByNameResponse.create_time");
     target = stream->WriteStringMaybeAliased(
-        6, this->_internal_create_time(), target);
+        8, this->_internal_create_time(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -2280,46 +2669,44 @@ size_t LoginUserByNameResponse::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // string token = 1;
+  // string message = 2;
+  if (!this->_internal_message().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_message());
+  }
+
+  // string token = 3;
   if (!this->_internal_token().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_token());
   }
 
-  // string user_name = 2;
+  // string user_name = 4;
   if (!this->_internal_user_name().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_user_name());
   }
 
-  // bytes avatar = 3;
+  // bytes avatar = 5;
   if (!this->_internal_avatar().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
         this->_internal_avatar());
   }
 
-  // string email = 4;
-  if (!this->_internal_email().empty()) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->_internal_email());
-  }
-
-  // string phone = 5;
-  if (!this->_internal_phone().empty()) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->_internal_phone());
-  }
-
-  // string create_time = 6;
+  // string create_time = 8;
   if (!this->_internal_create_time().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_create_time());
+  }
+
+  // uint32 status_code = 1;
+  if (this->_internal_status_code() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_status_code());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
@@ -2340,6 +2727,9 @@ void LoginUserByNameResponse::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
+  if (!from._internal_message().empty()) {
+    _this->_internal_set_message(from._internal_message());
+  }
   if (!from._internal_token().empty()) {
     _this->_internal_set_token(from._internal_token());
   }
@@ -2349,14 +2739,11 @@ void LoginUserByNameResponse::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg
   if (!from._internal_avatar().empty()) {
     _this->_internal_set_avatar(from._internal_avatar());
   }
-  if (!from._internal_email().empty()) {
-    _this->_internal_set_email(from._internal_email());
-  }
-  if (!from._internal_phone().empty()) {
-    _this->_internal_set_phone(from._internal_phone());
-  }
   if (!from._internal_create_time().empty()) {
     _this->_internal_set_create_time(from._internal_create_time());
+  }
+  if (from._internal_status_code() != 0) {
+    _this->_internal_set_status_code(from._internal_status_code());
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -2378,6 +2765,10 @@ void LoginUserByNameResponse::InternalSwap(LoginUserByNameResponse* other) {
   auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.message_, lhs_arena,
+      &other->_impl_.message_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
       &_impl_.token_, lhs_arena,
       &other->_impl_.token_, rhs_arena
   );
@@ -2390,23 +2781,16 @@ void LoginUserByNameResponse::InternalSwap(LoginUserByNameResponse* other) {
       &other->_impl_.avatar_, rhs_arena
   );
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &_impl_.email_, lhs_arena,
-      &other->_impl_.email_, rhs_arena
-  );
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &_impl_.phone_, lhs_arena,
-      &other->_impl_.phone_, rhs_arena
-  );
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
       &_impl_.create_time_, lhs_arena,
       &other->_impl_.create_time_, rhs_arena
   );
+  swap(_impl_.status_code_, other->_impl_.status_code_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata LoginUserByNameResponse::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_auth_2eproto_getter, &descriptor_table_auth_2eproto_once,
-      file_level_metadata_auth_2eproto[4]);
+      file_level_metadata_auth_2eproto[6]);
 }
 
 // ===================================================================
@@ -2609,7 +2993,7 @@ void LogoutUserRequest::InternalSwap(LogoutUserRequest* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata LogoutUserRequest::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_auth_2eproto_getter, &descriptor_table_auth_2eproto_once,
-      file_level_metadata_auth_2eproto[5]);
+      file_level_metadata_auth_2eproto[7]);
 }
 
 // ===================================================================
@@ -2889,7 +3273,7 @@ void UpdateUserNameRequest::InternalSwap(UpdateUserNameRequest* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata UpdateUserNameRequest::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_auth_2eproto_getter, &descriptor_table_auth_2eproto_once,
-      file_level_metadata_auth_2eproto[6]);
+      file_level_metadata_auth_2eproto[8]);
 }
 
 // ===================================================================
@@ -3164,7 +3548,7 @@ void UpdateUserAvatarRequest::InternalSwap(UpdateUserAvatarRequest* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata UpdateUserAvatarRequest::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_auth_2eproto_getter, &descriptor_table_auth_2eproto_once,
-      file_level_metadata_auth_2eproto[7]);
+      file_level_metadata_auth_2eproto[9]);
 }
 
 // ===================================================================
@@ -3417,7 +3801,7 @@ void UpdateUserPasswordRequest::InternalSwap(UpdateUserPasswordRequest* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata UpdateUserPasswordRequest::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_auth_2eproto_getter, &descriptor_table_auth_2eproto_once,
-      file_level_metadata_auth_2eproto[8]);
+      file_level_metadata_auth_2eproto[10]);
 }
 
 // ===================================================================
@@ -3650,7 +4034,7 @@ void UpdateUserRoleRequest::InternalSwap(UpdateUserRoleRequest* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata UpdateUserRoleRequest::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_auth_2eproto_getter, &descriptor_table_auth_2eproto_once,
-      file_level_metadata_auth_2eproto[9]);
+      file_level_metadata_auth_2eproto[11]);
 }
 
 // ===================================================================
@@ -3883,7 +4267,7 @@ void UpdateStatusRequest::InternalSwap(UpdateStatusRequest* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata UpdateStatusRequest::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_auth_2eproto_getter, &descriptor_table_auth_2eproto_once,
-      file_level_metadata_auth_2eproto[10]);
+      file_level_metadata_auth_2eproto[12]);
 }
 
 // ===================================================================
@@ -4113,7 +4497,7 @@ void UpdateQuotaRequest::InternalSwap(UpdateQuotaRequest* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata UpdateQuotaRequest::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_auth_2eproto_getter, &descriptor_table_auth_2eproto_once,
-      file_level_metadata_auth_2eproto[11]);
+      file_level_metadata_auth_2eproto[13]);
 }
 
 // @@protoc_insertion_point(namespace_scope)
@@ -4128,9 +4512,17 @@ template<> PROTOBUF_NOINLINE ::vosfs::auth::RegisterUserRequest*
 Arena::CreateMaybeMessage< ::vosfs::auth::RegisterUserRequest >(Arena* arena) {
   return Arena::CreateMessageInternal< ::vosfs::auth::RegisterUserRequest >(arena);
 }
+template<> PROTOBUF_NOINLINE ::vosfs::auth::RegisterUserResponse*
+Arena::CreateMaybeMessage< ::vosfs::auth::RegisterUserResponse >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::vosfs::auth::RegisterUserResponse >(arena);
+}
 template<> PROTOBUF_NOINLINE ::vosfs::auth::DeleteUserRequest*
 Arena::CreateMaybeMessage< ::vosfs::auth::DeleteUserRequest >(Arena* arena) {
   return Arena::CreateMessageInternal< ::vosfs::auth::DeleteUserRequest >(arena);
+}
+template<> PROTOBUF_NOINLINE ::vosfs::auth::DeleteUserResponse*
+Arena::CreateMaybeMessage< ::vosfs::auth::DeleteUserResponse >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::vosfs::auth::DeleteUserResponse >(arena);
 }
 template<> PROTOBUF_NOINLINE ::vosfs::auth::LoginUserByNameRequest*
 Arena::CreateMaybeMessage< ::vosfs::auth::LoginUserByNameRequest >(Arena* arena) {

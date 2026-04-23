@@ -1,14 +1,14 @@
 #pragma once
-#include <vrpc/server.hpp>
-#include "vosfs/raft/detail/log.hpp"
-#include "vosfs/raft/detail/transport.hpp"
-#include "vosfs/raft/state_machine.hpp"
+#include <vrpc/net/tcp/tcp_server.hpp>
+#include "log.hpp"
+#include "transport.hpp"
+#include "state_machine.hpp"
 
 namespace vosfs::raft {
-class RaftServer {
+class RaftNode {
     using SnapshotContextMap = std::unordered_map<uint64_t, uint64_t>;
 private:
-    explicit RaftServer(
+    explicit RaftNode(
         Persister&& persister,
         detail::RaftLog&& logs,
         detail::Transport&& transport,
@@ -16,7 +16,7 @@ private:
         HardState&& hard_state);
 
 public:
-    static auto create(std::string_view data_dir) -> kosio::async::Task<Result<std::unique_ptr<RaftServer>>>;
+    static auto create(std::string_view data_dir) -> kosio::async::Task<Result<std::unique_ptr<RaftNode>>>;
 
 public:
     [[REMEMBER_CO_AWAIT]]
@@ -39,27 +39,49 @@ private:
 private:
     // Raft RPC
     [[REMEMBER_CO_AWAIT]]
-    auto handle_request_vote_request(std::string_view req_payload, std::span<char> resp_payload)
-        -> kosio::async::Task<vrpc::InvokeResult>;
+    auto handle_request_vote_request(const RequestVoteRequest& request)
+        -> kosio::async::Task<RequestVoteResponse>;
     [[REMEMBER_CO_AWAIT]]
-    auto handle_append_entries_request(std::string_view req_payload, std::span<char> resp_payload)
-        -> kosio::async::Task<vrpc::InvokeResult>;
+    auto handle_append_entries_request(const AppendEntriesRequest& request)
+        -> kosio::async::Task<AppendEntriesResponse>;
     [[REMEMBER_CO_AWAIT]]
-    auto handle_install_snapshot_request(std::string_view req_payload, std::span<char> resp_payload)
-        -> kosio::async::Task<vrpc::InvokeResult>;
-
-    // Client RPC
-    [[REMEMBER_CO_AWAIT]]
-    auto handle_transmit_file_request(std::string_view req_payload, std::span<char> resp_payload)
-        -> kosio::async::Task<vrpc::InvokeResult>;
+    auto handle_install_snapshot_request(const InstallSnapshotRequest& request)
+        -> kosio::async::Task<InstallSnapshotResponse>;
 
 private:
     [[REMEMBER_CO_AWAIT]]
-    auto handle_request_vote_response(std::string_view resp_payload) -> kosio::async::Task<void>;
+    auto handle_request_vote_response(const RequestVoteResponse& response) -> kosio::async::Task<void>;
     [[REMEMBER_CO_AWAIT]]
-    auto handle_append_entries_response(std::string_view resp_payload) -> kosio::async::Task<void>;
+    auto handle_append_entries_response(const AppendEntriesResponse& response) -> kosio::async::Task<void>;
     [[REMEMBER_CO_AWAIT]]
-    auto handle_install_snapshot_response(std::string_view resp_payload) -> kosio::async::Task<void>;
+    auto handle_install_snapshot_response(const InstallSnapshotResponse& response) -> kosio::async::Task<void>;
+
+private:
+    [[nodiscard]]
+    static auto make_request_vote_request(
+        uint64_t term,
+        uint64_t candidate_id,
+        uint64_t last_log_index,
+        uint64_t last_log_term) -> RequestVoteRequest;
+
+    [[nodiscard]]
+    static auto make_request_vote_response(
+        uint64_t id,
+        uint64_t term,
+        bool vote_granted) -> RequestVoteResponse;
+
+    [[nodiscard]]
+    static auto make_append_entries_response(
+        uint64_t id,
+        uint64_t term,
+        bool success,
+        uint64_t last_log_index,
+        std::optional<uint64_t> conflict_index) -> AppendEntriesResponse;
+
+    [[nodiscard]]
+    static auto make_install_snapshot_response(
+        uint64_t id,
+        uint64_t term) -> InstallSnapshotResponse;
 
 private:
     enum Role { kLeader, kFollower, kCandidate };
@@ -68,8 +90,6 @@ private:
     kosio::sync::Latch    latch_{2};
     std::atomic<bool>     is_shutdown_{false};
     std::atomic<uint64_t> last_reset_time_{0};
-    vrpc::Server          raft_rpc_server_;
-    vrpc::Server          fs_rpc_server_;
     Persister             persister_;
     StateMachine          state_machine_;
     detail::RaftLog       logs_;

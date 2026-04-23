@@ -1,4 +1,4 @@
-#include "vosfs/raft/state_machine.hpp"
+#include "../../../include/vosfs/raft/state_machine.hpp"
 #include <kosio/common/debug.hpp>
 #include <kosio/runtime/runtime.hpp>
 

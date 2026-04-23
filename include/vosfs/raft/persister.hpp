@@ -1,7 +1,7 @@
 #pragma once
 #include "raftpb/raft.pb.h"
-#include "detail/config.hpp"
-#include "vosfs/raft/detail/rocksdb_engine.hpp"
+#include "config.hpp"
+#include "vosfs/common/util/rocksdb_engine.hpp"
 
 namespace vosfs::raft {
 class Persister {
@@ -13,7 +13,7 @@ class Persister {
     static constexpr std::string_view SNAPSHOT_KEY = "raft/snapshot";
 
 private:
-    explicit Persister(detail::RocksDBEngine engine)
+    explicit Persister(util::RocksDBEngine engine)
         : engine_(std::move(engine)) {}
 
 public:
@@ -76,6 +76,6 @@ private:
     }
 
 private:
-    detail::RocksDBEngine engine_;
+    util::RocksDBEngine engine_;
 };
 } // namespace vosfs::raft

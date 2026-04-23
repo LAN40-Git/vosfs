@@ -1,6 +1,6 @@
 #pragma once
 #include <span>
-#include "vosfs/raft/persister.hpp"
+#include "persister.hpp"
 
 namespace vosfs::raft::detail {
 class RaftLog {

@@ -50,6 +50,9 @@ namespace auth {
 class DeleteUserRequest;
 struct DeleteUserRequestDefaultTypeInternal;
 extern DeleteUserRequestDefaultTypeInternal _DeleteUserRequest_default_instance_;
+class DeleteUserResponse;
+struct DeleteUserResponseDefaultTypeInternal;
+extern DeleteUserResponseDefaultTypeInternal _DeleteUserResponse_default_instance_;
 class LoginUserByNameRequest;
 struct LoginUserByNameRequestDefaultTypeInternal;
 extern LoginUserByNameRequestDefaultTypeInternal _LoginUserByNameRequest_default_instance_;
@@ -62,6 +65,9 @@ extern LogoutUserRequestDefaultTypeInternal _LogoutUserRequest_default_instance_
 class RegisterUserRequest;
 struct RegisterUserRequestDefaultTypeInternal;
 extern RegisterUserRequestDefaultTypeInternal _RegisterUserRequest_default_instance_;
+class RegisterUserResponse;
+struct RegisterUserResponseDefaultTypeInternal;
+extern RegisterUserResponseDefaultTypeInternal _RegisterUserResponse_default_instance_;
 class UpdateQuotaRequest;
 struct UpdateQuotaRequestDefaultTypeInternal;
 extern UpdateQuotaRequestDefaultTypeInternal _UpdateQuotaRequest_default_instance_;
@@ -87,10 +93,12 @@ extern UserDefaultTypeInternal _User_default_instance_;
 }  // namespace vosfs
 PROTOBUF_NAMESPACE_OPEN
 template<> ::vosfs::auth::DeleteUserRequest* Arena::CreateMaybeMessage<::vosfs::auth::DeleteUserRequest>(Arena*);
+template<> ::vosfs::auth::DeleteUserResponse* Arena::CreateMaybeMessage<::vosfs::auth::DeleteUserResponse>(Arena*);
 template<> ::vosfs::auth::LoginUserByNameRequest* Arena::CreateMaybeMessage<::vosfs::auth::LoginUserByNameRequest>(Arena*);
 template<> ::vosfs::auth::LoginUserByNameResponse* Arena::CreateMaybeMessage<::vosfs::auth::LoginUserByNameResponse>(Arena*);
 template<> ::vosfs::auth::LogoutUserRequest* Arena::CreateMaybeMessage<::vosfs::auth::LogoutUserRequest>(Arena*);
 template<> ::vosfs::auth::RegisterUserRequest* Arena::CreateMaybeMessage<::vosfs::auth::RegisterUserRequest>(Arena*);
+template<> ::vosfs::auth::RegisterUserResponse* Arena::CreateMaybeMessage<::vosfs::auth::RegisterUserResponse>(Arena*);
 template<> ::vosfs::auth::UpdateQuotaRequest* Arena::CreateMaybeMessage<::vosfs::auth::UpdateQuotaRequest>(Arena*);
 template<> ::vosfs::auth::UpdateStatusRequest* Arena::CreateMaybeMessage<::vosfs::auth::UpdateStatusRequest>(Arena*);
 template<> ::vosfs::auth::UpdateUserAvatarRequest* Arena::CreateMaybeMessage<::vosfs::auth::UpdateUserAvatarRequest>(Arena*);
@@ -340,8 +348,6 @@ class User final :
   enum : int {
     kUserNameFieldNumber = 2,
     kAvatarFieldNumber = 3,
-    kEmailFieldNumber = 4,
-    kPhoneFieldNumber = 5,
     kPasswordFieldNumber = 6,
     kLastAccessIpFieldNumber = 13,
     kUidFieldNumber = 1,
@@ -378,34 +384,6 @@ class User final :
   const std::string& _internal_avatar() const;
   inline PROTOBUF_ALWAYS_INLINE void _internal_set_avatar(const std::string& value);
   std::string* _internal_mutable_avatar();
-  public:
-
-  // string email = 4;
-  void clear_email();
-  const std::string& email() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_email(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_email();
-  PROTOBUF_NODISCARD std::string* release_email();
-  void set_allocated_email(std::string* email);
-  private:
-  const std::string& _internal_email() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_email(const std::string& value);
-  std::string* _internal_mutable_email();
-  public:
-
-  // string phone = 5;
-  void clear_phone();
-  const std::string& phone() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_phone(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_phone();
-  PROTOBUF_NODISCARD std::string* release_phone();
-  void set_allocated_phone(std::string* phone);
-  private:
-  const std::string& _internal_phone() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_phone(const std::string& value);
-  std::string* _internal_mutable_phone();
   public:
 
   // string password = 6;
@@ -509,8 +487,6 @@ class User final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr user_name_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr avatar_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr email_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr phone_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr password_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr last_access_ip_;
     int64_t uid_;
@@ -723,6 +699,170 @@ class RegisterUserRequest final :
 };
 // -------------------------------------------------------------------
 
+class RegisterUserResponse final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.auth.RegisterUserResponse) */ {
+ public:
+  inline RegisterUserResponse() : RegisterUserResponse(nullptr) {}
+  ~RegisterUserResponse() override;
+  explicit PROTOBUF_CONSTEXPR RegisterUserResponse(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  RegisterUserResponse(const RegisterUserResponse& from);
+  RegisterUserResponse(RegisterUserResponse&& from) noexcept
+    : RegisterUserResponse() {
+    *this = ::std::move(from);
+  }
+
+  inline RegisterUserResponse& operator=(const RegisterUserResponse& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline RegisterUserResponse& operator=(RegisterUserResponse&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const RegisterUserResponse& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const RegisterUserResponse* internal_default_instance() {
+    return reinterpret_cast<const RegisterUserResponse*>(
+               &_RegisterUserResponse_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    2;
+
+  friend void swap(RegisterUserResponse& a, RegisterUserResponse& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(RegisterUserResponse* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(RegisterUserResponse* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  RegisterUserResponse* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<RegisterUserResponse>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const RegisterUserResponse& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const RegisterUserResponse& from) {
+    RegisterUserResponse::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(RegisterUserResponse* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "vosfs.auth.RegisterUserResponse";
+  }
+  protected:
+  explicit RegisterUserResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kMessageFieldNumber = 2,
+    kStatusCodeFieldNumber = 1,
+  };
+  // string message = 2;
+  void clear_message();
+  const std::string& message() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_message(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_message();
+  PROTOBUF_NODISCARD std::string* release_message();
+  void set_allocated_message(std::string* message);
+  private:
+  const std::string& _internal_message() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_message(const std::string& value);
+  std::string* _internal_mutable_message();
+  public:
+
+  // uint32 status_code = 1;
+  void clear_status_code();
+  uint32_t status_code() const;
+  void set_status_code(uint32_t value);
+  private:
+  uint32_t _internal_status_code() const;
+  void _internal_set_status_code(uint32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:vosfs.auth.RegisterUserResponse)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr message_;
+    uint32_t status_code_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_auth_2eproto;
+};
+// -------------------------------------------------------------------
+
 class DeleteUserRequest final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.auth.DeleteUserRequest) */ {
  public:
@@ -771,7 +911,7 @@ class DeleteUserRequest final :
                &_DeleteUserRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    2;
+    3;
 
   friend void swap(DeleteUserRequest& a, DeleteUserRequest& b) {
     a.Swap(&b);
@@ -892,6 +1032,170 @@ class DeleteUserRequest final :
 };
 // -------------------------------------------------------------------
 
+class DeleteUserResponse final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.auth.DeleteUserResponse) */ {
+ public:
+  inline DeleteUserResponse() : DeleteUserResponse(nullptr) {}
+  ~DeleteUserResponse() override;
+  explicit PROTOBUF_CONSTEXPR DeleteUserResponse(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  DeleteUserResponse(const DeleteUserResponse& from);
+  DeleteUserResponse(DeleteUserResponse&& from) noexcept
+    : DeleteUserResponse() {
+    *this = ::std::move(from);
+  }
+
+  inline DeleteUserResponse& operator=(const DeleteUserResponse& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline DeleteUserResponse& operator=(DeleteUserResponse&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const DeleteUserResponse& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const DeleteUserResponse* internal_default_instance() {
+    return reinterpret_cast<const DeleteUserResponse*>(
+               &_DeleteUserResponse_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    4;
+
+  friend void swap(DeleteUserResponse& a, DeleteUserResponse& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(DeleteUserResponse* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(DeleteUserResponse* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  DeleteUserResponse* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<DeleteUserResponse>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const DeleteUserResponse& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const DeleteUserResponse& from) {
+    DeleteUserResponse::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(DeleteUserResponse* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "vosfs.auth.DeleteUserResponse";
+  }
+  protected:
+  explicit DeleteUserResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kMessageFieldNumber = 2,
+    kStatusCodeFieldNumber = 1,
+  };
+  // string message = 2;
+  void clear_message();
+  const std::string& message() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_message(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_message();
+  PROTOBUF_NODISCARD std::string* release_message();
+  void set_allocated_message(std::string* message);
+  private:
+  const std::string& _internal_message() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_message(const std::string& value);
+  std::string* _internal_mutable_message();
+  public:
+
+  // uint32 status_code = 1;
+  void clear_status_code();
+  uint32_t status_code() const;
+  void set_status_code(uint32_t value);
+  private:
+  uint32_t _internal_status_code() const;
+  void _internal_set_status_code(uint32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:vosfs.auth.DeleteUserResponse)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr message_;
+    uint32_t status_code_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_auth_2eproto;
+};
+// -------------------------------------------------------------------
+
 class LoginUserByNameRequest final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.auth.LoginUserByNameRequest) */ {
  public:
@@ -940,7 +1244,7 @@ class LoginUserByNameRequest final :
                &_LoginUserByNameRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    3;
+    5;
 
   friend void swap(LoginUserByNameRequest& a, LoginUserByNameRequest& b) {
     a.Swap(&b);
@@ -1120,7 +1424,7 @@ class LoginUserByNameResponse final :
                &_LoginUserByNameResponse_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    4;
+    6;
 
   friend void swap(LoginUserByNameResponse& a, LoginUserByNameResponse& b) {
     a.Swap(&b);
@@ -1193,14 +1497,28 @@ class LoginUserByNameResponse final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kTokenFieldNumber = 1,
-    kUserNameFieldNumber = 2,
-    kAvatarFieldNumber = 3,
-    kEmailFieldNumber = 4,
-    kPhoneFieldNumber = 5,
-    kCreateTimeFieldNumber = 6,
+    kMessageFieldNumber = 2,
+    kTokenFieldNumber = 3,
+    kUserNameFieldNumber = 4,
+    kAvatarFieldNumber = 5,
+    kCreateTimeFieldNumber = 8,
+    kStatusCodeFieldNumber = 1,
   };
-  // string token = 1;
+  // string message = 2;
+  void clear_message();
+  const std::string& message() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_message(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_message();
+  PROTOBUF_NODISCARD std::string* release_message();
+  void set_allocated_message(std::string* message);
+  private:
+  const std::string& _internal_message() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_message(const std::string& value);
+  std::string* _internal_mutable_message();
+  public:
+
+  // string token = 3;
   void clear_token();
   const std::string& token() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -1214,7 +1532,7 @@ class LoginUserByNameResponse final :
   std::string* _internal_mutable_token();
   public:
 
-  // string user_name = 2;
+  // string user_name = 4;
   void clear_user_name();
   const std::string& user_name() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -1228,7 +1546,7 @@ class LoginUserByNameResponse final :
   std::string* _internal_mutable_user_name();
   public:
 
-  // bytes avatar = 3;
+  // bytes avatar = 5;
   void clear_avatar();
   const std::string& avatar() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -1242,35 +1560,7 @@ class LoginUserByNameResponse final :
   std::string* _internal_mutable_avatar();
   public:
 
-  // string email = 4;
-  void clear_email();
-  const std::string& email() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_email(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_email();
-  PROTOBUF_NODISCARD std::string* release_email();
-  void set_allocated_email(std::string* email);
-  private:
-  const std::string& _internal_email() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_email(const std::string& value);
-  std::string* _internal_mutable_email();
-  public:
-
-  // string phone = 5;
-  void clear_phone();
-  const std::string& phone() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_phone(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_phone();
-  PROTOBUF_NODISCARD std::string* release_phone();
-  void set_allocated_phone(std::string* phone);
-  private:
-  const std::string& _internal_phone() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_phone(const std::string& value);
-  std::string* _internal_mutable_phone();
-  public:
-
-  // string create_time = 6;
+  // string create_time = 8;
   void clear_create_time();
   const std::string& create_time() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -1284,6 +1574,15 @@ class LoginUserByNameResponse final :
   std::string* _internal_mutable_create_time();
   public:
 
+  // uint32 status_code = 1;
+  void clear_status_code();
+  uint32_t status_code() const;
+  void set_status_code(uint32_t value);
+  private:
+  uint32_t _internal_status_code() const;
+  void _internal_set_status_code(uint32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:vosfs.auth.LoginUserByNameResponse)
  private:
   class _Internal;
@@ -1292,12 +1591,12 @@ class LoginUserByNameResponse final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr message_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr token_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr user_name_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr avatar_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr email_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr phone_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr create_time_;
+    uint32_t status_code_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1353,7 +1652,7 @@ class LogoutUserRequest final :
                &_LogoutUserRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    5;
+    7;
 
   friend void swap(LogoutUserRequest& a, LogoutUserRequest& b) {
     a.Swap(&b);
@@ -1506,7 +1805,7 @@ class UpdateUserNameRequest final :
                &_UpdateUserNameRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    6;
+    8;
 
   friend void swap(UpdateUserNameRequest& a, UpdateUserNameRequest& b) {
     a.Swap(&b);
@@ -1686,7 +1985,7 @@ class UpdateUserAvatarRequest final :
                &_UpdateUserAvatarRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    7;
+    9;
 
   friend void swap(UpdateUserAvatarRequest& a, UpdateUserAvatarRequest& b) {
     a.Swap(&b);
@@ -1866,7 +2165,7 @@ class UpdateUserPasswordRequest final :
                &_UpdateUserPasswordRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    8;
+    10;
 
   friend void swap(UpdateUserPasswordRequest& a, UpdateUserPasswordRequest& b) {
     a.Swap(&b);
@@ -2035,7 +2334,7 @@ class UpdateUserRoleRequest final :
                &_UpdateUserRoleRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    9;
+    11;
 
   friend void swap(UpdateUserRoleRequest& a, UpdateUserRoleRequest& b) {
     a.Swap(&b);
@@ -2199,7 +2498,7 @@ class UpdateStatusRequest final :
                &_UpdateStatusRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    10;
+    12;
 
   friend void swap(UpdateStatusRequest& a, UpdateStatusRequest& b) {
     a.Swap(&b);
@@ -2363,7 +2662,7 @@ class UpdateQuotaRequest final :
                &_UpdateQuotaRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    11;
+    13;
 
   friend void swap(UpdateQuotaRequest& a, UpdateQuotaRequest& b) {
     a.Swap(&b);
@@ -2606,106 +2905,6 @@ inline void User::set_allocated_avatar(std::string* avatar) {
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:vosfs.auth.User.avatar)
-}
-
-// string email = 4;
-inline void User::clear_email() {
-  _impl_.email_.ClearToEmpty();
-}
-inline const std::string& User::email() const {
-  // @@protoc_insertion_point(field_get:vosfs.auth.User.email)
-  return _internal_email();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void User::set_email(ArgT0&& arg0, ArgT... args) {
- 
- _impl_.email_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:vosfs.auth.User.email)
-}
-inline std::string* User::mutable_email() {
-  std::string* _s = _internal_mutable_email();
-  // @@protoc_insertion_point(field_mutable:vosfs.auth.User.email)
-  return _s;
-}
-inline const std::string& User::_internal_email() const {
-  return _impl_.email_.Get();
-}
-inline void User::_internal_set_email(const std::string& value) {
-  
-  _impl_.email_.Set(value, GetArenaForAllocation());
-}
-inline std::string* User::_internal_mutable_email() {
-  
-  return _impl_.email_.Mutable(GetArenaForAllocation());
-}
-inline std::string* User::release_email() {
-  // @@protoc_insertion_point(field_release:vosfs.auth.User.email)
-  return _impl_.email_.Release();
-}
-inline void User::set_allocated_email(std::string* email) {
-  if (email != nullptr) {
-    
-  } else {
-    
-  }
-  _impl_.email_.SetAllocated(email, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.email_.IsDefault()) {
-    _impl_.email_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:vosfs.auth.User.email)
-}
-
-// string phone = 5;
-inline void User::clear_phone() {
-  _impl_.phone_.ClearToEmpty();
-}
-inline const std::string& User::phone() const {
-  // @@protoc_insertion_point(field_get:vosfs.auth.User.phone)
-  return _internal_phone();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void User::set_phone(ArgT0&& arg0, ArgT... args) {
- 
- _impl_.phone_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:vosfs.auth.User.phone)
-}
-inline std::string* User::mutable_phone() {
-  std::string* _s = _internal_mutable_phone();
-  // @@protoc_insertion_point(field_mutable:vosfs.auth.User.phone)
-  return _s;
-}
-inline const std::string& User::_internal_phone() const {
-  return _impl_.phone_.Get();
-}
-inline void User::_internal_set_phone(const std::string& value) {
-  
-  _impl_.phone_.Set(value, GetArenaForAllocation());
-}
-inline std::string* User::_internal_mutable_phone() {
-  
-  return _impl_.phone_.Mutable(GetArenaForAllocation());
-}
-inline std::string* User::release_phone() {
-  // @@protoc_insertion_point(field_release:vosfs.auth.User.phone)
-  return _impl_.phone_.Release();
-}
-inline void User::set_allocated_phone(std::string* phone) {
-  if (phone != nullptr) {
-    
-  } else {
-    
-  }
-  _impl_.phone_.SetAllocated(phone, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.phone_.IsDefault()) {
-    _impl_.phone_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:vosfs.auth.User.phone)
 }
 
 // string password = 6;
@@ -3104,6 +3303,80 @@ inline void RegisterUserRequest::set_allocated_admin_secret(std::string* admin_s
 
 // -------------------------------------------------------------------
 
+// RegisterUserResponse
+
+// uint32 status_code = 1;
+inline void RegisterUserResponse::clear_status_code() {
+  _impl_.status_code_ = 0u;
+}
+inline uint32_t RegisterUserResponse::_internal_status_code() const {
+  return _impl_.status_code_;
+}
+inline uint32_t RegisterUserResponse::status_code() const {
+  // @@protoc_insertion_point(field_get:vosfs.auth.RegisterUserResponse.status_code)
+  return _internal_status_code();
+}
+inline void RegisterUserResponse::_internal_set_status_code(uint32_t value) {
+  
+  _impl_.status_code_ = value;
+}
+inline void RegisterUserResponse::set_status_code(uint32_t value) {
+  _internal_set_status_code(value);
+  // @@protoc_insertion_point(field_set:vosfs.auth.RegisterUserResponse.status_code)
+}
+
+// string message = 2;
+inline void RegisterUserResponse::clear_message() {
+  _impl_.message_.ClearToEmpty();
+}
+inline const std::string& RegisterUserResponse::message() const {
+  // @@protoc_insertion_point(field_get:vosfs.auth.RegisterUserResponse.message)
+  return _internal_message();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void RegisterUserResponse::set_message(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.message_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.auth.RegisterUserResponse.message)
+}
+inline std::string* RegisterUserResponse::mutable_message() {
+  std::string* _s = _internal_mutable_message();
+  // @@protoc_insertion_point(field_mutable:vosfs.auth.RegisterUserResponse.message)
+  return _s;
+}
+inline const std::string& RegisterUserResponse::_internal_message() const {
+  return _impl_.message_.Get();
+}
+inline void RegisterUserResponse::_internal_set_message(const std::string& value) {
+  
+  _impl_.message_.Set(value, GetArenaForAllocation());
+}
+inline std::string* RegisterUserResponse::_internal_mutable_message() {
+  
+  return _impl_.message_.Mutable(GetArenaForAllocation());
+}
+inline std::string* RegisterUserResponse::release_message() {
+  // @@protoc_insertion_point(field_release:vosfs.auth.RegisterUserResponse.message)
+  return _impl_.message_.Release();
+}
+inline void RegisterUserResponse::set_allocated_message(std::string* message) {
+  if (message != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.message_.SetAllocated(message, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.message_.IsDefault()) {
+    _impl_.message_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:vosfs.auth.RegisterUserResponse.message)
+}
+
+// -------------------------------------------------------------------
+
 // DeleteUserRequest
 
 // string token = 1;
@@ -3204,6 +3477,80 @@ inline void DeleteUserRequest::set_allocated_password(std::string* password) {
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:vosfs.auth.DeleteUserRequest.password)
+}
+
+// -------------------------------------------------------------------
+
+// DeleteUserResponse
+
+// uint32 status_code = 1;
+inline void DeleteUserResponse::clear_status_code() {
+  _impl_.status_code_ = 0u;
+}
+inline uint32_t DeleteUserResponse::_internal_status_code() const {
+  return _impl_.status_code_;
+}
+inline uint32_t DeleteUserResponse::status_code() const {
+  // @@protoc_insertion_point(field_get:vosfs.auth.DeleteUserResponse.status_code)
+  return _internal_status_code();
+}
+inline void DeleteUserResponse::_internal_set_status_code(uint32_t value) {
+  
+  _impl_.status_code_ = value;
+}
+inline void DeleteUserResponse::set_status_code(uint32_t value) {
+  _internal_set_status_code(value);
+  // @@protoc_insertion_point(field_set:vosfs.auth.DeleteUserResponse.status_code)
+}
+
+// string message = 2;
+inline void DeleteUserResponse::clear_message() {
+  _impl_.message_.ClearToEmpty();
+}
+inline const std::string& DeleteUserResponse::message() const {
+  // @@protoc_insertion_point(field_get:vosfs.auth.DeleteUserResponse.message)
+  return _internal_message();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void DeleteUserResponse::set_message(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.message_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.auth.DeleteUserResponse.message)
+}
+inline std::string* DeleteUserResponse::mutable_message() {
+  std::string* _s = _internal_mutable_message();
+  // @@protoc_insertion_point(field_mutable:vosfs.auth.DeleteUserResponse.message)
+  return _s;
+}
+inline const std::string& DeleteUserResponse::_internal_message() const {
+  return _impl_.message_.Get();
+}
+inline void DeleteUserResponse::_internal_set_message(const std::string& value) {
+  
+  _impl_.message_.Set(value, GetArenaForAllocation());
+}
+inline std::string* DeleteUserResponse::_internal_mutable_message() {
+  
+  return _impl_.message_.Mutable(GetArenaForAllocation());
+}
+inline std::string* DeleteUserResponse::release_message() {
+  // @@protoc_insertion_point(field_release:vosfs.auth.DeleteUserResponse.message)
+  return _impl_.message_.Release();
+}
+inline void DeleteUserResponse::set_allocated_message(std::string* message) {
+  if (message != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.message_.SetAllocated(message, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.message_.IsDefault()) {
+    _impl_.message_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:vosfs.auth.DeleteUserResponse.message)
 }
 
 // -------------------------------------------------------------------
@@ -3334,7 +3681,77 @@ inline void LoginUserByNameRequest::set_role(::vosfs::auth::User_Role value) {
 
 // LoginUserByNameResponse
 
-// string token = 1;
+// uint32 status_code = 1;
+inline void LoginUserByNameResponse::clear_status_code() {
+  _impl_.status_code_ = 0u;
+}
+inline uint32_t LoginUserByNameResponse::_internal_status_code() const {
+  return _impl_.status_code_;
+}
+inline uint32_t LoginUserByNameResponse::status_code() const {
+  // @@protoc_insertion_point(field_get:vosfs.auth.LoginUserByNameResponse.status_code)
+  return _internal_status_code();
+}
+inline void LoginUserByNameResponse::_internal_set_status_code(uint32_t value) {
+  
+  _impl_.status_code_ = value;
+}
+inline void LoginUserByNameResponse::set_status_code(uint32_t value) {
+  _internal_set_status_code(value);
+  // @@protoc_insertion_point(field_set:vosfs.auth.LoginUserByNameResponse.status_code)
+}
+
+// string message = 2;
+inline void LoginUserByNameResponse::clear_message() {
+  _impl_.message_.ClearToEmpty();
+}
+inline const std::string& LoginUserByNameResponse::message() const {
+  // @@protoc_insertion_point(field_get:vosfs.auth.LoginUserByNameResponse.message)
+  return _internal_message();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void LoginUserByNameResponse::set_message(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.message_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.auth.LoginUserByNameResponse.message)
+}
+inline std::string* LoginUserByNameResponse::mutable_message() {
+  std::string* _s = _internal_mutable_message();
+  // @@protoc_insertion_point(field_mutable:vosfs.auth.LoginUserByNameResponse.message)
+  return _s;
+}
+inline const std::string& LoginUserByNameResponse::_internal_message() const {
+  return _impl_.message_.Get();
+}
+inline void LoginUserByNameResponse::_internal_set_message(const std::string& value) {
+  
+  _impl_.message_.Set(value, GetArenaForAllocation());
+}
+inline std::string* LoginUserByNameResponse::_internal_mutable_message() {
+  
+  return _impl_.message_.Mutable(GetArenaForAllocation());
+}
+inline std::string* LoginUserByNameResponse::release_message() {
+  // @@protoc_insertion_point(field_release:vosfs.auth.LoginUserByNameResponse.message)
+  return _impl_.message_.Release();
+}
+inline void LoginUserByNameResponse::set_allocated_message(std::string* message) {
+  if (message != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.message_.SetAllocated(message, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.message_.IsDefault()) {
+    _impl_.message_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:vosfs.auth.LoginUserByNameResponse.message)
+}
+
+// string token = 3;
 inline void LoginUserByNameResponse::clear_token() {
   _impl_.token_.ClearToEmpty();
 }
@@ -3384,7 +3801,7 @@ inline void LoginUserByNameResponse::set_allocated_token(std::string* token) {
   // @@protoc_insertion_point(field_set_allocated:vosfs.auth.LoginUserByNameResponse.token)
 }
 
-// string user_name = 2;
+// string user_name = 4;
 inline void LoginUserByNameResponse::clear_user_name() {
   _impl_.user_name_.ClearToEmpty();
 }
@@ -3434,7 +3851,7 @@ inline void LoginUserByNameResponse::set_allocated_user_name(std::string* user_n
   // @@protoc_insertion_point(field_set_allocated:vosfs.auth.LoginUserByNameResponse.user_name)
 }
 
-// bytes avatar = 3;
+// bytes avatar = 5;
 inline void LoginUserByNameResponse::clear_avatar() {
   _impl_.avatar_.ClearToEmpty();
 }
@@ -3484,107 +3901,7 @@ inline void LoginUserByNameResponse::set_allocated_avatar(std::string* avatar) {
   // @@protoc_insertion_point(field_set_allocated:vosfs.auth.LoginUserByNameResponse.avatar)
 }
 
-// string email = 4;
-inline void LoginUserByNameResponse::clear_email() {
-  _impl_.email_.ClearToEmpty();
-}
-inline const std::string& LoginUserByNameResponse::email() const {
-  // @@protoc_insertion_point(field_get:vosfs.auth.LoginUserByNameResponse.email)
-  return _internal_email();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void LoginUserByNameResponse::set_email(ArgT0&& arg0, ArgT... args) {
- 
- _impl_.email_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:vosfs.auth.LoginUserByNameResponse.email)
-}
-inline std::string* LoginUserByNameResponse::mutable_email() {
-  std::string* _s = _internal_mutable_email();
-  // @@protoc_insertion_point(field_mutable:vosfs.auth.LoginUserByNameResponse.email)
-  return _s;
-}
-inline const std::string& LoginUserByNameResponse::_internal_email() const {
-  return _impl_.email_.Get();
-}
-inline void LoginUserByNameResponse::_internal_set_email(const std::string& value) {
-  
-  _impl_.email_.Set(value, GetArenaForAllocation());
-}
-inline std::string* LoginUserByNameResponse::_internal_mutable_email() {
-  
-  return _impl_.email_.Mutable(GetArenaForAllocation());
-}
-inline std::string* LoginUserByNameResponse::release_email() {
-  // @@protoc_insertion_point(field_release:vosfs.auth.LoginUserByNameResponse.email)
-  return _impl_.email_.Release();
-}
-inline void LoginUserByNameResponse::set_allocated_email(std::string* email) {
-  if (email != nullptr) {
-    
-  } else {
-    
-  }
-  _impl_.email_.SetAllocated(email, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.email_.IsDefault()) {
-    _impl_.email_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:vosfs.auth.LoginUserByNameResponse.email)
-}
-
-// string phone = 5;
-inline void LoginUserByNameResponse::clear_phone() {
-  _impl_.phone_.ClearToEmpty();
-}
-inline const std::string& LoginUserByNameResponse::phone() const {
-  // @@protoc_insertion_point(field_get:vosfs.auth.LoginUserByNameResponse.phone)
-  return _internal_phone();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void LoginUserByNameResponse::set_phone(ArgT0&& arg0, ArgT... args) {
- 
- _impl_.phone_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:vosfs.auth.LoginUserByNameResponse.phone)
-}
-inline std::string* LoginUserByNameResponse::mutable_phone() {
-  std::string* _s = _internal_mutable_phone();
-  // @@protoc_insertion_point(field_mutable:vosfs.auth.LoginUserByNameResponse.phone)
-  return _s;
-}
-inline const std::string& LoginUserByNameResponse::_internal_phone() const {
-  return _impl_.phone_.Get();
-}
-inline void LoginUserByNameResponse::_internal_set_phone(const std::string& value) {
-  
-  _impl_.phone_.Set(value, GetArenaForAllocation());
-}
-inline std::string* LoginUserByNameResponse::_internal_mutable_phone() {
-  
-  return _impl_.phone_.Mutable(GetArenaForAllocation());
-}
-inline std::string* LoginUserByNameResponse::release_phone() {
-  // @@protoc_insertion_point(field_release:vosfs.auth.LoginUserByNameResponse.phone)
-  return _impl_.phone_.Release();
-}
-inline void LoginUserByNameResponse::set_allocated_phone(std::string* phone) {
-  if (phone != nullptr) {
-    
-  } else {
-    
-  }
-  _impl_.phone_.SetAllocated(phone, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.phone_.IsDefault()) {
-    _impl_.phone_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:vosfs.auth.LoginUserByNameResponse.phone)
-}
-
-// string create_time = 6;
+// string create_time = 8;
 inline void LoginUserByNameResponse::clear_create_time() {
   _impl_.create_time_.ClearToEmpty();
 }
@@ -4265,6 +4582,10 @@ inline void UpdateQuotaRequest::set_new_quota(int64_t value) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

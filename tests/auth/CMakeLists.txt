@@ -1,0 +1,9 @@
+file(GLOB SRCS PRIVATE
+        "*.cpp"
+)
+
+foreach(source ${SRCS})
+    get_filename_component(basename ${source} NAME_WE)
+    add_executable(${basename} ${source} ${AUTH_SRCS})
+    target_link_libraries(${basename} ${DEPEND_LIBS})
+endforeach ()

@@ -47,7 +47,6 @@ find_package(jwt-cpp CONFIG REQUIRED)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/api)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-# ====== LIBRARY ======
 set(DEPEND_LIBS
         ${LIBURING_LIBRARIES}
         ${PROTOBUF_LIBRARIES}
@@ -58,7 +57,5 @@ set(DEPEND_LIBS
         jwt-cpp::jwt-cpp
 )
 
-add_subdirectory(src/vosfs)
-add_subdirectory(src/vosfs-auth)
-# ====== TEST ======
+add_subdirectory(src)
 add_subdirectory(tests)

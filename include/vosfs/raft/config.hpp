@@ -1,11 +1,10 @@
 #pragma once
+#include <cstdint>
 #include <string_view>
 
 namespace vosfs::raft::detail {
 // ====== Port configuration ======
 constexpr uint16_t RAFT_RPC_PORT = 8888;
-
-constexpr uint16_t FS_RPC_PORT = 9999;
 
 // ====== Raft internal configuration ======
 constexpr std::size_t HEARTBEAT_INTERVAL = 100;
