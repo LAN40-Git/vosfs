@@ -42,6 +42,12 @@ message AppendEntriesResponse {
   optional uint64 conflict_index = 5;
 }
 
+message Snapshot {
+  uint64 last_included_index = 1;
+  uint64 last_included_term = 2;
+  map<uint64, Inode> inodes = 3;
+}
+
 message InstallSnapshotRequest {
   uint64 term = 1;
   uint64 leader_id = 2;
@@ -57,27 +63,7 @@ message InstallSnapshotResponse {
   uint64 term = 2;
 }
 
-message RaftNodeInfo {
-  uint64 id = 1;
-  string name = 2;
-  string ip = 3;
-}
-
-message RaftClusterInfo {
-  uint64 id = 1;
-  repeated RaftNodeInfo infos = 2;
-}
-
-message DataNodeInfo {
-  string ip = 1;
-  uint32 port = 2;
-}
-
-message DataClusterInfo {
-  repeated DataNodeInfo infos = 1;
-}
-
-message ChunkMetadata {
+message ChunkInfo {
   uint64 id = 1;
   uint64 offset = 2;
   uint64 size = 3;
@@ -85,68 +71,13 @@ message ChunkMetadata {
   uint32 port = 5;
 }
 
-enum InodeType {
-  kFile = 0;
-  kDir = 1;
-}
-
-message DirectoryEntry {
-  uint64 ino = 1;
-  string name = 2;
-}
-
-message DirectoryData {
-  repeated DirectoryEntry entries = 1;
-}
-
 message Inode {
   uint64 ino = 1;
-  uint64 parent_ino = 2;
-  uint64 size = 3;
-  string name = 4;
-  uint64 ctime = 5;
-  uint64 mtime = 6;
-  InodeType type = 7;
-  repeated ChunkMetadata chunk_metadata = 8;
-  DirectoryData dir_data = 9;
-}
-
-message SnapshotMetadata {
-  uint64 last_included_index = 1;
-  uint64 last_included_term = 2;
-}
-
-message Snapshot {
-  repeated Inode inodes = 1;
-  SnapshotMetadata snapshot_metadata = 2;
-  repeated RaftNodeInfo raft_node_infos = 3;
-}
-
-message TransmitFileRequest {
-  uint64 parent_ino = 1;
-  repeated ChunkMetadata chunk_metadata = 2;
-}
-
-message TransmitFileResponse {
-  bool success = 1;
-  string path = 2;
-  repeated ChunkMetadata chunk_metadata = 3;
-}
-
-message PutFileRequest {
-  uint64 parent_ino = 1;
-  uint64 size = 2;
-  string name = 3;
-  bool is_dir = 4;
-  repeated ChunkMetadata chunk_metadata = 5;
-}
-
-message PutFileResponse {
-  bool success = 1;
-}
-
-message EntryCommand {
-  oneof cmd {
-      PutFileRequest put_file = 1;
-  }
+  uint32 mode = 2;
+  uint64 uid = 3;
+  uint64 gid = 4;
+  uint64 atime = 5;
+  uint64 ctime = 6;
+  uint64 mtime = 7;
+  uint32 nlink = 8;
 }

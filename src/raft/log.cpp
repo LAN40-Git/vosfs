@@ -1,29 +1,11 @@
-#include "vosfs/raft/detail/log.hpp"
-#include <kosio/common/debug.hpp>
-
-auto vosfs::raft::detail::RaftLog::create(const Persister& persister) -> Result<RaftLog> {
-    // 恢复快照元数据
-    auto has_snapshot_metadata = persister.load_snapshot_metadata();
-    if (!has_snapshot_metadata) {
-        return std::unexpected{has_snapshot_metadata.error()};
-    }
-    auto snapshot_metadata = std::move(has_snapshot_metadata.value());
-
-    // 恢复日志
-    auto has_entries = persister.load_entries(snapshot_metadata.last_included_index());
-    if (!has_entries) {
-        return std::unexpected{has_entries.error()};
-    }
-    auto entries = std::move(has_entries.value());
-    return RaftLog{std::move(snapshot_metadata), std::move(entries)};
-}
+#include "vosfs/raft/log.hpp"
 
 auto vosfs::raft::detail::RaftLog::last_included_index() const noexcept -> uint64_t {
-    return snapshot_metadata_.last_included_index();
+    return last_included_index_;
 }
 
 auto vosfs::raft::detail::RaftLog::last_included_term() const noexcept -> uint64_t {
-    return snapshot_metadata_.last_included_term();
+    return last_included_term_;
 }
 
 auto vosfs::raft::detail::RaftLog::last_log_index() const noexcept -> uint64_t {
@@ -91,9 +73,4 @@ void vosfs::raft::detail::RaftLog::truncate_entries_before(uint64_t index) {
     assert(index > last_included_index() && index <= last_log_index());
     auto arr_idx = static_cast<int64_t>(index - last_included_index() - 1);
     entries_.erase(entries_.begin() + arr_idx, entries_.end());
-}
-
-void vosfs::raft::detail::RaftLog::apply_snapshot(const Snapshot& snapshot) {
-    snapshot_metadata_ = snapshot.snapshot_metadata();
-    entries_.clear();
 }

@@ -1,20 +1,23 @@
 #include "vosfs/raft/node.hpp"
 
 vosfs::raft::RaftNode::RaftNode(
-    Persister&& persister,
-    detail::RaftLog&& logs,
-    detail::Transport&& transport,
-    DataClusterInfo&& data_cluster_info,
-    HardState&& hard_state)
-    : persister_(std::move(persister))
+    detail::Config config,
+    Persister persister,
+    detail::RaftLog logs,
+    detail::Transport transport,
+    HardState hard_state)
+    : config_(config)
+    , persister_(std::move(persister))
     , logs_(std::move(logs))
     , transport_(std::move(transport))
-    , data_cluster_info_(std::move(data_cluster_info))
     , hard_state_(std::move(hard_state)) {}
 
-auto vosfs::raft::RaftNode::create(std::string_view data_dir) -> kosio::async::Task<Result<std::unique_ptr<RaftNode>>> {
+auto vosfs::raft::RaftNode::create(detail::Config config) -> Task<Result<std::unique_ptr<RaftNode>>> {
+    // 创建快照层
+
+
     // 创建持久层
-    auto has_persister = Persister::create(data_dir);
+    auto has_persister = Persister::create(config.data_dir);
     if (!has_persister) {
         co_return std::unexpected{has_persister.error()};
     }
@@ -34,13 +37,6 @@ auto vosfs::raft::RaftNode::create(std::string_view data_dir) -> kosio::async::T
     }
     auto transport = std::move(has_transport.value());
 
-    // 加载数据节点信息
-    auto has_data_cluster_info = persister.load_data_cluster_info();
-    if (!has_data_cluster_info) {
-        co_return std::unexpected{has_data_cluster_info.error()};
-    }
-    auto data_cluster_info = std::move(has_data_cluster_info.value());
-
     // 加载 HardState
     auto has_hard_state = persister.load_hard_state();
     if (!has_hard_state) {
@@ -50,24 +46,20 @@ auto vosfs::raft::RaftNode::create(std::string_view data_dir) -> kosio::async::T
 
     // 创建节点
     co_return std::unique_ptr<RaftNode>(new RaftNode{
+        std::move(config),
         std::move(persister),
         std::move(logs),
         std::move(transport),
-        std::move(data_cluster_info),
         std::move(hard_state)});
 }
 
-auto vosfs::raft::RaftNode::wait() -> kosio::async::Task<void> {
-    kosio::spawn(election_loop());
-    kosio::spawn(heartbeat_loop());
-    // TODO:
+auto vosfs::raft::RaftNode::wait() -> Task<void> {
+
 }
 
-auto vosfs::raft::RaftNode::apply_snapshot(Snapshot& snapshot) -> kosio::async::Task<void> {
+auto vosfs::raft::RaftNode::apply_snapshot(Snapshot& snapshot) -> Task<void> {
     // 缓存新快照
     snapshot_data_ = snapshot.SerializeAsString();
-    // 持久层持久化快照数据和元数据
-    persister_.save_snapshot(snapshot);
     // 状态机应用快照-更新 Inode 信息
     state_machine_.apply_snapshot(snapshot);
     // 日志层应用快照-更新快照元数据
@@ -76,7 +68,7 @@ auto vosfs::raft::RaftNode::apply_snapshot(Snapshot& snapshot) -> kosio::async::
     co_await transport_.apply_snapshot(snapshot);
 }
 
-auto vosfs::raft::RaftNode::election_loop() -> kosio::async::Task<void> {
+auto vosfs::raft::RaftNode::election_loop() -> Task<void> {
     kosio::util::FastRand rand;
     while (!is_shutdown_.load(std::memory_order_relaxed)) {
         // [150,300]ms timeout
@@ -130,12 +122,11 @@ auto vosfs::raft::RaftNode::election_loop() -> kosio::async::Task<void> {
                 co_await this->handle_request_vote_response(response);
             });
     }
-    latch_.count_down();
 }
 
-auto vosfs::raft::RaftNode::heartbeat_loop() -> kosio::async::Task<void> {
+auto vosfs::raft::RaftNode::heartbeat_loop() -> Task<void> {
     while (!is_shutdown_.load(std::memory_order_relaxed)) {
-        co_await kosio::time::sleep(detail::HEARTBEAT_INTERVAL);
+        co_await kosio::time::sleep(config_.heartbeat_interval);
 
         if (role_.load(std::memory_order_acquire) != kLeader) {
             continue;
@@ -171,7 +162,7 @@ auto vosfs::raft::RaftNode::heartbeat_loop() -> kosio::async::Task<void> {
                     continue;
                 }
 
-                auto batch_size = std::min(detail::MAX_ENTRIES_PER_APPEND, last_log_index - next_index + 1);
+                auto batch_size = std::min(config_.max_append_entries_size, last_log_index - next_index + 1);
                 entries = logs_.get_entries(next_index, batch_size);
             }
 
@@ -203,10 +194,9 @@ auto vosfs::raft::RaftNode::heartbeat_loop() -> kosio::async::Task<void> {
                 });
         }
     }
-    latch_.count_down();
 }
 
-auto vosfs::raft::RaftNode::send_snapshot(uint64_t member_id, uint64_t offset) -> kosio::async::Task<void> {
+auto vosfs::raft::RaftNode::send_snapshot(uint64_t member_id, uint64_t offset) -> Task<void> {
     if (snapshot_data_.empty()) {
         co_return;
     }
@@ -215,7 +205,7 @@ auto vosfs::raft::RaftNode::send_snapshot(uint64_t member_id, uint64_t offset) -
     auto leader_id = transport_.member_id();
     auto last_included_index = logs_.last_included_index();
     auto last_included_term = logs_.last_included_term();
-    auto size = std::min(detail::MAX_SNAPSHOT_CHUNK_SIZE, snapshot_data_.size() - offset);
+    auto size = std::min(config_.max_snapshot_chunk_size, snapshot_data_.size() - offset);
     auto data = snapshot_data_.substr(offset, size);
     snapshot_context_[member_id] += size;
     auto done = snapshot_context_[member_id] >= snapshot_data_.size();
@@ -268,7 +258,7 @@ void vosfs::raft::RaftNode::apply_to_state_machine() {
     while (last_applied_ < commit_index) {
         ++last_applied_;
         state_machine_.apply(logs_.get_entry(last_applied_));
-        if (last_applied_ % detail::SNAPSHOT_INTERVAL == 0) {
+        if (last_applied_ % config_.snapshot_interval == 0) {
             // TODO: 创建快照
 
         }
@@ -276,7 +266,7 @@ void vosfs::raft::RaftNode::apply_to_state_machine() {
 }
 
 auto vosfs::raft::RaftNode::handle_request_vote_request(
-    const RequestVoteRequest& request) -> kosio::async::Task<RequestVoteResponse> {
+    const RequestVoteRequest& request) -> Task<RequestVoteResponse> {
     auto member_id = transport_.member_id();
     auto term = request.term();
     auto candidate_id = request.candidate_id();
@@ -315,7 +305,7 @@ auto vosfs::raft::RaftNode::handle_request_vote_request(
 }
 
 auto vosfs::raft::RaftNode::handle_append_entries_request(
-    const AppendEntriesRequest& request) -> kosio::async::Task<AppendEntriesResponse> {
+    const AppendEntriesRequest& request) -> Task<AppendEntriesResponse> {
     auto member_id = transport_.member_id();
     auto leader_id = request.leader_id();
     auto term = request.term();

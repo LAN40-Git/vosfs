@@ -6,9 +6,7 @@ namespace vosfs::raft {
 class StateMachine {
     using InodeMap = std::unordered_map<uint64_t, Inode>;
 public:
-    void apply(const LogEntry& entry);
-    void apply_snapshot(const Snapshot& snapshot);
-    auto inodes() const -> InodeMap { return inodes_; }
+    void apply_entry(const LogEntry& entry);
 
 private:
     InodeMap inodes_;

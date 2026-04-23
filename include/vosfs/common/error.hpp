@@ -15,6 +15,10 @@ public:
         kDatabaseInsertFailed,
         kDatabaseUpdateFailed,
         kDatabaseDeleteFailed,
+        // ====== 文件错误 ======
+        kFileOpenFailed,
+        kFileCreateFailed,
+        kFileNotFound,
         kMaxErrorCode
     };
 

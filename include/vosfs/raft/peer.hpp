@@ -1,16 +1,15 @@
 #pragma once
 #include <vrpc/net/tcp/tcp_client.hpp>
 #include "raftpb/raft.pb.h"
-#include "vosfs/raft/config.hpp"
 
 namespace vosfs::raft::detail {
 using kosio::async::Task;
 class Peer {
 public:
-    explicit Peer(uint64_t id, std::string_view name, std::string_view peer_ip)
+    explicit Peer(uint64_t id, std::string_view name, std::string_view host, uint16_t port)
         : id_(id)
         , name_(name)
-        , rpc_client_(peer_ip, RAFT_RPC_PORT) {}
+        , rpc_client_(host, port) {}
 
 public:
     Peer(const Peer&) = delete;
@@ -24,7 +23,7 @@ public:
     [[nodiscard]]
     auto name() const noexcept -> std::string_view { return name_; }
     [[nodiscard]]
-    auto ip() const noexcept -> std::string_view { return rpc_client_.ip(); }
+    auto host() const noexcept -> std::string_view { return rpc_client_.host(); }
     [[nodiscard]]
     auto port() const noexcept -> uint16_t { return rpc_client_.port(); }
 

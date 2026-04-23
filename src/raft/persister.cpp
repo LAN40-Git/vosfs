@@ -1,4 +1,4 @@
-#include "../../../include/vosfs/raft/persister.hpp"
+#include "vosfs/raft/persister.hpp"
 #include <kosio/common/debug.hpp>
 
 auto vosfs::raft::Persister::create(std::string_view data_dir) -> Result<Persister> {
@@ -8,58 +8,12 @@ auto vosfs::raft::Persister::create(std::string_view data_dir) -> Result<Persist
     rocksdb::ReadOptions read_options;
     write_options.sync = true;
 
-    auto db_path = std::filesystem::path(data_dir) / detail::DB_DIR;
-    auto ret = detail::RocksDBEngine::create(db_options, write_options, read_options, db_path);
+    auto db_path = std::filesystem::path(data_dir) / detail::RAFT_DB_PATH;
+    auto ret = util::RocksDBEngine::create(db_options, write_options, read_options, db_path);
     if (!ret) {
         return std::unexpected{ret.error()};
     }
     return Persister{std::move(ret.value())};
-}
-
-void vosfs::raft::Persister::init(
-    const RaftNodeInfo& raft_node_info,
-    const RaftClusterInfo& raft_cluster_info,
-    const DataClusterInfo& data_cluster_info) const {
-    if (auto status = engine_.clear(); !status.ok()) {
-        LOG_FATAL("failed to clear rocksdb: {}", status.ToString());
-        std::abort();
-    }
-
-    if (raft_cluster_info.raft_node_infos_size() == 0) {
-        LOG_FATAL("raft cluster info is empty");
-        std::abort();
-    }
-
-    if (data_cluster_info.data_node_infos_size() == 0) {
-        LOG_FATAL("data cluster info is empty");
-        std::abort();
-    }
-
-    // 检查本地节点是否存在于集群
-    bool node_found = false;
-    for (const auto& node : raft_cluster_info.raft_node_infos()) {
-        if (node.id() == raft_node_info.id() &&
-            node.name() == raft_node_info.name() &&
-            node.ip() == raft_node_info.ip()) {
-            node_found = true;
-            break;
-        }
-    }
-    if (!node_found) {
-        LOG_FATAL("local node {} not found in raft cluster", raft_node_info.id());
-        std::abort();
-    }
-
-    HardState hard_state;
-    hard_state.set_current_term(0);
-    save_hard_state(hard_state);
-    save_raft_node_info(raft_node_info);
-    save_raft_cluster_info(raft_cluster_info);
-    save_data_cluster_info(data_cluster_info);
-    SnapshotMetadata snapshot_metadata;
-    snapshot_metadata.set_last_included_index(0);
-    snapshot_metadata.set_last_included_term(0);
-    save_snapshot_metadata(snapshot_metadata);
 }
 
 void vosfs::raft::Persister::save_hard_state(const HardState& hard_state) const {
@@ -74,119 +28,12 @@ auto vosfs::raft::Persister::load_hard_state() const -> Result<HardState> {
     HardState hard_state;
     if (auto status = engine_.get(HARD_STATE_KEY, &payload); !status.ok()) {
         LOG_ERROR("failed to load hard state: {}", status.ToString());
-        return std::unexpected{make_error(Error::kRecoverFailed)};
+        return std::unexpected{make_error(Error::kDatabaseQueryFailed)};
     }
     if (!hard_state.ParseFromString(payload)) {
-        return std::unexpected{make_error(Error::kProtoParseFailed)};
+        return std::unexpected{make_error(Error::kDatabaseQueryFailed)};
     }
     return hard_state;
-}
-
-void vosfs::raft::Persister::save_raft_node_info(const RaftNodeInfo& raft_node_info) const {
-    if (auto status = engine_.put(RAFT_NODE_INFO_KEY, raft_node_info.SerializeAsString()); !status.ok()) {
-        LOG_FATAL("failed to save raft node info: {}", status.ToString());
-        std::abort();
-    }
-}
-
-auto vosfs::raft::Persister::load_raft_node_info() const -> Result<RaftNodeInfo> {
-    std::string payload;
-    RaftNodeInfo raft_node_info;
-    if (auto status = engine_.get(RAFT_NODE_INFO_KEY, &payload); !status.ok()) {
-        LOG_ERROR("failed to load raft node info: {}", status.ToString());
-        return std::unexpected{make_error(Error::kRecoverFailed)};
-    }
-    if (!raft_node_info.ParseFromString(payload)) {
-        return std::unexpected{make_error(Error::kProtoParseFailed)};
-    }
-    return raft_node_info;
-}
-
-void vosfs::raft::Persister::save_raft_cluster_info(const RaftClusterInfo& raft_cluster_info) const {
-    if (auto status = engine_.put(RAFT_CLUSTER_INFO_KEY, raft_cluster_info.SerializeAsString()); !status.ok()) {
-        LOG_FATAL("failed to save raft cluster info: {}", status.ToString());
-        std::abort();
-    }
-}
-
-auto vosfs::raft::Persister::load_raft_cluster_info() const -> Result<RaftClusterInfo> {
-    std::string payload;
-    RaftClusterInfo raft_cluster_info;
-    if (auto status = engine_.get(RAFT_CLUSTER_INFO_KEY, &payload); !status.ok()) {
-        LOG_ERROR("failed to load raft cluster info: {}", status.ToString());
-        return std::unexpected{make_error(Error::kRecoverFailed)};
-    }
-    if (!raft_cluster_info.ParseFromString(payload)) {
-        return std::unexpected{make_error(Error::kProtoParseFailed)};
-    }
-    if (raft_cluster_info.raft_node_infos_size() == 0) {
-        return std::unexpected{make_error(Error::kRecoverFailed)};
-    }
-    return raft_cluster_info;
-}
-
-void vosfs::raft::Persister::save_data_cluster_info(const DataClusterInfo& data_cluster_info) const {
-    if (auto status = engine_.put(DATA_CLUSTER_INFO_KEY, data_cluster_info.SerializeAsString()); !status.ok()) {
-        LOG_FATAL("failed to save data cluster info: {}", status.ToString());
-        std::abort();
-    }
-}
-
-auto vosfs::raft::Persister::load_data_cluster_info() const -> Result<DataClusterInfo> {
-    std::string payload;
-    DataClusterInfo data_cluster_info;
-    if (auto status = engine_.get(DATA_CLUSTER_INFO_KEY, &payload); !status.ok()) {
-        LOG_ERROR("failed to load data cluster info: {}", status.ToString());
-        return std::unexpected{make_error(Error::kRecoverFailed)};
-    }
-    if (!data_cluster_info.ParseFromString(payload)) {
-        return std::unexpected{make_error(Error::kProtoParseFailed)};
-    }
-    if (data_cluster_info.data_node_infos_size() == 0) {
-        return std::unexpected{make_error(Error::kRecoverFailed)};
-    }
-    return data_cluster_info;
-}
-
-void vosfs::raft::Persister::save_snapshot_metadata(const SnapshotMetadata& snapshot_metadata) const {
-    if (auto status = engine_.put(SNAPSHOT_METADATA_KEY, snapshot_metadata.SerializeAsString()); !status.ok()) {
-        LOG_FATAL("failed to save snapshot metadata: {}", status.ToString());
-        std::abort();
-    }
-}
-
-auto vosfs::raft::Persister::load_snapshot_metadata() const -> Result<SnapshotMetadata> {
-    std::string payload;
-    SnapshotMetadata snapshot_metadata;
-    if (auto status = engine_.get(SNAPSHOT_METADATA_KEY, &payload); !status.ok()) {
-        LOG_ERROR("failed to load snapshot metadata: {}", status.ToString());
-        return std::unexpected{make_error(Error::kRecoverFailed)};
-    }
-    if (!snapshot_metadata.ParseFromString(payload)) {
-        return std::unexpected{make_error(Error::kProtoParseFailed)};
-    }
-    return snapshot_metadata;
-}
-
-void vosfs::raft::Persister::save_snapshot(const Snapshot& snapshot) const {
-    if (auto status = engine_.put(SNAPSHOT_KEY, snapshot.SerializeAsString()); !status.ok()) {
-        LOG_FATAL("failed to save snapshot: {}", status.ToString());
-        std::abort();
-    }
-    save_snapshot_metadata(snapshot.snapshot_metadata());
-}
-
-auto vosfs::raft::Persister::load_snapshot() const -> Result<Snapshot> {
-    std::string payload;
-    Snapshot snapshot;
-    if (auto status = engine_.get(SNAPSHOT_KEY, &payload); !status.ok()) {
-        // LOG_ERROR("failed to load snapshot: {}", status.ToString());
-        return std::unexpected{make_error(Error::kRecoverFailed)};
-    }
-    if (!snapshot.ParseFromString(payload)) {
-        return std::unexpected{make_error(Error::kProtoParseFailed)};
-    }
-    return snapshot;
 }
 
 void vosfs::raft::Persister::save_entry(const LogEntry& entry) const {
@@ -217,13 +64,13 @@ auto vosfs::raft::Persister::load_entries(uint64_t last_included_index) const ->
         if (auto status = engine_.get(get_entry_key(index++), &payload); !status.ok()) {
             if (status.code() != rocksdb::Status::kNotFound) {
                 LOG_ERROR("failed to load entries: {}", status.ToString());
-                return std::unexpected{make_error(Error::kRecoverFailed)};
+                return std::unexpected{make_error(Error::kDatabaseQueryFailed)};
             }
             break;
         }
 
         if (!entry.ParseFromString(payload)) {
-            return std::unexpected{make_error(Error::kProtoParseFailed)};
+            return std::unexpected{make_error(Error::kDatabaseQueryFailed)};
         }
         entries.emplace_back(std::move(entry));
     }
