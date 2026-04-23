@@ -20,12 +20,9 @@ public:
 
 public:
     [[REMEMBER_CO_AWAIT]]
-    auto run() -> kosio::async::Task<void>;
-    [[REMEMBER_CO_AWAIT]]
-    auto shutdown() -> kosio::async::Task<void>;
+    auto wait() -> kosio::async::Task<void>;
 
 private:
-    auto init() -> kosio::async::Task<void>;
     auto apply_snapshot(Snapshot& snapshot) -> kosio::async::Task<void>;
     auto election_loop() -> kosio::async::Task<void>;
     auto heartbeat_loop() -> kosio::async::Task<void>;
@@ -71,12 +68,31 @@ private:
         bool vote_granted) -> RequestVoteResponse;
 
     [[nodiscard]]
+    static auto make_append_entries_request(
+        uint64_t term,
+        uint64_t leader_id,
+        uint64_t prev_log_index,
+        uint64_t prev_log_term,
+        std::span<LogEntry> entries,
+        uint64_t leader_commit) -> AppendEntriesRequest;
+
+    [[nodiscard]]
     static auto make_append_entries_response(
         uint64_t id,
         uint64_t term,
         bool success,
         uint64_t last_log_index,
         std::optional<uint64_t> conflict_index) -> AppendEntriesResponse;
+
+    [[nodiscard]]
+    static auto make_install_snapshot_request(
+        uint64_t term,
+        uint64_t leader_id,
+        uint64_t last_included_index,
+        uint64_t last_included_term,
+        uint64_t offset,
+        std::string data,
+        bool done) -> InstallSnapshotRequest;
 
     [[nodiscard]]
     static auto make_install_snapshot_response(
