@@ -5,18 +5,17 @@
 #include <fcntl.h>
 
 namespace vosfs::util {
-// -1: other error, 0: not found, 1: found
-static auto file_exists(const char* path) -> int {
-    struct statx sx;
-    auto ret = statx(AT_FDCWD, path, 0, 0, &sx);
-
-    if (ret == 0) {
-        return 1;
+static auto get_file_size(const char* path) -> int {
+    struct statx sx {};
+    int ret = statx(AT_FDCWD, path, AT_SYMLINK_NOFOLLOW, STATX_SIZE, &sx);
+    if (ret == -1) {
+        if (errno == ENOENT) {
+            return 0;
+        } else {
+            return -1;
+        }
     }
-    if (errno == ENOENT) {
-        return 0;
-    }
 
-    return -1;
+    return sx.stx_size;
 }
 } // namespace vosfs::util

@@ -2,7 +2,7 @@
 #include <kosio/common/debug.hpp>
 #include <kosio/runtime/runtime.hpp>
 
-void vosfs::raft::StateMachine::apply_entry(const LogEntry& entry) {
+void vosfs::raft::detail::StateMachine::apply_entry(const LogEntry& entry) {
     EntryCommand command;
     if (!command.ParseFromString(entry.command())) {
         LOG_FATAL("failed to parse command at entry {}", entry.index());

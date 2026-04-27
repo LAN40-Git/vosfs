@@ -3,75 +3,92 @@
 
 vosfs::raft::RaftNode::RaftNode(
     const detail::Config& config,
-    Persister persister,
+    detail::Snapshotter::Ptr snapshotter,
+    detail::StateMachine state_machine,
+    detail::Persister persister,
     detail::RaftLog logs,
     detail::Transport transport,
     HardState hard_state)
     : config_(std::move(config))
+    , snapshotter_(std::move(snapshotter))
+    , state_machine_(std::move(state_machine))
     , persister_(std::move(persister))
     , logs_(std::move(logs))
     , transport_(std::move(transport))
-    , hard_state_(std::move(hard_state)) {}
+    , hard_state_(std::move(hard_state)) {
+}
 
-auto vosfs::raft::RaftNode::create(detail::Config config) -> Task<Result<std::unique_ptr<RaftNode>>> {
+auto vosfs::raft::RaftNode::create(detail::Config config) -> Result<std::unique_ptr<RaftNode>> {
     auto data_dir = std::filesystem::path(config.data_dir);
     auto snapshot_dir = data_dir / SNAPSHOT_DIR;
     auto db_dir = data_dir / DB_DIR;
 
-    uint64_t last_included_term = 0;
     uint64_t last_included_index = 0;
+    uint64_t last_included_term = 0;
     std::unordered_map<uint64_t, Inode> inodes{};
+
+    // 初始化快照层
+    auto snapshotter = std::make_unique<detail::Snapshotter>((snapshot_dir / SNAPSHOT_FILE_NAME).c_str(), (snapshot_dir / SNAPSHOT_TEMP_FILE_NAME).c_str());
+
     // 尝试加载快照
-    /**
-     * 1. 判断快照是否存在
-     * 2. 若存在则加载，若不存在则使用初始值
-     * 3. 加载 HardState
-     * 4. 加载 日志
-     * 5. 创建日志蹭
-     */
+    if (auto ret = util::get_file_size((snapshot_dir / SNAPSHOT_FILE_NAME).c_str()); ret == -1) {
+        return std::unexpected{make_error(Error::kFileError)};
+    } else if (ret > 0) {
+        auto has_snapshot = snapshotter->load_snapshot();
+        if (!has_snapshot) {
+            return std::unexpected{has_snapshot.error()};
+        }
 
-    auto ret = util::file_exists((snapshot_dir / SNAPSHOT_FILE_NAME).c_str());
-    if (ret == -1) {
-        co_return std::unexpected{make_error(Error::kFileError)};
-    } else if (ret == 1) {
-        // 加载快照
+        auto snapshot = std::move(has_snapshot.value());
+        last_included_term = snapshot.last_included_term();
+        last_included_index = snapshot.last_included_index();
+        auto& inode_map = snapshot.inodes();
 
+        for (const auto& [ino, inode] : inode_map) {
+            inodes.emplace(ino, inode);
+        }
     }
 
+    // 初始化状态机
+    auto state_machine = detail::StateMachine{std::move(inodes)};
+
     // 初始化持久层
-    auto has_persister = Persister::create(db_dir);
+    auto has_persister = detail::Persister::create(db_dir);
     if (!has_persister) {
-        co_return std::unexpected{has_persister.error()};
+        return std::unexpected{has_persister.error()};
     }
     auto persister = std::move(has_persister.value());
 
     // 加载日志
-    auto entries = persister.load_entries(last_included_index);
+    auto has_entries = persister.load_entries(last_included_index);
+    if (!has_entries) {
+        return std::unexpected{has_entries.error()};
+    }
+    auto entries = std::move(has_entries.value());
 
     // 创建日志层
-    auto has_logs = detail::RaftLog::create(persister);
-    if (!has_logs) {
-        co_return std::unexpected{has_logs.error()};
-    }
-    auto logs = std::move(has_logs.value());
+    auto logs = detail::RaftLog{last_included_index, last_included_term, std::move(entries)};
 
     // 创建通信层
-    auto has_transport = co_await detail::Transport::create(persister);
+    auto has_transport = detail::Transport::create(config);
     if (!has_transport) {
-        co_return std::unexpected{has_transport.error()};
+        return std::unexpected{has_transport.error()};
     }
+
     auto transport = std::move(has_transport.value());
 
-    // 加载 HardState
+    // 初始化 HardState
     auto has_hard_state = persister.load_hard_state();
     if (!has_hard_state) {
-        co_return std::unexpected{has_hard_state.error()};
+        return std::unexpected{has_hard_state.error()};
     }
     auto hard_state = std::move(has_hard_state.value());
 
-    // 创建节点
-    co_return std::unique_ptr<RaftNode>(new RaftNode{
+    // 初始化节点
+    return std::unique_ptr<RaftNode>(new RaftNode{
         std::move(config),
+        std::move(snapshotter),
+        std::move(state_machine),
         std::move(persister),
         std::move(logs),
         std::move(transport),
@@ -80,17 +97,6 @@ auto vosfs::raft::RaftNode::create(detail::Config config) -> Task<Result<std::un
 
 auto vosfs::raft::RaftNode::wait() -> Task<void> {
 
-}
-
-auto vosfs::raft::RaftNode::apply_snapshot(Snapshot& snapshot) -> Task<void> {
-    // 缓存新快照
-    snapshot_data_ = snapshot.SerializeAsString();
-    // 状态机应用快照-更新 Inode 信息
-    state_machine_.apply_snapshot(snapshot);
-    // 日志层应用快照-更新快照元数据
-    logs_.apply_snapshot(snapshot);
-    // 通信层应用快照-集群配置
-    co_await transport_.apply_snapshot(snapshot);
 }
 
 auto vosfs::raft::RaftNode::election_loop() -> Task<void> {
@@ -180,10 +186,7 @@ auto vosfs::raft::RaftNode::heartbeat_loop() -> Task<void> {
             // 补发日志或者快照
             if (next_index <= last_log_index) {
                 if (next_index <= logs_.last_included_index()) {
-                    // 若该节点此时未接收快照，则开始发送快照
-                    if (snapshot_context_[member_id] == 0 && !snapshot_data_.empty()) {
-                        co_await send_snapshot(member_id, 0);
-                    }
+                    co_await send_snapshot(member_id);
                     continue;
                 }
 
@@ -221,8 +224,8 @@ auto vosfs::raft::RaftNode::heartbeat_loop() -> Task<void> {
     }
 }
 
-auto vosfs::raft::RaftNode::send_snapshot(uint64_t member_id, uint64_t offset) -> Task<void> {
-    if (snapshot_data_.empty()) {
+auto vosfs::raft::RaftNode::send_snapshot(uint64_t member_id) -> Task<void> {
+    if (snapshot_data_.empty() || co_await snapshotter_->offset_at(member_id) != 0) {
         co_return;
     }
 
@@ -230,29 +233,56 @@ auto vosfs::raft::RaftNode::send_snapshot(uint64_t member_id, uint64_t offset) -
     auto leader_id = transport_.member_id();
     auto last_included_index = logs_.last_included_index();
     auto last_included_term = logs_.last_included_term();
-    auto size = std::min(config_.max_snapshot_chunk_size, snapshot_data_.size() - offset);
-    auto data = snapshot_data_.substr(offset, size);
-    snapshot_context_[member_id] += size;
-    auto done = snapshot_context_[member_id] >= snapshot_data_.size();
 
     // 发送快照安装请求
     auto request = make_install_snapshot_request(
         current_term,
         leader_id,
         last_included_index,
-        last_included_term,
-        offset,
-        std::move(data),
-        done);
+        last_included_term);
+
+    if (auto ret = co_await snapshotter_->load_snapshot_data(member_id, request); !ret) {
+        LOG_ERROR("{}", ret.error());
+        co_return;
+    }
 
     co_await transport_.unicast_install_snapshot_request(
         member_id, request,
-        [this](const vrpc::Status& status, const InstallSnapshotResponse& response) -> kosio::async::Task<void> {
+        [this](const vrpc::Status& status, const InstallSnapshotResponse& response) -> Task<void> {
             if (!status.ok()) {
                 LOG_ERROR("{}", status.message());
             }
             co_await this->handle_install_snapshot_response(response);
         });
+}
+
+auto vosfs::raft::RaftNode::apply_entry() -> Task<void> {
+    auto commit_index = commit_index_;
+    while (last_applied_ < commit_index) {
+        ++last_applied_;
+        state_machine_.apply_entry(logs_.get_entry(last_applied_));
+        if (last_applied_ % config_.snapshot_interval == 0) {
+            Snapshot snapshot;
+            // 创建并保存快照
+            auto last_included_index = last_applied_;
+            auto last_included_term = logs_.get_term(last_included_index);
+            auto& inodes = state_machine_.inodes();
+
+            snapshot.set_last_included_index(last_included_index);
+            snapshot.set_last_included_term(last_included_term);
+
+            for (auto& inode : inodes | std::views::values) {
+                snapshot.mutable_inodes()->emplace(inode.ino(), inode);
+            }
+
+            if (auto ret = co_await snapshotter_->save_snapshot(std::move(snapshot)); !ret) {
+                LOG_FATAL("{}", ret.error());
+            } else {
+                logs_.set_last_included_index(last_included_index);
+                logs_.set_last_included_term(last_included_term);
+            }
+        }
+    }
 }
 
 void vosfs::raft::RaftNode::increase_term_to(uint64_t term) {
@@ -276,18 +306,8 @@ void vosfs::raft::RaftNode::become_leader() {
         next_index_[peer->id()] = logs_.last_log_index() + 1;
         match_index_[peer->id()] = 0;
     }
-}
-
-void vosfs::raft::RaftNode::apply_to_state_machine() {
-    auto commit_index = commit_index_;
-    while (last_applied_ < commit_index) {
-        ++last_applied_;
-        state_machine_.apply(logs_.get_entry(last_applied_));
-        if (last_applied_ % config_.snapshot_interval == 0) {
-            // TODO: 创建快照
-
-        }
-    }
+    // 重置快照偏移
+    snapshotter_->reset_offsets();
 }
 
 auto vosfs::raft::RaftNode::handle_request_vote_request(
@@ -392,7 +412,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
 
     if (leader_commit > commit_index_) {
         commit_index_ = std::min(logs_.last_log_index(), leader_commit);
-        apply_to_state_machine();
+        co_await apply_entry();
     }
 
     co_return make_append_entries_response(
@@ -400,7 +420,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
 }
 
 auto vosfs::raft::RaftNode::handle_install_snapshot_request(
-    const InstallSnapshotRequest& request) -> kosio::async::Task<InstallSnapshotResponse> {
+    const InstallSnapshotRequest& request) -> Task<InstallSnapshotResponse> {
     auto member_id = transport_.member_id();
     auto term = request.term();
     auto leader_id = request.leader_id();
@@ -443,12 +463,21 @@ auto vosfs::raft::RaftNode::handle_install_snapshot_request(
         co_return make_install_snapshot_response(member_id, current_term);
     }
 
-    co_await apply_snapshot(snapshot);
+    // 加载快照
+    auto& inode_map = snapshot.inodes();
+    std::unordered_map<uint64_t, Inode> inodes;
+    for (const auto& [ino, inode] : inode_map) {
+        inodes.emplace(ino, inode);
+    }
+
+    logs_.set_last_included_index(last_included_index);
+    logs_.set_last_included_term(last_included_term);
+    state_machine_.set_inodes(std::move(inodes));
     co_return make_install_snapshot_response(member_id, current_term);
 }
 
 auto vosfs::raft::RaftNode::handle_request_vote_response(
-    const RequestVoteResponse& response) -> kosio::async::Task<void> {
+    const RequestVoteResponse& response) -> Task<void> {
     [[maybe_unused]] auto id = response.id();
     auto term = response.term();
     auto vote_granted = response.vote_granted();
@@ -483,7 +512,7 @@ auto vosfs::raft::RaftNode::handle_request_vote_response(
 }
 
 auto vosfs::raft::RaftNode::handle_append_entries_response(
-    const AppendEntriesResponse& response) -> kosio::async::Task<void> {
+    const AppendEntriesResponse& response) -> Task<void> {
     auto id = response.id();
     auto term = response.term();
     auto success = response.success();
@@ -525,12 +554,12 @@ auto vosfs::raft::RaftNode::handle_append_entries_response(
     std::ranges::sort(idxs);
     if (idxs[idxs.size()/2] > commit_index_) {
         commit_index_ = idxs[idxs.size()/2];
-        apply_to_state_machine();
+        co_await apply_entry();
     }
 }
 
 auto vosfs::raft::RaftNode::handle_install_snapshot_response(
-    const InstallSnapshotResponse& response) -> kosio::async::Task<void> {
+    const InstallSnapshotResponse& response) -> Task<void> {
     auto id = response.id();
     auto term = response.term();
 
@@ -539,20 +568,11 @@ auto vosfs::raft::RaftNode::handle_install_snapshot_response(
 
     auto current_term = hard_state_.current_term();
     if (term > current_term) {
-        snapshot_context_[id] = 0;
         increase_term_to(term);
         co_return;
     }
 
-    auto offset = snapshot_context_[id];
-
-    // 检查快照是否传送完毕
-    if (offset >= snapshot_data_.size()) {
-        snapshot_context_[id] = 0;
-        co_return;
-    }
-
-    co_await send_snapshot(id, offset);
+    co_await send_snapshot(id);
 }
 
 auto vosfs::raft::RaftNode::make_request_vote_request(
@@ -619,18 +639,12 @@ auto vosfs::raft::RaftNode::make_install_snapshot_request(
     uint64_t term,
     uint64_t leader_id,
     uint64_t last_included_index,
-    uint64_t last_included_term,
-    uint64_t offset,
-    std::string data,
-    bool done) -> InstallSnapshotRequest {
+    uint64_t last_included_term) -> InstallSnapshotRequest {
     InstallSnapshotRequest request;
     request.set_term(term);
     request.set_leader_id(leader_id);
     request.set_last_included_index(last_included_index);
     request.set_last_included_term(last_included_term);
-    request.set_offset(offset);
-    request.set_data(std::move(data));
-    request.set_done(done);
     return request;
 }
 

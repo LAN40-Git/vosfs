@@ -18,6 +18,7 @@ vosfs::raft::detail::Transport::Transport(
     , peers_(std::move(peers)) {}
 
 auto vosfs::raft::detail::Transport::create(const Config& config) -> Result<Transport> {
+    // 集群配置文件
     auto config_file = std::filesystem::path(config.config_path);
 
     std::ifstream f(config_file);

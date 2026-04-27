@@ -81,3 +81,8 @@ message Inode {
   uint64 mtime = 7;
   uint32 nlink = 8;
 }
+
+message EntryCommand {
+
+}
+

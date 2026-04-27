@@ -17,9 +17,17 @@ public:
         kDatabaseDeleteFailed,
         // ====== 文件错误 ======
         kFileOpenFailed,
+        kFileSeekFailed,
+        kFileReadFailed,
+        kFileWriteFailed,
+        kFileRenameFailed,
         kFileCreateFailed,
         kFileNotFound,
         kFileError,
+        // ====== 序列化与反序列化错误 ======
+        kParseFailed,
+        kSerializeFailed,
+
         kMaxErrorCode
     };
 
@@ -47,6 +55,14 @@ public:
             return "database delete operation failed";
         case kFileOpenFailed:
             return "file open failed";
+        case kFileSeekFailed:
+            return "file seek failed";
+        case kFileReadFailed:
+            return "file read failed";
+        case kFileWriteFailed:
+            return "file write failed";
+        case kFileRenameFailed:
+            return "file rename operation failed";
         case kFileCreateFailed:
             return "file creation failed";
         case kFileNotFound:

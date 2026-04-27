@@ -1,7 +1,7 @@
 #include "vosfs/raft/persister.hpp"
 #include <kosio/common/debug.hpp>
 
-auto vosfs::raft::Persister::create(const std::filesystem::path& db_dir) -> Result<Persister> {
+auto vosfs::raft::detail::Persister::create(const std::filesystem::path& db_dir) -> Result<Persister> {
     rocksdb::Options db_options;
     db_options.create_if_missing = true;
     rocksdb::WriteOptions write_options;
@@ -15,14 +15,14 @@ auto vosfs::raft::Persister::create(const std::filesystem::path& db_dir) -> Resu
     return Persister{std::move(ret.value())};
 }
 
-void vosfs::raft::Persister::save_hard_state(const HardState& hard_state) const {
+void vosfs::raft::detail::Persister::save_hard_state(const HardState& hard_state) const {
     if (auto status = engine_.put(HARD_STATE_KEY, hard_state.SerializeAsString()); !status.ok()) {
         LOG_FATAL("failed to save hard state: {}", status.ToString());
         std::abort();
     }
 }
 
-auto vosfs::raft::Persister::load_hard_state() const -> Result<HardState> {
+auto vosfs::raft::detail::Persister::load_hard_state() const -> Result<HardState> {
     std::string payload;
     HardState hard_state;
     if (auto status = engine_.get(HARD_STATE_KEY, &payload); !status.ok()) {
@@ -35,14 +35,14 @@ auto vosfs::raft::Persister::load_hard_state() const -> Result<HardState> {
     return hard_state;
 }
 
-void vosfs::raft::Persister::save_entry(const LogEntry& entry) const {
+void vosfs::raft::detail::Persister::save_entry(const LogEntry& entry) const {
     if (auto status = engine_.put(get_entry_key(entry.index()), entry.SerializeAsString()); !status.ok()) {
         LOG_FATAL("failed to save entry at {}: {}", entry.index(), status.ToString());
         std::abort();
     }
 }
 
-void vosfs::raft::Persister::save_entries(const google::protobuf::RepeatedPtrField<LogEntry>& entries) const {
+void vosfs::raft::detail::Persister::save_entries(const google::protobuf::RepeatedPtrField<LogEntry>& entries) const {
     rocksdb::WriteBatch write_batch;
     for (const auto& entry : entries) {
         write_batch.Put(get_entry_key(entry.index()), entry.SerializeAsString());
@@ -54,7 +54,7 @@ void vosfs::raft::Persister::save_entries(const google::protobuf::RepeatedPtrFie
     }
 }
 
-auto vosfs::raft::Persister::load_entries(uint64_t last_included_index) const -> Result<std::vector<LogEntry>> {
+auto vosfs::raft::detail::Persister::load_entries(uint64_t last_included_index) const -> Result<std::vector<LogEntry>> {
     auto index = last_included_index + 1;
     std::vector<LogEntry> entries;
     while (true) {
@@ -76,7 +76,7 @@ auto vosfs::raft::Persister::load_entries(uint64_t last_included_index) const ->
     return entries;
 }
 
-void vosfs::raft::Persister::truncate_entries(uint64_t start_index, uint64_t end_index) const {
+void vosfs::raft::detail::Persister::truncate_entries(uint64_t start_index, uint64_t end_index) const {
     rocksdb::WriteBatch write_batch;
     for (uint64_t index = start_index; index <= end_index; ++index) {
         write_batch.Delete(get_entry_key(index));

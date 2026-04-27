@@ -7,37 +7,40 @@
 #include "snapshotter.hpp"
 
 namespace vosfs::raft {
+using kosio::sync::Mutex;
+using kosio::async::Task;
 class RaftNode {
-    using SnapshotContextMap = std::unordered_map<uint64_t, uint64_t>;
-
     static constexpr std::string_view SNAPSHOT_DIR = "raft/snapshot";
+    static constexpr std::string_view SNAPSHOT_TEMP_FILE_NAME = "snapshot.tmp";
     static constexpr std::string_view SNAPSHOT_FILE_NAME = "snapshot.bin";
     static constexpr std::string_view DB_DIR = "raft/db";
 private:
     explicit RaftNode(
         const detail::Config& config,
-        Persister persister,
+        std::unique_ptr<detail::Snapshotter> snapshotter,
+        detail::StateMachine state_machine,
+        detail::Persister persister,
         detail::RaftLog logs,
         detail::Transport transport,
         HardState hard_state);
 
 public:
-    static auto create(detail::Config config) -> Task<Result<std::unique_ptr<RaftNode>>>;
+    static auto create(detail::Config config) -> Result<std::unique_ptr<RaftNode>>;
 
 public:
     [[REMEMBER_CO_AWAIT]]
     auto wait() -> Task<void>;
 
 private:
-    auto apply_snapshot(Snapshot& snapshot) -> Task<void>;
     auto election_loop() -> Task<void>;
     auto heartbeat_loop() -> Task<void>;
-    auto send_snapshot(uint64_t member_id, uint64_t offset) -> Task<void>;
+    auto send_snapshot(uint64_t member_id) -> Task<void>;
+    auto apply_entry() -> Task<void>;
 
 private:
     void increase_term_to(uint64_t term);
     void become_leader();
-    void apply_to_state_machine();
+
 
 private:
     // Raft RPC
@@ -92,10 +95,7 @@ private:
         uint64_t term,
         uint64_t leader_id,
         uint64_t last_included_index,
-        uint64_t last_included_term,
-        uint64_t offset,
-        std::string data,
-        bool done) -> InstallSnapshotRequest;
+        uint64_t last_included_term) -> InstallSnapshotRequest;
 
     [[nodiscard]]
     static auto make_install_snapshot_response(
@@ -105,20 +105,20 @@ private:
 private:
     enum Role { kLeader, kFollower, kCandidate };
 
-    Config                config_;
-    Mutex                 mutex_;
-    std::atomic<bool>     is_shutdown_{false};
-    std::atomic<uint64_t> last_reset_time_{0};
-    Persister             persister_;
-    StateMachine          state_machine_;
-    detail::RaftLog       logs_;
-    detail::Transport     transport_;
+    detail::Config           config_;
+    Mutex                    mutex_;
+    std::atomic<bool>        is_shutdown_{false};
+    std::atomic<uint64_t>    last_reset_time_{0};
+    detail::Snapshotter::Ptr snapshotter_;
+    std::string              snapshot_data_; // 暂存接收的快照数据
+    detail::StateMachine     state_machine_;
+    detail::Persister        persister_;
+    detail::RaftLog          logs_;
+    detail::Transport        transport_;
 
     /* RaftState from https://raft.github.io/raft.pdf */
     // Persistent state on all servers
     HardState          hard_state_;
-    std::string        snapshot_data_{};
-    SnapshotContextMap snapshot_context_{};
 
     // Volatile state on all servers
     std::size_t             votes_{0};

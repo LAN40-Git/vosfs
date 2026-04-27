@@ -3,7 +3,7 @@
 #include "vosfs/raft/config.hpp"
 #include "vosfs/common/util/rocksdb_engine.hpp"
 
-namespace vosfs::raft {
+namespace vosfs::raft::detail {
 class Persister {
     static constexpr std::string_view HARD_STATE_KEY = "hard_state";
 
@@ -36,4 +36,4 @@ private:
 private:
     util::RocksDBEngine engine_;
 };
-} // namespace vosfs::raft
+} // namespace vosfs::raft::detail

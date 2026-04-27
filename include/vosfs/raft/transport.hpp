@@ -14,6 +14,12 @@ public:
         uint16_t port,
         PeerMap peers);
 
+    Transport(const Transport&) = delete;
+    auto operator=(const Transport&) -> Transport& = delete;
+
+    Transport(Transport&&) = default;
+    auto operator=(Transport&&) -> Transport& = default;
+
 public:
     static auto create(const Config& config) -> Result<Transport>;
 
