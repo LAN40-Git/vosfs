@@ -1,6 +1,6 @@
 file(GLOB SRCS
         "*.cpp"
-        "../../api/authpb/*.cc"
+        "../../api/raftpb/*.cc"
 )
 
 set(RAFT_SRCS ${SRCS} CACHE INTERNAL "auth source files")

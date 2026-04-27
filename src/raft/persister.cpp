@@ -26,8 +26,19 @@ auto vosfs::raft::detail::Persister::load_hard_state() const -> Result<HardState
     std::string payload;
     HardState hard_state;
     if (auto status = engine_.get(HARD_STATE_KEY, &payload); !status.ok()) {
-        LOG_ERROR("failed to load hard state: {}", status.ToString());
-        return std::unexpected{make_error(Error::kDatabaseQueryFailed)};
+        if (status.IsNotFound()) {
+            hard_state.set_current_term(0);
+            hard_state.clear_voted_for();
+            payload = hard_state.SerializeAsString();
+            if (auto status = engine_.put(HARD_STATE_KEY, payload); !status.ok()) {
+                LOG_FATAL("failed to save default hard state: {}", status.ToString());
+                return std::unexpected{make_error(Error::kDatabaseInsertFailed)};
+            }
+            return hard_state;
+        } else {
+            LOG_ERROR("failed to load hard state: {}", status.ToString());
+            return std::unexpected{make_error(Error::kDatabaseQueryFailed)};
+        }
     }
     if (!hard_state.ParseFromString(payload)) {
         return std::unexpected{make_error(Error::kDatabaseQueryFailed)};

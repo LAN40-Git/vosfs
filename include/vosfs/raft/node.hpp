@@ -8,6 +8,7 @@
 
 namespace vosfs::raft {
 using kosio::sync::Mutex;
+using kosio::sync::Latch;
 using kosio::async::Task;
 class RaftNode {
     static constexpr std::string_view SNAPSHOT_DIR = "raft/snapshot";
@@ -16,7 +17,6 @@ class RaftNode {
     static constexpr std::string_view DB_DIR = "raft/db";
 private:
     explicit RaftNode(
-        const detail::Config& config,
         std::unique_ptr<detail::Snapshotter> snapshotter,
         detail::StateMachine state_machine,
         detail::Persister persister,
@@ -25,11 +25,14 @@ private:
         HardState hard_state);
 
 public:
-    static auto create(detail::Config config) -> Result<std::unique_ptr<RaftNode>>;
+    static auto create(const std::string& config_path) -> Result<std::unique_ptr<RaftNode>>;
 
 public:
     [[REMEMBER_CO_AWAIT]]
     auto wait() -> Task<void>;
+
+    [[REMEMBER_CO_AWAIT]]
+    auto shutdown() -> Task<void>;
 
 private:
     auto election_loop() -> Task<void>;
@@ -105,10 +108,11 @@ private:
 private:
     enum Role { kLeader, kFollower, kCandidate };
 
-    detail::Config           config_;
     Mutex                    mutex_;
+    Latch                    latch_{2};
     std::atomic<bool>        is_shutdown_{false};
     std::atomic<uint64_t>    last_reset_time_{0};
+    vrpc::TcpServer          rpc_server_;
     detail::Snapshotter::Ptr snapshotter_;
     std::string              snapshot_data_; // 暂存接收的快照数据
     detail::StateMachine     state_machine_;
@@ -118,7 +122,7 @@ private:
 
     /* RaftState from https://raft.github.io/raft.pdf */
     // Persistent state on all servers
-    HardState          hard_state_;
+    HardState hard_state_;
 
     // Volatile state on all servers
     std::size_t             votes_{0};

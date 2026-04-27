@@ -1,0 +1,30 @@
+#include "vosfs/raft/node.hpp"
+using namespace vosfs;
+using namespace kosio;
+using namespace kosio::async;
+
+auto main_coro() -> Task<void> {
+    auto config = raft::ConfigBuilder::options()
+        .set_data_dir("./")
+        .set_cluster_id(1)
+        .set_member_id(1)
+        .set_name("node1")
+        .set_host("10.83.124.32")
+        .set_port(8080)
+        .add_node(1, "node1", "10.83.124.32", 8080)
+        .build();
+    config.to_json("config.json");
+
+    auto has_raft_node = raft::RaftNode::create("config.json");
+    if (!has_raft_node) {
+        LOG_ERROR("{}", has_raft_node.error());
+        co_return;
+    }
+
+    auto raft_node = std::move(has_raft_node.value());
+    co_await raft_node->wait();
+}
+
+auto main() -> int {
+    runtime::MultiThreadBuilder::default_create().block_on(main_coro());
+}

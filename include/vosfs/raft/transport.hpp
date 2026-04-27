@@ -6,22 +6,13 @@ namespace vosfs::raft::detail {
 class Transport {
     using PeerMap = std::unordered_map<uint64_t, std::shared_ptr<Peer>>;
 public:
-    explicit Transport(
-        uint64_t cluster_id,
-        uint64_t member_id,
-        std::string name,
-        std::string host,
-        uint16_t port,
-        PeerMap peers);
+    explicit Transport(const Config& config);
 
     Transport(const Transport&) = delete;
     auto operator=(const Transport&) -> Transport& = delete;
 
     Transport(Transport&&) = default;
     auto operator=(Transport&&) -> Transport& = default;
-
-public:
-    static auto create(const Config& config) -> Result<Transport>;
 
 public:
     [[REMEMBER_CO_AWAIT]]
@@ -55,17 +46,20 @@ public:
     [[nodiscard]]
     auto cluster_id() const noexcept -> uint64_t { return cluster_id_; }
     [[nodiscard]]
-    auto cluster_size() const noexcept -> uint64_t { return cluster_size_; }
+    auto cluster_size() const noexcept -> uint64_t { return peers_.size(); }
     [[nodiscard]]
     auto member_id() const noexcept -> uint64_t { return member_id_; }
     [[nodiscard]]
     auto name() const noexcept -> std::string_view { return name_; }
     [[nodiscard]]
+    auto host() const noexcept -> std::string_view { return host_; }
+    [[nodiscard]]
+    auto port() const noexcept -> uint16_t { return port_; }
+    [[nodiscard]]
     auto peers() -> PeerMap& { return peers_; }
 
 private:
     uint64_t    cluster_id_;
-    uint64_t    cluster_size_;
     uint64_t    member_id_;
     std::string name_;
     std::string host_;

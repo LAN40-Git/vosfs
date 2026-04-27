@@ -2,23 +2,29 @@
 #include "vosfs/common/util/file.hpp"
 
 vosfs::raft::RaftNode::RaftNode(
-    const detail::Config& config,
     detail::Snapshotter::Ptr snapshotter,
     detail::StateMachine state_machine,
     detail::Persister persister,
     detail::RaftLog logs,
     detail::Transport transport,
     HardState hard_state)
-    : config_(std::move(config))
+    : rpc_server_("0.0.0.0", transport.port())
     , snapshotter_(std::move(snapshotter))
     , state_machine_(std::move(state_machine))
     , persister_(std::move(persister))
     , logs_(std::move(logs))
     , transport_(std::move(transport))
     , hard_state_(std::move(hard_state)) {
+
 }
 
-auto vosfs::raft::RaftNode::create(detail::Config config) -> Result<std::unique_ptr<RaftNode>> {
+auto vosfs::raft::RaftNode::create(const std::string& config_path) -> Result<std::unique_ptr<RaftNode>> {
+    auto has_config = Config::from_json(config_path);
+    if (!has_config) {
+        return std::unexpected{has_config.error()};
+    }
+    auto config = std::move(has_config.value());
+
     auto data_dir = std::filesystem::path(config.data_dir);
     auto snapshot_dir = data_dir / SNAPSHOT_DIR;
     auto db_dir = data_dir / DB_DIR;
@@ -28,7 +34,9 @@ auto vosfs::raft::RaftNode::create(detail::Config config) -> Result<std::unique_
     std::unordered_map<uint64_t, Inode> inodes{};
 
     // 初始化快照层
-    auto snapshotter = std::make_unique<detail::Snapshotter>((snapshot_dir / SNAPSHOT_FILE_NAME).c_str(), (snapshot_dir / SNAPSHOT_TEMP_FILE_NAME).c_str());
+    auto snapshotter = std::make_unique<detail::Snapshotter>(
+        (snapshot_dir / SNAPSHOT_FILE_NAME).c_str(),
+        (snapshot_dir / SNAPSHOT_TEMP_FILE_NAME).c_str());
 
     // 尝试加载快照
     if (auto ret = util::get_file_size((snapshot_dir / SNAPSHOT_FILE_NAME).c_str()); ret == -1) {
@@ -70,12 +78,7 @@ auto vosfs::raft::RaftNode::create(detail::Config config) -> Result<std::unique_
     auto logs = detail::RaftLog{last_included_index, last_included_term, std::move(entries)};
 
     // 创建通信层
-    auto has_transport = detail::Transport::create(config);
-    if (!has_transport) {
-        return std::unexpected{has_transport.error()};
-    }
-
-    auto transport = std::move(has_transport.value());
+    auto transport = detail::Transport{config};
 
     // 初始化 HardState
     auto has_hard_state = persister.load_hard_state();
@@ -86,7 +89,6 @@ auto vosfs::raft::RaftNode::create(detail::Config config) -> Result<std::unique_
 
     // 初始化节点
     return std::unique_ptr<RaftNode>(new RaftNode{
-        std::move(config),
         std::move(snapshotter),
         std::move(state_machine),
         std::move(persister),
@@ -96,7 +98,36 @@ auto vosfs::raft::RaftNode::create(detail::Config config) -> Result<std::unique_
 }
 
 auto vosfs::raft::RaftNode::wait() -> Task<void> {
+    kosio::spawn(election_loop());
+    kosio::spawn(heartbeat_loop());
+    co_await rpc_server_
+    .register_method<RequestVoteRequest, RequestVoteResponse>(
+        "raft", "requestvote",
+        [this](const RequestVoteRequest& request) -> Task<RequestVoteResponse> {
+            co_return co_await this->handle_request_vote_request(request);
+    })
+    .register_method<AppendEntriesRequest, AppendEntriesResponse>(
+        "raft", "appendentries",
+        [this](const AppendEntriesRequest& request) -> Task<AppendEntriesResponse> {
+        co_return co_await this->handle_append_entries_request(request);
+    })
+    .register_method<InstallSnapshotRequest, InstallSnapshotResponse>(
+        "raft", "installsnapshot",
+        [this](const InstallSnapshotRequest& request) -> Task<InstallSnapshotResponse> {
+        co_return co_await this->handle_install_snapshot_request(request);
+    })
+    .wait();
+}
 
+auto vosfs::raft::RaftNode::shutdown() -> Task<void> {
+    if (is_shutdown_.load(std::memory_order_acquire)) {
+        co_return;
+    }
+
+    is_shutdown_.store(true, std::memory_order_release);
+    co_await latch_.wait();
+    co_await rpc_server_.shutdown();
+    co_await transport_.shutdown();
 }
 
 auto vosfs::raft::RaftNode::election_loop() -> Task<void> {
@@ -153,11 +184,12 @@ auto vosfs::raft::RaftNode::election_loop() -> Task<void> {
                 co_await this->handle_request_vote_response(response);
             });
     }
+    latch_.count_down();
 }
 
 auto vosfs::raft::RaftNode::heartbeat_loop() -> Task<void> {
     while (!is_shutdown_.load(std::memory_order_relaxed)) {
-        co_await kosio::time::sleep(config_.heartbeat_interval);
+        co_await kosio::time::sleep(detail::HEARTBEAT_INTERVAL);
 
         if (role_.load(std::memory_order_acquire) != kLeader) {
             continue;
@@ -190,7 +222,7 @@ auto vosfs::raft::RaftNode::heartbeat_loop() -> Task<void> {
                     continue;
                 }
 
-                auto batch_size = std::min(config_.max_append_entries_size, last_log_index - next_index + 1);
+                auto batch_size = std::min(detail::MAX_APPEND_ENTRIES_SIZE, last_log_index - next_index + 1);
                 entries = logs_.get_entries(next_index, batch_size);
             }
 
@@ -222,6 +254,7 @@ auto vosfs::raft::RaftNode::heartbeat_loop() -> Task<void> {
                 });
         }
     }
+    latch_.count_down();
 }
 
 auto vosfs::raft::RaftNode::send_snapshot(uint64_t member_id) -> Task<void> {
@@ -261,7 +294,7 @@ auto vosfs::raft::RaftNode::apply_entry() -> Task<void> {
     while (last_applied_ < commit_index) {
         ++last_applied_;
         state_machine_.apply_entry(logs_.get_entry(last_applied_));
-        if (last_applied_ % config_.snapshot_interval == 0) {
+        if (last_applied_ % detail::SNAPSHOT_INTERVAL == 0) {
             Snapshot snapshot;
             // 创建并保存快照
             auto last_included_index = last_applied_;
@@ -299,7 +332,7 @@ void vosfs::raft::RaftNode::become_leader() {
     role_.store(kLeader, std::memory_order_release);
     persister_.save_hard_state(hard_state_);
     leader_id_ = transport_.member_id();
-    LOG_VERBOSE("become leader, current_term: {}", hard_state_.current_term());
+    LOG_INFO("become leader, current_term: {}", hard_state_.current_term());
     // 更新每个Raft节点的 next_index 和 match_index
     auto& peers = transport_.peers();
     for (const auto& peer : peers | std::views::values) {
