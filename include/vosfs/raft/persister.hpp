@@ -16,7 +16,7 @@ public:
     auto operator=(Persister&& other) noexcept -> Persister& = default;
 
 public:
-    static auto create(std::string_view data_dir) -> Result<Persister>;
+    static auto create(const std::filesystem::path& db_dir) -> Result<Persister>;
 
 public:
     void save_hard_state(const HardState& hard_state) const;

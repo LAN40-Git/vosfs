@@ -9,9 +9,13 @@
 namespace vosfs::raft {
 class RaftNode {
     using SnapshotContextMap = std::unordered_map<uint64_t, uint64_t>;
+
+    static constexpr std::string_view SNAPSHOT_DIR = "raft/snapshot";
+    static constexpr std::string_view SNAPSHOT_FILE_NAME = "snapshot.bin";
+    static constexpr std::string_view DB_DIR = "raft/db";
 private:
     explicit RaftNode(
-        detail::Config config,
+        const detail::Config& config,
         Persister persister,
         detail::RaftLog logs,
         detail::Transport transport,

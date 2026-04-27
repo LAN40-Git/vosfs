@@ -1,15 +1,14 @@
 #include "vosfs/raft/persister.hpp"
 #include <kosio/common/debug.hpp>
 
-auto vosfs::raft::Persister::create(std::string_view data_dir) -> Result<Persister> {
+auto vosfs::raft::Persister::create(const std::filesystem::path& db_dir) -> Result<Persister> {
     rocksdb::Options db_options;
     db_options.create_if_missing = true;
     rocksdb::WriteOptions write_options;
     rocksdb::ReadOptions read_options;
     write_options.sync = true;
 
-    auto db_path = std::filesystem::path(data_dir) / detail::RAFT_DB_PATH;
-    auto ret = util::RocksDBEngine::create(db_options, write_options, read_options, db_path);
+    auto ret = util::RocksDBEngine::create(db_options, write_options, read_options, db_dir);
     if (!ret) {
         return std::unexpected{ret.error()};
     }

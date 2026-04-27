@@ -1,4 +1,5 @@
 #pragma once
+#include <filesystem>
 #include <kosio/fs.hpp>
 #include <kosio/sync.hpp>
 #include "vosfs/common/error.hpp"
@@ -10,14 +11,15 @@ using kosio::sync::Mutex;
 using kosio::async::Task;
 class Snapshotter {
 public:
-    explicit Snapshotter(std::string_view data_dir)
-        : data_dir_(data_dir) {}
+    explicit Snapshotter(const std::filesystem::path& snapshot_dir)
+        : snapshot_dir_(snapshot_dir) {}
 
 public:
     auto load_snapshot() -> Task<Result<Snapshot>>;
+    auto load_snapshotdata(uint64_t offset, std::size_t size) -> Task<Result<std::string>>;
 
 private:
-    Mutex       mutex_;
-    std::string snapshot_path_;
+    Mutex                 mutex_;
+    std::filesystem::path snapshot_dir_;
 };
 } // namespace vosfs::raft

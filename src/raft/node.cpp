@@ -1,27 +1,52 @@
 #include "vosfs/raft/node.hpp"
+#include "vosfs/common/util/file.hpp"
 
 vosfs::raft::RaftNode::RaftNode(
-    detail::Config config,
+    const detail::Config& config,
     Persister persister,
     detail::RaftLog logs,
     detail::Transport transport,
     HardState hard_state)
-    : config_(config)
+    : config_(std::move(config))
     , persister_(std::move(persister))
     , logs_(std::move(logs))
     , transport_(std::move(transport))
     , hard_state_(std::move(hard_state)) {}
 
 auto vosfs::raft::RaftNode::create(detail::Config config) -> Task<Result<std::unique_ptr<RaftNode>>> {
-    // 创建快照层
+    auto data_dir = std::filesystem::path(config.data_dir);
+    auto snapshot_dir = data_dir / SNAPSHOT_DIR;
+    auto db_dir = data_dir / DB_DIR;
 
+    uint64_t last_included_term = 0;
+    uint64_t last_included_index = 0;
+    std::unordered_map<uint64_t, Inode> inodes{};
+    // 尝试加载快照
+    /**
+     * 1. 判断快照是否存在
+     * 2. 若存在则加载，若不存在则使用初始值
+     * 3. 加载 HardState
+     * 4. 加载 日志
+     * 5. 创建日志蹭
+     */
 
-    // 创建持久层
-    auto has_persister = Persister::create(config.data_dir);
+    auto ret = util::file_exists((snapshot_dir / SNAPSHOT_FILE_NAME).c_str());
+    if (ret == -1) {
+        co_return std::unexpected{make_error(Error::kFileError)};
+    } else if (ret == 1) {
+        // 加载快照
+
+    }
+
+    // 初始化持久层
+    auto has_persister = Persister::create(db_dir);
     if (!has_persister) {
         co_return std::unexpected{has_persister.error()};
     }
     auto persister = std::move(has_persister.value());
+
+    // 加载日志
+    auto entries = persister.load_entries(last_included_index);
 
     // 创建日志层
     auto has_logs = detail::RaftLog::create(persister);

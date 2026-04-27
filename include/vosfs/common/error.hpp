@@ -19,6 +19,7 @@ public:
         kFileOpenFailed,
         kFileCreateFailed,
         kFileNotFound,
+        kFileError,
         kMaxErrorCode
     };
 
@@ -44,6 +45,14 @@ public:
             return "database update operation failed";
         case kDatabaseDeleteFailed:
             return "database delete operation failed";
+        case kFileOpenFailed:
+            return "file open failed";
+        case kFileCreateFailed:
+            return "file creation failed";
+        case kFileNotFound:
+            return "file not found";
+        case kFileError:
+            return "file error";
         default:
             return strerror(code_);
         }
