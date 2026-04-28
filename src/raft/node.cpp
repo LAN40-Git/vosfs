@@ -412,7 +412,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
     auto current_ms = util::current_ms();
     auto timeout = current_ms - last_reset_time_.load(std::memory_order_relaxed);
     last_reset_time_.store(current_ms, std::memory_order_relaxed);
-    // LOG_INFO("receive heartbeat from {}, timeout: {}", leader_id_.value(), timeout);
+    LOG_INFO("receive heartbeat from {}, timeout: {}", leader_id_.value(), timeout);
 
     // 判断追加日志的上一条日志是否存在与本地日志中
     bool log_ok{false};
