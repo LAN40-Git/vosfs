@@ -3,21 +3,21 @@
 #include <openssl/evp.h>
 #include <vrpc/net/tcp/tcp_client.hpp>
 #include "vosfs/common/error.hpp"
-#include "status.hpp"
-#include "vosfs/auth/detail/user_session.hpp"
+#include "vosfs/auth/status.hpp"
+#include "vosfs/auth/user_session.hpp"
 
 namespace vosfs::auth {
 template <typename Client>
 class BaseClient {
 public:
-    explicit BaseClient(std::string_view server_ip, uint16_t server_port)
-        : rpc_client_(server_ip, server_port) {}
+    explicit BaseClient(std::string_view host, uint16_t port)
+        : rpc_client_(host, port) {}
 
 public:
     [[REMEMBER_CO_AWAIT]]
     auto send_register_user_request(const std::string& user_name, const std::string& password, int role, std::string admin_secret = "") -> kosio::async::Task<void> {
         RegisterUserRequest request;
-        request.set_user_name(std::move(user_name));
+        request.set_user_name(user_name);
         request.set_password(sha256(password));
         request.set_role(static_cast<User_Role>(role));
         request.set_admin_secret(std::move(admin_secret));

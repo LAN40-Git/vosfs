@@ -7,10 +7,10 @@
 namespace vosfs::auth {
 class AuthServer {
 private:
-    explicit AuthServer(sqlite3* db, uint16_t port, std::string_view ip = "0.0.0.0")
+    explicit AuthServer(sqlite3* db, std::string_view host = "0.0.0.0", uint16_t port = 9000)
         : db_(db)
-        , port_(port)
-        , ip_(ip) {
+        , host_(host)
+        , port_(port) {
         assert(db_);
     }
 
@@ -25,11 +25,11 @@ public:
     [[nodiscard]]
     static auto create(
         std::string_view db_path,
-        uint16_t port,
-        std::string_view ip = "0.0.0.0") -> Result<std::unique_ptr<AuthServer>>;
+        std::string_view host = "0.0.0.0",
+        uint16_t port = 9000) -> Result<std::unique_ptr<AuthServer>>;
 
 public:
-    void wait();
+    auto wait() -> kosio::async::Task<void>;
 
 private:
     [[REMEMBER_CO_AWAIT]]
@@ -79,7 +79,7 @@ private:
 private:
     kosio::sync::Mutex mutex_;
     sqlite3*           db_{nullptr};
+    std::string        host_;
     uint16_t           port_;
-    std::string        ip_;
 };
 } // namespace vosfs::auth

@@ -1,14 +1,14 @@
 #include <jwt-cpp/jwt.h>
 #include "authpb/auth.pb.h"
 #include "vosfs/common/util/jwt.hpp"
-#include "vosfs/auth/detail/config.hpp"
+#include "../../include/vosfs/auth/config.hpp"
 #include "../../include/vosfs/auth/status.hpp"
 #include "vosfs/auth/auth_server.hpp"
 
 auto vosfs::auth::AuthServer::create(
     std::string_view db_path,
-    uint16_t port,
-    std::string_view ip) -> Result<std::unique_ptr<AuthServer>> {
+    std::string_view host,
+    uint16_t port) -> Result<std::unique_ptr<AuthServer>> {
     // 连接数据库
     sqlite3* db = nullptr;
     if (sqlite3_open(db_path.data(), &db) != SQLITE_OK) {
@@ -38,14 +38,12 @@ auto vosfs::auth::AuthServer::create(
         return std::unexpected{make_error(Error::kDatabaseQueryFailed)};
     }
 
-    return std::unique_ptr<AuthServer>(new AuthServer(db, port, ip));
+    return std::unique_ptr<AuthServer>(new AuthServer(db, host, port));
 }
 
-void vosfs::auth::AuthServer::wait() {
-    vrpc::TcpServerBuilder::options()
-        .set_ip(ip_)
-        .set_port(port_)
-        .build()
+auto vosfs::auth::AuthServer::wait() -> kosio::async::Task<void> {
+    auto rpc_server = vrpc::TcpServer{host_, port_};
+    co_await rpc_server
         .register_method<RegisterUserRequest, RegisterUserResponse>(
             "user", "register",
             [this](const RegisterUserRequest& request) -> kosio::async::Task<RegisterUserResponse> {
@@ -177,7 +175,7 @@ auto vosfs::auth::AuthServer::handle_delete_user_request(const DeleteUserRequest
     DeleteUserResponse response;
 
     auto& token = request.token();
-    auto password = request.password();
+    auto& password = request.password();
     int64_t uid{};
 
     // 校验 token
@@ -191,7 +189,7 @@ auto vosfs::auth::AuthServer::handle_delete_user_request(const DeleteUserRequest
         verifier.verify(decoded);
 
         std::string uid_str = decoded.get_payload_claim("uid").as_string();
-        uid = std::stoull(uid_str);
+        uid = std::stoll(uid_str);
     } catch (...) {
         response.set_status_code(Status::kPermissionDenied);
         response.set_message("无效 Token");

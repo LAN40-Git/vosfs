@@ -32,7 +32,6 @@ message AppendEntriesRequest {
   uint64 prev_log_term = 4;
   repeated LogEntry entries = 5;
   uint64 leader_commit = 6;
-  uint64 time = 7;
 }
 
 message AppendEntriesResponse {
@@ -41,7 +40,6 @@ message AppendEntriesResponse {
   bool success = 3;
   uint64 last_log_index = 4;
   optional uint64 conflict_index = 5;
-  uint64 time = 6;
 }
 
 message Snapshot {

@@ -91,8 +91,7 @@ private:
         uint64_t term,
         bool success,
         uint64_t last_log_index,
-        std::optional<uint64_t> conflict_index,
-        uint64_t time) -> AppendEntriesResponse;
+        std::optional<uint64_t> conflict_index) -> AppendEntriesResponse;
 
     [[nodiscard]]
     static auto make_install_snapshot_request(

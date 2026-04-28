@@ -928,7 +928,6 @@ class AppendEntriesRequest final :
     kPrevLogIndexFieldNumber = 3,
     kPrevLogTermFieldNumber = 4,
     kLeaderCommitFieldNumber = 6,
-    kTimeFieldNumber = 7,
   };
   // repeated .vosfs.raft.LogEntry entries = 5;
   int entries_size() const;
@@ -993,15 +992,6 @@ class AppendEntriesRequest final :
   void _internal_set_leader_commit(uint64_t value);
   public:
 
-  // uint64 time = 7;
-  void clear_time();
-  uint64_t time() const;
-  void set_time(uint64_t value);
-  private:
-  uint64_t _internal_time() const;
-  void _internal_set_time(uint64_t value);
-  public:
-
   // @@protoc_insertion_point(class_scope:vosfs.raft.AppendEntriesRequest)
  private:
   class _Internal;
@@ -1016,7 +1006,6 @@ class AppendEntriesRequest final :
     uint64_t prev_log_index_;
     uint64_t prev_log_term_;
     uint64_t leader_commit_;
-    uint64_t time_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1149,7 +1138,6 @@ class AppendEntriesResponse final :
     kTermFieldNumber = 2,
     kLastLogIndexFieldNumber = 4,
     kConflictIndexFieldNumber = 5,
-    kTimeFieldNumber = 6,
     kSuccessFieldNumber = 3,
   };
   // uint64 id = 1;
@@ -1192,15 +1180,6 @@ class AppendEntriesResponse final :
   void _internal_set_conflict_index(uint64_t value);
   public:
 
-  // uint64 time = 6;
-  void clear_time();
-  uint64_t time() const;
-  void set_time(uint64_t value);
-  private:
-  uint64_t _internal_time() const;
-  void _internal_set_time(uint64_t value);
-  public:
-
   // bool success = 3;
   void clear_success();
   bool success() const;
@@ -1224,7 +1203,6 @@ class AppendEntriesResponse final :
     uint64_t term_;
     uint64_t last_log_index_;
     uint64_t conflict_index_;
-    uint64_t time_;
     bool success_;
   };
   union { Impl_ _impl_; };
@@ -2802,26 +2780,6 @@ inline void AppendEntriesRequest::set_leader_commit(uint64_t value) {
   // @@protoc_insertion_point(field_set:vosfs.raft.AppendEntriesRequest.leader_commit)
 }
 
-// uint64 time = 7;
-inline void AppendEntriesRequest::clear_time() {
-  _impl_.time_ = uint64_t{0u};
-}
-inline uint64_t AppendEntriesRequest::_internal_time() const {
-  return _impl_.time_;
-}
-inline uint64_t AppendEntriesRequest::time() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.AppendEntriesRequest.time)
-  return _internal_time();
-}
-inline void AppendEntriesRequest::_internal_set_time(uint64_t value) {
-  
-  _impl_.time_ = value;
-}
-inline void AppendEntriesRequest::set_time(uint64_t value) {
-  _internal_set_time(value);
-  // @@protoc_insertion_point(field_set:vosfs.raft.AppendEntriesRequest.time)
-}
-
 // -------------------------------------------------------------------
 
 // AppendEntriesResponse
@@ -2932,26 +2890,6 @@ inline void AppendEntriesResponse::_internal_set_conflict_index(uint64_t value) 
 inline void AppendEntriesResponse::set_conflict_index(uint64_t value) {
   _internal_set_conflict_index(value);
   // @@protoc_insertion_point(field_set:vosfs.raft.AppendEntriesResponse.conflict_index)
-}
-
-// uint64 time = 6;
-inline void AppendEntriesResponse::clear_time() {
-  _impl_.time_ = uint64_t{0u};
-}
-inline uint64_t AppendEntriesResponse::_internal_time() const {
-  return _impl_.time_;
-}
-inline uint64_t AppendEntriesResponse::time() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.AppendEntriesResponse.time)
-  return _internal_time();
-}
-inline void AppendEntriesResponse::_internal_set_time(uint64_t value) {
-  
-  _impl_.time_ = value;
-}
-inline void AppendEntriesResponse::set_time(uint64_t value) {
-  _internal_set_time(value);
-  // @@protoc_insertion_point(field_set:vosfs.raft.AppendEntriesResponse.time)
 }
 
 // -------------------------------------------------------------------
