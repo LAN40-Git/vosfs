@@ -137,7 +137,7 @@ auto vosfs::raft::RaftNode::election_loop() -> Task<void> {
         auto timeout = rand.rand_range(150, 300);
         co_await kosio::time::sleep(timeout);
 
-        if (kosio::util::current_ms() - last_reset_time_.load(std::memory_order_relaxed) < timeout ||
+        if (kosio::util::current_ms() - last_reset_time_.load(std::memory_order_relaxed) >= timeout ||
             role_.load(std::memory_order_acquire) == kLeader) {
             continue;
         }
