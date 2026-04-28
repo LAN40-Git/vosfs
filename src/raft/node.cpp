@@ -400,7 +400,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
     auto current_term = hard_state_.current_term();
     if (term < current_term) {
         co_return make_append_entries_response(
-            member_id, current_term, false, logs_.last_log_index(), std::nullopt);
+            member_id, current_term, false, logs_.last_log_index(), std::nullopt, request.time());
     }
 
     if (term > current_term) {
@@ -424,7 +424,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
 
     if (!log_ok) {
         co_return make_append_entries_response(
-            member_id,  current_term, false, logs_.last_log_index(), prev_log_index);
+            member_id,  current_term, false, logs_.last_log_index(), prev_log_index, request.time());
     }
 
     if (!entries.empty()) {
@@ -453,7 +453,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
     }
 
     co_return make_append_entries_response(
-        member_id, current_term, true, logs_.last_log_index(), std::nullopt);
+        member_id, current_term, true, logs_.last_log_index(), std::nullopt, request.time());
 }
 
 auto vosfs::raft::RaftNode::handle_install_snapshot_request(
@@ -574,6 +574,8 @@ auto vosfs::raft::RaftNode::handle_append_entries_response(
         co_return;
     }
 
+    LOG_INFO("receive append entries response, take {} ms", util::current_ms() - response.time());
+
     if (!success) {
         if (response.has_conflict_index()) {
             next_index_[id] = response.conflict_index();
@@ -652,6 +654,7 @@ auto vosfs::raft::RaftNode::make_append_entries_request(
         request.mutable_entries()->Add(std::move(entry));
     }
     request.set_leader_commit(leader_commit);
+    request.set_time(util::current_ms());
     return request;
 }
 
@@ -660,7 +663,8 @@ auto vosfs::raft::RaftNode::make_append_entries_response(
     uint64_t term,
     bool success,
     uint64_t last_log_index,
-    std::optional<uint64_t> conflict_index) -> AppendEntriesResponse {
+    std::optional<uint64_t> conflict_index,
+    uint64_t time) -> AppendEntriesResponse {
     AppendEntriesResponse response;
     response.set_id(id);
     response.set_term(term);
@@ -669,6 +673,7 @@ auto vosfs::raft::RaftNode::make_append_entries_response(
     if (conflict_index.has_value()) {
         response.set_conflict_index(conflict_index.value());
     }
+    response.set_time(time);
     return response;
 }
 

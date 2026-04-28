@@ -23,6 +23,7 @@
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/arena.h>
 #include <google/protobuf/arenastring.h>
+#include <google/protobuf/generated_message_bases.h>
 #include <google/protobuf/generated_message_util.h>
 #include <google/protobuf/metadata_lite.h>
 #include <google/protobuf/generated_message_reflection.h>
@@ -58,6 +59,9 @@ extern AppendEntriesResponseDefaultTypeInternal _AppendEntriesResponse_default_i
 class ChunkInfo;
 struct ChunkInfoDefaultTypeInternal;
 extern ChunkInfoDefaultTypeInternal _ChunkInfo_default_instance_;
+class EntryCommand;
+struct EntryCommandDefaultTypeInternal;
+extern EntryCommandDefaultTypeInternal _EntryCommand_default_instance_;
 class HardState;
 struct HardStateDefaultTypeInternal;
 extern HardStateDefaultTypeInternal _HardState_default_instance_;
@@ -91,6 +95,7 @@ PROTOBUF_NAMESPACE_OPEN
 template<> ::vosfs::raft::AppendEntriesRequest* Arena::CreateMaybeMessage<::vosfs::raft::AppendEntriesRequest>(Arena*);
 template<> ::vosfs::raft::AppendEntriesResponse* Arena::CreateMaybeMessage<::vosfs::raft::AppendEntriesResponse>(Arena*);
 template<> ::vosfs::raft::ChunkInfo* Arena::CreateMaybeMessage<::vosfs::raft::ChunkInfo>(Arena*);
+template<> ::vosfs::raft::EntryCommand* Arena::CreateMaybeMessage<::vosfs::raft::EntryCommand>(Arena*);
 template<> ::vosfs::raft::HardState* Arena::CreateMaybeMessage<::vosfs::raft::HardState>(Arena*);
 template<> ::vosfs::raft::Inode* Arena::CreateMaybeMessage<::vosfs::raft::Inode>(Arena*);
 template<> ::vosfs::raft::InstallSnapshotRequest* Arena::CreateMaybeMessage<::vosfs::raft::InstallSnapshotRequest>(Arena*);
@@ -923,6 +928,7 @@ class AppendEntriesRequest final :
     kPrevLogIndexFieldNumber = 3,
     kPrevLogTermFieldNumber = 4,
     kLeaderCommitFieldNumber = 6,
+    kTimeFieldNumber = 7,
   };
   // repeated .vosfs.raft.LogEntry entries = 5;
   int entries_size() const;
@@ -987,6 +993,15 @@ class AppendEntriesRequest final :
   void _internal_set_leader_commit(uint64_t value);
   public:
 
+  // uint64 time = 7;
+  void clear_time();
+  uint64_t time() const;
+  void set_time(uint64_t value);
+  private:
+  uint64_t _internal_time() const;
+  void _internal_set_time(uint64_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:vosfs.raft.AppendEntriesRequest)
  private:
   class _Internal;
@@ -1001,6 +1016,7 @@ class AppendEntriesRequest final :
     uint64_t prev_log_index_;
     uint64_t prev_log_term_;
     uint64_t leader_commit_;
+    uint64_t time_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1133,6 +1149,7 @@ class AppendEntriesResponse final :
     kTermFieldNumber = 2,
     kLastLogIndexFieldNumber = 4,
     kConflictIndexFieldNumber = 5,
+    kTimeFieldNumber = 6,
     kSuccessFieldNumber = 3,
   };
   // uint64 id = 1;
@@ -1175,6 +1192,15 @@ class AppendEntriesResponse final :
   void _internal_set_conflict_index(uint64_t value);
   public:
 
+  // uint64 time = 6;
+  void clear_time();
+  uint64_t time() const;
+  void set_time(uint64_t value);
+  private:
+  uint64_t _internal_time() const;
+  void _internal_set_time(uint64_t value);
+  public:
+
   // bool success = 3;
   void clear_success();
   bool success() const;
@@ -1198,6 +1224,7 @@ class AppendEntriesResponse final :
     uint64_t term_;
     uint64_t last_log_index_;
     uint64_t conflict_index_;
+    uint64_t time_;
     bool success_;
   };
   union { Impl_ _impl_; };
@@ -2212,6 +2239,124 @@ class Inode final :
   union { Impl_ _impl_; };
   friend struct ::TableStruct_raft_2eproto;
 };
+// -------------------------------------------------------------------
+
+class EntryCommand final :
+    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:vosfs.raft.EntryCommand) */ {
+ public:
+  inline EntryCommand() : EntryCommand(nullptr) {}
+  explicit PROTOBUF_CONSTEXPR EntryCommand(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  EntryCommand(const EntryCommand& from);
+  EntryCommand(EntryCommand&& from) noexcept
+    : EntryCommand() {
+    *this = ::std::move(from);
+  }
+
+  inline EntryCommand& operator=(const EntryCommand& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline EntryCommand& operator=(EntryCommand&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const EntryCommand& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const EntryCommand* internal_default_instance() {
+    return reinterpret_cast<const EntryCommand*>(
+               &_EntryCommand_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    12;
+
+  friend void swap(EntryCommand& a, EntryCommand& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(EntryCommand* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(EntryCommand* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  EntryCommand* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<EntryCommand>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
+  inline void CopyFrom(const EntryCommand& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
+  void MergeFrom(const EntryCommand& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
+  }
+  public:
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "vosfs.raft.EntryCommand";
+  }
+  protected:
+  explicit EntryCommand(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:vosfs.raft.EntryCommand)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+  };
+  friend struct ::TableStruct_raft_2eproto;
+};
 // ===================================================================
 
 
@@ -2657,6 +2802,26 @@ inline void AppendEntriesRequest::set_leader_commit(uint64_t value) {
   // @@protoc_insertion_point(field_set:vosfs.raft.AppendEntriesRequest.leader_commit)
 }
 
+// uint64 time = 7;
+inline void AppendEntriesRequest::clear_time() {
+  _impl_.time_ = uint64_t{0u};
+}
+inline uint64_t AppendEntriesRequest::_internal_time() const {
+  return _impl_.time_;
+}
+inline uint64_t AppendEntriesRequest::time() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.AppendEntriesRequest.time)
+  return _internal_time();
+}
+inline void AppendEntriesRequest::_internal_set_time(uint64_t value) {
+  
+  _impl_.time_ = value;
+}
+inline void AppendEntriesRequest::set_time(uint64_t value) {
+  _internal_set_time(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.AppendEntriesRequest.time)
+}
+
 // -------------------------------------------------------------------
 
 // AppendEntriesResponse
@@ -2767,6 +2932,26 @@ inline void AppendEntriesResponse::_internal_set_conflict_index(uint64_t value) 
 inline void AppendEntriesResponse::set_conflict_index(uint64_t value) {
   _internal_set_conflict_index(value);
   // @@protoc_insertion_point(field_set:vosfs.raft.AppendEntriesResponse.conflict_index)
+}
+
+// uint64 time = 6;
+inline void AppendEntriesResponse::clear_time() {
+  _impl_.time_ = uint64_t{0u};
+}
+inline uint64_t AppendEntriesResponse::_internal_time() const {
+  return _impl_.time_;
+}
+inline uint64_t AppendEntriesResponse::time() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.AppendEntriesResponse.time)
+  return _internal_time();
+}
+inline void AppendEntriesResponse::_internal_set_time(uint64_t value) {
+  
+  _impl_.time_ = value;
+}
+inline void AppendEntriesResponse::set_time(uint64_t value) {
+  _internal_set_time(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.AppendEntriesResponse.time)
 }
 
 // -------------------------------------------------------------------
@@ -3360,9 +3545,15 @@ inline void Inode::set_nlink(uint32_t value) {
   // @@protoc_insertion_point(field_set:vosfs.raft.Inode.nlink)
 }
 
+// -------------------------------------------------------------------
+
+// EntryCommand
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
