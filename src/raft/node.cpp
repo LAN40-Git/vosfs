@@ -191,7 +191,6 @@ auto vosfs::raft::RaftNode::election_loop() -> Task<void> {
 
 auto vosfs::raft::RaftNode::heartbeat_loop() -> Task<void> {
     while (!is_shutdown_.load(std::memory_order_relaxed)) {
-        auto start_time = util::current_ms();
         co_await kosio::time::sleep(detail::HEARTBEAT_INTERVAL);
 
         if (role_.load(std::memory_order_acquire) != kLeader) {
@@ -206,13 +205,12 @@ auto vosfs::raft::RaftNode::heartbeat_loop() -> Task<void> {
         }
 
         std::unordered_map<uint64_t, AppendEntriesRequest> requests;
+        auto current_term = hard_state_.current_term();
+        auto leader_id  = transport_.member_id();
+        auto commit_index = commit_index_;
+        auto last_log_index = logs_.last_log_index();
         // 构造心跳消息
         for (auto& [member_id, next_index] : next_index_) {
-            auto current_term = hard_state_.current_term();
-            auto leader_id  = transport_.member_id();
-            auto commit_index = commit_index_;
-            auto last_log_index = logs_.last_log_index();
-
             if (member_id == leader_id) {
                 continue;
             }
@@ -254,7 +252,6 @@ auto vosfs::raft::RaftNode::heartbeat_loop() -> Task<void> {
                     }
                     co_await this->handle_append_entries_response(response);
                 });
-            LOG_INFO("send heartbeat, timeout: {}", util::current_ms()-start_time);
         }
     }
     latch_.count_down();
@@ -326,6 +323,7 @@ void vosfs::raft::RaftNode::increase_term_to(uint64_t term) {
     hard_state_.clear_voted_for();
     hard_state_.set_current_term(term);
     role_.store(kFollower, std::memory_order_release);
+    last_reset_time_.store(util::current_ms(), std::memory_order_relaxed);
     persister_.save_hard_state(hard_state_);
 }
 
@@ -380,6 +378,7 @@ auto vosfs::raft::RaftNode::handle_request_vote_request(
 
     if (can_vote) {
         hard_state_.set_voted_for(candidate_id);
+        last_reset_time_.store(util::current_ms(), std::memory_order_relaxed);
     }
 
     co_return make_request_vote_response(member_id, current_term, can_vote);
