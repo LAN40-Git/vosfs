@@ -15,7 +15,7 @@
 ```shell
 sudo apt update
 # 安装依赖
-sudo apt install -y build-essential git cmake pkg-config liburing-dev protobuf-compiler libprotobuf-dev librocksdb-dev libtbb-dev libsqlite3-dev libspdlog-dev libhiredis-dev
+sudo apt install -y build-essential git cmake pkg-config liburing-dev protobuf-compiler libprotobuf-dev librocksdb-dev libtbb-dev libsqlite3-dev libspdlog-dev nlohmann-json3-dev
 ```
 
 [事件驱动库]-[kosio](https://github.com/LAN40-Git/kosio)，这是一个基于 `io_uring` 和 `c++无栈协程` 实现的事件驱动库，是本人为学习 IO 多路复用技术和现代 C++ 特性复刻自[zedio](https://github.com/8sileus/zedio)，目前仅重构了运行时中的分层时间轮和超时机制，其它模块无大改动

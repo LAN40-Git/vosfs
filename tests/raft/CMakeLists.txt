@@ -1,6 +1,5 @@
 file(GLOB SRCS PRIVATE
         "*.cpp"
-        "api"
 )
 
 foreach(source ${SRCS})
