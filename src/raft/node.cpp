@@ -137,7 +137,7 @@ auto vosfs::raft::RaftNode::election_loop() -> Task<void> {
         auto timeout = rand.rand_range(150, 300);
         co_await kosio::time::sleep(timeout);
 
-        if (kosio::util::current_ms() - last_reset_time_.load(std::memory_order_relaxed) >= timeout ||
+        if (kosio::util::current_ms() - last_reset_time_.load(std::memory_order_relaxed) < timeout ||
             role_.load(std::memory_order_acquire) == kLeader) {
             continue;
         }
@@ -149,6 +149,8 @@ auto vosfs::raft::RaftNode::election_loop() -> Task<void> {
             mutex_.unlock();
             continue;
         }
+
+        LOG_INFO("心跳超时，选举开始");
 
         votes_ = 0;
         auto current_term = hard_state_.current_term() + 1;
@@ -164,7 +166,6 @@ auto vosfs::raft::RaftNode::election_loop() -> Task<void> {
         ++votes_;
         if (votes_ > transport_.cluster_size() / 2 &&
             role_.load(std::memory_order_relaxed) == kCandidate) {
-            LOG_INFO("{}", transport_.cluster_size());
             become_leader();
         }
         mutex_.unlock();
@@ -246,7 +247,7 @@ auto vosfs::raft::RaftNode::heartbeat_loop() -> Task<void> {
         for (const auto& [member_id, request] : requests) {
             co_await transport_.unicast_append_entries_request(
                 member_id, request,
-                [this](const vrpc::Status& status, const AppendEntriesResponse& response) -> kosio::async::Task<void> {
+                [this](const vrpc::Status& status, const AppendEntriesResponse& response) -> Task<void> {
                     if (!status.ok()) {
                         LOG_ERROR("{}", status.message());
                         co_return;
@@ -409,7 +410,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
 
     leader_id_ = leader_id;
     last_reset_time_.store(kosio::util::current_ms(), std::memory_order_relaxed);
-    LOG_INFO("receive heartbeat from {}, current_term: {}", leader_id_.value(), hard_state_.current_term());
+    // LOG_INFO("receive heartbeat from {}, current_term: {}", leader_id_.value(), hard_state_.current_term());
 
     // 判断追加日志的上一条日志是否存在与本地日志中
     bool log_ok{false};
@@ -555,7 +556,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_response(
     if (term < hard_state_.current_term() ||
         role_.load(std::memory_order_acquire) != kLeader) {
         co_return;
-        }
+    }
 
     co_await mutex_.lock();
     std::lock_guard lock(mutex_, std::adopt_lock);
