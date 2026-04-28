@@ -8,11 +8,10 @@ vosfs::raft::detail::Transport::Transport(const Config& config) {
     name_ = config.name;
     host_ = config.host;
     port_ = config.port;
-    PeerMap peers;
 
     for (auto& node : config.nodes | std::views::values) {
         auto peer = std::make_shared<Peer>(node.id, node.name, node.host, node.port);
-        peers.emplace(node.id, std::move(peer));
+        peers_.emplace(node.id, std::move(peer));
     }
 }
 

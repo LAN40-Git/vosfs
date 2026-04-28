@@ -164,6 +164,7 @@ auto vosfs::raft::RaftNode::election_loop() -> Task<void> {
         ++votes_;
         if (votes_ > transport_.cluster_size() / 2 &&
             role_.load(std::memory_order_relaxed) == kCandidate) {
+            LOG_INFO("{}", transport_.cluster_size());
             become_leader();
         }
         mutex_.unlock();
@@ -176,7 +177,7 @@ auto vosfs::raft::RaftNode::election_loop() -> Task<void> {
             last_log_term);
 
         co_await transport_.broadcast_request_vote_request(
-            request, [this](const vrpc::Status& status, const RequestVoteResponse& response) -> kosio::async::Task<void> {
+            request, [this](const vrpc::Status& status, const RequestVoteResponse& response) -> Task<void> {
                 if (!status.ok()) {
                     LOG_ERROR("{}", status.message());
                     co_return;
@@ -408,7 +409,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
 
     leader_id_ = leader_id;
     last_reset_time_.store(kosio::util::current_ms(), std::memory_order_relaxed);
-    LOG_VERBOSE("receive heartbeat from {}, current_term: {}", leader_id_.value(), hard_state_.current_term());
+    LOG_INFO("receive heartbeat from {}, current_term: {}", leader_id_.value(), hard_state_.current_term());
 
     // 判断追加日志的上一条日志是否存在与本地日志中
     bool log_ok{false};

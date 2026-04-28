@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <fstream>
+#include <kosio/common/debug.hpp>
 #include <nlohmann/json.hpp>
 #include "vosfs/common/error.hpp"
 
