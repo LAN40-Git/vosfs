@@ -134,13 +134,15 @@ auto vosfs::raft::RaftNode::election_loop() -> Task<void> {
     kosio::util::FastRand rand;
     while (!is_shutdown_.load(std::memory_order_relaxed)) {
         // [150,300]ms timeout
-        auto timeout = rand.rand_range(150, 300);
-        co_await kosio::time::sleep(timeout);
+        auto election_timeout = rand.rand_range(150, 300);
+        co_await kosio::time::sleep(election_timeout);
 
-        if (kosio::util::current_ms() - last_reset_time_.load(std::memory_order_relaxed) < timeout ||
-            role_.load(std::memory_order_acquire) == kLeader) {
+        auto timeout = kosio::util::current_ms() - last_reset_time_.load(std::memory_order_relaxed);
+
+        if (timeout < election_timeout || role_.load(std::memory_order_acquire) == kLeader) {
             continue;
         }
+        LOG_INFO("{}", timeout);
 
         co_await mutex_.lock();
 
