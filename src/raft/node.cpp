@@ -1,5 +1,6 @@
 #include "vosfs/raft/node.hpp"
 #include "vosfs/common/util/file.hpp"
+#include "vosfs/common/util/time.hpp"
 
 vosfs::raft::RaftNode::RaftNode(
     detail::Snapshotter::Ptr snapshotter,
@@ -137,7 +138,7 @@ auto vosfs::raft::RaftNode::election_loop() -> Task<void> {
         auto election_timeout = rand.rand_range(150, 300);
         co_await kosio::time::sleep(election_timeout);
 
-        auto timeout = kosio::util::current_ms() - last_reset_time_.load(std::memory_order_relaxed);
+        auto timeout = util::current_ms() - last_reset_time_.load(std::memory_order_relaxed);
 
         if (timeout < election_timeout || role_.load(std::memory_order_acquire) == kLeader) {
             continue;
@@ -151,8 +152,6 @@ auto vosfs::raft::RaftNode::election_loop() -> Task<void> {
             mutex_.unlock();
             continue;
         }
-
-        LOG_INFO("心跳超时，选举开始");
 
         votes_ = 0;
         auto current_term = hard_state_.current_term() + 1;
@@ -242,7 +241,6 @@ auto vosfs::raft::RaftNode::heartbeat_loop() -> Task<void> {
                 commit_index);
 
             requests.emplace(member_id, request);
-
         }
 
         // 发送日志同步请求（心跳）
@@ -411,7 +409,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
     }
 
     leader_id_ = leader_id;
-    last_reset_time_.store(kosio::util::current_ms(), std::memory_order_relaxed);
+    last_reset_time_.store(util::current_ms(), std::memory_order_relaxed);
     // LOG_INFO("receive heartbeat from {}, current_term: {}", leader_id_.value(), hard_state_.current_term());
 
     // 判断追加日志的上一条日志是否存在与本地日志中
@@ -481,7 +479,7 @@ auto vosfs::raft::RaftNode::handle_install_snapshot_request(
     }
 
     leader_id_ = leader_id;
-    last_reset_time_.store(kosio::util::current_ms(), std::memory_order_relaxed);
+    last_reset_time_.store(util::current_ms(), std::memory_order_relaxed);
 
     if (offset == 0) {
         snapshot_data_.clear();
@@ -567,7 +565,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_response(
     if (term < current_term ||
         role_.load(std::memory_order_relaxed) != kLeader) {
         co_return;
-        }
+    }
 
     if (term > current_term) {
         increase_term_to(term);
