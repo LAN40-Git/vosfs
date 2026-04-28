@@ -11,7 +11,6 @@ static constexpr std::size_t MAX_SNAPSHOT_CHUNK_SIZE = 4 * 1024;
 static constexpr std::size_t HEARTBEAT_INTERVAL = 50;
 static constexpr std::size_t MAX_APPEND_ENTRIES_SIZE = 64;
 static constexpr std::size_t SNAPSHOT_INTERVAL = 10;
-} // namespace detail
 
 struct NodeInfo {
     uint64_t    id;
@@ -103,6 +102,7 @@ struct Config {
     // 集群节点
     std::unordered_map<uint64_t, NodeInfo> nodes;
 };
+} // namespace detail
 
 struct ConfigBuilder {
     [[nodiscard]]
@@ -143,12 +143,12 @@ struct ConfigBuilder {
 
     [[nodiscard]]
     auto add_node(uint64_t id, std::string name, std::string host, uint16_t port) -> ConfigBuilder& {
-        config_.nodes.emplace(id, NodeInfo{id, std::move(name), std::move(host), port});
+        config_.nodes.emplace(id, detail::NodeInfo{id, std::move(name), std::move(host), port});
         return *this;
     }
 
     [[nodiscard]]
-    auto build() const -> Config {
+    auto build() const -> detail::Config {
         return config_;
     }
 
@@ -158,6 +158,6 @@ public:
     }
 
 private:
-    Config config_;
+    detail::Config config_;
 };
 } // namespace vosfs::raft

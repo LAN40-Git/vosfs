@@ -1,9 +1,9 @@
 #include <kosio/signal/signal.hpp>
-#include "vosfs/auth/auth_server.hpp"
+#include "vosfs/auth/node.hpp"
 using namespace vosfs::auth;
 
 auto main_coro() -> kosio::async::Task<void> {
-    auto has_auth_server = AuthServer::create("vosfs-auth.db", "0.0.0.0", 9000);
+    auto has_auth_server = AuthNode::create("vosfs-auth.db", "0.0.0.0", 9000);
     if (!has_auth_server) {
         LOG_ERROR("{}", has_auth_server.error());
         co_return;

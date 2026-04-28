@@ -3,12 +3,12 @@
 #include "vosfs/common/util/jwt.hpp"
 #include "../../include/vosfs/auth/config.hpp"
 #include "../../include/vosfs/auth/status.hpp"
-#include "vosfs/auth/auth_server.hpp"
+#include "vosfs/auth/node.hpp"
 
-auto vosfs::auth::AuthServer::create(
+auto vosfs::auth::AuthNode::create(
     std::string_view db_path,
     std::string_view host,
-    uint16_t port) -> Result<std::unique_ptr<AuthServer>> {
+    uint16_t port) -> Result<std::unique_ptr<AuthNode>> {
     // 连接数据库
     sqlite3* db = nullptr;
     if (sqlite3_open(db_path.data(), &db) != SQLITE_OK) {
@@ -38,10 +38,10 @@ auto vosfs::auth::AuthServer::create(
         return std::unexpected{make_error(Error::kDatabaseQueryFailed)};
     }
 
-    return std::unique_ptr<AuthServer>(new AuthServer(db, host, port));
+    return std::unique_ptr<AuthNode>(new AuthNode(db, host, port));
 }
 
-auto vosfs::auth::AuthServer::wait() -> kosio::async::Task<void> {
+auto vosfs::auth::AuthNode::wait() -> kosio::async::Task<void> {
     auto rpc_server = vrpc::TcpServer{host_, port_};
     co_await rpc_server
         .register_method<RegisterUserRequest, RegisterUserResponse>(
@@ -62,7 +62,7 @@ auto vosfs::auth::AuthServer::wait() -> kosio::async::Task<void> {
         .wait();
 }
 
-auto vosfs::auth::AuthServer::handle_register_user_request(const RegisterUserRequest& request)
+auto vosfs::auth::AuthNode::handle_register_user_request(const RegisterUserRequest& request)
     -> kosio::async::Task<RegisterUserResponse> {
     ;
     RegisterUserResponse response;
@@ -169,7 +169,7 @@ auto vosfs::auth::AuthServer::handle_register_user_request(const RegisterUserReq
     co_return response;
 }
 
-auto vosfs::auth::AuthServer::handle_delete_user_request(const DeleteUserRequest& request)
+auto vosfs::auth::AuthNode::handle_delete_user_request(const DeleteUserRequest& request)
     -> kosio::async::Task<DeleteUserResponse> {
     ;
     DeleteUserResponse response;
@@ -226,7 +226,7 @@ auto vosfs::auth::AuthServer::handle_delete_user_request(const DeleteUserRequest
     co_return response;
 }
 
-auto vosfs::auth::AuthServer::handle_login_user_by_user_name_request(const LoginUserByNameRequest& request) -> kosio::async::Task<LoginUserByNameResponse> {
+auto vosfs::auth::AuthNode::handle_login_user_by_user_name_request(const LoginUserByNameRequest& request) -> kosio::async::Task<LoginUserByNameResponse> {
     ;
     LoginUserByNameResponse response;
 

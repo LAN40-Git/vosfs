@@ -5,9 +5,9 @@
 #include "vosfs/common/error.hpp"
 
 namespace vosfs::auth {
-class AuthServer {
+class AuthNode {
 private:
-    explicit AuthServer(sqlite3* db, std::string_view host = "0.0.0.0", uint16_t port = 9000)
+    explicit AuthNode(sqlite3* db, std::string_view host = "0.0.0.0", uint16_t port = 9000)
         : db_(db)
         , host_(host)
         , port_(port) {
@@ -15,7 +15,7 @@ private:
     }
 
 public:
-    ~AuthServer() {
+    ~AuthNode() {
         if (db_) {
             sqlite3_close(db_);
         }
@@ -26,7 +26,7 @@ public:
     static auto create(
         std::string_view db_path,
         std::string_view host = "0.0.0.0",
-        uint16_t port = 9000) -> Result<std::unique_ptr<AuthServer>>;
+        uint16_t port = 9000) -> Result<std::unique_ptr<AuthNode>>;
 
 public:
     auto wait() -> kosio::async::Task<void>;

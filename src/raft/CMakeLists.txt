@@ -3,4 +3,4 @@ file(GLOB SRCS
         "../../api/raftpb/*.cc"
 )
 
-set(RAFT_SRCS ${SRCS} CACHE INTERNAL "auth source files")
+set(RAFT_SRCS ${SRCS} CACHE INTERNAL "raft source files")

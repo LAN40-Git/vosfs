@@ -1,4 +1,4 @@
-#include "vosfs/auth/auth_client.hpp"
+#include "vosfs/auth/client.hpp"
 using namespace vosfs::auth;
 
 class AuthClient : public BaseClient<AuthClient> {

@@ -4,6 +4,10 @@ project(vosfs VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(QT_NO_VULKAN ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
 
 set(OPTIONS
         ENABLE_KOSIO_LOG
@@ -43,11 +47,17 @@ pkg_check_modules(Hiredis REQUIRED hiredis)
 find_package(OpenSSL REQUIRED)
 # jwt-cpp
 find_package(jwt-cpp CONFIG REQUIRED)
+# qt
+find_package(Qt6 REQUIRED COMPONENTS Quick Core Gui Qml Quick QuickControls2)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/api)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 set(DEPEND_LIBS
+        Qt6::Quick
+        Qt6::Gui
+        Qt6::Qml
+        Qt6::QuickControls2
         ${LIBURING_LIBRARIES}
         ${PROTOBUF_LIBRARIES}
         rocksdb
