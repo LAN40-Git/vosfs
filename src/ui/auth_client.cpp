@@ -9,11 +9,19 @@ void vosfs::ui::AuthClient::register_user(
     const QString& password,
     int role,
     const QString& admin_secret) {
-    kosio::spawn(send_register_user_request(
-        user_name.toStdString(),
-        password.toStdString(),
-        role,
-        admin_secret.toStdString()));
+    QMetaObject::invokeMethod(this, [this, user_name, password, role, admin_secret]() {
+        kosio::spawn(send_register_user_request(
+            user_name.toStdString(),
+            password.toStdString(),
+            role,
+            admin_secret.toStdString()
+        ));
+    }, Qt::QueuedConnection);
+    // kosio::spawn(send_register_user_request(
+    //     user_name.toStdString(),
+    //     password.toStdString(),
+    //     role,
+    //     admin_secret.toStdString()));
 }
 
 void vosfs::ui::AuthClient::delete_user(const QString& password) {
@@ -32,6 +40,7 @@ auto vosfs::ui::AuthClient::send_register_user_request(
     std::string password,
     int role,
     std::string admin_secret) -> kosio::async::Task<void> {
+    LOG_INFO("SHIT");
     auth::RegisterUserRequest request;
     request.set_user_name(std::move(user_name));
     request.set_password(util::sha256(password));
@@ -80,7 +89,7 @@ void vosfs::ui::AuthClient::handle_register_user_response(
         LOG_ERROR("{}", status.message());
         return;
     }
-    std::cout << response.DebugString() << std::endl;
+    LOG_INFO("{}", response.message());
 }
 
 void vosfs::ui::AuthClient::handle_delete_user_response(
@@ -90,7 +99,7 @@ void vosfs::ui::AuthClient::handle_delete_user_response(
         LOG_ERROR("{}", status.message());
         return;
     }
-    std::cout << response.DebugString() << std::endl;
+    LOG_INFO("{}", response.message());
 }
 
 void vosfs::ui::AuthClient::handle_login_user_by_name_response(
@@ -100,5 +109,5 @@ void vosfs::ui::AuthClient::handle_login_user_by_name_response(
         LOG_ERROR("{}", status.message());
         return;
     }
-    std::cout << response.DebugString() << std::endl;
+    LOG_INFO("{}", response.message());
 }

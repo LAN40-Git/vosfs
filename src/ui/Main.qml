@@ -6,7 +6,7 @@ Window {
     width: 640
     height: 480
     visible: true
-    title: "登录系统"
+    title: "vosfs"
 
     StackView {
         id: stack

@@ -3,7 +3,6 @@
 #undef emit
 #include <QDebug>
 #include <jwt-cpp/jwt.h>
-#include <openssl/evp.h>
 #include <vrpc/net/tcp/tcp_client.hpp>
 #include "vosfs/common/error.hpp"
 #include "vosfs/common/util/sha256.hpp"
@@ -18,11 +17,11 @@ public:
     explicit AuthClient(std::string_view host, uint16_t port, QObject *parent = nullptr);
 
 public slots:
-    void register_user(const QString& user_name, const QString& password, int role, const QString& admin_secret);
+    void register_user(const QString& user_name, const QString& password, int role, const QString& admin_secret = "");
     void delete_user(const QString& password);
     void login_user_by_name(const QString& user_name, const QString& password, int role);
 
-private:
+public:
     [[REMEMBER_CO_AWAIT]]
     auto send_register_user_request(
         std::string user_name,
@@ -44,7 +43,6 @@ private:
     void handle_register_user_response(const vrpc::Status& status, const auth::RegisterUserResponse& response);
     void handle_delete_user_response(const vrpc::Status& status, const auth::DeleteUserResponse& response);
     void handle_login_user_by_name_response(const vrpc::Status& status, const auth::LoginUserByNameResponse& response);
-
 
 private:
     UserSession     session_{};

@@ -2,30 +2,35 @@ import QtQuick
 import QtQuick.Controls
 
 Item {
-    anchors.fill: parent
-
     Column {
-        anchors.centerIn: parent
-        spacing: 20
+        spacing: 8
 
         TextField {
-            id: editUser
+            id: user_name
             width: 300
             placeholderText: "用户名"
         }
 
         TextField {
-            id: editPwd
+            id: password
             width: 300
             placeholderText: "密码"
-            echoMode: TextInput.Password   // ✅ 正确
+            echoMode: TextInput.Password
         }
 
         Button {
             text: "登录"
             width: 300
             onClicked: {
-                AuthClient.login(editUser.text, editPwd.text, 0)
+                AuthClient.login_user_by_name(user_name.text, password.text, 1)
+            }
+        }
+
+        Button {
+            text: "注册";
+            width: 300;
+            onClicked: {
+                AuthClient.register_user(user_name.text, password.text, 1)
             }
         }
 
@@ -33,7 +38,7 @@ Item {
             text: "去注册"
             width: 300
             onClicked: {
-                stack.push(RegisterPage)   // ✅ 正确
+                stack.push(RegisterPage)
             }
         }
     }
