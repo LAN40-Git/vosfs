@@ -139,11 +139,9 @@ auto vosfs::raft::RaftNode::election_loop() -> Task<void> {
         co_await kosio::time::sleep(election_timeout);
 
         auto timeout = util::current_ms() - last_reset_time_.load(std::memory_order_relaxed);
-
         if (timeout < election_timeout || role_.load(std::memory_order_acquire) == kLeader) {
             continue;
         }
-        LOG_INFO("{}", timeout);
 
         co_await mutex_.lock();
 
@@ -193,6 +191,7 @@ auto vosfs::raft::RaftNode::election_loop() -> Task<void> {
 
 auto vosfs::raft::RaftNode::heartbeat_loop() -> Task<void> {
     while (!is_shutdown_.load(std::memory_order_relaxed)) {
+        auto start_time = util::current_ms();
         co_await kosio::time::sleep(detail::HEARTBEAT_INTERVAL);
 
         if (role_.load(std::memory_order_acquire) != kLeader) {
@@ -255,6 +254,7 @@ auto vosfs::raft::RaftNode::heartbeat_loop() -> Task<void> {
                     }
                     co_await this->handle_append_entries_response(response);
                 });
+            LOG_INFO("send heartbeat, timeout: {}", util::current_ms()-start_time);
         }
     }
     latch_.count_down();
@@ -410,8 +410,10 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
     }
 
     leader_id_ = leader_id;
-    last_reset_time_.store(util::current_ms(), std::memory_order_relaxed);
-    LOG_INFO("receive heartbeat from {}, current_term: {}", leader_id_.value(), hard_state_.current_term());
+    auto current_ms = util::current_ms();
+    auto timeout = current_ms - last_reset_time_.load(std::memory_order_relaxed);
+    last_reset_time_.store(current_ms, std::memory_order_relaxed);
+    // LOG_INFO("receive heartbeat from {}, timeout: {}", leader_id_.value(), timeout);
 
     // 判断追加日志的上一条日志是否存在与本地日志中
     bool log_ok{false};
