@@ -186,6 +186,7 @@ auto vosfs::raft::RaftNode::election_loop() -> Task<void> {
                 }
                 co_await this->handle_request_vote_response(response);
             });
+        last_reset_time_.store(util::current_ms(), std::memory_order_relaxed);
     }
     latch_.count_down();
 }
@@ -410,7 +411,7 @@ auto vosfs::raft::RaftNode::handle_append_entries_request(
 
     leader_id_ = leader_id;
     last_reset_time_.store(util::current_ms(), std::memory_order_relaxed);
-    // LOG_INFO("receive heartbeat from {}, current_term: {}", leader_id_.value(), hard_state_.current_term());
+    LOG_INFO("receive heartbeat from {}, current_term: {}", leader_id_.value(), hard_state_.current_term());
 
     // 判断追加日志的上一条日志是否存在与本地日志中
     bool log_ok{false};
