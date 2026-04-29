@@ -1,7 +1,7 @@
 #pragma once
-#include <QObject>
-#undef emit
 #include <QDebug>
+#include "vosfs/ui/signal_brige.hpp"
+#undef emit
 #include <tbb/concurrent_queue.h>
 #include <jwt-cpp/jwt.h>
 #include <vrpc/net/tcp/tcp_client.hpp>
@@ -14,7 +14,7 @@ using kosio::async::Task;
 class AuthClient : public QObject {
     Q_OBJECT
 public:
-    explicit AuthClient(std::string_view host, uint16_t port, QObject *parent = nullptr);
+    explicit AuthClient(std::string_view host, uint16_t port, SignalBrige& signal_brige, QObject *parent = nullptr);
 
 public:
     void run();
@@ -55,5 +55,6 @@ private:
     UserSession                       session_{};
     vrpc::TcpClient                   rpc_client_;
     tbb::concurrent_queue<Task<void>> tasks_;
+    SignalBrige&                      signal_brige_;
 };
 } // namespace vosfs::ui

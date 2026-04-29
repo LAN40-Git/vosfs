@@ -9,11 +9,13 @@
 int main(int argc, char *argv[]) {
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
-    auto auth_client = vosfs::ui::AuthClient("127.0.0.1", 9000);
+    auto signal_brige = vosfs::ui::SignalBrige{};
+    auto auth_client = vosfs::ui::AuthClient("127.0.0.1", 9000, signal_brige);
     auto* auth_thread = new QThread;
     auth_thread->setParent(&app);
 
     auth_client.moveToThread(auth_thread);
+    engine.rootContext()->setContextProperty("SignalBrige", &signal_brige);
     engine.rootContext()->setContextProperty("AuthClient", &auth_client);
 
     QObject::connect(auth_thread, &QThread::started, &auth_client, &vosfs::ui::AuthClient::run);

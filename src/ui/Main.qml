@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Window
 import QtQuick.Controls
+import QtQuick.Effects
 
 Window {
     id: mainWindow
@@ -10,6 +11,22 @@ Window {
     title: "vosfs"
     flags: Qt.FramelessWindowHint
     color: "#1E1E1E"
+
+    Connections {
+        target: SignalBrige
+
+        function onRegisterFinished(success, msg) {
+            console.log("注册结果：", success, msg)
+        }
+
+        function onDeleteFinshed(success, msg) {
+
+        }
+
+        function onLoginFinshed(success, msg) {
+
+        }
+    }
 
     // 顶部标题栏
     Rectangle {
@@ -174,8 +191,6 @@ Window {
             Text {
                 id: userBtnText
                 text: "登录"
-                font.family: "Ubuntu Mono"
-                antialiasing: true
                 color: "black"
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -191,15 +206,20 @@ Window {
                 id: loginPopup
                 modal: true
                 focus: true
-                width: 400
-                height: 700
-                x: mainWindow.x + width / 2
-                y: mainWindow.y + height / 2
+                width: 360
+                height: 480
+                anchors.centerIn: Overlay.overlay
 
-                Rectangle {
-                    width: 100
-                    height: 100
-                    color: "#FFFFFF"
+                background: Rectangle {
+                    radius: 12
+                    color: "#232222"
+                }
+
+                StackView {
+                    id: loginPopupStack
+                    anchors.fill: parent
+                    clip: true
+                    initialItem: LoginPage{}
                 }
             }
 

@@ -1,10 +1,12 @@
 #include "vosfs/ui/auth_client.hpp"
+#include <qtmetamacros.h>
 #include "vosfs/common/util/sha256.hpp"
 #include "vosfs/auth/status.hpp"
 
-vosfs::ui::AuthClient::AuthClient(std::string_view host, uint16_t port, QObject* parent)
+vosfs::ui::AuthClient::AuthClient(std::string_view host, uint16_t port, SignalBrige& signal_brige, QObject* parent)
     : QObject(parent)
-    , rpc_client_(host, port) {}
+    , rpc_client_(host, port)
+    , signal_brige_(signal_brige) {}
 
 void vosfs::ui::AuthClient::run() {
     is_shutdown_.store(false, std::memory_order_release);
@@ -111,28 +113,31 @@ void vosfs::ui::AuthClient::handle_register_user_response(
     const vrpc::Status& status,
     const auth::RegisterUserResponse& response) {
     if (!status.ok()) {
-        LOG_ERROR("{}", status.message());
+        signal_brige_.registerFinished(false, QString::fromStdString(std::string{status.message()}));
         return;
     }
-    LOG_INFO("{}", response.message());
+    auto res_status = auth::Status{response.status_code()};
+    signal_brige_.registerFinished(res_status.ok(), QString::fromStdString(response.message()));
 }
 
 void vosfs::ui::AuthClient::handle_delete_user_response(
     const vrpc::Status& status,
     const auth::DeleteUserResponse& response) {
     if (!status.ok()) {
-        LOG_ERROR("{}", status.message());
+        signal_brige_.deleteFinished(false, QString::fromStdString(std::string{status.message()}));
         return;
     }
-    LOG_INFO("{}", response.message());
+    auto res_status = auth::Status{response.status_code()};
+    signal_brige_.deleteFinished(res_status.ok(), QString::fromStdString(response.message()));
 }
 
 void vosfs::ui::AuthClient::handle_login_user_by_name_response(
     const vrpc::Status& status,
     const auth::LoginUserByNameResponse& response) {
     if (!status.ok()) {
-        LOG_ERROR("{}", status.message());
+        signal_brige_.loginFinished(false, QString::fromStdString(std::string{status.message()}));
         return;
     }
-    LOG_INFO("{}", response.message());
+    auto res_status = auth::Status{response.status_code()};
+    signal_brige_.loginFinished(res_status.ok(), QString::fromStdString(response.message()));
 }
