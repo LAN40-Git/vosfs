@@ -14,9 +14,8 @@ qt_add_qml_module(vosfs_ui
         URI main
         QML_FILES
         Main.qml
-        LoginPage.qml
-        RegisterPage.qml
         SOURCES ${SRCS}
+        RESOURCES res.qrc
 )
 
 target_link_libraries(vosfs_ui

@@ -6,34 +6,30 @@
 #include <kosio/core.hpp>
 #include "vosfs/ui/auth_client.hpp"
 
-void kosio_thread(QQmlApplicationEngine* engine) {
-    kosio::runtime::CurrentThreadBuilder::default_create().block_on(
-        [engine]() -> kosio::async::Task<void> {
-            auto* auth_client = new vosfs::ui::AuthClient("127.0.0.1", 9000);
-
-            QMetaObject::invokeMethod(
-                engine->rootContext(),
-                [ctx = engine->rootContext(), auth_client]() {
-                    ctx->setContextProperty("AuthClient", auth_client);
-                },
-                Qt::BlockingQueuedConnection
-            );
-
-            co_await kosio::signal::ctrl_c();
-        }()
-    );
-}
-
 int main(int argc, char *argv[]) {
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
+    auto auth_client = vosfs::ui::AuthClient("127.0.0.1", 9000);
+    auto* auth_thread = new QThread;
+    auth_thread->setParent(&app);
+
+    auth_client.moveToThread(auth_thread);
+    engine.rootContext()->setContextProperty("AuthClient", &auth_client);
+
+    QObject::connect(auth_thread, &QThread::started, &auth_client, &vosfs::ui::AuthClient::run);
+    // QObject::connect(auth_thread, &QThread::finished, &auth_client, &vosfs::ui::AuthClient::deleteLater);
+    QObject::connect(&app, &QGuiApplication::aboutToQuit, [&](){
+        auth_client.shutdown();
+        auth_thread->quit();
+        auth_thread->wait();
+    });
 
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreationFailed,
                      &app, []() { QCoreApplication::exit(-1); },
                      Qt::QueuedConnection);
 
-    QThread* thread = QThread::create(&kosio_thread, &engine);
-    thread->start();
+    auth_thread->start();
+
     engine.loadFromModule("main", "Main");
-    return app.exec();
+    return QGuiApplication::exec();
 }
