@@ -137,7 +137,7 @@ Item {
                 }
 
                 mainWindow.isLogging = true
-                AuthClient.login_user_by_name(user_name.text, password.text, 1)
+                VosfsClient.login_user_by_name(user_name.text, password.text, 1)
             }
         }
     }

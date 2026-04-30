@@ -26,12 +26,12 @@ Window {
         target: SignalBrige
         function onLoginFinished(success, msg) {
             if (success) {
-                mainWindow.uid = AuthClient.uid
-                mainWindow.user_name = AuthClient.user_name
-                mainWindow.avatar = AuthClient.avatar
-                mainWindow.role = AuthClient.role
-                mainWindow.quota = AuthClient.quota
-                mainWindow.create_time = AuthClient.create_time
+                mainWindow.uid = VosfsClient.uid
+                mainWindow.user_name = VosfsClient.user_name
+                mainWindow.avatar = VosfsClient.avatar
+                mainWindow.role = VosfsClient.role
+                mainWindow.quota = VosfsClient.quota
+                mainWindow.create_time = VosfsClient.create_time
                 mainWindow.isLoggedIn = true
             }
         }

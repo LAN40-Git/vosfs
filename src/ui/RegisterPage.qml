@@ -136,7 +136,7 @@ Item {
                     return
                 }
                 mainWindow.isRegistering = true
-                AuthClient.register_user(user_name.text, password.text, 1)
+                VosfsClient.register_user(user_name.text, password.text, 1)
             }
         }
     }

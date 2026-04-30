@@ -46,13 +46,16 @@ private:
 
 
 private:
-    // Raft RPC
     [[REMEMBER_CO_AWAIT]]
     auto handle_request_vote_request(const RequestVoteRequest& request) -> Task<RequestVoteResponse>;
     [[REMEMBER_CO_AWAIT]]
     auto handle_append_entries_request(const AppendEntriesRequest& request) -> Task<AppendEntriesResponse>;
     [[REMEMBER_CO_AWAIT]]
     auto handle_install_snapshot_request(const InstallSnapshotRequest& request) -> Task<InstallSnapshotResponse>;
+    [[REMEMBER_CO_AWAIT]]
+    auto handle_list_dir_request(const ListDirRequest& request) -> Task<ListDirResponse>;
+    [[REMEMBER_CO_AWAIT]]
+    auto handle_create_dir_request(const CreateDirRequest& request) -> Task<CreateDirResponse>;
 
 private:
     [[REMEMBER_CO_AWAIT]]

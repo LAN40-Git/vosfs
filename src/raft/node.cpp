@@ -20,7 +20,7 @@ vosfs::raft::RaftNode::RaftNode(
 }
 
 auto vosfs::raft::RaftNode::create(const std::string& config_path) -> Result<std::unique_ptr<RaftNode>> {
-    auto has_config = Config::from_json(config_path);
+    auto has_config = detail::Config::from_json(config_path);
     if (!has_config) {
         return std::unexpected{has_config.error()};
     }
@@ -508,6 +508,16 @@ auto vosfs::raft::RaftNode::handle_install_snapshot_request(
     logs_.set_last_included_term(last_included_term);
     state_machine_.set_inodes(std::move(inodes));
     co_return make_install_snapshot_response(member_id, current_term);
+}
+
+auto vosfs::raft::RaftNode::handle_list_dir_request(const ListDirRequest& request) -> Task<ListDirResponse> {
+    auto& token = request.token();
+    auto parent_ino = request.parent_ino();
+}
+
+auto vosfs::raft::RaftNode::handle_create_dir_request(const CreateDirRequest& request) -> Task<CreateDirResponse> {
+    auto& token = request.token();
+    auto parent_ino = request.parent_ino();
 }
 
 auto vosfs::raft::RaftNode::handle_request_vote_response(

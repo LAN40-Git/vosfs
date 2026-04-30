@@ -4,33 +4,33 @@
 #include <QThread>
 #include <QObject>
 #include <kosio/core.hpp>
-#include "vosfs/ui/auth_client.hpp"
+#include "vosfs/ui/client.hpp"
 
 int main(int argc, char *argv[]) {
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
     auto signal_brige = vosfs::ui::SignalBrige{};
-    auto auth_client = vosfs::ui::AuthClient("127.0.0.1", 9000, signal_brige);
-    auto* auth_thread = new QThread;
-    auth_thread->setParent(&app);
+    auto vosfs_client = vosfs::ui::VosfsClient("127.0.0.1", 9000, signal_brige);
+    auto* vosfs_thread = new QThread;
+    vosfs_thread->setParent(&app);
 
-    auth_client.moveToThread(auth_thread);
+    vosfs_client.moveToThread(vosfs_thread);
     engine.rootContext()->setContextProperty("SignalBrige", &signal_brige);
-    engine.rootContext()->setContextProperty("AuthClient", &auth_client);
+    engine.rootContext()->setContextProperty("VosfsClient", &vosfs_client);
 
-    QObject::connect(auth_thread, &QThread::started, &auth_client, &vosfs::ui::AuthClient::run);
-    // QObject::connect(auth_thread, &QThread::finished, &auth_client, &vosfs::ui::AuthClient::deleteLater);
+    QObject::connect(vosfs_thread, &QThread::started, &vosfs_client, &vosfs::ui::VosfsClient::run);
+    // QObject::connect(vosfs_thread, &QThread::finished, &auth_client, &vosfs::ui::VosfsClient::deleteLater);
     QObject::connect(&app, &QGuiApplication::aboutToQuit, [&](){
-        auth_client.shutdown();
-        auth_thread->quit();
-        auth_thread->wait();
+        vosfs_client.shutdown();
+        vosfs_thread->quit();
+        vosfs_thread->wait();
     });
 
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreationFailed,
                      &app, []() { QCoreApplication::exit(-1); },
                      Qt::QueuedConnection);
 
-    auth_thread->start();
+    vosfs_thread->start();
 
     engine.loadFromModule("main", "Main");
     return QGuiApplication::exec();
