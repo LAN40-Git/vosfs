@@ -117,6 +117,7 @@ void vosfs::ui::AuthClient::handle_register_user_response(
         return;
     }
     auto res_status = auth::Status{response.status_code()};
+    signal_brige_.appendLog(QString::fromStdString(std::string{response.message()}));
     signal_brige_.registerFinished(res_status.ok(), QString::fromStdString(response.message()));
 }
 
@@ -128,6 +129,7 @@ void vosfs::ui::AuthClient::handle_delete_user_response(
         return;
     }
     auto res_status = auth::Status{response.status_code()};
+    signal_brige_.appendLog(QString::fromStdString(std::string{response.message()}));
     signal_brige_.deleteFinished(res_status.ok(), QString::fromStdString(response.message()));
 }
 
@@ -139,5 +141,16 @@ void vosfs::ui::AuthClient::handle_login_user_by_name_response(
         return;
     }
     auto res_status = auth::Status{response.status_code()};
+    if (res_status.ok()) {
+        session_.token = response.token();
+        auto decode = jwt::decode(session_.token);
+        session_.uid = stoll(decode.get_payload_claim("uid").as_string());
+        session_.user_name = response.user_name();
+        session_.avatar = response.avatar();
+        session_.role = static_cast<auth::User_Role>(stoi(decode.get_payload_claim("role").as_string()));
+        session_.quota = static_cast<uint64_t>(stoull(decode.get_payload_claim("quota").as_string()));
+        session_.create_time = response.create_time();
+    }
+    signal_brige_.appendLog(QString::fromStdString(std::string{response.message()}));
     signal_brige_.loginFinished(res_status.ok(), QString::fromStdString(response.message()));
 }

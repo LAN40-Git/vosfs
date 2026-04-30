@@ -9,6 +9,7 @@ public:
     explicit SignalBrige(QObject *parent = nullptr) : QObject(parent) {}
 
 signals:
+    void appendLog(QString msg);
     void registerFinished(bool success, QString msg);
     void deleteFinished(bool success, QString msg);
     void loginFinished(bool success, QString msg);

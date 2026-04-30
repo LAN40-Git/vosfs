@@ -13,6 +13,13 @@ using auth::detail::UserSession;
 using kosio::async::Task;
 class AuthClient : public QObject {
     Q_OBJECT
+
+    Q_PROPERTY(QString uid READ uid)
+    Q_PROPERTY(QString user_name READ user_name)
+    Q_PROPERTY(QString avatar READ avatar)
+    Q_PROPERTY(int role READ role)
+    Q_PROPERTY(QString quota READ quota)
+    Q_PROPERTY(QString create_time READ create_time)
 public:
     explicit AuthClient(std::string_view host, uint16_t port, SignalBrige& signal_brige, QObject *parent = nullptr);
 
@@ -20,6 +27,20 @@ public:
     void run();
     void shutdown();
     auto process_tasks() -> Task<void>;
+
+public:
+    [[nodiscard]]
+    auto uid() const -> QString { return QString::number(session_.uid); }
+    [[nodiscard]]
+    auto user_name() const -> QString { return QString::fromStdString(session_.user_name); }
+    [[nodiscard]]
+    auto avatar() const -> QString { return QString::fromStdString(session_.avatar); }
+    [[nodiscard]]
+    auto role() const -> int { return session_.role; }
+    [[nodiscard]]
+    auto quota() const -> QString { return QString::number(session_.quota); }
+    [[nodiscard]]
+    auto create_time() const -> QString { return QString::fromStdString(session_.create_time); }
 
 public slots:
     void register_user(const QString& user_name, const QString& password, int role, const QString& admin_secret = "");
