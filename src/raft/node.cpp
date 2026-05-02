@@ -34,12 +34,14 @@ auto vosfs::raft::RaftNode::create(const std::string& config_path) -> Result<std
 
     uint64_t last_included_index = 0;
     uint64_t last_included_term = 0;
-    std::unordered_map<uint64_t, Inode> inodes{};
 
     // 初始化快照层
     auto snapshotter = std::make_unique<detail::Snapshotter>(
         (snapshot_dir / SNAPSHOT_FILE_NAME).c_str(),
         (snapshot_dir / SNAPSHOT_TEMP_FILE_NAME).c_str());
+
+    // 初始化状态机
+    auto state_machine = detail::StateMachine{};
 
     // 尝试加载快照
     if (auto ret = util::get_file_size((snapshot_dir / SNAPSHOT_FILE_NAME).c_str()); ret == -1) {
@@ -53,15 +55,9 @@ auto vosfs::raft::RaftNode::create(const std::string& config_path) -> Result<std
         auto snapshot = std::move(has_snapshot.value());
         last_included_term = snapshot.last_included_term();
         last_included_index = snapshot.last_included_index();
-        auto& inode_map = snapshot.inodes();
 
-        for (const auto& [ino, inode] : inode_map) {
-            inodes.emplace(ino, inode);
-        }
+        state_machine.load_snapshot(snapshot);
     }
-
-    // 初始化状态机
-    auto state_machine = detail::StateMachine{std::move(inodes)};
 
     // 初始化持久层
     auto has_persister = detail::Persister::create(db_dir);
@@ -311,20 +307,14 @@ auto vosfs::raft::RaftNode::apply_entry() -> Task<void> {
             // 创建并保存快照
             auto last_included_index = last_applied_;
             auto last_included_term = logs_.get_term(last_included_index);
-            auto& inodes = state_machine_.inodes();
-
             snapshot.set_last_included_index(last_included_index);
             snapshot.set_last_included_term(last_included_term);
-
-            for (auto& inode : inodes | std::views::values) {
-                snapshot.mutable_inodes()->emplace(inode.ino(), inode);
-            }
+            state_machine_.take_snapshot(snapshot);
 
             if (auto ret = co_await snapshotter_->save_snapshot(std::move(snapshot)); !ret) {
                 LOG_FATAL("{}", ret.error());
             } else {
-                logs_.set_last_included_index(last_included_index);
-                logs_.set_last_included_term(last_included_term);
+                logs_.load_snapshot(snapshot);
             }
         }
     }
@@ -510,22 +500,14 @@ auto vosfs::raft::RaftNode::handle_install_snapshot_request(
     }
 
     // 加载快照
-    auto& inode_map = snapshot.inodes();
-    std::unordered_map<uint64_t, Inode> inodes;
-    for (const auto& [ino, inode] : inode_map) {
-        inodes.emplace(ino, inode);
-    }
-
-    logs_.set_last_included_index(last_included_index);
-    logs_.set_last_included_term(last_included_term);
-    state_machine_.set_inodes(std::move(inodes));
+    logs_.load_snapshot(snapshot);
+    state_machine_.load_snapshot(snapshot);
     co_return make_install_snapshot_response(member_id, current_term);
 }
 
 auto vosfs::raft::RaftNode::handle_list_dir_request(const ListDirRequest& request) -> Task<ListDirResponse> {
     std::string leader_id;
     auto& token = request.token();
-    auto parent_ino = request.parent_ino();
 
     // 校验 token
     if (!util::vertify_token(token)) {
@@ -542,22 +524,8 @@ auto vosfs::raft::RaftNode::handle_list_dir_request(const ListDirRequest& reques
         co_return make_list_dir_response(Status::kNotLeader, leader_id);
     }
 
-    auto& inodes = state_machine_.inodes();
-    auto it = inodes.find(parent_ino);
-    if (it == inodes.end()) {
-        co_return make_list_dir_response(Status::kInternal, "文件夹不存在");
-    }
-
-    auto& parent_inode = it->second;
-    if (parent_inode.file_type() != Inode_FileType_DIR) {
-        co_return make_list_dir_response(Status::kInternal, "不是文件夹");
-    }
-
-    auto response = make_list_dir_response(Status::kOk, "成功显示文件夹");
-    auto& entries = parent_inode.entries();
-    for (const auto& entry : entries) {
-        response.mutable_entries()->emplace(entry);
-    }
+    ListDirResponse response;
+    state_machine_.ls(request, response);
     co_return response;
 }
 
@@ -797,15 +765,9 @@ auto vosfs::raft::RaftNode::make_list_dir_response(
 
 auto vosfs::raft::RaftNode::make_make_dir_response(
     uint32_t status_code,
-    std::string message,
-    uint64_t ino,
-    uint64_t parent_ino,
-    std::string name) -> MakeDirResponse {
+    std::string message) -> MakeDirResponse {
     MakeDirResponse response;
     response.set_status_code(status_code);
     response.set_message(std::move(message));
-    response.set_ino(ino);
-    response.set_parent_ino(parent_ino);
-    response.set_name(std::move(name));
     return response;
 }

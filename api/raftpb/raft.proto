@@ -45,7 +45,8 @@ message AppendEntriesResponse {
 message Snapshot {
   uint64 last_included_index = 1;
   uint64 last_included_term = 2;
-  map<uint64, Inode> inodes = 3;
+  repeated Inode inodes = 3;
+  repeated DirEntry dir_entries = 4;
 }
 
 message InstallSnapshotRequest {
@@ -74,19 +75,21 @@ message BlockInfo {
 message Inode {
   uint64 ino = 1;
   uint32 mode = 2;
-  FileType file_type = 3;
+  bool   is_dir = 3;
   uint64 atime = 4;
   uint64 ctime = 5;
   uint64 mtime = 6;
   uint64 size = 7;
   uint32 nlink = 8;
   repeated BlockInfo blocks = 9;
-  map<string, uint64> entries = 10;
+  repeated DirEntry dir_entries = 10;
+}
 
-  enum FileType {
-    FILE = 0;
-    DIR = 1;
-  }
+message DirEntry {
+  uint64 ino = 1;
+  string name = 2;
+  string path = 3;
+  bool is_dir = 4;
 }
 
 message EntryCommand {
@@ -115,25 +118,22 @@ message RequestBlocksAddressResponse {
 
 message ListDirRequest {
   string token = 1;
-  uint64 parent_ino = 2;
+  string path = 2;
 }
 
 message ListDirResponse {
   uint32 status_code = 1;
   string message = 2;
-  map<string, uint64> entries = 3;
+  repeated DirEntry dir_entries = 3;
 }
 
 message MakeDirRequest {
   string token = 1;
-  uint64 parent_ino = 2;
-  string name = 3;
+  string path = 2;
 }
 
 message MakeDirResponse {
   uint32 status_code = 1;
   string message = 2;
-  uint64 ino = 3;
-  uint64 parent_ino = 4;
-  string name = 5;
+  string path = 3;
 }

@@ -8,6 +8,11 @@ auto vosfs::raft::detail::RaftLog::last_included_term() const noexcept -> uint64
     return last_included_term_;
 }
 
+void vosfs::raft::detail::RaftLog::load_snapshot(const Snapshot& snapshot) {
+    last_included_index_ = snapshot.last_included_index();
+    last_included_term_ = snapshot.last_included_term();
+}
+
 auto vosfs::raft::detail::RaftLog::last_log_index() const noexcept -> uint64_t {
     return last_included_index() + entries_.size();
 }

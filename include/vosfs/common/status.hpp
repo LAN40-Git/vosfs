@@ -12,7 +12,6 @@ public:
         kInternal,
         kPermissionDenied,
         kNotLeader,
-        kNotExist,
     };
 
 public:
@@ -40,9 +39,6 @@ public:
     [[nodiscard]]
     auto is_not_leader() const -> bool { return code_ == kNotLeader; }
 
-    [[nodiscard]]
-    auto is_not_exist() const -> bool { return code_ == kNotExist; }
-
 public:
     [[nodiscard]]
     auto code() const noexcept -> uint8_t {
@@ -64,8 +60,6 @@ public:
                 return "permission denied";
             case kNotLeader:
                 return "not leader";
-            case kNotExist:
-                return "not exist";
             default:
                 return "unknown error";
         }

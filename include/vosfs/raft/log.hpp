@@ -16,11 +16,9 @@ public:
 public:
     [[nodiscard]] auto last_included_index() const noexcept -> uint64_t;
 
-    void set_last_included_index(uint64_t last_included_index) { last_included_index_ = last_included_index; }
-
     [[nodiscard]] auto last_included_term() const noexcept -> uint64_t;
 
-    void set_last_included_term(uint64_t last_included_term) { last_included_term_ = last_included_term; }
+    void load_snapshot(const Snapshot& snapshot);
 
     [[nodiscard]] auto last_log_index() const noexcept -> uint64_t;
 

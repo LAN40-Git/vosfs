@@ -5,7 +5,7 @@
 
 vosfs::ui::VosfsClient::VosfsClient(std::string_view host, uint16_t port, SignalBrige& signal_brige, QObject* parent)
     : QObject(parent)
-    , rpc_client_(host, port)
+    , auth_client_(host, port)
     , signal_brige_(signal_brige) {}
 
 void vosfs::ui::VosfsClient::run() {
@@ -18,7 +18,7 @@ void vosfs::ui::VosfsClient::shutdown() {
     if (is_shutdown_.load(std::memory_order_acquire)) {
         return;
     }
-    tasks_.emplace(rpc_client_.shutdown());
+    tasks_.emplace(auth_client_.shutdown());
     is_shutdown_.store(true, std::memory_order_release);
     latch_.wait();
 }
@@ -63,6 +63,10 @@ void vosfs::ui::VosfsClient::login_user_by_name(const QString& user_name, const 
         role));
 }
 
+void vosfs::ui::VosfsClient::list_dir(const QString& parent_ino) {
+    tasks_.emplace(send_list_dir_request(parent_ino.toULongLong()));
+}
+
 auto vosfs::ui::VosfsClient::send_register_user_request(
     std::string user_name,
     std::string password,
@@ -73,7 +77,7 @@ auto vosfs::ui::VosfsClient::send_register_user_request(
     request.set_password(util::sha256(password));
     request.set_role(static_cast<auth::User_Role>(role));
     request.set_admin_secret(std::move(admin_secret));
-    co_await rpc_client_.call_method<auth::RegisterUserRequest, auth::RegisterUserResponse>(
+    co_await auth_client_.call_method<auth::RegisterUserRequest, auth::RegisterUserResponse>(
         "user", "register", request,
         [this](const vrpc::Status& status, const auth::RegisterUserResponse& response) -> Task<void> {
             this->handle_register_user_response(status, response);
@@ -85,7 +89,7 @@ auto vosfs::ui::VosfsClient::send_delete_user_request(std::string password) -> T
     auth::DeleteUserRequest request;
     request.set_token(session_.token);
     request.set_password(util::sha256(password));
-    co_await rpc_client_.call_method<auth::DeleteUserRequest, auth::DeleteUserResponse>(
+    co_await auth_client_.call_method<auth::DeleteUserRequest, auth::DeleteUserResponse>(
         "user", "delete", request,
         [this](const vrpc::Status& status, const auth::DeleteUserResponse& response) -> Task<void> {
             this->handle_delete_user_response(status, response);
@@ -101,7 +105,7 @@ auto vosfs::ui::VosfsClient::send_login_user_by_name_request(
     request.set_user_name(std::move(user_name));
     request.set_password(util::sha256(password));
     request.set_role(static_cast<auth::User_Role>(role));
-    co_await rpc_client_.call_method<auth::LoginUserByNameRequest, auth::LoginUserByNameResponse>(
+    co_await auth_client_.call_method<auth::LoginUserByNameRequest, auth::LoginUserByNameResponse>(
         "user", "loginbyname", request,
         [this](const vrpc::Status& status, const auth::LoginUserByNameResponse& response) -> Task<void> {
             this->handle_login_user_by_name_response(status, response);
@@ -113,7 +117,7 @@ auto vosfs::ui::VosfsClient::send_list_dir_request(uint64_t parent_ino) -> Task<
     raft::ListDirRequest request;
     request.set_token(session_.token);
     request.set_parent_ino(parent_ino);
-    co_await rpc_client_.call_method<raft::ListDirRequest, raft::ListDirResponse>(
+    co_await auth_client_.call_method<raft::ListDirRequest, raft::ListDirResponse>(
         "fs", "ls", request,
         [this](const vrpc::Status& status, const raft::ListDirResponse& response) -> Task<void> {
             this->handle_list_dir_response(status, response);
@@ -126,7 +130,7 @@ auto vosfs::ui::VosfsClient::send_mkdir_request(uint64_t parent_ino, std::string
     request.set_token(session_.token);
     request.set_parent_ino(parent_ino);
     request.set_name(std::move(name));
-    co_await rpc_client_.call_method<raft::MakeDirRequest, raft::MakeDirResponse>(
+    co_await auth_client_.call_method<raft::MakeDirRequest, raft::MakeDirResponse>(
         "fs", "mkdir", request,
         [this](const vrpc::Status& status, const raft::MakeDirResponse& response) -> Task<void> {
             this->handle_make_dir_response(status, response);
@@ -180,15 +184,18 @@ void vosfs::ui::VosfsClient::handle_login_user_by_name_response(
     signal_brige_.loginFinished(res_status.ok(), QString::fromStdString(response.message()));
 }
 
-void vosfs::ui::VosfsClient::handle_list_dir_response(
+auto vosfs::ui::VosfsClient::handle_list_dir_response(
     const vrpc::Status& status,
-    const raft::ListDirResponse& response) {
+    const raft::ListDirResponse& response) -> Task<void> {
     if (!status.ok()) {
         signal_brige_.appendLog(QString::fromStdString(std::string{status.message()}));
-        return;
+        co_return;
     }
 
     auto res_status = Status{response.status_code()};
+    if (res_status.ok()) {
+        
+    }
 }
 
 void vosfs::ui::VosfsClient::handle_make_dir_response(

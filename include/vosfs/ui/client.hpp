@@ -47,6 +47,7 @@ public slots:
     void register_user(const QString& user_name, const QString& password, int role, const QString& admin_secret = "");
     void delete_user(const QString& password);
     void login_user_by_name(const QString& user_name, const QString& password, int role);
+    void list_dir(const QString& parent_ino);
 
 public:
     [[REMEMBER_CO_AWAIT]]
@@ -79,15 +80,20 @@ private:
     void handle_register_user_response(const vrpc::Status& status, const auth::RegisterUserResponse& response);
     void handle_delete_user_response(const vrpc::Status& status, const auth::DeleteUserResponse& response);
     void handle_login_user_by_name_response(const vrpc::Status& status, const auth::LoginUserByNameResponse& response);
-    void handle_list_dir_response(const vrpc::Status& status, const raft::ListDirResponse& response);
+    auto handle_list_dir_response(const vrpc::Status& status, const raft::ListDirResponse& response) -> Task<void>;
     void handle_make_dir_response(const vrpc::Status& status, const raft::MakeDirResponse& response);
 
 private:
-    std::atomic<bool>                 is_shutdown_{true};
-    std::latch                        latch_{1};
-    UserSession                       session_{};
-    vrpc::TcpClient                   rpc_client_;
-    tbb::concurrent_queue<Task<void>> tasks_;
-    SignalBrige&                      signal_brige_;
+    std::atomic<bool>                             is_shutdown_{true};
+    std::latch                                    latch_{1};
+    kosio::sync::Mutex                            mutex_;
+    UserSession                                   session_{};
+    vrpc::TcpClient                               auth_client_;
+    std::atomic<uint64_t>                         leader_id_;
+    std::unordered_map<uint64_t, vrpc::TcpClient> raft_clients_;
+    std::unordered_map<uint64_t, raft::Inode>     inodes_;
+    std::map<std::string, uint64_t>               inode_paths_;
+    tbb::concurrent_queue<Task<void>>             tasks_;
+    SignalBrige&                                  signal_brige_;
 };
 } // namespace vosfs::ui

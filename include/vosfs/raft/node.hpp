@@ -123,10 +123,7 @@ private:
     [[nodiscard]]
     static auto make_make_dir_response(
         uint32_t status_code,
-        std::string message,
-        uint64_t ino = 0,
-        uint64_t parent_ino = 0,
-        std::string name = "") -> MakeDirResponse;
+        std::string message) -> MakeDirResponse;
 
 private:
     enum Role { kLeader, kFollower, kCandidate };
