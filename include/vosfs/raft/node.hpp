@@ -55,7 +55,7 @@ private:
     [[REMEMBER_CO_AWAIT]]
     auto handle_list_dir_request(const ListDirRequest& request) -> Task<ListDirResponse>;
     [[REMEMBER_CO_AWAIT]]
-    auto handle_create_dir_request(const CreateDirRequest& request) -> Task<CreateDirResponse>;
+    auto handle_make_dir_request(std::coroutine_handle<void> handle, MakeDirRequest& request) -> Task<MakeDirResponse>;
 
 private:
     [[REMEMBER_CO_AWAIT]]
@@ -107,6 +107,19 @@ private:
     static auto make_install_snapshot_response(
         uint64_t id,
         uint64_t term) -> InstallSnapshotResponse;
+
+    [[nodiscard]]
+    static auto make_list_dir_response(
+        uint32_t status_code,
+        std::string message) -> ListDirResponse;
+
+    [[nodiscard]]
+    static auto make_make_dir_response(
+        uint32_t status_code,
+        std::string message,
+        uint64_t ino = 0,
+        uint64_t parent_ino = 0,
+        std::string name = "") -> MakeDirResponse;
 
 private:
     enum Role { kLeader, kFollower, kCandidate };

@@ -1,7 +1,7 @@
 #include "vosfs/ui/client.hpp"
 #include <qtmetamacros.h>
 #include "vosfs/common/util/sha256.hpp"
-#include "vosfs/auth/status.hpp"
+#include "vosfs/common/status.hpp"
 
 vosfs::ui::VosfsClient::VosfsClient(std::string_view host, uint16_t port, SignalBrige& signal_brige, QObject* parent)
     : QObject(parent)
@@ -116,7 +116,7 @@ void vosfs::ui::VosfsClient::handle_register_user_response(
         signal_brige_.registerFinished(false, QString::fromStdString(std::string{status.message()}));
         return;
     }
-    auto res_status = auth::Status{response.status_code()};
+    auto res_status = Status{response.status_code()};
     signal_brige_.appendLog(QString::fromStdString(std::string{response.message()}));
     signal_brige_.registerFinished(res_status.ok(), QString::fromStdString(response.message()));
 }
@@ -128,7 +128,7 @@ void vosfs::ui::VosfsClient::handle_delete_user_response(
         signal_brige_.deleteFinished(false, QString::fromStdString(std::string{status.message()}));
         return;
     }
-    auto res_status = auth::Status{response.status_code()};
+    auto res_status = Status{response.status_code()};
     signal_brige_.appendLog(QString::fromStdString(std::string{response.message()}));
     signal_brige_.deleteFinished(res_status.ok(), QString::fromStdString(response.message()));
 }
@@ -140,7 +140,7 @@ void vosfs::ui::VosfsClient::handle_login_user_by_name_response(
         signal_brige_.loginFinished(false, QString::fromStdString(std::string{status.message()}));
         return;
     }
-    auto res_status = auth::Status{response.status_code()};
+    auto res_status = Status{response.status_code()};
     if (res_status.ok()) {
         session_.token = response.token();
         auto decode = jwt::decode(session_.token);

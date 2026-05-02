@@ -195,19 +195,29 @@ struct BlockInfoDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 BlockInfoDefaultTypeInternal _BlockInfo_default_instance_;
+PROTOBUF_CONSTEXPR Inode_EntriesEntry_DoNotUse::Inode_EntriesEntry_DoNotUse(
+    ::_pbi::ConstantInitialized) {}
+struct Inode_EntriesEntry_DoNotUseDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR Inode_EntriesEntry_DoNotUseDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~Inode_EntriesEntry_DoNotUseDefaultTypeInternal() {}
+  union {
+    Inode_EntriesEntry_DoNotUse _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 Inode_EntriesEntry_DoNotUseDefaultTypeInternal _Inode_EntriesEntry_DoNotUse_default_instance_;
 PROTOBUF_CONSTEXPR Inode::Inode(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.blocks_)*/{}
-  , /*decltype(_impl_.dir_)*/nullptr
+  , /*decltype(_impl_.entries_)*/{::_pbi::ConstantInitialized()}
   , /*decltype(_impl_.ino_)*/uint64_t{0u}
-  , /*decltype(_impl_.uid_)*/uint64_t{0u}
-  , /*decltype(_impl_.gid_)*/uint64_t{0u}
-  , /*decltype(_impl_.atime_)*/uint64_t{0u}
   , /*decltype(_impl_.mode_)*/0u
-  , /*decltype(_impl_.nlink_)*/0u
+  , /*decltype(_impl_.file_type_)*/0
+  , /*decltype(_impl_.atime_)*/uint64_t{0u}
   , /*decltype(_impl_.ctime_)*/uint64_t{0u}
   , /*decltype(_impl_.mtime_)*/uint64_t{0u}
   , /*decltype(_impl_.size_)*/uint64_t{0u}
+  , /*decltype(_impl_.nlink_)*/0u
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct InodeDefaultTypeInternal {
   PROTOBUF_CONSTEXPR InodeDefaultTypeInternal()
@@ -218,33 +228,9 @@ struct InodeDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 InodeDefaultTypeInternal _Inode_default_instance_;
-PROTOBUF_CONSTEXPR DirEntries_EntriesEntry_DoNotUse::DirEntries_EntriesEntry_DoNotUse(
-    ::_pbi::ConstantInitialized) {}
-struct DirEntries_EntriesEntry_DoNotUseDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR DirEntries_EntriesEntry_DoNotUseDefaultTypeInternal()
-      : _instance(::_pbi::ConstantInitialized{}) {}
-  ~DirEntries_EntriesEntry_DoNotUseDefaultTypeInternal() {}
-  union {
-    DirEntries_EntriesEntry_DoNotUse _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 DirEntries_EntriesEntry_DoNotUseDefaultTypeInternal _DirEntries_EntriesEntry_DoNotUse_default_instance_;
-PROTOBUF_CONSTEXPR DirEntries::DirEntries(
-    ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.entries_)*/{::_pbi::ConstantInitialized()}
-  , /*decltype(_impl_._cached_size_)*/{}} {}
-struct DirEntriesDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR DirEntriesDefaultTypeInternal()
-      : _instance(::_pbi::ConstantInitialized{}) {}
-  ~DirEntriesDefaultTypeInternal() {}
-  union {
-    DirEntries _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 DirEntriesDefaultTypeInternal _DirEntries_default_instance_;
 PROTOBUF_CONSTEXPR EntryCommand::EntryCommand(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.cmd_)*/{}
+    /*decltype(_impl_.type_)*/{}
   , /*decltype(_impl_._cached_size_)*/{}
   , /*decltype(_impl_._oneof_case_)*/{}} {}
 struct EntryCommandDefaultTypeInternal {
@@ -256,6 +242,20 @@ struct EntryCommandDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 EntryCommandDefaultTypeInternal _EntryCommand_default_instance_;
+PROTOBUF_CONSTEXPR PendingResponse::PendingResponse(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.type_)*/{}
+  , /*decltype(_impl_._cached_size_)*/{}
+  , /*decltype(_impl_._oneof_case_)*/{}} {}
+struct PendingResponseDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR PendingResponseDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~PendingResponseDefaultTypeInternal() {}
+  union {
+    PendingResponse _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PendingResponseDefaultTypeInternal _PendingResponse_default_instance_;
 PROTOBUF_CONSTEXPR RequestBlocksAddressRequest::RequestBlocksAddressRequest(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.blocks_)*/{}
@@ -299,9 +299,20 @@ struct ListDirRequestDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 ListDirRequestDefaultTypeInternal _ListDirRequest_default_instance_;
+PROTOBUF_CONSTEXPR ListDirResponse_EntriesEntry_DoNotUse::ListDirResponse_EntriesEntry_DoNotUse(
+    ::_pbi::ConstantInitialized) {}
+struct ListDirResponse_EntriesEntry_DoNotUseDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR ListDirResponse_EntriesEntry_DoNotUseDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~ListDirResponse_EntriesEntry_DoNotUseDefaultTypeInternal() {}
+  union {
+    ListDirResponse_EntriesEntry_DoNotUse _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 ListDirResponse_EntriesEntry_DoNotUseDefaultTypeInternal _ListDirResponse_EntriesEntry_DoNotUse_default_instance_;
 PROTOBUF_CONSTEXPR ListDirResponse::ListDirResponse(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.inodes_)*/{}
+    /*decltype(_impl_.entries_)*/{::_pbi::ConstantInitialized()}
   , /*decltype(_impl_.message_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.status_code_)*/0u
   , /*decltype(_impl_._cached_size_)*/{}} {}
@@ -314,39 +325,42 @@ struct ListDirResponseDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 ListDirResponseDefaultTypeInternal _ListDirResponse_default_instance_;
-PROTOBUF_CONSTEXPR CreateDirRequest::CreateDirRequest(
+PROTOBUF_CONSTEXPR MakeDirRequest::MakeDirRequest(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.token_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.name_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.parent_ino_)*/uint64_t{0u}
   , /*decltype(_impl_._cached_size_)*/{}} {}
-struct CreateDirRequestDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR CreateDirRequestDefaultTypeInternal()
+struct MakeDirRequestDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR MakeDirRequestDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
-  ~CreateDirRequestDefaultTypeInternal() {}
+  ~MakeDirRequestDefaultTypeInternal() {}
   union {
-    CreateDirRequest _instance;
+    MakeDirRequest _instance;
   };
 };
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CreateDirRequestDefaultTypeInternal _CreateDirRequest_default_instance_;
-PROTOBUF_CONSTEXPR CreateDirResponse::CreateDirResponse(
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 MakeDirRequestDefaultTypeInternal _MakeDirRequest_default_instance_;
+PROTOBUF_CONSTEXPR MakeDirResponse::MakeDirResponse(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.message_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
-  , /*decltype(_impl_.inode_)*/nullptr
+  , /*decltype(_impl_.name_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.ino_)*/uint64_t{0u}
+  , /*decltype(_impl_.parent_ino_)*/uint64_t{0u}
   , /*decltype(_impl_.status_code_)*/0u
   , /*decltype(_impl_._cached_size_)*/{}} {}
-struct CreateDirResponseDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR CreateDirResponseDefaultTypeInternal()
+struct MakeDirResponseDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR MakeDirResponseDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
-  ~CreateDirResponseDefaultTypeInternal() {}
+  ~MakeDirResponseDefaultTypeInternal() {}
   union {
-    CreateDirResponse _instance;
+    MakeDirResponse _instance;
   };
 };
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CreateDirResponseDefaultTypeInternal _CreateDirResponse_default_instance_;
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 MakeDirResponseDefaultTypeInternal _MakeDirResponse_default_instance_;
 }  // namespace raft
 }  // namespace vosfs
-static ::_pb::Metadata file_level_metadata_raft_2eproto[21];
-static constexpr ::_pb::EnumDescriptor const** file_level_enum_descriptors_raft_2eproto = nullptr;
+static ::_pb::Metadata file_level_metadata_raft_2eproto[22];
+static const ::_pb::EnumDescriptor* file_level_enum_descriptors_raft_2eproto[1];
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_raft_2eproto = nullptr;
 
 const uint32_t TableStruct_raft_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
@@ -467,6 +481,16 @@ const uint32_t TableStruct_raft_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pro
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::BlockInfo, _impl_.size_),
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::BlockInfo, _impl_.host_),
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::BlockInfo, _impl_.port_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode_EntriesEntry_DoNotUse, _has_bits_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode_EntriesEntry_DoNotUse, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode_EntriesEntry_DoNotUse, key_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode_EntriesEntry_DoNotUse, value_),
+  0,
+  1,
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -475,32 +499,14 @@ const uint32_t TableStruct_raft_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pro
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.ino_),
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.mode_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.uid_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.gid_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.file_type_),
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.atime_),
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.ctime_),
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.mtime_),
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.size_),
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.nlink_),
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.blocks_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.dir_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::DirEntries_EntriesEntry_DoNotUse, _has_bits_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::DirEntries_EntriesEntry_DoNotUse, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::DirEntries_EntriesEntry_DoNotUse, key_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::DirEntries_EntriesEntry_DoNotUse, value_),
-  0,
-  1,
-  ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::DirEntries, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::DirEntries, _impl_.entries_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.entries_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::EntryCommand, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -508,8 +514,15 @@ const uint32_t TableStruct_raft_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pro
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   ::_pbi::kInvalidFieldOffsetTag,
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::EntryCommand, _impl_.type_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::PendingResponse, _internal_metadata_),
+  ~0u,  // no _extensions_
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::PendingResponse, _impl_._oneof_case_[0]),
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   ::_pbi::kInvalidFieldOffsetTag,
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::EntryCommand, _impl_.cmd_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::PendingResponse, _impl_.type_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::RequestBlocksAddressRequest, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -535,6 +548,16 @@ const uint32_t TableStruct_raft_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pro
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::ListDirRequest, _impl_.token_),
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::ListDirRequest, _impl_.parent_ino_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::ListDirResponse_EntriesEntry_DoNotUse, _has_bits_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::ListDirResponse_EntriesEntry_DoNotUse, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::ListDirResponse_EntriesEntry_DoNotUse, key_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::ListDirResponse_EntriesEntry_DoNotUse, value_),
+  0,
+  1,
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::ListDirResponse, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -543,24 +566,27 @@ const uint32_t TableStruct_raft_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pro
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::ListDirResponse, _impl_.status_code_),
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::ListDirResponse, _impl_.message_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::ListDirResponse, _impl_.inodes_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::ListDirResponse, _impl_.entries_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::CreateDirRequest, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::MakeDirRequest, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::CreateDirRequest, _impl_.token_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::CreateDirRequest, _impl_.parent_ino_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::MakeDirRequest, _impl_.token_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::MakeDirRequest, _impl_.parent_ino_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::MakeDirRequest, _impl_.name_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::CreateDirResponse, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::MakeDirResponse, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::CreateDirResponse, _impl_.status_code_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::CreateDirResponse, _impl_.message_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::CreateDirResponse, _impl_.inode_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::MakeDirResponse, _impl_.status_code_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::MakeDirResponse, _impl_.message_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::MakeDirResponse, _impl_.ino_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::MakeDirResponse, _impl_.parent_ino_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::MakeDirResponse, _impl_.name_),
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, 8, -1, sizeof(::vosfs::raft::HardState)},
@@ -574,16 +600,17 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 85, -1, -1, sizeof(::vosfs::raft::InstallSnapshotRequest)},
   { 98, -1, -1, sizeof(::vosfs::raft::InstallSnapshotResponse)},
   { 106, -1, -1, sizeof(::vosfs::raft::BlockInfo)},
-  { 117, -1, -1, sizeof(::vosfs::raft::Inode)},
-  { 134, 142, -1, sizeof(::vosfs::raft::DirEntries_EntriesEntry_DoNotUse)},
-  { 144, -1, -1, sizeof(::vosfs::raft::DirEntries)},
-  { 151, -1, -1, sizeof(::vosfs::raft::EntryCommand)},
-  { 160, -1, -1, sizeof(::vosfs::raft::RequestBlocksAddressRequest)},
-  { 168, -1, -1, sizeof(::vosfs::raft::RequestBlocksAddressResponse)},
-  { 177, -1, -1, sizeof(::vosfs::raft::ListDirRequest)},
-  { 185, -1, -1, sizeof(::vosfs::raft::ListDirResponse)},
-  { 194, -1, -1, sizeof(::vosfs::raft::CreateDirRequest)},
-  { 202, -1, -1, sizeof(::vosfs::raft::CreateDirResponse)},
+  { 117, 125, -1, sizeof(::vosfs::raft::Inode_EntriesEntry_DoNotUse)},
+  { 127, -1, -1, sizeof(::vosfs::raft::Inode)},
+  { 143, -1, -1, sizeof(::vosfs::raft::EntryCommand)},
+  { 151, -1, -1, sizeof(::vosfs::raft::PendingResponse)},
+  { 159, -1, -1, sizeof(::vosfs::raft::RequestBlocksAddressRequest)},
+  { 167, -1, -1, sizeof(::vosfs::raft::RequestBlocksAddressResponse)},
+  { 176, -1, -1, sizeof(::vosfs::raft::ListDirRequest)},
+  { 184, 192, -1, sizeof(::vosfs::raft::ListDirResponse_EntriesEntry_DoNotUse)},
+  { 194, -1, -1, sizeof(::vosfs::raft::ListDirResponse)},
+  { 203, -1, -1, sizeof(::vosfs::raft::MakeDirRequest)},
+  { 212, -1, -1, sizeof(::vosfs::raft::MakeDirResponse)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -598,16 +625,17 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::vosfs::raft::_InstallSnapshotRequest_default_instance_._instance,
   &::vosfs::raft::_InstallSnapshotResponse_default_instance_._instance,
   &::vosfs::raft::_BlockInfo_default_instance_._instance,
+  &::vosfs::raft::_Inode_EntriesEntry_DoNotUse_default_instance_._instance,
   &::vosfs::raft::_Inode_default_instance_._instance,
-  &::vosfs::raft::_DirEntries_EntriesEntry_DoNotUse_default_instance_._instance,
-  &::vosfs::raft::_DirEntries_default_instance_._instance,
   &::vosfs::raft::_EntryCommand_default_instance_._instance,
+  &::vosfs::raft::_PendingResponse_default_instance_._instance,
   &::vosfs::raft::_RequestBlocksAddressRequest_default_instance_._instance,
   &::vosfs::raft::_RequestBlocksAddressResponse_default_instance_._instance,
   &::vosfs::raft::_ListDirRequest_default_instance_._instance,
+  &::vosfs::raft::_ListDirResponse_EntriesEntry_DoNotUse_default_instance_._instance,
   &::vosfs::raft::_ListDirResponse_default_instance_._instance,
-  &::vosfs::raft::_CreateDirRequest_default_instance_._instance,
-  &::vosfs::raft::_CreateDirResponse_default_instance_._instance,
+  &::vosfs::raft::_MakeDirRequest_default_instance_._instance,
+  &::vosfs::raft::_MakeDirResponse_default_instance_._instance,
 };
 
 const char descriptor_table_protodef_raft_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
@@ -639,37 +667,39 @@ const char descriptor_table_protodef_raft_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "pshotResponse\022\n\n\002id\030\001 \001(\004\022\014\n\004term\030\002 \001(\004\""
   "Q\n\tBlockInfo\022\n\n\002id\030\001 \001(\004\022\016\n\006offset\030\002 \001(\004"
   "\022\014\n\004size\030\003 \001(\004\022\014\n\004host\030\004 \001(\t\022\014\n\004port\030\005 \001"
-  "(\r\"\322\001\n\005Inode\022\013\n\003ino\030\001 \001(\004\022\014\n\004mode\030\002 \001(\r\022"
-  "\013\n\003uid\030\003 \001(\004\022\013\n\003gid\030\004 \001(\004\022\r\n\005atime\030\005 \001(\004"
-  "\022\r\n\005ctime\030\006 \001(\004\022\r\n\005mtime\030\007 \001(\004\022\014\n\004size\030\010"
-  " \001(\004\022\r\n\005nlink\030\t \001(\r\022%\n\006blocks\030\n \003(\0132\025.vo"
-  "sfs.raft.BlockInfo\022#\n\003dir\030\013 \001(\0132\026.vosfs."
-  "raft.DirEntries\"r\n\nDirEntries\0224\n\007entries"
-  "\030\001 \003(\0132#.vosfs.raft.DirEntries.EntriesEn"
-  "try\032.\n\014EntriesEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005valu"
-  "e\030\002 \001(\004:\0028\001\"\220\001\n\014EntryCommand\022I\n\026request_"
-  "blocks_address\030\001 \001(\0132\'.vosfs.raft.Reques"
-  "tBlocksAddressRequestH\000\022.\n\010list_dir\030\002 \001("
-  "\0132\032.vosfs.raft.ListDirRequestH\000B\005\n\003cmd\"S"
-  "\n\033RequestBlocksAddressRequest\022\r\n\005token\030\001"
-  " \001(\t\022%\n\006blocks\030\002 \003(\0132\025.vosfs.raft.BlockI"
-  "nfo\"k\n\034RequestBlocksAddressResponse\022\023\n\013s"
-  "tatus_code\030\001 \001(\r\022\017\n\007message\030\002 \001(\t\022%\n\006blo"
-  "cks\030\003 \003(\0132\025.vosfs.raft.BlockInfo\"3\n\016List"
-  "DirRequest\022\r\n\005token\030\001 \001(\t\022\022\n\nparent_ino\030"
-  "\002 \001(\004\"Z\n\017ListDirResponse\022\023\n\013status_code\030"
-  "\001 \001(\r\022\017\n\007message\030\002 \001(\t\022!\n\006inodes\030\003 \003(\0132\021"
-  ".vosfs.raft.Inode\"5\n\020CreateDirRequest\022\r\n"
-  "\005token\030\001 \001(\t\022\022\n\nparent_ino\030\002 \001(\004\"[\n\021Crea"
-  "teDirResponse\022\023\n\013status_code\030\001 \001(\r\022\017\n\007me"
-  "ssage\030\002 \001(\t\022 \n\005inode\030\003 \001(\0132\021.vosfs.raft."
-  "Inodeb\006proto3"
+  "(\r\"\302\002\n\005Inode\022\013\n\003ino\030\001 \001(\004\022\014\n\004mode\030\002 \001(\r\022"
+  "-\n\tfile_type\030\003 \001(\0162\032.vosfs.raft.Inode.Fi"
+  "leType\022\r\n\005atime\030\004 \001(\004\022\r\n\005ctime\030\005 \001(\004\022\r\n\005"
+  "mtime\030\006 \001(\004\022\014\n\004size\030\007 \001(\004\022\r\n\005nlink\030\010 \001(\r"
+  "\022%\n\006blocks\030\t \003(\0132\025.vosfs.raft.BlockInfo\022"
+  "/\n\007entries\030\n \003(\0132\036.vosfs.raft.Inode.Entr"
+  "iesEntry\032.\n\014EntriesEntry\022\013\n\003key\030\001 \001(\t\022\r\n"
+  "\005value\030\002 \001(\004:\0028\001\"\035\n\010FileType\022\010\n\004FILE\020\000\022\007"
+  "\n\003DIR\020\001\"C\n\014EntryCommand\022+\n\005mkdir\030\001 \001(\0132\032"
+  ".vosfs.raft.MakeDirRequestH\000B\006\n\004type\"G\n\017"
+  "PendingResponse\022,\n\005mkdir\030\001 \001(\0132\033.vosfs.r"
+  "aft.MakeDirResponseH\000B\006\n\004type\"S\n\033Request"
+  "BlocksAddressRequest\022\r\n\005token\030\001 \001(\t\022%\n\006b"
+  "locks\030\002 \003(\0132\025.vosfs.raft.BlockInfo\"k\n\034Re"
+  "questBlocksAddressResponse\022\023\n\013status_cod"
+  "e\030\001 \001(\r\022\017\n\007message\030\002 \001(\t\022%\n\006blocks\030\003 \003(\013"
+  "2\025.vosfs.raft.BlockInfo\"3\n\016ListDirReques"
+  "t\022\r\n\005token\030\001 \001(\t\022\022\n\nparent_ino\030\002 \001(\004\"\242\001\n"
+  "\017ListDirResponse\022\023\n\013status_code\030\001 \001(\r\022\017\n"
+  "\007message\030\002 \001(\t\0229\n\007entries\030\003 \003(\0132(.vosfs."
+  "raft.ListDirResponse.EntriesEntry\032.\n\014Ent"
+  "riesEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\004:\0028"
+  "\001\"A\n\016MakeDirRequest\022\r\n\005token\030\001 \001(\t\022\022\n\npa"
+  "rent_ino\030\002 \001(\004\022\014\n\004name\030\003 \001(\t\"f\n\017MakeDirR"
+  "esponse\022\023\n\013status_code\030\001 \001(\r\022\017\n\007message\030"
+  "\002 \001(\t\022\013\n\003ino\030\003 \001(\004\022\022\n\nparent_ino\030\004 \001(\004\022\014"
+  "\n\004name\030\005 \001(\tb\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_raft_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_raft_2eproto = {
-    false, false, 2093, descriptor_table_protodef_raft_2eproto,
+    false, false, 2180, descriptor_table_protodef_raft_2eproto,
     "raft.proto",
-    &descriptor_table_raft_2eproto_once, nullptr, 0, 21,
+    &descriptor_table_raft_2eproto_once, nullptr, 0, 22,
     schemas, file_default_instances, TableStruct_raft_2eproto::offsets,
     file_level_metadata_raft_2eproto, file_level_enum_descriptors_raft_2eproto,
     file_level_service_descriptors_raft_2eproto,
@@ -682,6 +712,27 @@ PROTOBUF_ATTRIBUTE_WEAK const ::_pbi::DescriptorTable* descriptor_table_raft_2ep
 PROTOBUF_ATTRIBUTE_INIT_PRIORITY2 static ::_pbi::AddDescriptorsRunner dynamic_init_dummy_raft_2eproto(&descriptor_table_raft_2eproto);
 namespace vosfs {
 namespace raft {
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Inode_FileType_descriptor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_raft_2eproto);
+  return file_level_enum_descriptors_raft_2eproto[0];
+}
+bool Inode_FileType_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+      return true;
+    default:
+      return false;
+  }
+}
+
+#if (__cplusplus < 201703) && (!defined(_MSC_VER) || (_MSC_VER >= 1900 && _MSC_VER < 1912))
+constexpr Inode_FileType Inode::FILE;
+constexpr Inode_FileType Inode::DIR;
+constexpr Inode_FileType Inode::FileType_MIN;
+constexpr Inode_FileType Inode::FileType_MAX;
+constexpr int Inode::FileType_ARRAYSIZE;
+#endif  // (__cplusplus < 201703) && (!defined(_MSC_VER) || (_MSC_VER >= 1900 && _MSC_VER < 1912))
 
 // ===================================================================
 
@@ -3429,19 +3480,31 @@ void BlockInfo::InternalSwap(BlockInfo* other) {
 
 // ===================================================================
 
+Inode_EntriesEntry_DoNotUse::Inode_EntriesEntry_DoNotUse() {}
+Inode_EntriesEntry_DoNotUse::Inode_EntriesEntry_DoNotUse(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+    : SuperType(arena) {}
+void Inode_EntriesEntry_DoNotUse::MergeFrom(const Inode_EntriesEntry_DoNotUse& other) {
+  MergeFromInternal(other);
+}
+::PROTOBUF_NAMESPACE_ID::Metadata Inode_EntriesEntry_DoNotUse::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
+      file_level_metadata_raft_2eproto[11]);
+}
+
+// ===================================================================
+
 class Inode::_Internal {
  public:
-  static const ::vosfs::raft::DirEntries& dir(const Inode* msg);
 };
 
-const ::vosfs::raft::DirEntries&
-Inode::_Internal::dir(const Inode* msg) {
-  return *msg->_impl_.dir_;
-}
 Inode::Inode(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor(arena, is_message_owned);
+  if (arena != nullptr && !is_message_owned) {
+    arena->OwnCustomDestructor(this, &Inode::ArenaDtor);
+  }
   // @@protoc_insertion_point(arena_constructor:vosfs.raft.Inode)
 }
 Inode::Inode(const Inode& from)
@@ -3449,25 +3512,22 @@ Inode::Inode(const Inode& from)
   Inode* const _this = this; (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.blocks_){from._impl_.blocks_}
-    , decltype(_impl_.dir_){nullptr}
+    , /*decltype(_impl_.entries_)*/{}
     , decltype(_impl_.ino_){}
-    , decltype(_impl_.uid_){}
-    , decltype(_impl_.gid_){}
-    , decltype(_impl_.atime_){}
     , decltype(_impl_.mode_){}
-    , decltype(_impl_.nlink_){}
+    , decltype(_impl_.file_type_){}
+    , decltype(_impl_.atime_){}
     , decltype(_impl_.ctime_){}
     , decltype(_impl_.mtime_){}
     , decltype(_impl_.size_){}
+    , decltype(_impl_.nlink_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  if (from._internal_has_dir()) {
-    _this->_impl_.dir_ = new ::vosfs::raft::DirEntries(*from._impl_.dir_);
-  }
+  _this->_impl_.entries_.MergeFrom(from._impl_.entries_);
   ::memcpy(&_impl_.ino_, &from._impl_.ino_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.size_) -
-    reinterpret_cast<char*>(&_impl_.ino_)) + sizeof(_impl_.size_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.nlink_) -
+    reinterpret_cast<char*>(&_impl_.ino_)) + sizeof(_impl_.nlink_));
   // @@protoc_insertion_point(copy_constructor:vosfs.raft.Inode)
 }
 
@@ -3477,16 +3537,15 @@ inline void Inode::SharedCtor(
   (void)is_message_owned;
   new (&_impl_) Impl_{
       decltype(_impl_.blocks_){arena}
-    , decltype(_impl_.dir_){nullptr}
+    , /*decltype(_impl_.entries_)*/{::_pbi::ArenaInitialized(), arena}
     , decltype(_impl_.ino_){uint64_t{0u}}
-    , decltype(_impl_.uid_){uint64_t{0u}}
-    , decltype(_impl_.gid_){uint64_t{0u}}
-    , decltype(_impl_.atime_){uint64_t{0u}}
     , decltype(_impl_.mode_){0u}
-    , decltype(_impl_.nlink_){0u}
+    , decltype(_impl_.file_type_){0}
+    , decltype(_impl_.atime_){uint64_t{0u}}
     , decltype(_impl_.ctime_){uint64_t{0u}}
     , decltype(_impl_.mtime_){uint64_t{0u}}
     , decltype(_impl_.size_){uint64_t{0u}}
+    , decltype(_impl_.nlink_){0u}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -3495,6 +3554,7 @@ Inode::~Inode() {
   // @@protoc_insertion_point(destructor:vosfs.raft.Inode)
   if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
   (void)arena;
+    ArenaDtor(this);
     return;
   }
   SharedDtor();
@@ -3503,9 +3563,14 @@ Inode::~Inode() {
 inline void Inode::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   _impl_.blocks_.~RepeatedPtrField();
-  if (this != internal_default_instance()) delete _impl_.dir_;
+  _impl_.entries_.Destruct();
+  _impl_.entries_.~MapField();
 }
 
+void Inode::ArenaDtor(void* object) {
+  Inode* _this = reinterpret_cast< Inode* >(object);
+  _this->_impl_.entries_.Destruct();
+}
 void Inode::SetCachedSize(int size) const {
   _impl_._cached_size_.Set(size);
 }
@@ -3517,13 +3582,10 @@ void Inode::Clear() {
   (void) cached_has_bits;
 
   _impl_.blocks_.Clear();
-  if (GetArenaForAllocation() == nullptr && _impl_.dir_ != nullptr) {
-    delete _impl_.dir_;
-  }
-  _impl_.dir_ = nullptr;
+  _impl_.entries_.Clear();
   ::memset(&_impl_.ino_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.size_) -
-      reinterpret_cast<char*>(&_impl_.ino_)) + sizeof(_impl_.size_));
+      reinterpret_cast<char*>(&_impl_.nlink_) -
+      reinterpret_cast<char*>(&_impl_.ino_)) + sizeof(_impl_.nlink_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -3549,80 +3611,78 @@ const char* Inode::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
         } else
           goto handle_unusual;
         continue;
-      // uint64 uid = 3;
+      // .vosfs.raft.Inode.FileType file_type = 3;
       case 3:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
-          _impl_.uid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
+          _internal_set_file_type(static_cast<::vosfs::raft::Inode_FileType>(val));
         } else
           goto handle_unusual;
         continue;
-      // uint64 gid = 4;
+      // uint64 atime = 4;
       case 4:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
-          _impl_.gid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // uint64 atime = 5;
-      case 5:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 40)) {
           _impl_.atime_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // uint64 ctime = 6;
-      case 6:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 48)) {
+      // uint64 ctime = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 40)) {
           _impl_.ctime_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // uint64 mtime = 7;
-      case 7:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 56)) {
+      // uint64 mtime = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 48)) {
           _impl_.mtime_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // uint64 size = 8;
-      case 8:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 64)) {
+      // uint64 size = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 56)) {
           _impl_.size_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // uint32 nlink = 9;
-      case 9:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 72)) {
+      // uint32 nlink = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 64)) {
           _impl_.nlink_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // repeated .vosfs.raft.BlockInfo blocks = 10;
-      case 10:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 82)) {
+      // repeated .vosfs.raft.BlockInfo blocks = 9;
+      case 9:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 74)) {
           ptr -= 1;
           do {
             ptr += 1;
             ptr = ctx->ParseMessage(_internal_add_blocks(), ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<82>(ptr));
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<74>(ptr));
         } else
           goto handle_unusual;
         continue;
-      // .vosfs.raft.DirEntries dir = 11;
-      case 11:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 90)) {
-          ptr = ctx->ParseMessage(_internal_mutable_dir(), ptr);
-          CHK_(ptr);
+      // map<string, uint64> entries = 10;
+      case 10:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 82)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(&_impl_.entries_, ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<82>(ptr));
         } else
           goto handle_unusual;
         continue;
@@ -3667,61 +3727,75 @@ uint8_t* Inode::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(2, this->_internal_mode(), target);
   }
 
-  // uint64 uid = 3;
-  if (this->_internal_uid() != 0) {
+  // .vosfs.raft.Inode.FileType file_type = 3;
+  if (this->_internal_file_type() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(3, this->_internal_uid(), target);
+    target = ::_pbi::WireFormatLite::WriteEnumToArray(
+      3, this->_internal_file_type(), target);
   }
 
-  // uint64 gid = 4;
-  if (this->_internal_gid() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(4, this->_internal_gid(), target);
-  }
-
-  // uint64 atime = 5;
+  // uint64 atime = 4;
   if (this->_internal_atime() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(5, this->_internal_atime(), target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(4, this->_internal_atime(), target);
   }
 
-  // uint64 ctime = 6;
+  // uint64 ctime = 5;
   if (this->_internal_ctime() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(6, this->_internal_ctime(), target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(5, this->_internal_ctime(), target);
   }
 
-  // uint64 mtime = 7;
+  // uint64 mtime = 6;
   if (this->_internal_mtime() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(7, this->_internal_mtime(), target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(6, this->_internal_mtime(), target);
   }
 
-  // uint64 size = 8;
+  // uint64 size = 7;
   if (this->_internal_size() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(8, this->_internal_size(), target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(7, this->_internal_size(), target);
   }
 
-  // uint32 nlink = 9;
+  // uint32 nlink = 8;
   if (this->_internal_nlink() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(9, this->_internal_nlink(), target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(8, this->_internal_nlink(), target);
   }
 
-  // repeated .vosfs.raft.BlockInfo blocks = 10;
+  // repeated .vosfs.raft.BlockInfo blocks = 9;
   for (unsigned i = 0,
       n = static_cast<unsigned>(this->_internal_blocks_size()); i < n; i++) {
     const auto& repfield = this->_internal_blocks(i);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-        InternalWriteMessage(10, repfield, repfield.GetCachedSize(), target, stream);
+        InternalWriteMessage(9, repfield, repfield.GetCachedSize(), target, stream);
   }
 
-  // .vosfs.raft.DirEntries dir = 11;
-  if (this->_internal_has_dir()) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(11, _Internal::dir(this),
-        _Internal::dir(this).GetCachedSize(), target, stream);
+  // map<string, uint64> entries = 10;
+  if (!this->_internal_entries().empty()) {
+    using MapType = ::_pb::Map<std::string, uint64_t>;
+    using WireHelper = Inode_EntriesEntry_DoNotUse::Funcs;
+    const auto& map_field = this->_internal_entries();
+    auto check_utf8 = [](const MapType::value_type& entry) {
+      (void)entry;
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+        entry.first.data(), static_cast<int>(entry.first.length()),
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+        "vosfs.raft.Inode.EntriesEntry.key");
+    };
+
+    if (stream->IsSerializationDeterministic() && map_field.size() > 1) {
+      for (const auto& entry : ::_pbi::MapSorterPtr<MapType>(map_field)) {
+        target = WireHelper::InternalSerialize(10, entry.first, entry.second, target, stream);
+        check_utf8(entry);
+      }
+    } else {
+      for (const auto& entry : map_field) {
+        target = WireHelper::InternalSerialize(10, entry.first, entry.second, target, stream);
+        check_utf8(entry);
+      }
+    }
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -3740,18 +3814,20 @@ size_t Inode::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated .vosfs.raft.BlockInfo blocks = 10;
+  // repeated .vosfs.raft.BlockInfo blocks = 9;
   total_size += 1UL * this->_internal_blocks_size();
   for (const auto& msg : this->_impl_.blocks_) {
     total_size +=
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
 
-  // .vosfs.raft.DirEntries dir = 11;
-  if (this->_internal_has_dir()) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-        *_impl_.dir_);
+  // map<string, uint64> entries = 10;
+  total_size += 1 *
+      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(this->_internal_entries_size());
+  for (::PROTOBUF_NAMESPACE_ID::Map< std::string, uint64_t >::const_iterator
+      it = this->_internal_entries().begin();
+      it != this->_internal_entries().end(); ++it) {
+    total_size += Inode_EntriesEntry_DoNotUse::Funcs::ByteSizeLong(it->first, it->second);
   }
 
   // uint64 ino = 1;
@@ -3759,44 +3835,40 @@ size_t Inode::ByteSizeLong() const {
     total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_ino());
   }
 
-  // uint64 uid = 3;
-  if (this->_internal_uid() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_uid());
-  }
-
-  // uint64 gid = 4;
-  if (this->_internal_gid() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_gid());
-  }
-
-  // uint64 atime = 5;
-  if (this->_internal_atime() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_atime());
-  }
-
   // uint32 mode = 2;
   if (this->_internal_mode() != 0) {
     total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_mode());
   }
 
-  // uint32 nlink = 9;
-  if (this->_internal_nlink() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_nlink());
+  // .vosfs.raft.Inode.FileType file_type = 3;
+  if (this->_internal_file_type() != 0) {
+    total_size += 1 +
+      ::_pbi::WireFormatLite::EnumSize(this->_internal_file_type());
   }
 
-  // uint64 ctime = 6;
+  // uint64 atime = 4;
+  if (this->_internal_atime() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_atime());
+  }
+
+  // uint64 ctime = 5;
   if (this->_internal_ctime() != 0) {
     total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_ctime());
   }
 
-  // uint64 mtime = 7;
+  // uint64 mtime = 6;
   if (this->_internal_mtime() != 0) {
     total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_mtime());
   }
 
-  // uint64 size = 8;
+  // uint64 size = 7;
   if (this->_internal_size() != 0) {
     total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_size());
+  }
+
+  // uint32 nlink = 8;
+  if (this->_internal_nlink() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_nlink());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
@@ -3818,27 +3890,18 @@ void Inode::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF
   (void) cached_has_bits;
 
   _this->_impl_.blocks_.MergeFrom(from._impl_.blocks_);
-  if (from._internal_has_dir()) {
-    _this->_internal_mutable_dir()->::vosfs::raft::DirEntries::MergeFrom(
-        from._internal_dir());
-  }
+  _this->_impl_.entries_.MergeFrom(from._impl_.entries_);
   if (from._internal_ino() != 0) {
     _this->_internal_set_ino(from._internal_ino());
-  }
-  if (from._internal_uid() != 0) {
-    _this->_internal_set_uid(from._internal_uid());
-  }
-  if (from._internal_gid() != 0) {
-    _this->_internal_set_gid(from._internal_gid());
-  }
-  if (from._internal_atime() != 0) {
-    _this->_internal_set_atime(from._internal_atime());
   }
   if (from._internal_mode() != 0) {
     _this->_internal_set_mode(from._internal_mode());
   }
-  if (from._internal_nlink() != 0) {
-    _this->_internal_set_nlink(from._internal_nlink());
+  if (from._internal_file_type() != 0) {
+    _this->_internal_set_file_type(from._internal_file_type());
+  }
+  if (from._internal_atime() != 0) {
+    _this->_internal_set_atime(from._internal_atime());
   }
   if (from._internal_ctime() != 0) {
     _this->_internal_set_ctime(from._internal_ctime());
@@ -3848,6 +3911,9 @@ void Inode::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF
   }
   if (from._internal_size() != 0) {
     _this->_internal_set_size(from._internal_size());
+  }
+  if (from._internal_nlink() != 0) {
+    _this->_internal_set_nlink(from._internal_nlink());
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -3867,29 +3933,16 @@ void Inode::InternalSwap(Inode* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   _impl_.blocks_.InternalSwap(&other->_impl_.blocks_);
+  _impl_.entries_.InternalSwap(&other->_impl_.entries_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(Inode, _impl_.size_)
-      + sizeof(Inode::_impl_.size_)
-      - PROTOBUF_FIELD_OFFSET(Inode, _impl_.dir_)>(
-          reinterpret_cast<char*>(&_impl_.dir_),
-          reinterpret_cast<char*>(&other->_impl_.dir_));
+      PROTOBUF_FIELD_OFFSET(Inode, _impl_.nlink_)
+      + sizeof(Inode::_impl_.nlink_)
+      - PROTOBUF_FIELD_OFFSET(Inode, _impl_.ino_)>(
+          reinterpret_cast<char*>(&_impl_.ino_),
+          reinterpret_cast<char*>(&other->_impl_.ino_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata Inode::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
-      file_level_metadata_raft_2eproto[11]);
-}
-
-// ===================================================================
-
-DirEntries_EntriesEntry_DoNotUse::DirEntries_EntriesEntry_DoNotUse() {}
-DirEntries_EntriesEntry_DoNotUse::DirEntries_EntriesEntry_DoNotUse(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-    : SuperType(arena) {}
-void DirEntries_EntriesEntry_DoNotUse::MergeFrom(const DirEntries_EntriesEntry_DoNotUse& other) {
-  MergeFromInternal(other);
-}
-::PROTOBUF_NAMESPACE_ID::Metadata DirEntries_EntriesEntry_DoNotUse::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
       file_level_metadata_raft_2eproto[12]);
@@ -3897,264 +3950,29 @@ void DirEntries_EntriesEntry_DoNotUse::MergeFrom(const DirEntries_EntriesEntry_D
 
 // ===================================================================
 
-class DirEntries::_Internal {
- public:
-};
-
-DirEntries::DirEntries(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                         bool is_message_owned)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
-  SharedCtor(arena, is_message_owned);
-  if (arena != nullptr && !is_message_owned) {
-    arena->OwnCustomDestructor(this, &DirEntries::ArenaDtor);
-  }
-  // @@protoc_insertion_point(arena_constructor:vosfs.raft.DirEntries)
-}
-DirEntries::DirEntries(const DirEntries& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
-  DirEntries* const _this = this; (void)_this;
-  new (&_impl_) Impl_{
-      /*decltype(_impl_.entries_)*/{}
-    , /*decltype(_impl_._cached_size_)*/{}};
-
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  _this->_impl_.entries_.MergeFrom(from._impl_.entries_);
-  // @@protoc_insertion_point(copy_constructor:vosfs.raft.DirEntries)
-}
-
-inline void DirEntries::SharedCtor(
-    ::_pb::Arena* arena, bool is_message_owned) {
-  (void)arena;
-  (void)is_message_owned;
-  new (&_impl_) Impl_{
-      /*decltype(_impl_.entries_)*/{::_pbi::ArenaInitialized(), arena}
-    , /*decltype(_impl_._cached_size_)*/{}
-  };
-}
-
-DirEntries::~DirEntries() {
-  // @@protoc_insertion_point(destructor:vosfs.raft.DirEntries)
-  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
-  (void)arena;
-    ArenaDtor(this);
-    return;
-  }
-  SharedDtor();
-}
-
-inline void DirEntries::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.entries_.Destruct();
-  _impl_.entries_.~MapField();
-}
-
-void DirEntries::ArenaDtor(void* object) {
-  DirEntries* _this = reinterpret_cast< DirEntries* >(object);
-  _this->_impl_.entries_.Destruct();
-}
-void DirEntries::SetCachedSize(int size) const {
-  _impl_._cached_size_.Set(size);
-}
-
-void DirEntries::Clear() {
-// @@protoc_insertion_point(message_clear_start:vosfs.raft.DirEntries)
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  _impl_.entries_.Clear();
-  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-const char* DirEntries::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
-#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  while (!ctx->Done(&ptr)) {
-    uint32_t tag;
-    ptr = ::_pbi::ReadTag(ptr, &tag);
-    switch (tag >> 3) {
-      // map<string, uint64> entries = 1;
-      case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
-          ptr -= 1;
-          do {
-            ptr += 1;
-            ptr = ctx->ParseMessage(&_impl_.entries_, ptr);
-            CHK_(ptr);
-            if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<10>(ptr));
-        } else
-          goto handle_unusual;
-        continue;
-      default:
-        goto handle_unusual;
-    }  // switch
-  handle_unusual:
-    if ((tag == 0) || ((tag & 7) == 4)) {
-      CHK_(ptr);
-      ctx->SetLastTag(tag);
-      goto message_done;
-    }
-    ptr = UnknownFieldParse(
-        tag,
-        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-        ptr, ctx);
-    CHK_(ptr != nullptr);
-  }  // while
-message_done:
-  return ptr;
-failure:
-  ptr = nullptr;
-  goto message_done;
-#undef CHK_
-}
-
-uint8_t* DirEntries::_InternalSerialize(
-    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:vosfs.raft.DirEntries)
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // map<string, uint64> entries = 1;
-  if (!this->_internal_entries().empty()) {
-    using MapType = ::_pb::Map<std::string, uint64_t>;
-    using WireHelper = DirEntries_EntriesEntry_DoNotUse::Funcs;
-    const auto& map_field = this->_internal_entries();
-    auto check_utf8 = [](const MapType::value_type& entry) {
-      (void)entry;
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-        entry.first.data(), static_cast<int>(entry.first.length()),
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-        "vosfs.raft.DirEntries.EntriesEntry.key");
-    };
-
-    if (stream->IsSerializationDeterministic() && map_field.size() > 1) {
-      for (const auto& entry : ::_pbi::MapSorterPtr<MapType>(map_field)) {
-        target = WireHelper::InternalSerialize(1, entry.first, entry.second, target, stream);
-        check_utf8(entry);
-      }
-    } else {
-      for (const auto& entry : map_field) {
-        target = WireHelper::InternalSerialize(1, entry.first, entry.second, target, stream);
-        check_utf8(entry);
-      }
-    }
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:vosfs.raft.DirEntries)
-  return target;
-}
-
-size_t DirEntries::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:vosfs.raft.DirEntries)
-  size_t total_size = 0;
-
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  // map<string, uint64> entries = 1;
-  total_size += 1 *
-      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(this->_internal_entries_size());
-  for (::PROTOBUF_NAMESPACE_ID::Map< std::string, uint64_t >::const_iterator
-      it = this->_internal_entries().begin();
-      it != this->_internal_entries().end(); ++it) {
-    total_size += DirEntries_EntriesEntry_DoNotUse::Funcs::ByteSizeLong(it->first, it->second);
-  }
-
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
-}
-
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData DirEntries::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
-    DirEntries::MergeImpl
-};
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*DirEntries::GetClassData() const { return &_class_data_; }
-
-
-void DirEntries::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
-  auto* const _this = static_cast<DirEntries*>(&to_msg);
-  auto& from = static_cast<const DirEntries&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:vosfs.raft.DirEntries)
-  GOOGLE_DCHECK_NE(&from, _this);
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  _this->_impl_.entries_.MergeFrom(from._impl_.entries_);
-  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-}
-
-void DirEntries::CopyFrom(const DirEntries& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:vosfs.raft.DirEntries)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool DirEntries::IsInitialized() const {
-  return true;
-}
-
-void DirEntries::InternalSwap(DirEntries* other) {
-  using std::swap;
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  _impl_.entries_.InternalSwap(&other->_impl_.entries_);
-}
-
-::PROTOBUF_NAMESPACE_ID::Metadata DirEntries::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
-      file_level_metadata_raft_2eproto[13]);
-}
-
-// ===================================================================
-
 class EntryCommand::_Internal {
  public:
-  static const ::vosfs::raft::RequestBlocksAddressRequest& request_blocks_address(const EntryCommand* msg);
-  static const ::vosfs::raft::ListDirRequest& list_dir(const EntryCommand* msg);
+  static const ::vosfs::raft::MakeDirRequest& mkdir(const EntryCommand* msg);
 };
 
-const ::vosfs::raft::RequestBlocksAddressRequest&
-EntryCommand::_Internal::request_blocks_address(const EntryCommand* msg) {
-  return *msg->_impl_.cmd_.request_blocks_address_;
+const ::vosfs::raft::MakeDirRequest&
+EntryCommand::_Internal::mkdir(const EntryCommand* msg) {
+  return *msg->_impl_.type_.mkdir_;
 }
-const ::vosfs::raft::ListDirRequest&
-EntryCommand::_Internal::list_dir(const EntryCommand* msg) {
-  return *msg->_impl_.cmd_.list_dir_;
-}
-void EntryCommand::set_allocated_request_blocks_address(::vosfs::raft::RequestBlocksAddressRequest* request_blocks_address) {
+void EntryCommand::set_allocated_mkdir(::vosfs::raft::MakeDirRequest* mkdir) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  clear_cmd();
-  if (request_blocks_address) {
+  clear_type();
+  if (mkdir) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-      ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(request_blocks_address);
+      ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(mkdir);
     if (message_arena != submessage_arena) {
-      request_blocks_address = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, request_blocks_address, submessage_arena);
+      mkdir = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, mkdir, submessage_arena);
     }
-    set_has_request_blocks_address();
-    _impl_.cmd_.request_blocks_address_ = request_blocks_address;
+    set_has_mkdir();
+    _impl_.type_.mkdir_ = mkdir;
   }
-  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.EntryCommand.request_blocks_address)
-}
-void EntryCommand::set_allocated_list_dir(::vosfs::raft::ListDirRequest* list_dir) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  clear_cmd();
-  if (list_dir) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-      ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(list_dir);
-    if (message_arena != submessage_arena) {
-      list_dir = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, list_dir, submessage_arena);
-    }
-    set_has_list_dir();
-    _impl_.cmd_.list_dir_ = list_dir;
-  }
-  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.EntryCommand.list_dir)
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.EntryCommand.mkdir)
 }
 EntryCommand::EntryCommand(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
@@ -4166,24 +3984,19 @@ EntryCommand::EntryCommand(const EntryCommand& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   EntryCommand* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.cmd_){}
+      decltype(_impl_.type_){}
     , /*decltype(_impl_._cached_size_)*/{}
     , /*decltype(_impl_._oneof_case_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  clear_has_cmd();
-  switch (from.cmd_case()) {
-    case kRequestBlocksAddress: {
-      _this->_internal_mutable_request_blocks_address()->::vosfs::raft::RequestBlocksAddressRequest::MergeFrom(
-          from._internal_request_blocks_address());
+  clear_has_type();
+  switch (from.type_case()) {
+    case kMkdir: {
+      _this->_internal_mutable_mkdir()->::vosfs::raft::MakeDirRequest::MergeFrom(
+          from._internal_mkdir());
       break;
     }
-    case kListDir: {
-      _this->_internal_mutable_list_dir()->::vosfs::raft::ListDirRequest::MergeFrom(
-          from._internal_list_dir());
-      break;
-    }
-    case CMD_NOT_SET: {
+    case TYPE_NOT_SET: {
       break;
     }
   }
@@ -4195,11 +4008,11 @@ inline void EntryCommand::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.cmd_){}
+      decltype(_impl_.type_){}
     , /*decltype(_impl_._cached_size_)*/{}
     , /*decltype(_impl_._oneof_case_)*/{}
   };
-  clear_has_cmd();
+  clear_has_type();
 }
 
 EntryCommand::~EntryCommand() {
@@ -4213,8 +4026,8 @@ EntryCommand::~EntryCommand() {
 
 inline void EntryCommand::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  if (has_cmd()) {
-    clear_cmd();
+  if (has_type()) {
+    clear_type();
   }
 }
 
@@ -4222,26 +4035,20 @@ void EntryCommand::SetCachedSize(int size) const {
   _impl_._cached_size_.Set(size);
 }
 
-void EntryCommand::clear_cmd() {
+void EntryCommand::clear_type() {
 // @@protoc_insertion_point(one_of_clear_start:vosfs.raft.EntryCommand)
-  switch (cmd_case()) {
-    case kRequestBlocksAddress: {
+  switch (type_case()) {
+    case kMkdir: {
       if (GetArenaForAllocation() == nullptr) {
-        delete _impl_.cmd_.request_blocks_address_;
+        delete _impl_.type_.mkdir_;
       }
       break;
     }
-    case kListDir: {
-      if (GetArenaForAllocation() == nullptr) {
-        delete _impl_.cmd_.list_dir_;
-      }
-      break;
-    }
-    case CMD_NOT_SET: {
+    case TYPE_NOT_SET: {
       break;
     }
   }
-  _impl_._oneof_case_[0] = CMD_NOT_SET;
+  _impl_._oneof_case_[0] = TYPE_NOT_SET;
 }
 
 
@@ -4251,7 +4058,7 @@ void EntryCommand::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  clear_cmd();
+  clear_type();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -4261,18 +4068,10 @@ const char* EntryCommand::_InternalParse(const char* ptr, ::_pbi::ParseContext* 
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // .vosfs.raft.RequestBlocksAddressRequest request_blocks_address = 1;
+      // .vosfs.raft.MakeDirRequest mkdir = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
-          ptr = ctx->ParseMessage(_internal_mutable_request_blocks_address(), ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // .vosfs.raft.ListDirRequest list_dir = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
-          ptr = ctx->ParseMessage(_internal_mutable_list_dir(), ptr);
+          ptr = ctx->ParseMessage(_internal_mutable_mkdir(), ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -4306,18 +4105,11 @@ uint8_t* EntryCommand::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .vosfs.raft.RequestBlocksAddressRequest request_blocks_address = 1;
-  if (_internal_has_request_blocks_address()) {
+  // .vosfs.raft.MakeDirRequest mkdir = 1;
+  if (_internal_has_mkdir()) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(1, _Internal::request_blocks_address(this),
-        _Internal::request_blocks_address(this).GetCachedSize(), target, stream);
-  }
-
-  // .vosfs.raft.ListDirRequest list_dir = 2;
-  if (_internal_has_list_dir()) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(2, _Internal::list_dir(this),
-        _Internal::list_dir(this).GetCachedSize(), target, stream);
+      InternalWriteMessage(1, _Internal::mkdir(this),
+        _Internal::mkdir(this).GetCachedSize(), target, stream);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -4336,22 +4128,15 @@ size_t EntryCommand::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  switch (cmd_case()) {
-    // .vosfs.raft.RequestBlocksAddressRequest request_blocks_address = 1;
-    case kRequestBlocksAddress: {
+  switch (type_case()) {
+    // .vosfs.raft.MakeDirRequest mkdir = 1;
+    case kMkdir: {
       total_size += 1 +
         ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-          *_impl_.cmd_.request_blocks_address_);
+          *_impl_.type_.mkdir_);
       break;
     }
-    // .vosfs.raft.ListDirRequest list_dir = 2;
-    case kListDir: {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-          *_impl_.cmd_.list_dir_);
-      break;
-    }
-    case CMD_NOT_SET: {
+    case TYPE_NOT_SET: {
       break;
     }
   }
@@ -4373,18 +4158,13 @@ void EntryCommand::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::P
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  switch (from.cmd_case()) {
-    case kRequestBlocksAddress: {
-      _this->_internal_mutable_request_blocks_address()->::vosfs::raft::RequestBlocksAddressRequest::MergeFrom(
-          from._internal_request_blocks_address());
+  switch (from.type_case()) {
+    case kMkdir: {
+      _this->_internal_mutable_mkdir()->::vosfs::raft::MakeDirRequest::MergeFrom(
+          from._internal_mkdir());
       break;
     }
-    case kListDir: {
-      _this->_internal_mutable_list_dir()->::vosfs::raft::ListDirRequest::MergeFrom(
-          from._internal_list_dir());
-      break;
-    }
-    case CMD_NOT_SET: {
+    case TYPE_NOT_SET: {
       break;
     }
   }
@@ -4405,11 +4185,258 @@ bool EntryCommand::IsInitialized() const {
 void EntryCommand::InternalSwap(EntryCommand* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  swap(_impl_.cmd_, other->_impl_.cmd_);
+  swap(_impl_.type_, other->_impl_.type_);
   swap(_impl_._oneof_case_[0], other->_impl_._oneof_case_[0]);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata EntryCommand::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
+      file_level_metadata_raft_2eproto[13]);
+}
+
+// ===================================================================
+
+class PendingResponse::_Internal {
+ public:
+  static const ::vosfs::raft::MakeDirResponse& mkdir(const PendingResponse* msg);
+};
+
+const ::vosfs::raft::MakeDirResponse&
+PendingResponse::_Internal::mkdir(const PendingResponse* msg) {
+  return *msg->_impl_.type_.mkdir_;
+}
+void PendingResponse::set_allocated_mkdir(::vosfs::raft::MakeDirResponse* mkdir) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  clear_type();
+  if (mkdir) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+      ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(mkdir);
+    if (message_arena != submessage_arena) {
+      mkdir = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, mkdir, submessage_arena);
+    }
+    set_has_mkdir();
+    _impl_.type_.mkdir_ = mkdir;
+  }
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.PendingResponse.mkdir)
+}
+PendingResponse::PendingResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:vosfs.raft.PendingResponse)
+}
+PendingResponse::PendingResponse(const PendingResponse& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  PendingResponse* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.type_){}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , /*decltype(_impl_._oneof_case_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  clear_has_type();
+  switch (from.type_case()) {
+    case kMkdir: {
+      _this->_internal_mutable_mkdir()->::vosfs::raft::MakeDirResponse::MergeFrom(
+          from._internal_mkdir());
+      break;
+    }
+    case TYPE_NOT_SET: {
+      break;
+    }
+  }
+  // @@protoc_insertion_point(copy_constructor:vosfs.raft.PendingResponse)
+}
+
+inline void PendingResponse::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.type_){}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , /*decltype(_impl_._oneof_case_)*/{}
+  };
+  clear_has_type();
+}
+
+PendingResponse::~PendingResponse() {
+  // @@protoc_insertion_point(destructor:vosfs.raft.PendingResponse)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void PendingResponse::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  if (has_type()) {
+    clear_type();
+  }
+}
+
+void PendingResponse::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void PendingResponse::clear_type() {
+// @@protoc_insertion_point(one_of_clear_start:vosfs.raft.PendingResponse)
+  switch (type_case()) {
+    case kMkdir: {
+      if (GetArenaForAllocation() == nullptr) {
+        delete _impl_.type_.mkdir_;
+      }
+      break;
+    }
+    case TYPE_NOT_SET: {
+      break;
+    }
+  }
+  _impl_._oneof_case_[0] = TYPE_NOT_SET;
+}
+
+
+void PendingResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:vosfs.raft.PendingResponse)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  clear_type();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* PendingResponse::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // .vosfs.raft.MakeDirResponse mkdir = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          ptr = ctx->ParseMessage(_internal_mutable_mkdir(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* PendingResponse::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:vosfs.raft.PendingResponse)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .vosfs.raft.MakeDirResponse mkdir = 1;
+  if (_internal_has_mkdir()) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(1, _Internal::mkdir(this),
+        _Internal::mkdir(this).GetCachedSize(), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:vosfs.raft.PendingResponse)
+  return target;
+}
+
+size_t PendingResponse::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:vosfs.raft.PendingResponse)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  switch (type_case()) {
+    // .vosfs.raft.MakeDirResponse mkdir = 1;
+    case kMkdir: {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+          *_impl_.type_.mkdir_);
+      break;
+    }
+    case TYPE_NOT_SET: {
+      break;
+    }
+  }
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData PendingResponse::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    PendingResponse::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*PendingResponse::GetClassData() const { return &_class_data_; }
+
+
+void PendingResponse::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<PendingResponse*>(&to_msg);
+  auto& from = static_cast<const PendingResponse&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:vosfs.raft.PendingResponse)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  switch (from.type_case()) {
+    case kMkdir: {
+      _this->_internal_mutable_mkdir()->::vosfs::raft::MakeDirResponse::MergeFrom(
+          from._internal_mkdir());
+      break;
+    }
+    case TYPE_NOT_SET: {
+      break;
+    }
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void PendingResponse::CopyFrom(const PendingResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:vosfs.raft.PendingResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool PendingResponse::IsInitialized() const {
+  return true;
+}
+
+void PendingResponse::InternalSwap(PendingResponse* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_.type_, other->_impl_.type_);
+  swap(_impl_._oneof_case_[0], other->_impl_._oneof_case_[0]);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata PendingResponse::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
       file_level_metadata_raft_2eproto[14]);
@@ -5148,6 +5175,20 @@ void ListDirRequest::InternalSwap(ListDirRequest* other) {
 
 // ===================================================================
 
+ListDirResponse_EntriesEntry_DoNotUse::ListDirResponse_EntriesEntry_DoNotUse() {}
+ListDirResponse_EntriesEntry_DoNotUse::ListDirResponse_EntriesEntry_DoNotUse(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+    : SuperType(arena) {}
+void ListDirResponse_EntriesEntry_DoNotUse::MergeFrom(const ListDirResponse_EntriesEntry_DoNotUse& other) {
+  MergeFromInternal(other);
+}
+::PROTOBUF_NAMESPACE_ID::Metadata ListDirResponse_EntriesEntry_DoNotUse::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
+      file_level_metadata_raft_2eproto[18]);
+}
+
+// ===================================================================
+
 class ListDirResponse::_Internal {
  public:
 };
@@ -5156,18 +5197,22 @@ ListDirResponse::ListDirResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor(arena, is_message_owned);
+  if (arena != nullptr && !is_message_owned) {
+    arena->OwnCustomDestructor(this, &ListDirResponse::ArenaDtor);
+  }
   // @@protoc_insertion_point(arena_constructor:vosfs.raft.ListDirResponse)
 }
 ListDirResponse::ListDirResponse(const ListDirResponse& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   ListDirResponse* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.inodes_){from._impl_.inodes_}
+      /*decltype(_impl_.entries_)*/{}
     , decltype(_impl_.message_){}
     , decltype(_impl_.status_code_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _this->_impl_.entries_.MergeFrom(from._impl_.entries_);
   _impl_.message_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
     _impl_.message_.Set("", GetArenaForAllocation());
@@ -5185,7 +5230,7 @@ inline void ListDirResponse::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.inodes_){arena}
+      /*decltype(_impl_.entries_)*/{::_pbi::ArenaInitialized(), arena}
     , decltype(_impl_.message_){}
     , decltype(_impl_.status_code_){0u}
     , /*decltype(_impl_._cached_size_)*/{}
@@ -5200,6 +5245,7 @@ ListDirResponse::~ListDirResponse() {
   // @@protoc_insertion_point(destructor:vosfs.raft.ListDirResponse)
   if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
   (void)arena;
+    ArenaDtor(this);
     return;
   }
   SharedDtor();
@@ -5207,10 +5253,15 @@ ListDirResponse::~ListDirResponse() {
 
 inline void ListDirResponse::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.inodes_.~RepeatedPtrField();
+  _impl_.entries_.Destruct();
+  _impl_.entries_.~MapField();
   _impl_.message_.Destroy();
 }
 
+void ListDirResponse::ArenaDtor(void* object) {
+  ListDirResponse* _this = reinterpret_cast< ListDirResponse* >(object);
+  _this->_impl_.entries_.Destruct();
+}
 void ListDirResponse::SetCachedSize(int size) const {
   _impl_._cached_size_.Set(size);
 }
@@ -5221,7 +5272,7 @@ void ListDirResponse::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  _impl_.inodes_.Clear();
+  _impl_.entries_.Clear();
   _impl_.message_.ClearToEmpty();
   _impl_.status_code_ = 0u;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
@@ -5251,13 +5302,13 @@ const char* ListDirResponse::_InternalParse(const char* ptr, ::_pbi::ParseContex
         } else
           goto handle_unusual;
         continue;
-      // repeated .vosfs.raft.Inode inodes = 3;
+      // map<string, uint64> entries = 3;
       case 3:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
           ptr -= 1;
           do {
             ptr += 1;
-            ptr = ctx->ParseMessage(_internal_add_inodes(), ptr);
+            ptr = ctx->ParseMessage(&_impl_.entries_, ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
           } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<26>(ptr));
@@ -5309,12 +5360,30 @@ uint8_t* ListDirResponse::_InternalSerialize(
         2, this->_internal_message(), target);
   }
 
-  // repeated .vosfs.raft.Inode inodes = 3;
-  for (unsigned i = 0,
-      n = static_cast<unsigned>(this->_internal_inodes_size()); i < n; i++) {
-    const auto& repfield = this->_internal_inodes(i);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-        InternalWriteMessage(3, repfield, repfield.GetCachedSize(), target, stream);
+  // map<string, uint64> entries = 3;
+  if (!this->_internal_entries().empty()) {
+    using MapType = ::_pb::Map<std::string, uint64_t>;
+    using WireHelper = ListDirResponse_EntriesEntry_DoNotUse::Funcs;
+    const auto& map_field = this->_internal_entries();
+    auto check_utf8 = [](const MapType::value_type& entry) {
+      (void)entry;
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+        entry.first.data(), static_cast<int>(entry.first.length()),
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+        "vosfs.raft.ListDirResponse.EntriesEntry.key");
+    };
+
+    if (stream->IsSerializationDeterministic() && map_field.size() > 1) {
+      for (const auto& entry : ::_pbi::MapSorterPtr<MapType>(map_field)) {
+        target = WireHelper::InternalSerialize(3, entry.first, entry.second, target, stream);
+        check_utf8(entry);
+      }
+    } else {
+      for (const auto& entry : map_field) {
+        target = WireHelper::InternalSerialize(3, entry.first, entry.second, target, stream);
+        check_utf8(entry);
+      }
+    }
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -5333,11 +5402,13 @@ size_t ListDirResponse::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated .vosfs.raft.Inode inodes = 3;
-  total_size += 1UL * this->_internal_inodes_size();
-  for (const auto& msg : this->_impl_.inodes_) {
-    total_size +=
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  // map<string, uint64> entries = 3;
+  total_size += 1 *
+      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(this->_internal_entries_size());
+  for (::PROTOBUF_NAMESPACE_ID::Map< std::string, uint64_t >::const_iterator
+      it = this->_internal_entries().begin();
+      it != this->_internal_entries().end(); ++it) {
+    total_size += ListDirResponse_EntriesEntry_DoNotUse::Funcs::ByteSizeLong(it->first, it->second);
   }
 
   // string message = 2;
@@ -5370,7 +5441,7 @@ void ListDirResponse::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const 
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  _this->_impl_.inodes_.MergeFrom(from._impl_.inodes_);
+  _this->_impl_.entries_.MergeFrom(from._impl_.entries_);
   if (!from._internal_message().empty()) {
     _this->_internal_set_message(from._internal_message());
   }
@@ -5396,7 +5467,7 @@ void ListDirResponse::InternalSwap(ListDirResponse* other) {
   auto* lhs_arena = GetArenaForAllocation();
   auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  _impl_.inodes_.InternalSwap(&other->_impl_.inodes_);
+  _impl_.entries_.InternalSwap(&other->_impl_.entries_);
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
       &_impl_.message_, lhs_arena,
       &other->_impl_.message_, rhs_arena
@@ -5407,26 +5478,27 @@ void ListDirResponse::InternalSwap(ListDirResponse* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata ListDirResponse::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
-      file_level_metadata_raft_2eproto[18]);
+      file_level_metadata_raft_2eproto[19]);
 }
 
 // ===================================================================
 
-class CreateDirRequest::_Internal {
+class MakeDirRequest::_Internal {
  public:
 };
 
-CreateDirRequest::CreateDirRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+MakeDirRequest::MakeDirRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor(arena, is_message_owned);
-  // @@protoc_insertion_point(arena_constructor:vosfs.raft.CreateDirRequest)
+  // @@protoc_insertion_point(arena_constructor:vosfs.raft.MakeDirRequest)
 }
-CreateDirRequest::CreateDirRequest(const CreateDirRequest& from)
+MakeDirRequest::MakeDirRequest(const MakeDirRequest& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
-  CreateDirRequest* const _this = this; (void)_this;
+  MakeDirRequest* const _this = this; (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.token_){}
+    , decltype(_impl_.name_){}
     , decltype(_impl_.parent_ino_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
@@ -5439,16 +5511,25 @@ CreateDirRequest::CreateDirRequest(const CreateDirRequest& from)
     _this->_impl_.token_.Set(from._internal_token(), 
       _this->GetArenaForAllocation());
   }
+  _impl_.name_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.name_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_name().empty()) {
+    _this->_impl_.name_.Set(from._internal_name(), 
+      _this->GetArenaForAllocation());
+  }
   _this->_impl_.parent_ino_ = from._impl_.parent_ino_;
-  // @@protoc_insertion_point(copy_constructor:vosfs.raft.CreateDirRequest)
+  // @@protoc_insertion_point(copy_constructor:vosfs.raft.MakeDirRequest)
 }
 
-inline void CreateDirRequest::SharedCtor(
+inline void MakeDirRequest::SharedCtor(
     ::_pb::Arena* arena, bool is_message_owned) {
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
       decltype(_impl_.token_){}
+    , decltype(_impl_.name_){}
     , decltype(_impl_.parent_ino_){uint64_t{0u}}
     , /*decltype(_impl_._cached_size_)*/{}
   };
@@ -5456,10 +5537,14 @@ inline void CreateDirRequest::SharedCtor(
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
     _impl_.token_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  _impl_.name_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.name_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
-CreateDirRequest::~CreateDirRequest() {
-  // @@protoc_insertion_point(destructor:vosfs.raft.CreateDirRequest)
+MakeDirRequest::~MakeDirRequest() {
+  // @@protoc_insertion_point(destructor:vosfs.raft.MakeDirRequest)
   if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
   (void)arena;
     return;
@@ -5467,27 +5552,29 @@ CreateDirRequest::~CreateDirRequest() {
   SharedDtor();
 }
 
-inline void CreateDirRequest::SharedDtor() {
+inline void MakeDirRequest::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   _impl_.token_.Destroy();
+  _impl_.name_.Destroy();
 }
 
-void CreateDirRequest::SetCachedSize(int size) const {
+void MakeDirRequest::SetCachedSize(int size) const {
   _impl_._cached_size_.Set(size);
 }
 
-void CreateDirRequest::Clear() {
-// @@protoc_insertion_point(message_clear_start:vosfs.raft.CreateDirRequest)
+void MakeDirRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:vosfs.raft.MakeDirRequest)
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
   _impl_.token_.ClearToEmpty();
+  _impl_.name_.ClearToEmpty();
   _impl_.parent_ino_ = uint64_t{0u};
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-const char* CreateDirRequest::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+const char* MakeDirRequest::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   while (!ctx->Done(&ptr)) {
     uint32_t tag;
@@ -5499,7 +5586,7 @@ const char* CreateDirRequest::_InternalParse(const char* ptr, ::_pbi::ParseConte
           auto str = _internal_mutable_token();
           ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
-          CHK_(::_pbi::VerifyUTF8(str, "vosfs.raft.CreateDirRequest.token"));
+          CHK_(::_pbi::VerifyUTF8(str, "vosfs.raft.MakeDirRequest.token"));
         } else
           goto handle_unusual;
         continue;
@@ -5508,6 +5595,16 @@ const char* CreateDirRequest::_InternalParse(const char* ptr, ::_pbi::ParseConte
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _impl_.parent_ino_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string name = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
+          auto str = _internal_mutable_name();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "vosfs.raft.MakeDirRequest.name"));
         } else
           goto handle_unusual;
         continue;
@@ -5534,9 +5631,9 @@ failure:
 #undef CHK_
 }
 
-uint8_t* CreateDirRequest::_InternalSerialize(
+uint8_t* MakeDirRequest::_InternalSerialize(
     uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:vosfs.raft.CreateDirRequest)
+  // @@protoc_insertion_point(serialize_to_array_start:vosfs.raft.MakeDirRequest)
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -5545,7 +5642,7 @@ uint8_t* CreateDirRequest::_InternalSerialize(
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_token().data(), static_cast<int>(this->_internal_token().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "vosfs.raft.CreateDirRequest.token");
+      "vosfs.raft.MakeDirRequest.token");
     target = stream->WriteStringMaybeAliased(
         1, this->_internal_token(), target);
   }
@@ -5556,16 +5653,26 @@ uint8_t* CreateDirRequest::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteUInt64ToArray(2, this->_internal_parent_ino(), target);
   }
 
+  // string name = 3;
+  if (!this->_internal_name().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "vosfs.raft.MakeDirRequest.name");
+    target = stream->WriteStringMaybeAliased(
+        3, this->_internal_name(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:vosfs.raft.CreateDirRequest)
+  // @@protoc_insertion_point(serialize_to_array_end:vosfs.raft.MakeDirRequest)
   return target;
 }
 
-size_t CreateDirRequest::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:vosfs.raft.CreateDirRequest)
+size_t MakeDirRequest::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:vosfs.raft.MakeDirRequest)
   size_t total_size = 0;
 
   uint32_t cached_has_bits = 0;
@@ -5579,6 +5686,13 @@ size_t CreateDirRequest::ByteSizeLong() const {
         this->_internal_token());
   }
 
+  // string name = 3;
+  if (!this->_internal_name().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_name());
+  }
+
   // uint64 parent_ino = 2;
   if (this->_internal_parent_ino() != 0) {
     total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_parent_ino());
@@ -5587,17 +5701,17 @@ size_t CreateDirRequest::ByteSizeLong() const {
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CreateDirRequest::_class_data_ = {
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData MakeDirRequest::_class_data_ = {
     ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
-    CreateDirRequest::MergeImpl
+    MakeDirRequest::MergeImpl
 };
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CreateDirRequest::GetClassData() const { return &_class_data_; }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*MakeDirRequest::GetClassData() const { return &_class_data_; }
 
 
-void CreateDirRequest::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
-  auto* const _this = static_cast<CreateDirRequest*>(&to_msg);
-  auto& from = static_cast<const CreateDirRequest&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:vosfs.raft.CreateDirRequest)
+void MakeDirRequest::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<MakeDirRequest*>(&to_msg);
+  auto& from = static_cast<const MakeDirRequest&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:vosfs.raft.MakeDirRequest)
   GOOGLE_DCHECK_NE(&from, _this);
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
@@ -5605,24 +5719,27 @@ void CreateDirRequest::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const
   if (!from._internal_token().empty()) {
     _this->_internal_set_token(from._internal_token());
   }
+  if (!from._internal_name().empty()) {
+    _this->_internal_set_name(from._internal_name());
+  }
   if (from._internal_parent_ino() != 0) {
     _this->_internal_set_parent_ino(from._internal_parent_ino());
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
-void CreateDirRequest::CopyFrom(const CreateDirRequest& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:vosfs.raft.CreateDirRequest)
+void MakeDirRequest::CopyFrom(const MakeDirRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:vosfs.raft.MakeDirRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool CreateDirRequest::IsInitialized() const {
+bool MakeDirRequest::IsInitialized() const {
   return true;
 }
 
-void CreateDirRequest::InternalSwap(CreateDirRequest* other) {
+void MakeDirRequest::InternalSwap(MakeDirRequest* other) {
   using std::swap;
   auto* lhs_arena = GetArenaForAllocation();
   auto* rhs_arena = other->GetArenaForAllocation();
@@ -5631,38 +5748,39 @@ void CreateDirRequest::InternalSwap(CreateDirRequest* other) {
       &_impl_.token_, lhs_arena,
       &other->_impl_.token_, rhs_arena
   );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.name_, lhs_arena,
+      &other->_impl_.name_, rhs_arena
+  );
   swap(_impl_.parent_ino_, other->_impl_.parent_ino_);
 }
 
-::PROTOBUF_NAMESPACE_ID::Metadata CreateDirRequest::GetMetadata() const {
+::PROTOBUF_NAMESPACE_ID::Metadata MakeDirRequest::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
-      file_level_metadata_raft_2eproto[19]);
+      file_level_metadata_raft_2eproto[20]);
 }
 
 // ===================================================================
 
-class CreateDirResponse::_Internal {
+class MakeDirResponse::_Internal {
  public:
-  static const ::vosfs::raft::Inode& inode(const CreateDirResponse* msg);
 };
 
-const ::vosfs::raft::Inode&
-CreateDirResponse::_Internal::inode(const CreateDirResponse* msg) {
-  return *msg->_impl_.inode_;
-}
-CreateDirResponse::CreateDirResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+MakeDirResponse::MakeDirResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor(arena, is_message_owned);
-  // @@protoc_insertion_point(arena_constructor:vosfs.raft.CreateDirResponse)
+  // @@protoc_insertion_point(arena_constructor:vosfs.raft.MakeDirResponse)
 }
-CreateDirResponse::CreateDirResponse(const CreateDirResponse& from)
+MakeDirResponse::MakeDirResponse(const MakeDirResponse& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
-  CreateDirResponse* const _this = this; (void)_this;
+  MakeDirResponse* const _this = this; (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.message_){}
-    , decltype(_impl_.inode_){nullptr}
+    , decltype(_impl_.name_){}
+    , decltype(_impl_.ino_){}
+    , decltype(_impl_.parent_ino_){}
     , decltype(_impl_.status_code_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
@@ -5675,20 +5793,29 @@ CreateDirResponse::CreateDirResponse(const CreateDirResponse& from)
     _this->_impl_.message_.Set(from._internal_message(), 
       _this->GetArenaForAllocation());
   }
-  if (from._internal_has_inode()) {
-    _this->_impl_.inode_ = new ::vosfs::raft::Inode(*from._impl_.inode_);
+  _impl_.name_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.name_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_name().empty()) {
+    _this->_impl_.name_.Set(from._internal_name(), 
+      _this->GetArenaForAllocation());
   }
-  _this->_impl_.status_code_ = from._impl_.status_code_;
-  // @@protoc_insertion_point(copy_constructor:vosfs.raft.CreateDirResponse)
+  ::memcpy(&_impl_.ino_, &from._impl_.ino_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.status_code_) -
+    reinterpret_cast<char*>(&_impl_.ino_)) + sizeof(_impl_.status_code_));
+  // @@protoc_insertion_point(copy_constructor:vosfs.raft.MakeDirResponse)
 }
 
-inline void CreateDirResponse::SharedCtor(
+inline void MakeDirResponse::SharedCtor(
     ::_pb::Arena* arena, bool is_message_owned) {
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
       decltype(_impl_.message_){}
-    , decltype(_impl_.inode_){nullptr}
+    , decltype(_impl_.name_){}
+    , decltype(_impl_.ino_){uint64_t{0u}}
+    , decltype(_impl_.parent_ino_){uint64_t{0u}}
     , decltype(_impl_.status_code_){0u}
     , /*decltype(_impl_._cached_size_)*/{}
   };
@@ -5696,10 +5823,14 @@ inline void CreateDirResponse::SharedCtor(
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
     _impl_.message_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  _impl_.name_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.name_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
-CreateDirResponse::~CreateDirResponse() {
-  // @@protoc_insertion_point(destructor:vosfs.raft.CreateDirResponse)
+MakeDirResponse::~MakeDirResponse() {
+  // @@protoc_insertion_point(destructor:vosfs.raft.MakeDirResponse)
   if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
   (void)arena;
     return;
@@ -5707,32 +5838,31 @@ CreateDirResponse::~CreateDirResponse() {
   SharedDtor();
 }
 
-inline void CreateDirResponse::SharedDtor() {
+inline void MakeDirResponse::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   _impl_.message_.Destroy();
-  if (this != internal_default_instance()) delete _impl_.inode_;
+  _impl_.name_.Destroy();
 }
 
-void CreateDirResponse::SetCachedSize(int size) const {
+void MakeDirResponse::SetCachedSize(int size) const {
   _impl_._cached_size_.Set(size);
 }
 
-void CreateDirResponse::Clear() {
-// @@protoc_insertion_point(message_clear_start:vosfs.raft.CreateDirResponse)
+void MakeDirResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:vosfs.raft.MakeDirResponse)
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
   _impl_.message_.ClearToEmpty();
-  if (GetArenaForAllocation() == nullptr && _impl_.inode_ != nullptr) {
-    delete _impl_.inode_;
-  }
-  _impl_.inode_ = nullptr;
-  _impl_.status_code_ = 0u;
+  _impl_.name_.ClearToEmpty();
+  ::memset(&_impl_.ino_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&_impl_.status_code_) -
+      reinterpret_cast<char*>(&_impl_.ino_)) + sizeof(_impl_.status_code_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-const char* CreateDirResponse::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+const char* MakeDirResponse::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   while (!ctx->Done(&ptr)) {
     uint32_t tag;
@@ -5752,15 +5882,33 @@ const char* CreateDirResponse::_InternalParse(const char* ptr, ::_pbi::ParseCont
           auto str = _internal_mutable_message();
           ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
-          CHK_(::_pbi::VerifyUTF8(str, "vosfs.raft.CreateDirResponse.message"));
+          CHK_(::_pbi::VerifyUTF8(str, "vosfs.raft.MakeDirResponse.message"));
         } else
           goto handle_unusual;
         continue;
-      // .vosfs.raft.Inode inode = 3;
+      // uint64 ino = 3;
       case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
-          ptr = ctx->ParseMessage(_internal_mutable_inode(), ptr);
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+          _impl_.ino_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // uint64 parent_ino = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
+          _impl_.parent_ino_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string name = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 42)) {
+          auto str = _internal_mutable_name();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "vosfs.raft.MakeDirResponse.name"));
         } else
           goto handle_unusual;
         continue;
@@ -5787,9 +5935,9 @@ failure:
 #undef CHK_
 }
 
-uint8_t* CreateDirResponse::_InternalSerialize(
+uint8_t* MakeDirResponse::_InternalSerialize(
     uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:vosfs.raft.CreateDirResponse)
+  // @@protoc_insertion_point(serialize_to_array_start:vosfs.raft.MakeDirResponse)
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -5804,28 +5952,43 @@ uint8_t* CreateDirResponse::_InternalSerialize(
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_message().data(), static_cast<int>(this->_internal_message().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "vosfs.raft.CreateDirResponse.message");
+      "vosfs.raft.MakeDirResponse.message");
     target = stream->WriteStringMaybeAliased(
         2, this->_internal_message(), target);
   }
 
-  // .vosfs.raft.Inode inode = 3;
-  if (this->_internal_has_inode()) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(3, _Internal::inode(this),
-        _Internal::inode(this).GetCachedSize(), target, stream);
+  // uint64 ino = 3;
+  if (this->_internal_ino() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(3, this->_internal_ino(), target);
+  }
+
+  // uint64 parent_ino = 4;
+  if (this->_internal_parent_ino() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(4, this->_internal_parent_ino(), target);
+  }
+
+  // string name = 5;
+  if (!this->_internal_name().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "vosfs.raft.MakeDirResponse.name");
+    target = stream->WriteStringMaybeAliased(
+        5, this->_internal_name(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:vosfs.raft.CreateDirResponse)
+  // @@protoc_insertion_point(serialize_to_array_end:vosfs.raft.MakeDirResponse)
   return target;
 }
 
-size_t CreateDirResponse::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:vosfs.raft.CreateDirResponse)
+size_t MakeDirResponse::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:vosfs.raft.MakeDirResponse)
   size_t total_size = 0;
 
   uint32_t cached_has_bits = 0;
@@ -5839,11 +6002,21 @@ size_t CreateDirResponse::ByteSizeLong() const {
         this->_internal_message());
   }
 
-  // .vosfs.raft.Inode inode = 3;
-  if (this->_internal_has_inode()) {
+  // string name = 5;
+  if (!this->_internal_name().empty()) {
     total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-        *_impl_.inode_);
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_name());
+  }
+
+  // uint64 ino = 3;
+  if (this->_internal_ino() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_ino());
+  }
+
+  // uint64 parent_ino = 4;
+  if (this->_internal_parent_ino() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_parent_ino());
   }
 
   // uint32 status_code = 1;
@@ -5854,17 +6027,17 @@ size_t CreateDirResponse::ByteSizeLong() const {
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CreateDirResponse::_class_data_ = {
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData MakeDirResponse::_class_data_ = {
     ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
-    CreateDirResponse::MergeImpl
+    MakeDirResponse::MergeImpl
 };
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CreateDirResponse::GetClassData() const { return &_class_data_; }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*MakeDirResponse::GetClassData() const { return &_class_data_; }
 
 
-void CreateDirResponse::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
-  auto* const _this = static_cast<CreateDirResponse*>(&to_msg);
-  auto& from = static_cast<const CreateDirResponse&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:vosfs.raft.CreateDirResponse)
+void MakeDirResponse::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<MakeDirResponse*>(&to_msg);
+  auto& from = static_cast<const MakeDirResponse&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:vosfs.raft.MakeDirResponse)
   GOOGLE_DCHECK_NE(&from, _this);
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
@@ -5872,9 +6045,14 @@ void CreateDirResponse::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, cons
   if (!from._internal_message().empty()) {
     _this->_internal_set_message(from._internal_message());
   }
-  if (from._internal_has_inode()) {
-    _this->_internal_mutable_inode()->::vosfs::raft::Inode::MergeFrom(
-        from._internal_inode());
+  if (!from._internal_name().empty()) {
+    _this->_internal_set_name(from._internal_name());
+  }
+  if (from._internal_ino() != 0) {
+    _this->_internal_set_ino(from._internal_ino());
+  }
+  if (from._internal_parent_ino() != 0) {
+    _this->_internal_set_parent_ino(from._internal_parent_ino());
   }
   if (from._internal_status_code() != 0) {
     _this->_internal_set_status_code(from._internal_status_code());
@@ -5882,18 +6060,18 @@ void CreateDirResponse::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, cons
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
-void CreateDirResponse::CopyFrom(const CreateDirResponse& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:vosfs.raft.CreateDirResponse)
+void MakeDirResponse::CopyFrom(const MakeDirResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:vosfs.raft.MakeDirResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool CreateDirResponse::IsInitialized() const {
+bool MakeDirResponse::IsInitialized() const {
   return true;
 }
 
-void CreateDirResponse::InternalSwap(CreateDirResponse* other) {
+void MakeDirResponse::InternalSwap(MakeDirResponse* other) {
   using std::swap;
   auto* lhs_arena = GetArenaForAllocation();
   auto* rhs_arena = other->GetArenaForAllocation();
@@ -5902,18 +6080,22 @@ void CreateDirResponse::InternalSwap(CreateDirResponse* other) {
       &_impl_.message_, lhs_arena,
       &other->_impl_.message_, rhs_arena
   );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.name_, lhs_arena,
+      &other->_impl_.name_, rhs_arena
+  );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(CreateDirResponse, _impl_.status_code_)
-      + sizeof(CreateDirResponse::_impl_.status_code_)
-      - PROTOBUF_FIELD_OFFSET(CreateDirResponse, _impl_.inode_)>(
-          reinterpret_cast<char*>(&_impl_.inode_),
-          reinterpret_cast<char*>(&other->_impl_.inode_));
+      PROTOBUF_FIELD_OFFSET(MakeDirResponse, _impl_.status_code_)
+      + sizeof(MakeDirResponse::_impl_.status_code_)
+      - PROTOBUF_FIELD_OFFSET(MakeDirResponse, _impl_.ino_)>(
+          reinterpret_cast<char*>(&_impl_.ino_),
+          reinterpret_cast<char*>(&other->_impl_.ino_));
 }
 
-::PROTOBUF_NAMESPACE_ID::Metadata CreateDirResponse::GetMetadata() const {
+::PROTOBUF_NAMESPACE_ID::Metadata MakeDirResponse::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_raft_2eproto_getter, &descriptor_table_raft_2eproto_once,
-      file_level_metadata_raft_2eproto[20]);
+      file_level_metadata_raft_2eproto[21]);
 }
 
 // @@protoc_insertion_point(namespace_scope)
@@ -5964,21 +6146,21 @@ template<> PROTOBUF_NOINLINE ::vosfs::raft::BlockInfo*
 Arena::CreateMaybeMessage< ::vosfs::raft::BlockInfo >(Arena* arena) {
   return Arena::CreateMessageInternal< ::vosfs::raft::BlockInfo >(arena);
 }
+template<> PROTOBUF_NOINLINE ::vosfs::raft::Inode_EntriesEntry_DoNotUse*
+Arena::CreateMaybeMessage< ::vosfs::raft::Inode_EntriesEntry_DoNotUse >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::vosfs::raft::Inode_EntriesEntry_DoNotUse >(arena);
+}
 template<> PROTOBUF_NOINLINE ::vosfs::raft::Inode*
 Arena::CreateMaybeMessage< ::vosfs::raft::Inode >(Arena* arena) {
   return Arena::CreateMessageInternal< ::vosfs::raft::Inode >(arena);
 }
-template<> PROTOBUF_NOINLINE ::vosfs::raft::DirEntries_EntriesEntry_DoNotUse*
-Arena::CreateMaybeMessage< ::vosfs::raft::DirEntries_EntriesEntry_DoNotUse >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::vosfs::raft::DirEntries_EntriesEntry_DoNotUse >(arena);
-}
-template<> PROTOBUF_NOINLINE ::vosfs::raft::DirEntries*
-Arena::CreateMaybeMessage< ::vosfs::raft::DirEntries >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::vosfs::raft::DirEntries >(arena);
-}
 template<> PROTOBUF_NOINLINE ::vosfs::raft::EntryCommand*
 Arena::CreateMaybeMessage< ::vosfs::raft::EntryCommand >(Arena* arena) {
   return Arena::CreateMessageInternal< ::vosfs::raft::EntryCommand >(arena);
+}
+template<> PROTOBUF_NOINLINE ::vosfs::raft::PendingResponse*
+Arena::CreateMaybeMessage< ::vosfs::raft::PendingResponse >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::vosfs::raft::PendingResponse >(arena);
 }
 template<> PROTOBUF_NOINLINE ::vosfs::raft::RequestBlocksAddressRequest*
 Arena::CreateMaybeMessage< ::vosfs::raft::RequestBlocksAddressRequest >(Arena* arena) {
@@ -5992,17 +6174,21 @@ template<> PROTOBUF_NOINLINE ::vosfs::raft::ListDirRequest*
 Arena::CreateMaybeMessage< ::vosfs::raft::ListDirRequest >(Arena* arena) {
   return Arena::CreateMessageInternal< ::vosfs::raft::ListDirRequest >(arena);
 }
+template<> PROTOBUF_NOINLINE ::vosfs::raft::ListDirResponse_EntriesEntry_DoNotUse*
+Arena::CreateMaybeMessage< ::vosfs::raft::ListDirResponse_EntriesEntry_DoNotUse >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::vosfs::raft::ListDirResponse_EntriesEntry_DoNotUse >(arena);
+}
 template<> PROTOBUF_NOINLINE ::vosfs::raft::ListDirResponse*
 Arena::CreateMaybeMessage< ::vosfs::raft::ListDirResponse >(Arena* arena) {
   return Arena::CreateMessageInternal< ::vosfs::raft::ListDirResponse >(arena);
 }
-template<> PROTOBUF_NOINLINE ::vosfs::raft::CreateDirRequest*
-Arena::CreateMaybeMessage< ::vosfs::raft::CreateDirRequest >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::vosfs::raft::CreateDirRequest >(arena);
+template<> PROTOBUF_NOINLINE ::vosfs::raft::MakeDirRequest*
+Arena::CreateMaybeMessage< ::vosfs::raft::MakeDirRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::vosfs::raft::MakeDirRequest >(arena);
 }
-template<> PROTOBUF_NOINLINE ::vosfs::raft::CreateDirResponse*
-Arena::CreateMaybeMessage< ::vosfs::raft::CreateDirResponse >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::vosfs::raft::CreateDirResponse >(arena);
+template<> PROTOBUF_NOINLINE ::vosfs::raft::MakeDirResponse*
+Arena::CreateMaybeMessage< ::vosfs::raft::MakeDirResponse >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::vosfs::raft::MakeDirResponse >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

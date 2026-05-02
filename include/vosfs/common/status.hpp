@@ -2,14 +2,17 @@
 #include <cstdint>
 #include <string_view>
 
-namespace vosfs::auth {
+namespace vosfs {
 class Status {
 public:
     enum Code : uint32_t {
         kOk = 0,
+        kFailed,
         kInvalidArgument,
         kInternal,
         kPermissionDenied,
+        kNotLeader,
+        kNotExist,
     };
 
 public:
@@ -22,6 +25,24 @@ public:
         return code_ == kOk;
     }
 
+    [[nodiscard]]
+    auto is_failed() const -> bool { return code_ == kFailed; }
+
+    [[nodiscard]]
+    auto is_invalid_argument() const -> bool { return code_ == kInvalidArgument; }
+
+    [[nodiscard]]
+    auto is_internal() const -> bool { return code_ == kInternal; }
+
+    [[nodiscard]]
+    auto is_permission_denied() const -> bool { return code_ == kPermissionDenied; }
+
+    [[nodiscard]]
+    auto is_not_leader() const -> bool { return code_ == kNotLeader; }
+
+    [[nodiscard]]
+    auto is_not_exist() const -> bool { return code_ == kNotExist; }
+
 public:
     [[nodiscard]]
     auto code() const noexcept -> uint8_t {
@@ -33,12 +54,18 @@ public:
         switch (code_) {
             case kOk:
                 return "ok";
+            case kFailed:
+                return "failed";
             case kInvalidArgument:
                 return "invalid arguement";
             case kInternal:
                 return "internal error";
             case kPermissionDenied:
                 return "permission denied";
+            case kNotLeader:
+                return "not leader";
+            case kNotExist:
+                return "not exist";
             default:
                 return "unknown error";
         }
@@ -47,4 +74,4 @@ public:
 private:
     uint32_t code_;
 };
-} // namespace vosfs::auth
+} // namespace vosfs

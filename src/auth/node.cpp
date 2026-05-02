@@ -2,7 +2,7 @@
 #include "authpb/auth.pb.h"
 #include "vosfs/common/util/jwt.hpp"
 #include "../../include/vosfs/auth/config.hpp"
-#include "../../include/vosfs/auth/status.hpp"
+#include "../../include/vosfs/common/status.hpp"
 #include "vosfs/auth/node.hpp"
 
 auto vosfs::auth::AuthNode::create(
@@ -171,7 +171,6 @@ auto vosfs::auth::AuthNode::handle_register_user_request(const RegisterUserReque
 
 auto vosfs::auth::AuthNode::handle_delete_user_request(const DeleteUserRequest& request)
     -> kosio::async::Task<DeleteUserResponse> {
-    ;
     DeleteUserResponse response;
 
     auto& token = request.token();

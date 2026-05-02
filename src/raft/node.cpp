@@ -1,6 +1,8 @@
 #include "vosfs/raft/node.hpp"
 #include "vosfs/common/util/file.hpp"
 #include "vosfs/common/util/time.hpp"
+#include "vosfs/common/util/jwt.hpp"
+#include "vosfs/common/status.hpp"
 
 vosfs::raft::RaftNode::RaftNode(
     detail::Snapshotter::Ptr snapshotter,
@@ -511,13 +513,84 @@ auto vosfs::raft::RaftNode::handle_install_snapshot_request(
 }
 
 auto vosfs::raft::RaftNode::handle_list_dir_request(const ListDirRequest& request) -> Task<ListDirResponse> {
+    std::string leader_id;
     auto& token = request.token();
     auto parent_ino = request.parent_ino();
+
+    // 校验 token
+    if (!util::vertify_token(token)) {
+        co_return make_list_dir_response(Status::kPermissionDenied, "无效 Token");
+    }
+
+    co_await mutex_.lock();
+    std::lock_guard lock(mutex_, std::adopt_lock);
+    if (leader_id_.has_value()) {
+        leader_id = std::to_string(leader_id_.value());
+    }
+
+    if (role_.load(std::memory_order_relaxed) != kLeader) {
+        co_return make_list_dir_response(Status::kNotLeader, leader_id);
+    }
+
+    auto& inodes = state_machine_.inodes();
+    auto it = inodes.find(parent_ino);
+    if (it == inodes.end()) {
+        co_return make_list_dir_response(Status::kInternal, "文件夹不存在");
+    }
+
+    auto& parent_inode = it->second;
+    if (parent_inode.file_type() != Inode_FileType_DIR) {
+        co_return make_list_dir_response(Status::kInternal, "不是文件夹");
+    }
+
+    auto response = make_list_dir_response(Status::kOk, "成功显示文件夹");
+    auto& entries = parent_inode.entries();
+    for (const auto& entry : entries) {
+        response.mutable_entries()->emplace(entry);
+    }
+    co_return response;
 }
 
-auto vosfs::raft::RaftNode::handle_create_dir_request(const CreateDirRequest& request) -> Task<CreateDirResponse> {
+auto vosfs::raft::RaftNode::handle_make_dir_request(std::coroutine_handle<void> handle, MakeDirRequest& request) -> Task<MakeDirResponse> {
+    std::string leader_id;
     auto& token = request.token();
-    auto parent_ino = request.parent_ino();
+
+    // 校验 token
+    if (!util::vertify_token(token)) {
+        co_return make_make_dir_response(Status::kPermissionDenied, "无效 Token");
+    }
+
+    co_await mutex_.lock();
+    if (leader_id_.has_value()) {
+        leader_id = std::to_string(leader_id_.value());
+    }
+
+    if (role_.load(std::memory_order_relaxed) != kLeader) {
+        mutex_.unlock();
+        co_return make_make_dir_response(Status::kNotLeader, leader_id);
+    }
+
+    // 包装为 Raft 日志，并准备同步到集群
+    EntryCommand command;
+    auto* mutable_mkdir = command.mutable_mkdir();
+    mutable_mkdir->Swap(&request);
+
+    LogEntry entry;
+    entry.set_term(hard_state_.current_term());
+    auto log_index = logs_.last_log_index() + 1;
+    entry.set_index(log_index);
+    entry.set_command(command.SerializeAsString());
+    logs_.append_entry(std::move(entry));
+
+    // 挂起，等待状态机恢复并发送回复
+    PendingResponse response;
+    response.mutable_mkdir()->set_status_code(Status::kFailed);
+    response.mutable_mkdir()->set_message("创建文件夹失败，未知错误");
+    auto& pending_request = state_machine_.append_request(log_index, detail::PendingRequest{handle, std::move(response)});
+    mutex_.unlock();
+    co_await std::suspend_always{};
+
+    co_return pending_request.response.mkdir();
 }
 
 auto vosfs::raft::RaftNode::handle_request_vote_response(
@@ -698,5 +771,29 @@ auto vosfs::raft::RaftNode::make_install_snapshot_response(
     InstallSnapshotResponse response;
     response.set_id(id);
     response.set_term(term);
+    return response;
+}
+
+auto vosfs::raft::RaftNode::make_list_dir_response(
+    uint32_t status_code,
+    std::string message) -> ListDirResponse {
+    ListDirResponse response;
+    response.set_status_code(status_code);
+    response.set_message(std::move(message));
+    return response;
+}
+
+auto vosfs::raft::RaftNode::make_make_dir_response(
+    uint32_t status_code,
+    std::string message,
+    uint64_t ino,
+    uint64_t parent_ino,
+    std::string name) -> MakeDirResponse {
+    MakeDirResponse response;
+    response.set_status_code(status_code);
+    response.set_message(std::move(message));
+    response.set_ino(ino);
+    response.set_parent_ino(parent_ino);
+    response.set_name(std::move(name));
     return response;
 }
