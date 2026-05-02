@@ -13,5 +13,6 @@ signals:
     void registerFinished(bool success, QString msg);
     void deleteFinished(bool success, QString msg);
     void loginFinished(bool success, QString msg);
+    void listDirFinished(bool success, QString msg);
 };
 } // namespace vosfs::ui

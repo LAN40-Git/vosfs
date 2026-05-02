@@ -47,7 +47,8 @@ public slots:
     void register_user(const QString& user_name, const QString& password, int role, const QString& admin_secret = "");
     void delete_user(const QString& password);
     void login_user_by_name(const QString& user_name, const QString& password, int role);
-    void list_dir(const QString& parent_ino);
+    void list_dir(const QString& path);
+    void make_dir(const QString& path);
 
 public:
     [[REMEMBER_CO_AWAIT]]
@@ -68,13 +69,11 @@ public:
         int role) -> Task<void>;
 
     [[REMEMBER_CO_AWAIT]]
-    auto send_list_dir_request(
-        uint64_t parent_ino) -> Task<void>;
+    auto send_list_dir_request(std::string path) -> Task<void>;
 
     [[REMEMBER_CO_AWAIT]]
-    auto send_mkdir_request(
-        uint64_t parent_ino,
-        std::string name) -> Task<void>;
+    auto send_make_dir_request(
+        std::string path) -> Task<void>;
 
 private:
     void handle_register_user_response(const vrpc::Status& status, const auth::RegisterUserResponse& response);
@@ -91,8 +90,6 @@ private:
     vrpc::TcpClient                               auth_client_;
     std::atomic<uint64_t>                         leader_id_;
     std::unordered_map<uint64_t, vrpc::TcpClient> raft_clients_;
-    std::unordered_map<uint64_t, raft::Inode>     inodes_;
-    std::map<std::string, uint64_t>               inode_paths_;
     tbb::concurrent_queue<Task<void>>             tasks_;
     SignalBrige&                                  signal_brige_;
 };

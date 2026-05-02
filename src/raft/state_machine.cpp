@@ -173,10 +173,21 @@ void vosfs::raft::detail::StateMachine::mkdir(
         return;
     }
 
+    // 获取父节点
+    auto parent_inode_it = inodes_.find(parent_it->second.ino());
+    if (parent_inode_it == inodes_.end()) {
+        response->set_status_code(Status::kInvalidArgument);
+        response->set_message("父节点不存在");
+        LOG_FATAL("inode not exist with path: {}", path);
+        return;
+    }
+
+    auto& parent_inode = parent_inode_it->second;
     // 判断父节点是否为目录
-    if (!parent_it->second.is_dir()) {
+    if (!parent_inode.is_dir()) {
         response->set_status_code(Status::kInvalidArgument);
         response->set_message("父节点不是目录");
+        return;
     }
 
     auto new_ino = next_ino_++;
@@ -184,7 +195,6 @@ void vosfs::raft::detail::StateMachine::mkdir(
     new_inode.set_ino(new_ino);
     new_inode.set_is_dir(true);
     auto current_ms = kosio::util::current_ms();
-    new_inode.set_atime(current_ms);
     new_inode.set_ctime(current_ms);
     new_inode.set_mtime(current_ms);
     new_inode.set_size(4096);
@@ -195,6 +205,11 @@ void vosfs::raft::detail::StateMachine::mkdir(
     new_entry.set_name(name);
     new_entry.set_is_dir(true);
     new_entry.set_path(path);
+    new_entry.set_ctime(current_ms);
+    new_entry.set_mtime(current_ms);
+
+    parent_inode.set_mtime(current_ms);
+    parent_inode.mutable_dir_entries()->Add()->CopyFrom(new_entry);
     inodes_.emplace(new_ino, std::move(new_inode));
     dir_entries_.emplace(path, std::move(new_entry));
     response->set_status_code(Status::kOk);

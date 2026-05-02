@@ -63,8 +63,12 @@ void vosfs::ui::VosfsClient::login_user_by_name(const QString& user_name, const 
         role));
 }
 
-void vosfs::ui::VosfsClient::list_dir(const QString& parent_ino) {
-    tasks_.emplace(send_list_dir_request(parent_ino.toULongLong()));
+void vosfs::ui::VosfsClient::list_dir(const QString& path) {
+    tasks_.emplace(send_list_dir_request(path.toStdString()));
+}
+
+void vosfs::ui::VosfsClient::make_dir(const QString& path) {
+    tasks_.emplace(send_make_dir_request(path.toStdString()));
 }
 
 auto vosfs::ui::VosfsClient::send_register_user_request(
@@ -113,23 +117,22 @@ auto vosfs::ui::VosfsClient::send_login_user_by_name_request(
         });
 }
 
-auto vosfs::ui::VosfsClient::send_list_dir_request(uint64_t parent_ino) -> Task<void> {
+auto vosfs::ui::VosfsClient::send_list_dir_request(std::string path) -> Task<void> {
     raft::ListDirRequest request;
     request.set_token(session_.token);
-    request.set_parent_ino(parent_ino);
+    request.set_path(std::move(path));
     co_await auth_client_.call_method<raft::ListDirRequest, raft::ListDirResponse>(
         "fs", "ls", request,
         [this](const vrpc::Status& status, const raft::ListDirResponse& response) -> Task<void> {
-            this->handle_list_dir_response(status, response);
-            co_return;
+            co_await this->handle_list_dir_response(status, response);
         });
 }
 
-auto vosfs::ui::VosfsClient::send_mkdir_request(uint64_t parent_ino, std::string name) -> Task<void> {
+auto vosfs::ui::VosfsClient::send_make_dir_request(std::string path) -> Task<void> {
     raft::MakeDirRequest request;
     request.set_token(session_.token);
-    request.set_parent_ino(parent_ino);
-    request.set_name(std::move(name));
+    request.set_path(std::move(path));
+
     co_await auth_client_.call_method<raft::MakeDirRequest, raft::MakeDirResponse>(
         "fs", "mkdir", request,
         [this](const vrpc::Status& status, const raft::MakeDirResponse& response) -> Task<void> {
@@ -194,8 +197,14 @@ auto vosfs::ui::VosfsClient::handle_list_dir_response(
 
     auto res_status = Status{response.status_code()};
     if (res_status.ok()) {
-        
+
     }
+    if (res_status.is_not_leader()) {
+        leader_id_.store(std::stoull(response.message()));
+        signal_brige_.appendLog(QString("重定向到集群领导者，请重试"));
+        co_return;
+    }
+    signal_brige_.appendLog(QString::fromStdString(response.message()));
 }
 
 void vosfs::ui::VosfsClient::handle_make_dir_response(

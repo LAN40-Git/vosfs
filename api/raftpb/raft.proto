@@ -76,7 +76,6 @@ message Inode {
   uint64 ino = 1;
   uint32 mode = 2;
   bool   is_dir = 3;
-  uint64 atime = 4;
   uint64 ctime = 5;
   uint64 mtime = 6;
   uint64 size = 7;
@@ -90,6 +89,8 @@ message DirEntry {
   string name = 2;
   string path = 3;
   bool is_dir = 4;
+  uint64 ctime = 5;
+  uint64 mtime = 6;
 }
 
 message EntryCommand {

@@ -2134,7 +2134,6 @@ class Inode final :
     kInoFieldNumber = 1,
     kModeFieldNumber = 2,
     kIsDirFieldNumber = 3,
-    kAtimeFieldNumber = 4,
     kCtimeFieldNumber = 5,
     kMtimeFieldNumber = 6,
     kSizeFieldNumber = 7,
@@ -2203,15 +2202,6 @@ class Inode final :
   void _internal_set_is_dir(bool value);
   public:
 
-  // uint64 atime = 4;
-  void clear_atime();
-  uint64_t atime() const;
-  void set_atime(uint64_t value);
-  private:
-  uint64_t _internal_atime() const;
-  void _internal_set_atime(uint64_t value);
-  public:
-
   // uint64 ctime = 5;
   void clear_ctime();
   uint64_t ctime() const;
@@ -2261,7 +2251,6 @@ class Inode final :
     uint64_t ino_;
     uint32_t mode_;
     bool is_dir_;
-    uint64_t atime_;
     uint64_t ctime_;
     uint64_t mtime_;
     uint64_t size_;
@@ -2397,6 +2386,8 @@ class DirEntry final :
     kNameFieldNumber = 2,
     kPathFieldNumber = 3,
     kInoFieldNumber = 1,
+    kCtimeFieldNumber = 5,
+    kMtimeFieldNumber = 6,
     kIsDirFieldNumber = 4,
   };
   // string name = 2;
@@ -2436,6 +2427,24 @@ class DirEntry final :
   void _internal_set_ino(uint64_t value);
   public:
 
+  // uint64 ctime = 5;
+  void clear_ctime();
+  uint64_t ctime() const;
+  void set_ctime(uint64_t value);
+  private:
+  uint64_t _internal_ctime() const;
+  void _internal_set_ctime(uint64_t value);
+  public:
+
+  // uint64 mtime = 6;
+  void clear_mtime();
+  uint64_t mtime() const;
+  void set_mtime(uint64_t value);
+  private:
+  uint64_t _internal_mtime() const;
+  void _internal_set_mtime(uint64_t value);
+  public:
+
   // bool is_dir = 4;
   void clear_is_dir();
   bool is_dir() const;
@@ -2456,6 +2465,8 @@ class DirEntry final :
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr path_;
     uint64_t ino_;
+    uint64_t ctime_;
+    uint64_t mtime_;
     bool is_dir_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -4966,26 +4977,6 @@ inline void Inode::set_is_dir(bool value) {
   // @@protoc_insertion_point(field_set:vosfs.raft.Inode.is_dir)
 }
 
-// uint64 atime = 4;
-inline void Inode::clear_atime() {
-  _impl_.atime_ = uint64_t{0u};
-}
-inline uint64_t Inode::_internal_atime() const {
-  return _impl_.atime_;
-}
-inline uint64_t Inode::atime() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.Inode.atime)
-  return _internal_atime();
-}
-inline void Inode::_internal_set_atime(uint64_t value) {
-  
-  _impl_.atime_ = value;
-}
-inline void Inode::set_atime(uint64_t value) {
-  _internal_set_atime(value);
-  // @@protoc_insertion_point(field_set:vosfs.raft.Inode.atime)
-}
-
 // uint64 ctime = 5;
 inline void Inode::clear_ctime() {
   _impl_.ctime_ = uint64_t{0u};
@@ -5288,6 +5279,46 @@ inline void DirEntry::_internal_set_is_dir(bool value) {
 inline void DirEntry::set_is_dir(bool value) {
   _internal_set_is_dir(value);
   // @@protoc_insertion_point(field_set:vosfs.raft.DirEntry.is_dir)
+}
+
+// uint64 ctime = 5;
+inline void DirEntry::clear_ctime() {
+  _impl_.ctime_ = uint64_t{0u};
+}
+inline uint64_t DirEntry::_internal_ctime() const {
+  return _impl_.ctime_;
+}
+inline uint64_t DirEntry::ctime() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.DirEntry.ctime)
+  return _internal_ctime();
+}
+inline void DirEntry::_internal_set_ctime(uint64_t value) {
+  
+  _impl_.ctime_ = value;
+}
+inline void DirEntry::set_ctime(uint64_t value) {
+  _internal_set_ctime(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.DirEntry.ctime)
+}
+
+// uint64 mtime = 6;
+inline void DirEntry::clear_mtime() {
+  _impl_.mtime_ = uint64_t{0u};
+}
+inline uint64_t DirEntry::_internal_mtime() const {
+  return _impl_.mtime_;
+}
+inline uint64_t DirEntry::mtime() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.DirEntry.mtime)
+  return _internal_mtime();
+}
+inline void DirEntry::_internal_set_mtime(uint64_t value) {
+  
+  _impl_.mtime_ = value;
+}
+inline void DirEntry::set_mtime(uint64_t value) {
+  _internal_set_mtime(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.DirEntry.mtime)
 }
 
 // -------------------------------------------------------------------
