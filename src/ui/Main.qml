@@ -353,6 +353,7 @@ Window {
         anchors.topMargin: 20
         color: "#191a1c"
         radius: 10
+        
     }
 
     // 控制台区域

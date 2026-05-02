@@ -5,6 +5,7 @@
 #include <tbb/concurrent_queue.h>
 #include <jwt-cpp/jwt.h>
 #include <vrpc/net/tcp/tcp_client.hpp>
+#include "raftpb/raft.pb.h"
 #include "vosfs/common/error.hpp"
 #include "vosfs/auth/user_session.hpp"
 
@@ -65,10 +66,21 @@ public:
         std::string password,
         int role) -> Task<void>;
 
+    [[REMEMBER_CO_AWAIT]]
+    auto send_list_dir_request(
+        uint64_t parent_ino) -> Task<void>;
+
+    [[REMEMBER_CO_AWAIT]]
+    auto send_mkdir_request(
+        uint64_t parent_ino,
+        std::string name) -> Task<void>;
+
 private:
     void handle_register_user_response(const vrpc::Status& status, const auth::RegisterUserResponse& response);
     void handle_delete_user_response(const vrpc::Status& status, const auth::DeleteUserResponse& response);
     void handle_login_user_by_name_response(const vrpc::Status& status, const auth::LoginUserByNameResponse& response);
+    void handle_list_dir_response(const vrpc::Status& status, const raft::ListDirResponse& response);
+    void handle_make_dir_response(const vrpc::Status& status, const raft::MakeDirResponse& response);
 
 private:
     std::atomic<bool>                 is_shutdown_{true};

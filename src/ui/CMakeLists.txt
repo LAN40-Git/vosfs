@@ -1,6 +1,7 @@
 file(GLOB SRCS
         "../../include/vosfs/ui/*.hpp"
         "../../api/authpb/*.cc"
+        "../../api/raftpb/*.cc"
         "*.cpp"
 )
 

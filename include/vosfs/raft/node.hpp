@@ -15,6 +15,7 @@ class RaftNode {
     static constexpr std::string_view SNAPSHOT_TEMP_FILE_NAME = "snapshot.tmp";
     static constexpr std::string_view SNAPSHOT_FILE_NAME = "snapshot.bin";
     static constexpr std::string_view DB_DIR = "raft/db";
+
 private:
     explicit RaftNode(
         std::unique_ptr<detail::Snapshotter> snapshotter,
@@ -55,7 +56,7 @@ private:
     [[REMEMBER_CO_AWAIT]]
     auto handle_list_dir_request(const ListDirRequest& request) -> Task<ListDirResponse>;
     [[REMEMBER_CO_AWAIT]]
-    auto handle_make_dir_request(std::coroutine_handle<void> handle, MakeDirRequest& request) -> Task<MakeDirResponse>;
+    auto handle_make_dir_request(MakeDirRequest& request) -> Task<MakeDirResponse>;
 
 private:
     [[REMEMBER_CO_AWAIT]]
@@ -64,6 +65,12 @@ private:
     auto handle_append_entries_response(const AppendEntriesResponse& response) ->Task<void>;
     [[REMEMBER_CO_AWAIT]]
     auto handle_install_snapshot_response(const InstallSnapshotResponse& response) -> Task<void>;
+
+private:
+    static auto suspend_task() -> Task<void> {
+        co_await std::suspend_always{};
+        co_return;
+    }
 
 private:
     [[nodiscard]]

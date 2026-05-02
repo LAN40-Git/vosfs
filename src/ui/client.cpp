@@ -1,5 +1,5 @@
+#include <QVariantMap>
 #include "vosfs/ui/client.hpp"
-#include <qtmetamacros.h>
 #include "vosfs/common/util/sha256.hpp"
 #include "vosfs/common/status.hpp"
 
@@ -109,6 +109,31 @@ auto vosfs::ui::VosfsClient::send_login_user_by_name_request(
         });
 }
 
+auto vosfs::ui::VosfsClient::send_list_dir_request(uint64_t parent_ino) -> Task<void> {
+    raft::ListDirRequest request;
+    request.set_token(session_.token);
+    request.set_parent_ino(parent_ino);
+    co_await rpc_client_.call_method<raft::ListDirRequest, raft::ListDirResponse>(
+        "fs", "ls", request,
+        [this](const vrpc::Status& status, const raft::ListDirResponse& response) -> Task<void> {
+            this->handle_list_dir_response(status, response);
+            co_return;
+        });
+}
+
+auto vosfs::ui::VosfsClient::send_mkdir_request(uint64_t parent_ino, std::string name) -> Task<void> {
+    raft::MakeDirRequest request;
+    request.set_token(session_.token);
+    request.set_parent_ino(parent_ino);
+    request.set_name(std::move(name));
+    co_await rpc_client_.call_method<raft::MakeDirRequest, raft::MakeDirResponse>(
+        "fs", "mkdir", request,
+        [this](const vrpc::Status& status, const raft::MakeDirResponse& response) -> Task<void> {
+            this->handle_make_dir_response(status, response);
+            co_return;
+        });
+}
+
 void vosfs::ui::VosfsClient::handle_register_user_response(
     const vrpc::Status& status,
     const auth::RegisterUserResponse& response) {
@@ -153,4 +178,27 @@ void vosfs::ui::VosfsClient::handle_login_user_by_name_response(
     }
     signal_brige_.appendLog(QString::fromStdString(std::string{response.message()}));
     signal_brige_.loginFinished(res_status.ok(), QString::fromStdString(response.message()));
+}
+
+void vosfs::ui::VosfsClient::handle_list_dir_response(
+    const vrpc::Status& status,
+    const raft::ListDirResponse& response) {
+    if (!status.ok()) {
+        signal_brige_.appendLog(QString::fromStdString(std::string{status.message()}));
+        return;
+    }
+
+    auto res_status = Status{response.status_code()};
+}
+
+void vosfs::ui::VosfsClient::handle_make_dir_response(
+    const vrpc::Status& status,
+    const raft::MakeDirResponse& response) {
+    if (!status.ok()) {
+        signal_brige_.appendLog(QString::fromStdString(std::string{status.message()}));
+        return;
+    }
+
+    auto res_status = Status{response.status_code()};
+
 }

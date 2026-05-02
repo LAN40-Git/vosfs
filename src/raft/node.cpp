@@ -119,6 +119,16 @@ auto vosfs::raft::RaftNode::wait() -> Task<void> {
         [this](const InstallSnapshotRequest& request) -> Task<InstallSnapshotResponse> {
         co_return co_await this->handle_install_snapshot_request(request);
     })
+    .register_method<ListDirRequest, ListDirResponse>(
+        "fs", "ls",
+        [this](const ListDirRequest& request) -> Task<ListDirResponse> {
+        co_return co_await this->handle_list_dir_request(request);
+    })
+    .register_method<MakeDirRequest, MakeDirResponse>(
+        "fs", "mkdir",
+        [this](MakeDirRequest& request) -> Task<MakeDirResponse> {
+        co_return co_await this->handle_make_dir_request(request);
+    })
     .wait();
 }
 
@@ -551,7 +561,7 @@ auto vosfs::raft::RaftNode::handle_list_dir_request(const ListDirRequest& reques
     co_return response;
 }
 
-auto vosfs::raft::RaftNode::handle_make_dir_request(std::coroutine_handle<void> handle, MakeDirRequest& request) -> Task<MakeDirResponse> {
+auto vosfs::raft::RaftNode::handle_make_dir_request(MakeDirRequest& request) -> Task<MakeDirResponse> {
     std::string leader_id;
     auto& token = request.token();
 
@@ -585,10 +595,12 @@ auto vosfs::raft::RaftNode::handle_make_dir_request(std::coroutine_handle<void> 
     // 挂起，等待状态机恢复并发送回复
     PendingResponse response;
     response.mutable_mkdir()->set_status_code(Status::kFailed);
-    response.mutable_mkdir()->set_message("创建文件夹失败，未知错误");
+    response.mutable_mkdir()->set_message("创建文件夹失败：未知错误");
+    auto task = suspend_task();
+    auto handle = task.handle();
     auto& pending_request = state_machine_.append_request(log_index, detail::PendingRequest{handle, std::move(response)});
     mutex_.unlock();
-    co_await std::suspend_always{};
+    co_await task;
 
     co_return pending_request.response.mkdir();
 }
