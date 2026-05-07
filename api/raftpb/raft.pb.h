@@ -2386,8 +2386,9 @@ class DirEntry final :
     kNameFieldNumber = 2,
     kPathFieldNumber = 3,
     kInoFieldNumber = 1,
-    kCtimeFieldNumber = 5,
-    kMtimeFieldNumber = 6,
+    kSizeFieldNumber = 5,
+    kCtimeFieldNumber = 6,
+    kMtimeFieldNumber = 7,
     kIsDirFieldNumber = 4,
   };
   // string name = 2;
@@ -2427,7 +2428,16 @@ class DirEntry final :
   void _internal_set_ino(uint64_t value);
   public:
 
-  // uint64 ctime = 5;
+  // uint64 size = 5;
+  void clear_size();
+  uint64_t size() const;
+  void set_size(uint64_t value);
+  private:
+  uint64_t _internal_size() const;
+  void _internal_set_size(uint64_t value);
+  public:
+
+  // uint64 ctime = 6;
   void clear_ctime();
   uint64_t ctime() const;
   void set_ctime(uint64_t value);
@@ -2436,7 +2446,7 @@ class DirEntry final :
   void _internal_set_ctime(uint64_t value);
   public:
 
-  // uint64 mtime = 6;
+  // uint64 mtime = 7;
   void clear_mtime();
   uint64_t mtime() const;
   void set_mtime(uint64_t value);
@@ -2465,6 +2475,7 @@ class DirEntry final :
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr path_;
     uint64_t ino_;
+    uint64_t size_;
     uint64_t ctime_;
     uint64_t mtime_;
     bool is_dir_;
@@ -5281,7 +5292,27 @@ inline void DirEntry::set_is_dir(bool value) {
   // @@protoc_insertion_point(field_set:vosfs.raft.DirEntry.is_dir)
 }
 
-// uint64 ctime = 5;
+// uint64 size = 5;
+inline void DirEntry::clear_size() {
+  _impl_.size_ = uint64_t{0u};
+}
+inline uint64_t DirEntry::_internal_size() const {
+  return _impl_.size_;
+}
+inline uint64_t DirEntry::size() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.DirEntry.size)
+  return _internal_size();
+}
+inline void DirEntry::_internal_set_size(uint64_t value) {
+  
+  _impl_.size_ = value;
+}
+inline void DirEntry::set_size(uint64_t value) {
+  _internal_set_size(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.DirEntry.size)
+}
+
+// uint64 ctime = 6;
 inline void DirEntry::clear_ctime() {
   _impl_.ctime_ = uint64_t{0u};
 }
@@ -5301,7 +5332,7 @@ inline void DirEntry::set_ctime(uint64_t value) {
   // @@protoc_insertion_point(field_set:vosfs.raft.DirEntry.ctime)
 }
 
-// uint64 mtime = 6;
+// uint64 mtime = 7;
 inline void DirEntry::clear_mtime() {
   _impl_.mtime_ = uint64_t{0u};
 }

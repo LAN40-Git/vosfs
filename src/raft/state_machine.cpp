@@ -195,9 +195,9 @@ void vosfs::raft::detail::StateMachine::mkdir(
     new_inode.set_ino(new_ino);
     new_inode.set_is_dir(true);
     auto current_ms = kosio::util::current_ms();
+    new_inode.set_size(4096);
     new_inode.set_ctime(current_ms);
     new_inode.set_mtime(current_ms);
-    new_inode.set_size(4096);
     new_inode.set_nlink(2);
 
     DirEntry new_entry;
@@ -205,10 +205,10 @@ void vosfs::raft::detail::StateMachine::mkdir(
     new_entry.set_name(name);
     new_entry.set_is_dir(true);
     new_entry.set_path(path);
-    new_entry.set_ctime(current_ms);
-    new_entry.set_mtime(current_ms);
+    new_inode.set_size(4096);
+    new_inode.set_ctime(current_ms);
+    new_inode.set_mtime(current_ms);
 
-    parent_inode.set_mtime(current_ms);
     parent_inode.mutable_dir_entries()->Add()->CopyFrom(new_entry);
     inodes_.emplace(new_ino, std::move(new_inode));
     dir_entries_.emplace(path, std::move(new_entry));

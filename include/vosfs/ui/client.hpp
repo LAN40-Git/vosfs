@@ -6,6 +6,7 @@
 #include <jwt-cpp/jwt.h>
 #include <vrpc/net/tcp/tcp_client.hpp>
 #include "raftpb/raft.pb.h"
+#include "vosfs/ui/config.hpp"
 #include "vosfs/common/error.hpp"
 #include "vosfs/auth/user_session.hpp"
 
@@ -21,8 +22,18 @@ class VosfsClient : public QObject {
     Q_PROPERTY(int role READ role)
     Q_PROPERTY(QString quota READ quota)
     Q_PROPERTY(QString create_time READ create_time)
+
+    using RPCClient = std::unique_ptr<vrpc::TcpClient>;
+
 public:
-    explicit VosfsClient(std::string_view host, uint16_t port, SignalBrige& signal_brige, QObject *parent = nullptr);
+    explicit VosfsClient(
+        RPCClient auth_client,
+        std::unordered_map<uint64_t, RPCClient> raft_clients,
+        SignalBrige& signal_brige,
+        QObject *parent = nullptr);
+
+public:
+    static auto create(const std::string& config_path, SignalBrige& signal_brige) -> Result<std::unique_ptr<VosfsClient>>;
 
 public:
     void run();
@@ -83,14 +94,13 @@ private:
     void handle_make_dir_response(const vrpc::Status& status, const raft::MakeDirResponse& response);
 
 private:
-    std::atomic<bool>                             is_shutdown_{true};
-    std::latch                                    latch_{1};
-    kosio::sync::Mutex                            mutex_;
-    UserSession                                   session_{};
-    vrpc::TcpClient                               auth_client_;
-    std::atomic<uint64_t>                         leader_id_;
-    std::unordered_map<uint64_t, vrpc::TcpClient> raft_clients_;
-    tbb::concurrent_queue<Task<void>>             tasks_;
-    SignalBrige&                                  signal_brige_;
+    std::atomic<bool>                       is_shutdown_{true};
+    std::latch                              latch_{1};
+    UserSession                             session_{};
+    RPCClient                               auth_client_;
+    uint64_t                                leader_id_{0};
+    std::unordered_map<uint64_t, RPCClient> raft_clients_;
+    tbb::concurrent_queue<Task<void>>       tasks_;
+    SignalBrige&                            signal_brige_;
 };
 } // namespace vosfs::ui

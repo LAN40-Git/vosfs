@@ -4,7 +4,9 @@
         <file>images/max.png</file>
         <file>images/min.png</file>
         <file>images/file.png</file>
+        <file>images/folder.png</file>
         <file>images/config.png</file>
         <file>images/user.png</file>
+        <file>images/transport.png</file>
     </qresource>
 </RCC>

@@ -15,12 +15,23 @@ Window {
     property bool isLogging: false
     property bool isRegistering: false
     property bool isLoggedIn: false
+    property ListModel fileModel: ListModel {}
+    property var backStack: []    // 后退栈
+    property var forwardStack: [] // 前进栈
+    property string currentDir    // 当前目录
     property string uid
     property string user_name
     property string avatar
     property int role
     property string quota
     property string create_time
+
+    function goToDir(path) {
+        backStack.push(currentDir)
+        forwardStack = []
+        currentDir = path
+        VosfsClient.list_dir(currentDir)
+    }
 
     Connections {
         target: SignalBrige
@@ -33,6 +44,21 @@ Window {
                 mainWindow.quota = VosfsClient.quota
                 mainWindow.create_time = VosfsClient.create_time
                 mainWindow.isLoggedIn = true
+            }
+        }
+
+        function onListDirFinished(dir_entries) {
+            fileModel.clear()
+            for(var i = 0; i < dir_entries.length; i++) {
+                var item = dir_entries[i]
+                mainWindow.fileListModel.append({
+                    ino: item.ino,
+                    name: item.name,
+                    path: item.path,
+                    is_dir: item.is_dir,
+                    ctime: item.ctime,
+                    mtime: item.mtime
+                })
             }
         }
     }
@@ -153,6 +179,11 @@ Window {
         radius: 12
         color: "#191a1c"
 
+        ButtonGroup {
+            id: leftBarButtonGroup
+            exclusive: true
+        }
+
         // 文件
         Button {
             id: fileBtn
@@ -161,10 +192,12 @@ Window {
             anchors.top: parent.top
             anchors.topMargin: parent.topMargin
             anchors.horizontalCenter: parent.horizontalCenter
+            ButtonGroup.group: leftBarButtonGroup
+            checkable: true
 
             Image {
                 id: fileBtnImage
-                source: "qrc:/images/file.png"
+                source: "qrc:/images/folder.png"
                 sourceSize.width: 24
                 sourceSize.height: 24
                 anchors.left: parent.left
@@ -185,8 +218,57 @@ Window {
 
             background: Rectangle {
                 radius: leftBar.btnRadius
-                color: fileBtn.pressed ? "#5A5A5A" :
+                color: fileBtn.checked ? "#5A5A5A" :
                     fileBtn.hovered ? "#4A4A4A" : "transparent"
+            }
+
+            onClicked: {
+                if (mainWindow.isLoggedIn) {
+                    VosfsClient.list_dir("/")
+                }
+            }
+        }
+
+        // 传输
+        Button {
+            id: transportBtn
+            width: parent.btnWidth
+            height: parent.btnHeight
+            anchors.top: fileBtn.bottom
+            anchors.topMargin: 10
+            anchors.horizontalCenter: parent.horizontalCenter
+            ButtonGroup.group: leftBarButtonGroup
+            checkable: true
+
+            Image {
+                id: transportBtnImage
+                source: "qrc:/images/transport.png"
+                sourceSize.width: 24
+                sourceSize.height: 24
+                anchors.left: parent.left
+                anchors.leftMargin: 10
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            Text {
+                id: transportBtnText
+                text: "传输"
+                font.family: "Ubuntu Mono"
+                antialiasing: true
+                color: "#FFFFFF"
+                anchors.left: transportBtnImage.right
+                anchors.leftMargin: 10
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            background: Rectangle {
+                radius: leftBar.btnRadius
+                color: transportBtn.checked ? "#5A5A5A" :
+                    transportBtn.hovered ? "#4A4A4A" : "transparent"
+            }
+
+            onClicked: {
+
             }
         }
 
@@ -195,9 +277,11 @@ Window {
             id: configBtn
             width: parent.btnWidth
             height: parent.btnHeight
-            anchors.top: fileBtn.bottom
+            anchors.top: transportBtn.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: parent.horizontalCenter
+            ButtonGroup.group: leftBarButtonGroup
+            checkable: true
 
             Image {
                 id: configBtnImage
@@ -222,11 +306,12 @@ Window {
 
             background: Rectangle {
                 radius: leftBar.btnRadius
-                color: configBtn.pressed ? "#5A5A5A" :
+                color: configBtn.checked ? "#5A5A5A" :
                     configBtn.hovered ? "#4A4A4A" : "transparent"
             }
         }
 
+        // 登录（用户）按钮
         Button {
             id: userLoginBtn
             width: parent.btnWidth
@@ -292,7 +377,7 @@ Window {
         }
     }
 
-    // 登陆弹窗
+    // 登录弹窗
     Popup {
         id: loginPopup
         modal: true
@@ -354,7 +439,12 @@ Window {
         color: "#191a1c"
         radius: 10
 
-        
+        StackView {
+            id: bodyStack
+            anchors.fill: parent
+            clip: true
+            initialItem: FilePage{}
+        }
     }
 
     // 控制台区域

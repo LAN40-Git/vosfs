@@ -17,6 +17,7 @@ qt_add_qml_module(vosfs_client
         Main.qml
         LoginPage.qml
         RegisterPage.qml
+        FilePage.qml
         SOURCES ${SRCS}
         RESOURCES res.qrc
 )

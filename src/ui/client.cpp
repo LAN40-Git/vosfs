@@ -3,10 +3,36 @@
 #include "vosfs/common/util/sha256.hpp"
 #include "vosfs/common/status.hpp"
 
-vosfs::ui::VosfsClient::VosfsClient(std::string_view host, uint16_t port, SignalBrige& signal_brige, QObject* parent)
+vosfs::ui::VosfsClient::VosfsClient(
+    RPCClient auth_client,
+    std::unordered_map<uint64_t, RPCClient> raft_clients,
+    SignalBrige& signal_brige,
+    QObject* parent)
     : QObject(parent)
-    , auth_client_(host, port)
-    , signal_brige_(signal_brige) {}
+    , auth_client_(std::move(auth_client))
+    , raft_clients_(std::move(raft_clients))
+    , signal_brige_(signal_brige) {
+    if (!raft_clients_.empty()) {
+        leader_id_ = raft_clients_.begin()->first;
+    }
+}
+
+auto vosfs::ui::VosfsClient::create(
+    const std::string& config_path,
+    SignalBrige& signal_brige) -> Result<std::unique_ptr<VosfsClient>> {
+    auto has_config = detail::Config::from_json(config_path);
+    if (!has_config) {
+        return std::unexpected{has_config.error()};
+    }
+    auto config = std::move(has_config.value());
+
+    auto auth_client = std::make_unique<vrpc::TcpClient>(config.auth_host, config.auth_port);
+    std::unordered_map<uint64_t, RPCClient> raft_clients;
+    for (auto& node : config.nodes | std::views::values) {
+        raft_clients.emplace(node.id, std::make_unique<vrpc::TcpClient>(node.host, node.port));
+    }
+    return std::make_unique<VosfsClient>(std::move(auth_client), std::move(raft_clients), signal_brige);
+}
 
 void vosfs::ui::VosfsClient::run() {
     is_shutdown_.store(false, std::memory_order_release);
@@ -18,7 +44,10 @@ void vosfs::ui::VosfsClient::shutdown() {
     if (is_shutdown_.load(std::memory_order_acquire)) {
         return;
     }
-    tasks_.emplace(auth_client_.shutdown());
+    tasks_.emplace(auth_client_->shutdown());
+    for (auto& raft_client : raft_clients_ | std::views::values) {
+        tasks_.emplace(raft_client->shutdown());
+    }
     is_shutdown_.store(true, std::memory_order_release);
     latch_.wait();
 }
@@ -81,7 +110,7 @@ auto vosfs::ui::VosfsClient::send_register_user_request(
     request.set_password(util::sha256(password));
     request.set_role(static_cast<auth::User_Role>(role));
     request.set_admin_secret(std::move(admin_secret));
-    co_await auth_client_.call_method<auth::RegisterUserRequest, auth::RegisterUserResponse>(
+    co_await auth_client_->call_method<auth::RegisterUserRequest, auth::RegisterUserResponse>(
         "user", "register", request,
         [this](const vrpc::Status& status, const auth::RegisterUserResponse& response) -> Task<void> {
             this->handle_register_user_response(status, response);
@@ -93,7 +122,7 @@ auto vosfs::ui::VosfsClient::send_delete_user_request(std::string password) -> T
     auth::DeleteUserRequest request;
     request.set_token(session_.token);
     request.set_password(util::sha256(password));
-    co_await auth_client_.call_method<auth::DeleteUserRequest, auth::DeleteUserResponse>(
+    co_await auth_client_->call_method<auth::DeleteUserRequest, auth::DeleteUserResponse>(
         "user", "delete", request,
         [this](const vrpc::Status& status, const auth::DeleteUserResponse& response) -> Task<void> {
             this->handle_delete_user_response(status, response);
@@ -109,7 +138,7 @@ auto vosfs::ui::VosfsClient::send_login_user_by_name_request(
     request.set_user_name(std::move(user_name));
     request.set_password(util::sha256(password));
     request.set_role(static_cast<auth::User_Role>(role));
-    co_await auth_client_.call_method<auth::LoginUserByNameRequest, auth::LoginUserByNameResponse>(
+    co_await auth_client_->call_method<auth::LoginUserByNameRequest, auth::LoginUserByNameResponse>(
         "user", "loginbyname", request,
         [this](const vrpc::Status& status, const auth::LoginUserByNameResponse& response) -> Task<void> {
             this->handle_login_user_by_name_response(status, response);
@@ -121,7 +150,14 @@ auto vosfs::ui::VosfsClient::send_list_dir_request(std::string path) -> Task<voi
     raft::ListDirRequest request;
     request.set_token(session_.token);
     request.set_path(std::move(path));
-    co_await auth_client_.call_method<raft::ListDirRequest, raft::ListDirResponse>(
+    auto it = raft_clients_.find(leader_id_);
+    if (it == raft_clients_.end()) {
+        signal_brige_.appendLog(QString::fromStdString(std::format("请求失败，节点 {} 不存在，请检查集群配置", leader_id_)));
+        co_return;
+    }
+    auto& raft_client = it->second;
+    LOG_INFO("{}", raft_client->peer_addr());
+    co_await raft_client->call_method<raft::ListDirRequest, raft::ListDirResponse>(
         "fs", "ls", request,
         [this](const vrpc::Status& status, const raft::ListDirResponse& response) -> Task<void> {
             co_await this->handle_list_dir_response(status, response);
@@ -132,8 +168,13 @@ auto vosfs::ui::VosfsClient::send_make_dir_request(std::string path) -> Task<voi
     raft::MakeDirRequest request;
     request.set_token(session_.token);
     request.set_path(std::move(path));
-
-    co_await auth_client_.call_method<raft::MakeDirRequest, raft::MakeDirResponse>(
+    auto it = raft_clients_.find(leader_id_);
+    if (it == raft_clients_.end()) {
+        signal_brige_.appendLog(QString::fromStdString(std::format("请求失败，节点 {} 不存在，请检查集群配置", leader_id_)));
+        co_return;
+    }
+    auto& raft_client = it->second;
+    co_await raft_client->call_method<raft::MakeDirRequest, raft::MakeDirResponse>(
         "fs", "mkdir", request,
         [this](const vrpc::Status& status, const raft::MakeDirResponse& response) -> Task<void> {
             this->handle_make_dir_response(status, response);
@@ -196,13 +237,27 @@ auto vosfs::ui::VosfsClient::handle_list_dir_response(
     }
 
     auto res_status = Status{response.status_code()};
-    if (res_status.ok()) {
-
-    }
     if (res_status.is_not_leader()) {
-        leader_id_.store(std::stoull(response.message()));
+        leader_id_ = std::stoull(response.message());
         signal_brige_.appendLog(QString("重定向到集群领导者，请重试"));
         co_return;
+    }
+    if (res_status.ok()) {
+        QVariantList list;
+
+        for (const auto &entry : response.dir_entries()) {
+            QVariantMap item;
+
+            item["ino"] = static_cast<qulonglong>(entry.ino());
+            item["name"] = QString::fromStdString(entry.name());
+            item["path"] = QString::fromStdString(entry.path());
+            item["is_dir"] = entry.is_dir();
+            item["ctime"] = static_cast<qulonglong>(entry.ctime());
+            item["mtime"] = static_cast<qulonglong>(entry.mtime());
+
+            list.append(item);
+        }
+        signal_brige_.listDirFinished(std::move(list));
     }
     signal_brige_.appendLog(QString::fromStdString(response.message()));
 }
@@ -216,5 +271,4 @@ void vosfs::ui::VosfsClient::handle_make_dir_response(
     }
 
     auto res_status = Status{response.status_code()};
-
 }
