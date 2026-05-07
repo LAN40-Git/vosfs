@@ -118,5 +118,6 @@ Item {
                     Layout.fillWidth: true
                 }
             }
+        }
     }
 }
