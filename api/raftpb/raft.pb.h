@@ -2134,9 +2134,9 @@ class Inode final :
     kInoFieldNumber = 1,
     kModeFieldNumber = 2,
     kIsDirFieldNumber = 3,
+    kSizeFieldNumber = 4,
     kCtimeFieldNumber = 5,
     kMtimeFieldNumber = 6,
-    kSizeFieldNumber = 7,
     kNlinkFieldNumber = 8,
   };
   // repeated .vosfs.raft.BlockInfo blocks = 9;
@@ -2202,6 +2202,15 @@ class Inode final :
   void _internal_set_is_dir(bool value);
   public:
 
+  // uint64 size = 4;
+  void clear_size();
+  uint64_t size() const;
+  void set_size(uint64_t value);
+  private:
+  uint64_t _internal_size() const;
+  void _internal_set_size(uint64_t value);
+  public:
+
   // uint64 ctime = 5;
   void clear_ctime();
   uint64_t ctime() const;
@@ -2218,15 +2227,6 @@ class Inode final :
   private:
   uint64_t _internal_mtime() const;
   void _internal_set_mtime(uint64_t value);
-  public:
-
-  // uint64 size = 7;
-  void clear_size();
-  uint64_t size() const;
-  void set_size(uint64_t value);
-  private:
-  uint64_t _internal_size() const;
-  void _internal_set_size(uint64_t value);
   public:
 
   // uint32 nlink = 8;
@@ -2251,9 +2251,9 @@ class Inode final :
     uint64_t ino_;
     uint32_t mode_;
     bool is_dir_;
+    uint64_t size_;
     uint64_t ctime_;
     uint64_t mtime_;
-    uint64_t size_;
     uint32_t nlink_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -3481,11 +3481,12 @@ class ListDirResponse final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kDirEntriesFieldNumber = 3,
+    kDirEntriesFieldNumber = 4,
     kMessageFieldNumber = 2,
+    kPathFieldNumber = 3,
     kStatusCodeFieldNumber = 1,
   };
-  // repeated .vosfs.raft.DirEntry dir_entries = 3;
+  // repeated .vosfs.raft.DirEntry dir_entries = 4;
   int dir_entries_size() const;
   private:
   int _internal_dir_entries_size() const;
@@ -3517,6 +3518,20 @@ class ListDirResponse final :
   std::string* _internal_mutable_message();
   public:
 
+  // string path = 3;
+  void clear_path();
+  const std::string& path() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_path(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_path();
+  PROTOBUF_NODISCARD std::string* release_path();
+  void set_allocated_path(std::string* path);
+  private:
+  const std::string& _internal_path() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_path(const std::string& value);
+  std::string* _internal_mutable_path();
+  public:
+
   // uint32 status_code = 1;
   void clear_status_code();
   uint32_t status_code() const;
@@ -3536,6 +3551,7 @@ class ListDirResponse final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::DirEntry > dir_entries_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr message_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr path_;
     uint32_t status_code_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -3667,6 +3683,7 @@ class MakeDirRequest final :
   enum : int {
     kTokenFieldNumber = 1,
     kPathFieldNumber = 2,
+    kTimestampFieldNumber = 3,
   };
   // string token = 1;
   void clear_token();
@@ -3696,6 +3713,15 @@ class MakeDirRequest final :
   std::string* _internal_mutable_path();
   public:
 
+  // uint64 timestamp = 3;
+  void clear_timestamp();
+  uint64_t timestamp() const;
+  void set_timestamp(uint64_t value);
+  private:
+  uint64_t _internal_timestamp() const;
+  void _internal_set_timestamp(uint64_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:vosfs.raft.MakeDirRequest)
  private:
   class _Internal;
@@ -3706,6 +3732,7 @@ class MakeDirRequest final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr token_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr path_;
+    uint64_t timestamp_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -4988,6 +5015,26 @@ inline void Inode::set_is_dir(bool value) {
   // @@protoc_insertion_point(field_set:vosfs.raft.Inode.is_dir)
 }
 
+// uint64 size = 4;
+inline void Inode::clear_size() {
+  _impl_.size_ = uint64_t{0u};
+}
+inline uint64_t Inode::_internal_size() const {
+  return _impl_.size_;
+}
+inline uint64_t Inode::size() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.Inode.size)
+  return _internal_size();
+}
+inline void Inode::_internal_set_size(uint64_t value) {
+  
+  _impl_.size_ = value;
+}
+inline void Inode::set_size(uint64_t value) {
+  _internal_set_size(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.Inode.size)
+}
+
 // uint64 ctime = 5;
 inline void Inode::clear_ctime() {
   _impl_.ctime_ = uint64_t{0u};
@@ -5026,26 +5073,6 @@ inline void Inode::_internal_set_mtime(uint64_t value) {
 inline void Inode::set_mtime(uint64_t value) {
   _internal_set_mtime(value);
   // @@protoc_insertion_point(field_set:vosfs.raft.Inode.mtime)
-}
-
-// uint64 size = 7;
-inline void Inode::clear_size() {
-  _impl_.size_ = uint64_t{0u};
-}
-inline uint64_t Inode::_internal_size() const {
-  return _impl_.size_;
-}
-inline uint64_t Inode::size() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.Inode.size)
-  return _internal_size();
-}
-inline void Inode::_internal_set_size(uint64_t value) {
-  
-  _impl_.size_ = value;
-}
-inline void Inode::set_size(uint64_t value) {
-  _internal_set_size(value);
-  // @@protoc_insertion_point(field_set:vosfs.raft.Inode.size)
 }
 
 // uint32 nlink = 8;
@@ -5912,7 +5939,57 @@ inline void ListDirResponse::set_allocated_message(std::string* message) {
   // @@protoc_insertion_point(field_set_allocated:vosfs.raft.ListDirResponse.message)
 }
 
-// repeated .vosfs.raft.DirEntry dir_entries = 3;
+// string path = 3;
+inline void ListDirResponse::clear_path() {
+  _impl_.path_.ClearToEmpty();
+}
+inline const std::string& ListDirResponse::path() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.ListDirResponse.path)
+  return _internal_path();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void ListDirResponse::set_path(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.path_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.raft.ListDirResponse.path)
+}
+inline std::string* ListDirResponse::mutable_path() {
+  std::string* _s = _internal_mutable_path();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.ListDirResponse.path)
+  return _s;
+}
+inline const std::string& ListDirResponse::_internal_path() const {
+  return _impl_.path_.Get();
+}
+inline void ListDirResponse::_internal_set_path(const std::string& value) {
+  
+  _impl_.path_.Set(value, GetArenaForAllocation());
+}
+inline std::string* ListDirResponse::_internal_mutable_path() {
+  
+  return _impl_.path_.Mutable(GetArenaForAllocation());
+}
+inline std::string* ListDirResponse::release_path() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.ListDirResponse.path)
+  return _impl_.path_.Release();
+}
+inline void ListDirResponse::set_allocated_path(std::string* path) {
+  if (path != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.path_.SetAllocated(path, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.path_.IsDefault()) {
+    _impl_.path_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.ListDirResponse.path)
+}
+
+// repeated .vosfs.raft.DirEntry dir_entries = 4;
 inline int ListDirResponse::_internal_dir_entries_size() const {
   return _impl_.dir_entries_.size();
 }
@@ -6054,6 +6131,26 @@ inline void MakeDirRequest::set_allocated_path(std::string* path) {
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:vosfs.raft.MakeDirRequest.path)
+}
+
+// uint64 timestamp = 3;
+inline void MakeDirRequest::clear_timestamp() {
+  _impl_.timestamp_ = uint64_t{0u};
+}
+inline uint64_t MakeDirRequest::_internal_timestamp() const {
+  return _impl_.timestamp_;
+}
+inline uint64_t MakeDirRequest::timestamp() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.MakeDirRequest.timestamp)
+  return _internal_timestamp();
+}
+inline void MakeDirRequest::_internal_set_timestamp(uint64_t value) {
+  
+  _impl_.timestamp_ = value;
+}
+inline void MakeDirRequest::set_timestamp(uint64_t value) {
+  _internal_set_timestamp(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.MakeDirRequest.timestamp)
 }
 
 // -------------------------------------------------------------------

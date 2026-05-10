@@ -301,7 +301,11 @@ auto vosfs::raft::RaftNode::apply_entry() -> Task<void> {
     auto commit_index = commit_index_;
     while (last_applied_ < commit_index) {
         ++last_applied_;
-        state_machine_.apply_entry(logs_.get_entry(last_applied_));
+        if (role_.load(std::memory_order_relaxed) == kLeader) {
+            state_machine_.apply_entry(logs_.get_entry(last_applied_));
+        } else {
+            state_machine_.apply_entry_no_response(logs_.get_entry(last_applied_));
+        }
         if (last_applied_ % detail::SNAPSHOT_INTERVAL == 0) {
             Snapshot snapshot;
             // 创建并保存快照
@@ -550,6 +554,7 @@ auto vosfs::raft::RaftNode::handle_make_dir_request(MakeDirRequest& request) -> 
 
     // 包装为 Raft 日志，并准备同步到集群
     EntryCommand command;
+    request.set_timestamp(kosio::util::current_ms());
     auto* mutable_mkdir = command.mutable_mkdir();
     mutable_mkdir->Swap(&request);
 

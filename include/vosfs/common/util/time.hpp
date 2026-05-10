@@ -1,5 +1,6 @@
 #pragma once
 #include <ctime>
+#include <cstdint>
 
 namespace vosfs::util {
 static inline auto current_ms() noexcept -> uint64_t {

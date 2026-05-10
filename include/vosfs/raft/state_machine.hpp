@@ -21,6 +21,7 @@ public:
     void load_snapshot(const Snapshot& snapshot);
     void take_snapshot(Snapshot& snapshot);
     void apply_entry(const LogEntry& entry);
+    void apply_entry_no_response(const LogEntry& entry);
     [[nodiscard]]
     auto append_request(uint64_t log_index, PendingRequest request) -> PendingRequest&;
 
@@ -28,6 +29,7 @@ public:
     void ls(const ListDirRequest& request, ListDirResponse& response);
 
 private:
+    void mkdir(const MakeDirRequest& request);
     void mkdir(const MakeDirRequest& request, MakeDirResponse* response);
 
 private:

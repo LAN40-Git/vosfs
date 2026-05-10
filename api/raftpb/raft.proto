@@ -79,7 +79,6 @@ message Inode {
   uint64 size = 4;
   uint64 ctime = 5;
   uint64 mtime = 6;
-
   uint32 nlink = 8;
   repeated BlockInfo blocks = 9;
   repeated DirEntry dir_entries = 10;
@@ -127,12 +126,14 @@ message ListDirRequest {
 message ListDirResponse {
   uint32 status_code = 1;
   string message = 2;
-  repeated DirEntry dir_entries = 3;
+  string path = 3;
+  repeated DirEntry dir_entries = 4;
 }
 
 message MakeDirRequest {
   string token = 1;
   string path = 2;
+  uint64 timestamp = 3;
 }
 
 message MakeDirResponse {

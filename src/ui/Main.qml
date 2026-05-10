@@ -15,7 +15,7 @@ Window {
     property bool isLogging: false
     property bool isRegistering: false
     property bool isLoggedIn: false
-    property ListModel fileModel: ListModel {}
+    property ListModel fileListModel: ListModel {}
     property var backStack: []    // 后退栈
     property var forwardStack: [] // 前进栈
     property string currentDir    // 当前目录
@@ -47,8 +47,8 @@ Window {
             }
         }
 
-        function onListDirFinished(dir_entries) {
-            fileModel.clear()
+        function onListDirFinished(path, dir_entries) {
+            fileListModel.clear()
             for(var i = 0; i < dir_entries.length; i++) {
                 var item = dir_entries[i]
                 mainWindow.fileListModel.append({

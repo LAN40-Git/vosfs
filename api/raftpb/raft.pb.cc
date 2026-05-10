@@ -192,9 +192,9 @@ PROTOBUF_CONSTEXPR Inode::Inode(
   , /*decltype(_impl_.ino_)*/uint64_t{0u}
   , /*decltype(_impl_.mode_)*/0u
   , /*decltype(_impl_.is_dir_)*/false
+  , /*decltype(_impl_.size_)*/uint64_t{0u}
   , /*decltype(_impl_.ctime_)*/uint64_t{0u}
   , /*decltype(_impl_.mtime_)*/uint64_t{0u}
-  , /*decltype(_impl_.size_)*/uint64_t{0u}
   , /*decltype(_impl_.nlink_)*/0u
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct InodeDefaultTypeInternal {
@@ -300,6 +300,7 @@ PROTOBUF_CONSTEXPR ListDirResponse::ListDirResponse(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.dir_entries_)*/{}
   , /*decltype(_impl_.message_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.path_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.status_code_)*/0u
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct ListDirResponseDefaultTypeInternal {
@@ -315,6 +316,7 @@ PROTOBUF_CONSTEXPR MakeDirRequest::MakeDirRequest(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.token_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.path_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.timestamp_)*/uint64_t{0u}
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct MakeDirRequestDefaultTypeInternal {
   PROTOBUF_CONSTEXPR MakeDirRequestDefaultTypeInternal()
@@ -464,9 +466,9 @@ const uint32_t TableStruct_raft_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pro
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.ino_),
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.mode_),
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.is_dir_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.size_),
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.ctime_),
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.mtime_),
-  PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.size_),
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.nlink_),
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.blocks_),
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::Inode, _impl_.dir_entries_),
@@ -532,6 +534,7 @@ const uint32_t TableStruct_raft_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pro
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::ListDirResponse, _impl_.status_code_),
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::ListDirResponse, _impl_.message_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::ListDirResponse, _impl_.path_),
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::ListDirResponse, _impl_.dir_entries_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::MakeDirRequest, _internal_metadata_),
@@ -541,6 +544,7 @@ const uint32_t TableStruct_raft_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pro
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::MakeDirRequest, _impl_.token_),
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::MakeDirRequest, _impl_.path_),
+  PROTOBUF_FIELD_OFFSET(::vosfs::raft::MakeDirRequest, _impl_.timestamp_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::vosfs::raft::MakeDirResponse, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -570,8 +574,8 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 160, -1, -1, sizeof(::vosfs::raft::RequestBlocksAddressResponse)},
   { 169, -1, -1, sizeof(::vosfs::raft::ListDirRequest)},
   { 177, -1, -1, sizeof(::vosfs::raft::ListDirResponse)},
-  { 186, -1, -1, sizeof(::vosfs::raft::MakeDirRequest)},
-  { 194, -1, -1, sizeof(::vosfs::raft::MakeDirResponse)},
+  { 187, -1, -1, sizeof(::vosfs::raft::MakeDirRequest)},
+  { 196, -1, -1, sizeof(::vosfs::raft::MakeDirResponse)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -626,8 +630,8 @@ const char descriptor_table_protodef_raft_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "\004\"Q\n\tBlockInfo\022\n\n\002id\030\001 \001(\004\022\016\n\006offset\030\002 \001"
   "(\004\022\014\n\004size\030\003 \001(\004\022\014\n\004host\030\004 \001(\t\022\014\n\004port\030\005"
   " \001(\r\"\277\001\n\005Inode\022\013\n\003ino\030\001 \001(\004\022\014\n\004mode\030\002 \001("
-  "\r\022\016\n\006is_dir\030\003 \001(\010\022\r\n\005ctime\030\005 \001(\004\022\r\n\005mtim"
-  "e\030\006 \001(\004\022\014\n\004size\030\007 \001(\004\022\r\n\005nlink\030\010 \001(\r\022%\n\006"
+  "\r\022\016\n\006is_dir\030\003 \001(\010\022\014\n\004size\030\004 \001(\004\022\r\n\005ctime"
+  "\030\005 \001(\004\022\r\n\005mtime\030\006 \001(\004\022\r\n\005nlink\030\010 \001(\r\022%\n\006"
   "blocks\030\t \003(\0132\025.vosfs.raft.BlockInfo\022)\n\013d"
   "ir_entries\030\n \003(\0132\024.vosfs.raft.DirEntry\"o"
   "\n\010DirEntry\022\013\n\003ino\030\001 \001(\004\022\014\n\004name\030\002 \001(\t\022\014\n"
@@ -642,16 +646,17 @@ const char descriptor_table_protodef_raft_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "ssResponse\022\023\n\013status_code\030\001 \001(\r\022\017\n\007messa"
   "ge\030\002 \001(\t\022%\n\006blocks\030\003 \003(\0132\025.vosfs.raft.Bl"
   "ockInfo\"-\n\016ListDirRequest\022\r\n\005token\030\001 \001(\t"
-  "\022\014\n\004path\030\002 \001(\t\"b\n\017ListDirResponse\022\023\n\013sta"
-  "tus_code\030\001 \001(\r\022\017\n\007message\030\002 \001(\t\022)\n\013dir_e"
-  "ntries\030\003 \003(\0132\024.vosfs.raft.DirEntry\"-\n\016Ma"
-  "keDirRequest\022\r\n\005token\030\001 \001(\t\022\014\n\004path\030\002 \001("
-  "\t\"E\n\017MakeDirResponse\022\023\n\013status_code\030\001 \001("
-  "\r\022\017\n\007message\030\002 \001(\t\022\014\n\004path\030\003 \001(\tb\006proto3"
+  "\022\014\n\004path\030\002 \001(\t\"p\n\017ListDirResponse\022\023\n\013sta"
+  "tus_code\030\001 \001(\r\022\017\n\007message\030\002 \001(\t\022\014\n\004path\030"
+  "\003 \001(\t\022)\n\013dir_entries\030\004 \003(\0132\024.vosfs.raft."
+  "DirEntry\"@\n\016MakeDirRequest\022\r\n\005token\030\001 \001("
+  "\t\022\014\n\004path\030\002 \001(\t\022\021\n\ttimestamp\030\003 \001(\004\"E\n\017Ma"
+  "keDirResponse\022\023\n\013status_code\030\001 \001(\r\022\017\n\007me"
+  "ssage\030\002 \001(\t\022\014\n\004path\030\003 \001(\tb\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_raft_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_raft_2eproto = {
-    false, false, 2000, descriptor_table_protodef_raft_2eproto,
+    false, false, 2033, descriptor_table_protodef_raft_2eproto,
     "raft.proto",
     &descriptor_table_raft_2eproto_once, nullptr, 0, 20,
     schemas, file_default_instances, TableStruct_raft_2eproto::offsets,
@@ -3431,9 +3436,9 @@ Inode::Inode(const Inode& from)
     , decltype(_impl_.ino_){}
     , decltype(_impl_.mode_){}
     , decltype(_impl_.is_dir_){}
+    , decltype(_impl_.size_){}
     , decltype(_impl_.ctime_){}
     , decltype(_impl_.mtime_){}
-    , decltype(_impl_.size_){}
     , decltype(_impl_.nlink_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
@@ -3454,9 +3459,9 @@ inline void Inode::SharedCtor(
     , decltype(_impl_.ino_){uint64_t{0u}}
     , decltype(_impl_.mode_){0u}
     , decltype(_impl_.is_dir_){false}
+    , decltype(_impl_.size_){uint64_t{0u}}
     , decltype(_impl_.ctime_){uint64_t{0u}}
     , decltype(_impl_.mtime_){uint64_t{0u}}
-    , decltype(_impl_.size_){uint64_t{0u}}
     , decltype(_impl_.nlink_){0u}
     , /*decltype(_impl_._cached_size_)*/{}
   };
@@ -3525,6 +3530,14 @@ const char* Inode::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
         } else
           goto handle_unusual;
         continue;
+      // uint64 size = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
+          _impl_.size_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
       // uint64 ctime = 5;
       case 5:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 40)) {
@@ -3537,14 +3550,6 @@ const char* Inode::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
       case 6:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 48)) {
           _impl_.mtime_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // uint64 size = 7;
-      case 7:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 56)) {
-          _impl_.size_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -3630,6 +3635,12 @@ uint8_t* Inode::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteBoolToArray(3, this->_internal_is_dir(), target);
   }
 
+  // uint64 size = 4;
+  if (this->_internal_size() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(4, this->_internal_size(), target);
+  }
+
   // uint64 ctime = 5;
   if (this->_internal_ctime() != 0) {
     target = stream->EnsureSpace(target);
@@ -3640,12 +3651,6 @@ uint8_t* Inode::_InternalSerialize(
   if (this->_internal_mtime() != 0) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt64ToArray(6, this->_internal_mtime(), target);
-  }
-
-  // uint64 size = 7;
-  if (this->_internal_size() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(7, this->_internal_size(), target);
   }
 
   // uint32 nlink = 8;
@@ -3715,6 +3720,11 @@ size_t Inode::ByteSizeLong() const {
     total_size += 1 + 1;
   }
 
+  // uint64 size = 4;
+  if (this->_internal_size() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_size());
+  }
+
   // uint64 ctime = 5;
   if (this->_internal_ctime() != 0) {
     total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_ctime());
@@ -3723,11 +3733,6 @@ size_t Inode::ByteSizeLong() const {
   // uint64 mtime = 6;
   if (this->_internal_mtime() != 0) {
     total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_mtime());
-  }
-
-  // uint64 size = 7;
-  if (this->_internal_size() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_size());
   }
 
   // uint32 nlink = 8;
@@ -3764,14 +3769,14 @@ void Inode::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF
   if (from._internal_is_dir() != 0) {
     _this->_internal_set_is_dir(from._internal_is_dir());
   }
+  if (from._internal_size() != 0) {
+    _this->_internal_set_size(from._internal_size());
+  }
   if (from._internal_ctime() != 0) {
     _this->_internal_set_ctime(from._internal_ctime());
   }
   if (from._internal_mtime() != 0) {
     _this->_internal_set_mtime(from._internal_mtime());
-  }
-  if (from._internal_size() != 0) {
-    _this->_internal_set_size(from._internal_size());
   }
   if (from._internal_nlink() != 0) {
     _this->_internal_set_nlink(from._internal_nlink());
@@ -5460,6 +5465,7 @@ ListDirResponse::ListDirResponse(const ListDirResponse& from)
   new (&_impl_) Impl_{
       decltype(_impl_.dir_entries_){from._impl_.dir_entries_}
     , decltype(_impl_.message_){}
+    , decltype(_impl_.path_){}
     , decltype(_impl_.status_code_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
@@ -5470,6 +5476,14 @@ ListDirResponse::ListDirResponse(const ListDirResponse& from)
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_message().empty()) {
     _this->_impl_.message_.Set(from._internal_message(), 
+      _this->GetArenaForAllocation());
+  }
+  _impl_.path_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.path_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_path().empty()) {
+    _this->_impl_.path_.Set(from._internal_path(), 
       _this->GetArenaForAllocation());
   }
   _this->_impl_.status_code_ = from._impl_.status_code_;
@@ -5483,12 +5497,17 @@ inline void ListDirResponse::SharedCtor(
   new (&_impl_) Impl_{
       decltype(_impl_.dir_entries_){arena}
     , decltype(_impl_.message_){}
+    , decltype(_impl_.path_){}
     , decltype(_impl_.status_code_){0u}
     , /*decltype(_impl_._cached_size_)*/{}
   };
   _impl_.message_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
     _impl_.message_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  _impl_.path_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.path_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
@@ -5505,6 +5524,7 @@ inline void ListDirResponse::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   _impl_.dir_entries_.~RepeatedPtrField();
   _impl_.message_.Destroy();
+  _impl_.path_.Destroy();
 }
 
 void ListDirResponse::SetCachedSize(int size) const {
@@ -5519,6 +5539,7 @@ void ListDirResponse::Clear() {
 
   _impl_.dir_entries_.Clear();
   _impl_.message_.ClearToEmpty();
+  _impl_.path_.ClearToEmpty();
   _impl_.status_code_ = 0u;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
@@ -5547,16 +5568,26 @@ const char* ListDirResponse::_InternalParse(const char* ptr, ::_pbi::ParseContex
         } else
           goto handle_unusual;
         continue;
-      // repeated .vosfs.raft.DirEntry dir_entries = 3;
+      // string path = 3;
       case 3:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
+          auto str = _internal_mutable_path();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "vosfs.raft.ListDirResponse.path"));
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated .vosfs.raft.DirEntry dir_entries = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 34)) {
           ptr -= 1;
           do {
             ptr += 1;
             ptr = ctx->ParseMessage(_internal_add_dir_entries(), ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<26>(ptr));
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<34>(ptr));
         } else
           goto handle_unusual;
         continue;
@@ -5605,12 +5636,22 @@ uint8_t* ListDirResponse::_InternalSerialize(
         2, this->_internal_message(), target);
   }
 
-  // repeated .vosfs.raft.DirEntry dir_entries = 3;
+  // string path = 3;
+  if (!this->_internal_path().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_path().data(), static_cast<int>(this->_internal_path().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "vosfs.raft.ListDirResponse.path");
+    target = stream->WriteStringMaybeAliased(
+        3, this->_internal_path(), target);
+  }
+
+  // repeated .vosfs.raft.DirEntry dir_entries = 4;
   for (unsigned i = 0,
       n = static_cast<unsigned>(this->_internal_dir_entries_size()); i < n; i++) {
     const auto& repfield = this->_internal_dir_entries(i);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-        InternalWriteMessage(3, repfield, repfield.GetCachedSize(), target, stream);
+        InternalWriteMessage(4, repfield, repfield.GetCachedSize(), target, stream);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -5629,7 +5670,7 @@ size_t ListDirResponse::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated .vosfs.raft.DirEntry dir_entries = 3;
+  // repeated .vosfs.raft.DirEntry dir_entries = 4;
   total_size += 1UL * this->_internal_dir_entries_size();
   for (const auto& msg : this->_impl_.dir_entries_) {
     total_size +=
@@ -5641,6 +5682,13 @@ size_t ListDirResponse::ByteSizeLong() const {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_message());
+  }
+
+  // string path = 3;
+  if (!this->_internal_path().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_path());
   }
 
   // uint32 status_code = 1;
@@ -5670,6 +5718,9 @@ void ListDirResponse::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const 
   if (!from._internal_message().empty()) {
     _this->_internal_set_message(from._internal_message());
   }
+  if (!from._internal_path().empty()) {
+    _this->_internal_set_path(from._internal_path());
+  }
   if (from._internal_status_code() != 0) {
     _this->_internal_set_status_code(from._internal_status_code());
   }
@@ -5696,6 +5747,10 @@ void ListDirResponse::InternalSwap(ListDirResponse* other) {
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
       &_impl_.message_, lhs_arena,
       &other->_impl_.message_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.path_, lhs_arena,
+      &other->_impl_.path_, rhs_arena
   );
   swap(_impl_.status_code_, other->_impl_.status_code_);
 }
@@ -5724,6 +5779,7 @@ MakeDirRequest::MakeDirRequest(const MakeDirRequest& from)
   new (&_impl_) Impl_{
       decltype(_impl_.token_){}
     , decltype(_impl_.path_){}
+    , decltype(_impl_.timestamp_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -5743,6 +5799,7 @@ MakeDirRequest::MakeDirRequest(const MakeDirRequest& from)
     _this->_impl_.path_.Set(from._internal_path(), 
       _this->GetArenaForAllocation());
   }
+  _this->_impl_.timestamp_ = from._impl_.timestamp_;
   // @@protoc_insertion_point(copy_constructor:vosfs.raft.MakeDirRequest)
 }
 
@@ -5753,6 +5810,7 @@ inline void MakeDirRequest::SharedCtor(
   new (&_impl_) Impl_{
       decltype(_impl_.token_){}
     , decltype(_impl_.path_){}
+    , decltype(_impl_.timestamp_){uint64_t{0u}}
     , /*decltype(_impl_._cached_size_)*/{}
   };
   _impl_.token_.InitDefault();
@@ -5792,6 +5850,7 @@ void MakeDirRequest::Clear() {
 
   _impl_.token_.ClearToEmpty();
   _impl_.path_.ClearToEmpty();
+  _impl_.timestamp_ = uint64_t{0u};
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -5818,6 +5877,14 @@ const char* MakeDirRequest::_InternalParse(const char* ptr, ::_pbi::ParseContext
           ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
           CHK_(::_pbi::VerifyUTF8(str, "vosfs.raft.MakeDirRequest.path"));
+        } else
+          goto handle_unusual;
+        continue;
+      // uint64 timestamp = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+          _impl_.timestamp_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
@@ -5870,6 +5937,12 @@ uint8_t* MakeDirRequest::_InternalSerialize(
         2, this->_internal_path(), target);
   }
 
+  // uint64 timestamp = 3;
+  if (this->_internal_timestamp() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(3, this->_internal_timestamp(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -5900,6 +5973,11 @@ size_t MakeDirRequest::ByteSizeLong() const {
         this->_internal_path());
   }
 
+  // uint64 timestamp = 3;
+  if (this->_internal_timestamp() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_timestamp());
+  }
+
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -5923,6 +6001,9 @@ void MakeDirRequest::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const :
   }
   if (!from._internal_path().empty()) {
     _this->_internal_set_path(from._internal_path());
+  }
+  if (from._internal_timestamp() != 0) {
+    _this->_internal_set_timestamp(from._internal_timestamp());
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -5951,6 +6032,7 @@ void MakeDirRequest::InternalSwap(MakeDirRequest* other) {
       &_impl_.path_, lhs_arena,
       &other->_impl_.path_, rhs_arena
   );
+  swap(_impl_.timestamp_, other->_impl_.timestamp_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata MakeDirRequest::GetMetadata() const {

@@ -177,8 +177,7 @@ auto vosfs::ui::VosfsClient::send_make_dir_request(std::string path) -> Task<voi
     co_await raft_client->call_method<raft::MakeDirRequest, raft::MakeDirResponse>(
         "fs", "mkdir", request,
         [this](const vrpc::Status& status, const raft::MakeDirResponse& response) -> Task<void> {
-            this->handle_make_dir_response(status, response);
-            co_return;
+            co_await this->handle_make_dir_response(status, response);
         });
 }
 
@@ -243,32 +242,50 @@ auto vosfs::ui::VosfsClient::handle_list_dir_response(
         co_return;
     }
     if (res_status.ok()) {
+        std::vector<raft::DirEntry> entries;
+        for (const auto& entry : response.dir_entries()) {
+            entries.push_back(entry);
+        }
+
+        std::ranges::sort(entries, [](const auto& a, const auto& b) {
+            return a.name() < b.name();
+        });
+
         QVariantList list;
 
-        for (const auto &entry : response.dir_entries()) {
+        for (const auto &entry : entries) {
             QVariantMap item;
 
             item["ino"] = static_cast<qulonglong>(entry.ino());
             item["name"] = QString::fromStdString(entry.name());
             item["path"] = QString::fromStdString(entry.path());
             item["is_dir"] = entry.is_dir();
-            item["ctime"] = static_cast<qulonglong>(entry.ctime());
-            item["mtime"] = static_cast<qulonglong>(entry.mtime());
+            item["ctime"] = QString::fromStdString(kosio::util::format_time(entry.ctime()));
+            item["mtime"] = QString::fromStdString(kosio::util::format_time(entry.mtime()));
 
             list.append(item);
         }
-        signal_brige_.listDirFinished(std::move(list));
+        signal_brige_.listDirFinished(QString::fromStdString(response.path()), std::move(list));
     }
     signal_brige_.appendLog(QString::fromStdString(response.message()));
 }
 
-void vosfs::ui::VosfsClient::handle_make_dir_response(
+auto vosfs::ui::VosfsClient::handle_make_dir_response(
     const vrpc::Status& status,
-    const raft::MakeDirResponse& response) {
+    const raft::MakeDirResponse& response) -> Task<void> {
     if (!status.ok()) {
         signal_brige_.appendLog(QString::fromStdString(std::string{status.message()}));
-        return;
+        co_return;
     }
 
     auto res_status = Status{response.status_code()};
+    if (res_status.is_not_leader()) {
+        leader_id_ = std::stoull(response.message());
+        signal_brige_.appendLog(QString("重定向到集群领导者，请重试"));
+        co_return;
+    }
+    if (res_status.ok()) {
+        co_await send_list_dir_request("/");
+    }
+    signal_brige_.appendLog(QString::fromStdString(response.message()));
 }

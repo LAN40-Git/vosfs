@@ -6,6 +6,14 @@ Item {
     id: filePage
     anchors.fill: parent
 
+    Connections {
+        target: SignalBrige
+
+        function onListDirFinished(path, dir_entries) {
+            pathField.text = path
+        }
+    }
+
     RowLayout {
         id: toolBar
         width: parent.width - 50
@@ -79,17 +87,11 @@ Item {
         anchors.bottomMargin: 10
         spacing: 2
         clip: true
-        model: mainWindow.fileModel
+        model: mainWindow.fileListModel
 
         delegate: Item {
-            width: parent.width
+            width: ListView.view.width
             height: 32
-
-            Rectangle {
-                anchors.fill: parent
-                color: mouse.containsMouse ? "#444" : "transparent"
-                radius: 4
-            }
 
             RowLayout {
                 anchors.fill: parent
@@ -97,25 +99,20 @@ Item {
                 anchors.rightMargin: 10
 
                 Image {
-                    width: 20; height: 20
                     source: is_dir ? "qrc:/images/folder.png" : "qrc:/images/file.png"
+                    sourceSize.width: 24
+                    sourceSize.height: 24
                 }
 
                 Text {
-                    text: name; color: "white"; font.pixelSize: 14
-                    Layout.preferredWidth: 270
+                    text: name; color: "white"; font.pixelSize: 15
+                    Layout.preferredWidth: 100
                 }
 
                 Text {
-                    text: new Date(ctime * 1000).toLocaleString()
-                    color: "#aaa"; font.pixelSize: 13
-                    Layout.preferredWidth: 200
-                }
-
-                Text {
-                    text: new Date(mtime * 1000).toLocaleString()
-                    color: "#aaa"; font.pixelSize: 13
-                    Layout.fillWidth: true
+                    text: mtime
+                    color: "#aaa"; font.pixelSize: 15
+                    Layout.preferredWidth: 150
                 }
             }
         }

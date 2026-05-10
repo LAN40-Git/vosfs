@@ -1,5 +1,6 @@
 #pragma once
 #include <QDebug>
+#include <QVariant>
 #include "vosfs/ui/signal_brige.hpp"
 #undef emit
 #include <tbb/concurrent_queue.h>
@@ -91,7 +92,7 @@ private:
     void handle_delete_user_response(const vrpc::Status& status, const auth::DeleteUserResponse& response);
     void handle_login_user_by_name_response(const vrpc::Status& status, const auth::LoginUserByNameResponse& response);
     auto handle_list_dir_response(const vrpc::Status& status, const raft::ListDirResponse& response) -> Task<void>;
-    void handle_make_dir_response(const vrpc::Status& status, const raft::MakeDirResponse& response);
+    auto handle_make_dir_response(const vrpc::Status& status, const raft::MakeDirResponse& response) -> Task<void>;
 
 private:
     std::atomic<bool>                       is_shutdown_{true};

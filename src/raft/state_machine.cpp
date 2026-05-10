@@ -73,19 +73,44 @@ void vosfs::raft::detail::StateMachine::apply_entry(const LogEntry& entry) {
     EntryCommand command;
     if (!command.ParseFromString(entry.command())) {
         LOG_FATAL("failed to parse command at entry {}", entry.index());
-        pending_request.handle.resume();
+        if (pending_request.handle) {
+            pending_request.handle.resume();
+        }
         return;
     }
 
     switch (command.type_case()) {
         case EntryCommand::kMkdir: {
             mkdir(command.mkdir(), pending_response.mutable_mkdir());
-            pending_request.handle.resume();
+            if (pending_request.handle) {
+                pending_request.handle.resume();
+            }
             break;
         }
         default: {
             LOG_FATAL("invalid command at entry {}", entry.index());
-            pending_request.handle.resume();
+            if (pending_request.handle) {
+                pending_request.handle.resume();
+            }
+            break;
+        }
+    }
+}
+
+void vosfs::raft::detail::StateMachine::apply_entry_no_response(const LogEntry& entry) {
+    EntryCommand command;
+    if (!command.ParseFromString(entry.command())) {
+        LOG_FATAL("failed to parse command at entry {}", entry.index());
+        return;
+    }
+
+    switch (command.type_case()) {
+        case EntryCommand::kMkdir: {
+            mkdir(command.mkdir());
+            break;
+        }
+        default: {
+            LOG_FATAL("invalid command at entry {}", entry.index());
             break;
         }
     }
@@ -128,12 +153,84 @@ void vosfs::raft::detail::StateMachine::ls(const ListDirRequest& request, ListDi
     auto& dir_entries = inode_it->second.dir_entries();
     response.set_status_code(Status::kOk);
     response.set_message(std::format("显示目录：{}", path));
+    response.set_path(path);
     response.mutable_dir_entries()->CopyFrom(dir_entries);
+}
+
+void vosfs::raft::detail::StateMachine::mkdir(const MakeDirRequest& request) {
+    auto& path = request.path();
+    auto timestamp = request.timestamp();
+
+    // 判断路径合法性
+    if (path.empty() || path[0] != '/' || path == "/") {
+        return;
+    }
+
+    // 判断目录是否已存在
+    if (dir_entries_.contains(path)) {
+        return;
+    }
+
+    auto last_slash = path.find_last_of('/');
+    std::string parent_path;
+    if (last_slash == 0) {
+        parent_path = "/";
+    } else {
+        parent_path = path.substr(0, last_slash);
+    }
+
+    // 判断目录名是否合法
+    std::string name = path.substr(last_slash + 1);
+    if (name.empty()) {
+        return;
+    }
+
+    // 判断父目录是否存在
+    auto parent_it = dir_entries_.find(parent_path);
+    if (parent_it == dir_entries_.end()) {
+        return;
+    }
+
+    // 获取父节点
+    auto parent_inode_it = inodes_.find(parent_it->second.ino());
+    if (parent_inode_it == inodes_.end()) {
+        LOG_FATAL("inode not exist with path: {}", path);
+        return;
+    }
+
+    auto& parent_inode = parent_inode_it->second;
+    // 判断父节点是否为目录
+    if (!parent_inode.is_dir()) {
+        return;
+    }
+
+    auto new_ino = next_ino_++;
+    Inode new_inode;
+    new_inode.set_ino(new_ino);
+    new_inode.set_is_dir(true);
+    new_inode.set_size(4096);
+    new_inode.set_ctime(timestamp);
+    new_inode.set_mtime(timestamp);
+    new_inode.set_nlink(2);
+
+    DirEntry new_entry;
+    new_entry.set_ino(new_ino);
+    new_entry.set_name(name);
+    new_entry.set_is_dir(true);
+    new_entry.set_path(path);
+    new_entry.set_size(4096);
+    new_entry.set_ctime(timestamp);
+    new_entry.set_mtime(timestamp);
+
+    parent_inode.mutable_dir_entries()->Add()->CopyFrom(new_entry);
+    inodes_.emplace(new_ino, std::move(new_inode));
+    dir_entries_.emplace(path, std::move(new_entry));
 }
 
 void vosfs::raft::detail::StateMachine::mkdir(
     const MakeDirRequest& request, MakeDirResponse* response) {
     auto& path = request.path();
+    auto timestamp = request.timestamp();
 
     // 判断路径合法性
     if (path.empty() || path[0] != '/' || path == "/") {
@@ -194,10 +291,9 @@ void vosfs::raft::detail::StateMachine::mkdir(
     Inode new_inode;
     new_inode.set_ino(new_ino);
     new_inode.set_is_dir(true);
-    auto current_ms = kosio::util::current_ms();
     new_inode.set_size(4096);
-    new_inode.set_ctime(current_ms);
-    new_inode.set_mtime(current_ms);
+    new_inode.set_ctime(timestamp);
+    new_inode.set_mtime(timestamp);
     new_inode.set_nlink(2);
 
     DirEntry new_entry;
@@ -205,9 +301,9 @@ void vosfs::raft::detail::StateMachine::mkdir(
     new_entry.set_name(name);
     new_entry.set_is_dir(true);
     new_entry.set_path(path);
-    new_inode.set_size(4096);
-    new_inode.set_ctime(current_ms);
-    new_inode.set_mtime(current_ms);
+    new_entry.set_size(4096);
+    new_entry.set_ctime(timestamp);
+    new_entry.set_mtime(timestamp);
 
     parent_inode.mutable_dir_entries()->Add()->CopyFrom(new_entry);
     inodes_.emplace(new_ino, std::move(new_inode));
