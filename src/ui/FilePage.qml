@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
 
 Item {
     id: filePage
@@ -69,6 +70,8 @@ Item {
                 TextField {
                     id: folderNameInput
                     Layout.fillWidth: true
+                    font.pixelSize: 16
+                    font.bold: true
                     placeholderText: "文件夹名称"
                     background: Rectangle {
                         color: "#2A2A2A"
@@ -87,7 +90,7 @@ Item {
                     Text {
                         id: folderNameErrorText
                         color: "#FF4444"
-                        font.pixelSize: 13
+                        font.pixelSize: 14
                         visible: !emptyAreaMenu.isValidFolderName()
                     }
 
@@ -118,6 +121,17 @@ Item {
             }
         }
 
+        // 文件选择弹窗
+        FileDialog {
+            id: uploadFileDialog
+            title: "选择要上传的文件"
+
+            onAccepted: {
+                var filePath = selectedFile.toString().replace(/^file:\/\//, "")
+                console.log("上传文件:", filePath)
+            }
+        }
+
         MenuItem {
             text: "新建文件夹"
             onTriggered: {
@@ -128,14 +142,7 @@ Item {
         MenuItem {
             text: "上传"
             onTriggered: {
-
-            }
-        }
-
-        MenuItem {
-            text: "属性"
-            onTriggered: {
-                console.log("当前目录属性")
+                uploadFileDialog.open()
             }
         }
     }
@@ -225,6 +232,7 @@ Item {
         spacing: 2
         clip: true
         model: mainWindow.fileListModel
+        currentIndex: -1
 
         // 文件/文件夹菜单
         Menu {
@@ -260,20 +268,24 @@ Item {
         }
 
         delegate: Item {
-            width: ListView.view.width
+            width: fileListView.width
             height: 32
 
             property bool isHovered: false
+            property bool isSelected: fileListView.currentIndex === index
 
             Rectangle {
                 anchors.fill: parent
-                color: isHovered ? "#4A4A4A" : "transparent"
+                radius: 5
+                color: isSelected ? "#5A5A5A" :
+                    isHovered ? "#4A4A4A" : "transparent"
             }
 
             MouseArea {
                 anchors.fill: parent
                 acceptedButtons: Qt.LeftButton | Qt.RightButton
                 hoverEnabled: true
+                property var listView: ListView.view
 
                 onContainsMouseChanged: isHovered = containsMouse
 
@@ -284,6 +296,7 @@ Item {
                 }
 
                 onClicked: (mouse)=>{
+                    fileListView.currentIndex = index
                     if (mouse.button === Qt.RightButton) {
                         elementAreaMenu.popup()
                     }
@@ -302,13 +315,15 @@ Item {
                 }
 
                 Text {
-                    text: name; color: "white"; font.pixelSize: 15
+                    text: name; color: "white"
+                    font.pixelSize: 16
+                    font.bold: true
                     Layout.preferredWidth: 100
                 }
 
                 Text {
                     text: mtime
-                    color: "#aaa"; font.pixelSize: 15
+                    color: "#aaa"; font.pixelSize: 16
                     Layout.preferredWidth: 150
                 }
             }

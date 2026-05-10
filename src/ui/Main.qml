@@ -396,13 +396,11 @@ Window {
         // 个人信息
         MenuItem {
             text: "个人信息"
-            background: Rectangle { color: "#232222" }
         }
 
         // 退出登录
         MenuItem {
             text: "退出登录"
-            background: Rectangle { color: "#232222" }
             onClicked: {
                 mainWindow.isLoggedIn = false
                 // 清空会话
@@ -410,6 +408,7 @@ Window {
                 mainWindow.user_name = ""
                 mainWindow.avatar = ""
                 mainWindow.role = 0
+                bodyStack.clear()
             }
         }
     }
