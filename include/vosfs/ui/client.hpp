@@ -60,7 +60,7 @@ public slots:
     void delete_user(const QString& password);
     void login_user_by_name(const QString& user_name, const QString& password, int role);
     void list_dir(const QString& path);
-    void make_dir(const QString& path);
+    void make_dir(const QString& parent_path, const QString& name);
 
 public:
     [[REMEMBER_CO_AWAIT]]
@@ -85,7 +85,8 @@ public:
 
     [[REMEMBER_CO_AWAIT]]
     auto send_make_dir_request(
-        std::string path) -> Task<void>;
+        std::string parent_path,
+        std::string name) -> Task<void>;
 
 private:
     void handle_register_user_response(const vrpc::Status& status, const auth::RegisterUserResponse& response);

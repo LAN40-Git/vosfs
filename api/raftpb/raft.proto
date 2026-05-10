@@ -132,12 +132,13 @@ message ListDirResponse {
 
 message MakeDirRequest {
   string token = 1;
-  string path = 2;
-  uint64 timestamp = 3;
+  string parent_path = 2;
+  string name = 3;
+  uint64 timestamp = 4;
 }
 
 message MakeDirResponse {
   uint32 status_code = 1;
   string message = 2;
-  string path = 3;
+  string parent_path = 3;
 }

@@ -17,8 +17,10 @@ Window {
     property bool isLoggedIn: false
     property ListModel fileListModel: ListModel {}
     property var backStack: []    // 后退栈
+    property bool canGoBack: false
     property var forwardStack: [] // 前进栈
-    property string currentDir    // 当前目录
+    property bool canGoForward: false
+    property string currentDir: "/"   // 当前目录
     property string uid
     property string user_name
     property string avatar
@@ -27,10 +29,31 @@ Window {
     property string create_time
 
     function goToDir(path) {
+        if (currentDir !== path) {
+            if (currentDir !== "") {
+                backStack.push(currentDir)
+            }
+            forwardStack = []
+        }
+        VosfsClient.list_dir(path)
+        mainWindow.canGoBack = mainWindow.backStack.length > 0;
+        mainWindow.canGoForward = mainWindow.forwardStack.length > 0;
+    }
+
+    function backDir() {
+        forwardStack.push(currentDir)
+        VosfsClient.list_dir(mainWindow.backStack[mainWindow.backStack.length - 1])
+        backStack.pop()
+        mainWindow.canGoBack = mainWindow.backStack.length > 0;
+        mainWindow.canGoForward = mainWindow.forwardStack.length > 0;
+    }
+
+    function forwardDir() {
         backStack.push(currentDir)
-        forwardStack = []
-        currentDir = path
-        VosfsClient.list_dir(currentDir)
+        VosfsClient.list_dir(mainWindow.forwardStack[mainWindow.forwardStack.length - 1])
+        forwardStack.pop()
+        mainWindow.canGoBack = mainWindow.backStack.length > 0;
+        mainWindow.canGoForward = mainWindow.forwardStack.length > 0;
     }
 
     Connections {
@@ -44,6 +67,7 @@ Window {
                 mainWindow.quota = VosfsClient.quota
                 mainWindow.create_time = VosfsClient.create_time
                 mainWindow.isLoggedIn = true
+                fileBtn.click()
             }
         }
 
@@ -60,6 +84,7 @@ Window {
                     mtime: item.mtime
                 })
             }
+            currentDir = path
         }
     }
 
@@ -224,7 +249,8 @@ Window {
 
             onClicked: {
                 if (mainWindow.isLoggedIn) {
-                    VosfsClient.list_dir("/")
+                    bodyStack.replace("FilePage.qml")
+                    mainWindow.goToDir(currentDir)
                 }
             }
         }
@@ -269,45 +295,6 @@ Window {
 
             onClicked: {
 
-            }
-        }
-
-        // 配置
-        Button {
-            id: configBtn
-            width: parent.btnWidth
-            height: parent.btnHeight
-            anchors.top: transportBtn.bottom
-            anchors.topMargin: 10
-            anchors.horizontalCenter: parent.horizontalCenter
-            ButtonGroup.group: leftBarButtonGroup
-            checkable: true
-
-            Image {
-                id: configBtnImage
-                source: "qrc:/images/config.png"
-                sourceSize.width: 24
-                sourceSize.height: 24
-                anchors.left: parent.left
-                anchors.leftMargin: 10
-                anchors.verticalCenter: parent.verticalCenter
-            }
-
-            Text {
-                id: configBtnText
-                text: "配置"
-                font.family: "Ubuntu Mono"
-                antialiasing: true
-                color: "#FFFFFF"
-                anchors.left: configBtnImage.right
-                anchors.leftMargin: 10
-                anchors.verticalCenter: parent.verticalCenter
-            }
-
-            background: Rectangle {
-                radius: leftBar.btnRadius
-                color: configBtn.checked ? "#5A5A5A" :
-                    configBtn.hovered ? "#4A4A4A" : "transparent"
             }
         }
 
@@ -443,7 +430,7 @@ Window {
             id: bodyStack
             anchors.fill: parent
             clip: true
-            initialItem: FilePage{}
+            initialItem: {}
         }
     }
 

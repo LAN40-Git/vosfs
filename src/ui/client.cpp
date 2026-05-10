@@ -96,8 +96,8 @@ void vosfs::ui::VosfsClient::list_dir(const QString& path) {
     tasks_.emplace(send_list_dir_request(path.toStdString()));
 }
 
-void vosfs::ui::VosfsClient::make_dir(const QString& path) {
-    tasks_.emplace(send_make_dir_request(path.toStdString()));
+void vosfs::ui::VosfsClient::make_dir(const QString& parent_path, const QString& name) {
+    tasks_.emplace(send_make_dir_request(parent_path.toStdString(), name.toStdString()));
 }
 
 auto vosfs::ui::VosfsClient::send_register_user_request(
@@ -156,7 +156,6 @@ auto vosfs::ui::VosfsClient::send_list_dir_request(std::string path) -> Task<voi
         co_return;
     }
     auto& raft_client = it->second;
-    LOG_INFO("{}", raft_client->peer_addr());
     co_await raft_client->call_method<raft::ListDirRequest, raft::ListDirResponse>(
         "fs", "ls", request,
         [this](const vrpc::Status& status, const raft::ListDirResponse& response) -> Task<void> {
@@ -164,10 +163,11 @@ auto vosfs::ui::VosfsClient::send_list_dir_request(std::string path) -> Task<voi
         });
 }
 
-auto vosfs::ui::VosfsClient::send_make_dir_request(std::string path) -> Task<void> {
+auto vosfs::ui::VosfsClient::send_make_dir_request(std::string parent_path, std::string name) -> Task<void> {
     raft::MakeDirRequest request;
     request.set_token(session_.token);
-    request.set_path(std::move(path));
+    request.set_parent_path(std::move(parent_path));
+    request.set_name(std::move(name));
     auto it = raft_clients_.find(leader_id_);
     if (it == raft_clients_.end()) {
         signal_brige_.appendLog(QString::fromStdString(std::format("请求失败，节点 {} 不存在，请检查集群配置", leader_id_)));
@@ -285,7 +285,8 @@ auto vosfs::ui::VosfsClient::handle_make_dir_response(
         co_return;
     }
     if (res_status.ok()) {
-        co_await send_list_dir_request("/");
+        co_await send_list_dir_request(response.parent_path());
     }
     signal_brige_.appendLog(QString::fromStdString(response.message()));
+    signal_brige_.makeDirFinished();
 }

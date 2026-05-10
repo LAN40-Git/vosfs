@@ -4,13 +4,150 @@ import QtQuick.Layouts
 
 Item {
     id: filePage
-    anchors.fill: parent
 
     Connections {
         target: SignalBrige
 
         function onListDirFinished(path, dir_entries) {
             pathField.text = path
+        }
+
+        function onMakeDirFinished() {
+            newFolderPopup.close()
+        }
+    }
+
+    // 空白区域菜单
+    Menu {
+        id: emptyAreaMenu
+
+        function isValidFolderName() {
+            if (folderNameInput.text === "") {
+                folderNameErrorText.text = ""
+                return false
+            }
+            if (folderNameInput.text.includes("/")) {
+                folderNameErrorText.text = "文件夹名称中不能包含'/'"
+                return false
+            }
+            return true
+        }
+
+        function createFolder() {
+            VosfsClient.make_dir(mainWindow.currentDir, folderNameInput.text)
+        }
+
+        Popup {
+            id: newFolderPopup
+            modal: true
+            anchors.centerIn: parent
+            width: 400
+            closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+
+            background: Rectangle {
+                radius: 8
+                color: "#232222"
+            }
+
+            onOpened: {
+                folderNameInput.text = ""
+                folderNameInput.forceActiveFocus()
+            }
+
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: 8
+
+                Text {
+                    Layout.alignment: Qt.AlignHCenter
+                    text: "新建文件夹"
+                    color: "white"
+                    font.bold: true
+                    font.pixelSize: 16
+                }
+
+                TextField {
+                    id: folderNameInput
+                    Layout.fillWidth: true
+                    placeholderText: "文件夹名称"
+                    background: Rectangle {
+                        color: "#2A2A2A"
+                        radius: 5
+                    }
+
+                    onAccepted: {
+                        emptyAreaMenu.createFolder()
+                    }
+                }
+
+                RowLayout {
+                    spacing: 15
+                    Layout.alignment: Qt.AlignRight
+
+                    Text {
+                        id: folderNameErrorText
+                        color: "#FF4444"
+                        font.pixelSize: 13
+                        visible: !emptyAreaMenu.isValidFolderName()
+                    }
+
+                    Button {
+                        text: "取消"
+
+                        background: Rectangle {
+                            radius: 8
+                            color: parent.pressed ? "#5A5A5A" :
+                                parent.hovered ? "#4A4A4A" : "transparent"
+                        }
+                        onClicked: newFolderPopup.close()
+                    }
+
+                    Button {
+                        text: "创建"
+                        enabled: emptyAreaMenu.isValidFolderName()
+                        background: Rectangle {
+                            radius: 5
+                            color: parent.enabled && parent.pressed ? "#5A5A5A" :
+                                    parent.enabled && parent.hovered ? "#4A4A4A" : "transparent"
+                        }
+                        onClicked: {
+                            emptyAreaMenu.createFolder()
+                        }
+                    }
+                }
+            }
+        }
+
+        MenuItem {
+            text: "新建文件夹"
+            onTriggered: {
+                newFolderPopup.open()
+            }
+        }
+
+        MenuItem {
+            text: "上传"
+            onTriggered: {
+
+            }
+        }
+
+        MenuItem {
+            text: "属性"
+            onTriggered: {
+                console.log("当前目录属性")
+            }
+        }
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+        onClicked: (mouse)=>{
+            if (mouse.button === Qt.RightButton && pathField.text !== "") {
+                emptyAreaMenu.popup()
+            }
         }
     }
 
@@ -32,8 +169,8 @@ Item {
             font.pixelSize: 16
             Layout.preferredWidth: 32
             Layout.preferredHeight: 32
-            enabled: mainWindow.backStack.length > 0
-            onClicked: mainWindow.goBack()
+            enabled: mainWindow.canGoBack
+            onClicked: mainWindow.backDir()
 
             background: Rectangle {
                 radius: 6
@@ -50,8 +187,8 @@ Item {
             font.pixelSize: 16
             Layout.preferredWidth: 32
             Layout.preferredHeight: 32
-            enabled: mainWindow.forwardStack.length > 0
-            onClicked: mainWindow.goForward()
+            enabled: mainWindow.canGoForward
+            onClicked: mainWindow.forwardDir()
 
             background: Rectangle {
                 radius: 6
@@ -89,9 +226,69 @@ Item {
         clip: true
         model: mainWindow.fileListModel
 
+        // 文件/文件夹菜单
+        Menu {
+            id: elementAreaMenu
+
+            MenuItem {
+                text: "打开"
+                onTriggered: {
+
+                }
+            }
+
+            MenuItem {
+                text: "下载"
+                onTriggered: {
+
+                }
+            }
+
+            MenuItem {
+                text: "删除"
+                onTriggered: {
+
+                }
+            }
+
+            MenuItem {
+                text: "属性"
+                onTriggered: {
+
+                }
+            }
+        }
+
         delegate: Item {
             width: ListView.view.width
             height: 32
+
+            property bool isHovered: false
+
+            Rectangle {
+                anchors.fill: parent
+                color: isHovered ? "#4A4A4A" : "transparent"
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                acceptedButtons: Qt.LeftButton | Qt.RightButton
+                hoverEnabled: true
+
+                onContainsMouseChanged: isHovered = containsMouse
+
+                onDoubleClicked: (mouse)=>{
+                    if (is_dir && mouse.button === Qt.LeftButton) {
+                        mainWindow.goToDir(path)
+                    }
+                }
+
+                onClicked: (mouse)=>{
+                    if (mouse.button === Qt.RightButton) {
+                        elementAreaMenu.popup()
+                    }
+                }
+            }
 
             RowLayout {
                 anchors.fill: parent

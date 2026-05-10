@@ -3682,8 +3682,9 @@ class MakeDirRequest final :
 
   enum : int {
     kTokenFieldNumber = 1,
-    kPathFieldNumber = 2,
-    kTimestampFieldNumber = 3,
+    kParentPathFieldNumber = 2,
+    kNameFieldNumber = 3,
+    kTimestampFieldNumber = 4,
   };
   // string token = 1;
   void clear_token();
@@ -3699,21 +3700,35 @@ class MakeDirRequest final :
   std::string* _internal_mutable_token();
   public:
 
-  // string path = 2;
-  void clear_path();
-  const std::string& path() const;
+  // string parent_path = 2;
+  void clear_parent_path();
+  const std::string& parent_path() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_path(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_path();
-  PROTOBUF_NODISCARD std::string* release_path();
-  void set_allocated_path(std::string* path);
+  void set_parent_path(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_parent_path();
+  PROTOBUF_NODISCARD std::string* release_parent_path();
+  void set_allocated_parent_path(std::string* parent_path);
   private:
-  const std::string& _internal_path() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_path(const std::string& value);
-  std::string* _internal_mutable_path();
+  const std::string& _internal_parent_path() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_parent_path(const std::string& value);
+  std::string* _internal_mutable_parent_path();
   public:
 
-  // uint64 timestamp = 3;
+  // string name = 3;
+  void clear_name();
+  const std::string& name() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_name();
+  PROTOBUF_NODISCARD std::string* release_name();
+  void set_allocated_name(std::string* name);
+  private:
+  const std::string& _internal_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_name(const std::string& value);
+  std::string* _internal_mutable_name();
+  public:
+
+  // uint64 timestamp = 4;
   void clear_timestamp();
   uint64_t timestamp() const;
   void set_timestamp(uint64_t value);
@@ -3731,7 +3746,8 @@ class MakeDirRequest final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr token_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr path_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr parent_path_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
     uint64_t timestamp_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -3862,7 +3878,7 @@ class MakeDirResponse final :
 
   enum : int {
     kMessageFieldNumber = 2,
-    kPathFieldNumber = 3,
+    kParentPathFieldNumber = 3,
     kStatusCodeFieldNumber = 1,
   };
   // string message = 2;
@@ -3879,18 +3895,18 @@ class MakeDirResponse final :
   std::string* _internal_mutable_message();
   public:
 
-  // string path = 3;
-  void clear_path();
-  const std::string& path() const;
+  // string parent_path = 3;
+  void clear_parent_path();
+  const std::string& parent_path() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_path(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_path();
-  PROTOBUF_NODISCARD std::string* release_path();
-  void set_allocated_path(std::string* path);
+  void set_parent_path(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_parent_path();
+  PROTOBUF_NODISCARD std::string* release_parent_path();
+  void set_allocated_parent_path(std::string* parent_path);
   private:
-  const std::string& _internal_path() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_path(const std::string& value);
-  std::string* _internal_mutable_path();
+  const std::string& _internal_parent_path() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_parent_path(const std::string& value);
+  std::string* _internal_mutable_parent_path();
   public:
 
   // uint32 status_code = 1;
@@ -3911,7 +3927,7 @@ class MakeDirResponse final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr message_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr path_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr parent_path_;
     uint32_t status_code_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -6083,57 +6099,107 @@ inline void MakeDirRequest::set_allocated_token(std::string* token) {
   // @@protoc_insertion_point(field_set_allocated:vosfs.raft.MakeDirRequest.token)
 }
 
-// string path = 2;
-inline void MakeDirRequest::clear_path() {
-  _impl_.path_.ClearToEmpty();
+// string parent_path = 2;
+inline void MakeDirRequest::clear_parent_path() {
+  _impl_.parent_path_.ClearToEmpty();
 }
-inline const std::string& MakeDirRequest::path() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.MakeDirRequest.path)
-  return _internal_path();
+inline const std::string& MakeDirRequest::parent_path() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.MakeDirRequest.parent_path)
+  return _internal_parent_path();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void MakeDirRequest::set_path(ArgT0&& arg0, ArgT... args) {
+void MakeDirRequest::set_parent_path(ArgT0&& arg0, ArgT... args) {
  
- _impl_.path_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:vosfs.raft.MakeDirRequest.path)
+ _impl_.parent_path_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.raft.MakeDirRequest.parent_path)
 }
-inline std::string* MakeDirRequest::mutable_path() {
-  std::string* _s = _internal_mutable_path();
-  // @@protoc_insertion_point(field_mutable:vosfs.raft.MakeDirRequest.path)
+inline std::string* MakeDirRequest::mutable_parent_path() {
+  std::string* _s = _internal_mutable_parent_path();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.MakeDirRequest.parent_path)
   return _s;
 }
-inline const std::string& MakeDirRequest::_internal_path() const {
-  return _impl_.path_.Get();
+inline const std::string& MakeDirRequest::_internal_parent_path() const {
+  return _impl_.parent_path_.Get();
 }
-inline void MakeDirRequest::_internal_set_path(const std::string& value) {
+inline void MakeDirRequest::_internal_set_parent_path(const std::string& value) {
   
-  _impl_.path_.Set(value, GetArenaForAllocation());
+  _impl_.parent_path_.Set(value, GetArenaForAllocation());
 }
-inline std::string* MakeDirRequest::_internal_mutable_path() {
+inline std::string* MakeDirRequest::_internal_mutable_parent_path() {
   
-  return _impl_.path_.Mutable(GetArenaForAllocation());
+  return _impl_.parent_path_.Mutable(GetArenaForAllocation());
 }
-inline std::string* MakeDirRequest::release_path() {
-  // @@protoc_insertion_point(field_release:vosfs.raft.MakeDirRequest.path)
-  return _impl_.path_.Release();
+inline std::string* MakeDirRequest::release_parent_path() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.MakeDirRequest.parent_path)
+  return _impl_.parent_path_.Release();
 }
-inline void MakeDirRequest::set_allocated_path(std::string* path) {
-  if (path != nullptr) {
+inline void MakeDirRequest::set_allocated_parent_path(std::string* parent_path) {
+  if (parent_path != nullptr) {
     
   } else {
     
   }
-  _impl_.path_.SetAllocated(path, GetArenaForAllocation());
+  _impl_.parent_path_.SetAllocated(parent_path, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.path_.IsDefault()) {
-    _impl_.path_.Set("", GetArenaForAllocation());
+  if (_impl_.parent_path_.IsDefault()) {
+    _impl_.parent_path_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.MakeDirRequest.path)
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.MakeDirRequest.parent_path)
 }
 
-// uint64 timestamp = 3;
+// string name = 3;
+inline void MakeDirRequest::clear_name() {
+  _impl_.name_.ClearToEmpty();
+}
+inline const std::string& MakeDirRequest::name() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.MakeDirRequest.name)
+  return _internal_name();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void MakeDirRequest::set_name(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.raft.MakeDirRequest.name)
+}
+inline std::string* MakeDirRequest::mutable_name() {
+  std::string* _s = _internal_mutable_name();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.MakeDirRequest.name)
+  return _s;
+}
+inline const std::string& MakeDirRequest::_internal_name() const {
+  return _impl_.name_.Get();
+}
+inline void MakeDirRequest::_internal_set_name(const std::string& value) {
+  
+  _impl_.name_.Set(value, GetArenaForAllocation());
+}
+inline std::string* MakeDirRequest::_internal_mutable_name() {
+  
+  return _impl_.name_.Mutable(GetArenaForAllocation());
+}
+inline std::string* MakeDirRequest::release_name() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.MakeDirRequest.name)
+  return _impl_.name_.Release();
+}
+inline void MakeDirRequest::set_allocated_name(std::string* name) {
+  if (name != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.name_.SetAllocated(name, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.name_.IsDefault()) {
+    _impl_.name_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.MakeDirRequest.name)
+}
+
+// uint64 timestamp = 4;
 inline void MakeDirRequest::clear_timestamp() {
   _impl_.timestamp_ = uint64_t{0u};
 }
@@ -6227,54 +6293,54 @@ inline void MakeDirResponse::set_allocated_message(std::string* message) {
   // @@protoc_insertion_point(field_set_allocated:vosfs.raft.MakeDirResponse.message)
 }
 
-// string path = 3;
-inline void MakeDirResponse::clear_path() {
-  _impl_.path_.ClearToEmpty();
+// string parent_path = 3;
+inline void MakeDirResponse::clear_parent_path() {
+  _impl_.parent_path_.ClearToEmpty();
 }
-inline const std::string& MakeDirResponse::path() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.MakeDirResponse.path)
-  return _internal_path();
+inline const std::string& MakeDirResponse::parent_path() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.MakeDirResponse.parent_path)
+  return _internal_parent_path();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void MakeDirResponse::set_path(ArgT0&& arg0, ArgT... args) {
+void MakeDirResponse::set_parent_path(ArgT0&& arg0, ArgT... args) {
  
- _impl_.path_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:vosfs.raft.MakeDirResponse.path)
+ _impl_.parent_path_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.raft.MakeDirResponse.parent_path)
 }
-inline std::string* MakeDirResponse::mutable_path() {
-  std::string* _s = _internal_mutable_path();
-  // @@protoc_insertion_point(field_mutable:vosfs.raft.MakeDirResponse.path)
+inline std::string* MakeDirResponse::mutable_parent_path() {
+  std::string* _s = _internal_mutable_parent_path();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.MakeDirResponse.parent_path)
   return _s;
 }
-inline const std::string& MakeDirResponse::_internal_path() const {
-  return _impl_.path_.Get();
+inline const std::string& MakeDirResponse::_internal_parent_path() const {
+  return _impl_.parent_path_.Get();
 }
-inline void MakeDirResponse::_internal_set_path(const std::string& value) {
+inline void MakeDirResponse::_internal_set_parent_path(const std::string& value) {
   
-  _impl_.path_.Set(value, GetArenaForAllocation());
+  _impl_.parent_path_.Set(value, GetArenaForAllocation());
 }
-inline std::string* MakeDirResponse::_internal_mutable_path() {
+inline std::string* MakeDirResponse::_internal_mutable_parent_path() {
   
-  return _impl_.path_.Mutable(GetArenaForAllocation());
+  return _impl_.parent_path_.Mutable(GetArenaForAllocation());
 }
-inline std::string* MakeDirResponse::release_path() {
-  // @@protoc_insertion_point(field_release:vosfs.raft.MakeDirResponse.path)
-  return _impl_.path_.Release();
+inline std::string* MakeDirResponse::release_parent_path() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.MakeDirResponse.parent_path)
+  return _impl_.parent_path_.Release();
 }
-inline void MakeDirResponse::set_allocated_path(std::string* path) {
-  if (path != nullptr) {
+inline void MakeDirResponse::set_allocated_parent_path(std::string* parent_path) {
+  if (parent_path != nullptr) {
     
   } else {
     
   }
-  _impl_.path_.SetAllocated(path, GetArenaForAllocation());
+  _impl_.parent_path_.SetAllocated(parent_path, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.path_.IsDefault()) {
-    _impl_.path_.Set("", GetArenaForAllocation());
+  if (_impl_.parent_path_.IsDefault()) {
+    _impl_.parent_path_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.MakeDirResponse.path)
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.MakeDirResponse.parent_path)
 }
 
 #ifdef __GNUC__

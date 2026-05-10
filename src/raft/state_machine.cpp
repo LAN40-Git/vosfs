@@ -158,32 +158,9 @@ void vosfs::raft::detail::StateMachine::ls(const ListDirRequest& request, ListDi
 }
 
 void vosfs::raft::detail::StateMachine::mkdir(const MakeDirRequest& request) {
-    auto& path = request.path();
+    auto& parent_path = request.parent_path();
+    auto& name = request.name();
     auto timestamp = request.timestamp();
-
-    // 判断路径合法性
-    if (path.empty() || path[0] != '/' || path == "/") {
-        return;
-    }
-
-    // 判断目录是否已存在
-    if (dir_entries_.contains(path)) {
-        return;
-    }
-
-    auto last_slash = path.find_last_of('/');
-    std::string parent_path;
-    if (last_slash == 0) {
-        parent_path = "/";
-    } else {
-        parent_path = path.substr(0, last_slash);
-    }
-
-    // 判断目录名是否合法
-    std::string name = path.substr(last_slash + 1);
-    if (name.empty()) {
-        return;
-    }
 
     // 判断父目录是否存在
     auto parent_it = dir_entries_.find(parent_path);
@@ -194,13 +171,31 @@ void vosfs::raft::detail::StateMachine::mkdir(const MakeDirRequest& request) {
     // 获取父节点
     auto parent_inode_it = inodes_.find(parent_it->second.ino());
     if (parent_inode_it == inodes_.end()) {
-        LOG_FATAL("inode not exist with path: {}", path);
+        LOG_FATAL("inode not exist with path: {}", parent_path);
         return;
     }
 
     auto& parent_inode = parent_inode_it->second;
     // 判断父节点是否为目录
     if (!parent_inode.is_dir()) {
+        return;
+    }
+
+    // 判断目录名合法性
+    if (name.empty() || name.contains('/')) {
+        return;
+    }
+
+    std::string path;
+
+    if (parent_path == "/") {
+        path = parent_path + name;
+    } else {
+        path = parent_path + '/' + name;
+    }
+
+    // 判断目录是否存在
+    if (dir_entries_.contains(path)) {
         return;
     }
 
@@ -229,38 +224,9 @@ void vosfs::raft::detail::StateMachine::mkdir(const MakeDirRequest& request) {
 
 void vosfs::raft::detail::StateMachine::mkdir(
     const MakeDirRequest& request, MakeDirResponse* response) {
-    auto& path = request.path();
+    auto& parent_path = request.parent_path();
+    auto& name = request.name();
     auto timestamp = request.timestamp();
-
-    // 判断路径合法性
-    if (path.empty() || path[0] != '/' || path == "/") {
-        response->set_status_code(Status::kInvalidArgument);
-        response->set_message("无效路径");
-        return;
-    }
-
-    // 判断目录是否已存在
-    if (dir_entries_.contains(path)) {
-        response->set_status_code(Status::kInvalidArgument);
-        response->set_message("目录已存在");
-        return;
-    }
-
-    auto last_slash = path.find_last_of('/');
-    std::string parent_path;
-    if (last_slash == 0) {
-        parent_path = "/";
-    } else {
-        parent_path = path.substr(0, last_slash);
-    }
-
-    // 判断目录名是否合法
-    std::string name = path.substr(last_slash + 1);
-    if (name.empty()) {
-        response->set_status_code(Status::kInvalidArgument);
-        response->set_message("目录名无效");
-        return;
-    }
 
     // 判断父目录是否存在
     auto parent_it = dir_entries_.find(parent_path);
@@ -275,7 +241,7 @@ void vosfs::raft::detail::StateMachine::mkdir(
     if (parent_inode_it == inodes_.end()) {
         response->set_status_code(Status::kInvalidArgument);
         response->set_message("父节点不存在");
-        LOG_FATAL("inode not exist with path: {}", path);
+        LOG_FATAL("inode not exist with path: {}", parent_path);
         return;
     }
 
@@ -284,6 +250,28 @@ void vosfs::raft::detail::StateMachine::mkdir(
     if (!parent_inode.is_dir()) {
         response->set_status_code(Status::kInvalidArgument);
         response->set_message("父节点不是目录");
+        return;
+    }
+
+    // 判断目录名合法性
+    if (name.empty() || name.contains('/')) {
+        response->set_status_code(Status::kInvalidArgument);
+        response->set_message("非法目录名，不能为空或包含'/'");
+        return;
+    }
+
+    std::string path;
+
+    if (parent_path == "/") {
+        path = parent_path + name;
+    } else {
+        path = parent_path + '/' + name;
+    }
+
+    // 判断目录是否存在
+    if (dir_entries_.contains(path)) {
+        response->set_status_code(Status::kInvalidArgument);
+        response->set_message("目录已存在");
         return;
     }
 
@@ -310,4 +298,5 @@ void vosfs::raft::detail::StateMachine::mkdir(
     dir_entries_.emplace(path, std::move(new_entry));
     response->set_status_code(Status::kOk);
     response->set_message(std::format("创建目录成功：{}", path));
+    response->set_parent_path(parent_path);
 }

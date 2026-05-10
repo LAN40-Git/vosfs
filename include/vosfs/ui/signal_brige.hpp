@@ -14,5 +14,6 @@ signals:
     void deleteFinished(bool success, QString msg);
     void loginFinished(bool success, QString msg);
     void listDirFinished(QString path, QVariantList dir_entries);
+    void makeDirFinished();
 };
 } // namespace vosfs::ui
