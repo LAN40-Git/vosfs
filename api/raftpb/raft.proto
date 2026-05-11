@@ -66,10 +66,11 @@ message InstallSnapshotResponse {
 
 message BlockInfo {
   uint64 id = 1;
-  uint64 offset = 2;
-  uint64 size = 3;
-  string host = 4;
-  uint32 port = 5;
+  uint64 ino = 2;
+  uint64 offset = 3;
+  uint64 size = 4;
+  string host = 5;
+  uint32 port = 6;
 }
 
 message Inode {
@@ -107,17 +108,6 @@ message PendingResponse {
   }
 }
 
-message RequestBlocksAddressRequest {
-  string token = 1;
-  repeated BlockInfo blocks = 2;
-}
-
-message RequestBlocksAddressResponse {
-  uint32 status_code = 1;
-  string message = 2;
-  repeated BlockInfo blocks = 3;
-}
-
 message ListDirRequest {
   string token = 1;
   string path = 2;
@@ -141,4 +131,37 @@ message MakeDirResponse {
   uint32 status_code = 1;
   string message = 2;
   string parent_path = 3;
+}
+
+message PrepareUploadFileRequest {
+  string token = 1;
+  repeated BlockInfo blocks = 2;
+}
+
+message PrepareUploadFileResponse {
+  uint32 status_code = 1;
+  string message = 2;
+  repeated BlockInfo blocks = 3;
+}
+
+message UploadFileRequest {
+  string token = 1;
+  repeated BlockInfo blocks = 2;
+}
+
+message UploadFileResponse {
+  uint32 status_code = 1;
+  string message = 2;
+  string parent_path = 3;
+}
+
+message UploadBlockRequest {
+  string token = 1;
+  uint64 offset = 2;
+  bytes data = 3;
+}
+
+message UploadBlockResponse {
+  uint32 status_code = 1;
+  string message = 2;
 }

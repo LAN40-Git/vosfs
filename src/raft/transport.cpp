@@ -9,7 +9,7 @@ vosfs::raft::detail::Transport::Transport(const Config& config) {
     host_ = config.host;
     port_ = config.port;
 
-    for (auto& node : config.nodes | std::views::values) {
+    for (auto& node : config.raft_nodes | std::views::values) {
         auto peer = std::make_shared<Peer>(node.id, node.name, node.host, node.port);
         peers_.emplace(node.id, std::move(peer));
     }

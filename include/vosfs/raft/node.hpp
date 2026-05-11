@@ -57,6 +57,8 @@ private:
     auto handle_list_dir_request(const ListDirRequest& request) -> Task<ListDirResponse>;
     [[REMEMBER_CO_AWAIT]]
     auto handle_make_dir_request(MakeDirRequest& request) -> Task<MakeDirResponse>;
+    [[REMEMBER_CO_AWAIT]]
+    auto handle_prepare_upload_file_request(PrepareUploadFileRequest& request) -> Task<PrepareUploadFileResponse>;
 
 private:
     [[REMEMBER_CO_AWAIT]]
@@ -124,6 +126,11 @@ private:
     static auto make_make_dir_response(
         uint32_t status_code,
         std::string message) -> MakeDirResponse;
+
+    [[nodiscard]]
+    static auto make_prepare_upload_file_response(
+        uint32_t status_code,
+        std::string message) -> PrepareUploadFileResponse;
 
 private:
     enum Role { kLeader, kFollower, kCandidate };

@@ -3,7 +3,11 @@
 #include <kosio/common/debug.hpp>
 #include <kosio/runtime/runtime.hpp>
 
-vosfs::raft::detail::StateMachine::StateMachine() {
+vosfs::raft::detail::StateMachine::StateMachine(const Config& config) {
+    for (auto& node : config.data_nodes | std::views::values) {
+        data_nodes_.emplace(node.id, NodeInfo(node.id, node.name, node.host, node.port));
+    }
+
     Inode root_inode;
     root_inode.set_ino(0);
     root_inode.set_is_dir(true);
@@ -155,6 +159,12 @@ void vosfs::raft::detail::StateMachine::ls(const ListDirRequest& request, ListDi
     response.set_message(std::format("显示目录：{}", path));
     response.set_path(path);
     response.mutable_dir_entries()->CopyFrom(dir_entries);
+}
+
+void vosfs::raft::detail::StateMachine::prepare_upload_file(
+    PrepareUploadFileRequest& request,
+    PrepareUploadFileResponse& response) {
+
 }
 
 void vosfs::raft::detail::StateMachine::mkdir(const MakeDirRequest& request) {

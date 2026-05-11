@@ -578,6 +578,31 @@ auto vosfs::raft::RaftNode::handle_make_dir_request(MakeDirRequest& request) -> 
     co_return pending_request.response.mkdir();
 }
 
+auto vosfs::raft::RaftNode::handle_prepare_upload_file_request(
+    PrepareUploadFileRequest& request) -> Task<PrepareUploadFileResponse> {
+    std::string leader_id;
+    auto& token = request.token();
+
+    // 校验 token
+    if (!util::vertify_token(token)) {
+        co_return make_prepare_upload_file_response(Status::kPermissionDenied, "无效 Token");
+    }
+
+    co_await mutex_.lock();
+    if (leader_id_.has_value()) {
+        leader_id = std::to_string(leader_id_.value());
+    }
+
+    if (role_.load(std::memory_order_relaxed) != kLeader) {
+        mutex_.unlock();
+        co_return make_prepare_upload_file_response(Status::kNotLeader, leader_id);
+    }
+
+    PrepareUploadFileResponse response;
+    state_machine_.prepare_upload_file(request, response);
+    co_return response;
+}
+
 auto vosfs::raft::RaftNode::handle_request_vote_response(
     const RequestVoteResponse& response) -> Task<void> {
     [[maybe_unused]] auto id = response.id();
@@ -772,6 +797,15 @@ auto vosfs::raft::RaftNode::make_make_dir_response(
     uint32_t status_code,
     std::string message) -> MakeDirResponse {
     MakeDirResponse response;
+    response.set_status_code(status_code);
+    response.set_message(std::move(message));
+    return response;
+}
+
+auto vosfs::raft::RaftNode::make_prepare_upload_file_response(
+    uint32_t status_code,
+    std::string message) -> PrepareUploadFileResponse {
+    PrepareUploadFileResponse response;
     response.set_status_code(status_code);
     response.set_message(std::move(message));
     return response;

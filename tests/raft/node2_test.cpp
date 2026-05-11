@@ -11,8 +11,10 @@ auto main_coro() -> Task<void> {
         .set_name("node2")
         .set_host("127.0.0.1")
         .set_port(8081)
-        .add_node(1, "node1", "127.0.0.1", 8080)
-        .add_node(2, "node2", "127.0.0.1", 8081)
+        .add_raft_node(1, "raft_node1", "127.0.0.1", 8080)
+        .add_raft_node(2, "raft_node2", "127.0.0.1", 8081)
+        .add_data_node(1, "data_node1", "127.0.0.1", 7070)
+        .add_data_node(2, "data_node2", "127.0.0.1", 7071)
         .build();
     config.to_json("node2.json");
 

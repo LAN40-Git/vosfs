@@ -2,6 +2,7 @@
 #include <coroutine>
 #include <ranges>
 #include <unordered_map>
+#include "config.hpp"
 #include "raftpb/raft.pb.h"
 
 namespace vosfs::raft::detail {
@@ -13,9 +14,10 @@ struct PendingRequest {
 class StateMachine {
     using InodeMap = std::unordered_map<uint64_t, Inode>;
     using DirEntryMap = std::unordered_map<std::string, DirEntry>;
+    using DataNodeInfoMap = std::unordered_map<uint64_t, NodeInfo>;
     using PendingRequestMap = std::unordered_map<uint64_t, PendingRequest>;
 public:
-    explicit StateMachine();
+    explicit StateMachine(const Config& config);
 
 public:
     void load_snapshot(const Snapshot& snapshot);
@@ -27,6 +29,7 @@ public:
 
 public:
     void ls(const ListDirRequest& request, ListDirResponse& response);
+    void prepare_upload_file(PrepareUploadFileRequest& request, PrepareUploadFileResponse& response);
 
 private:
     void mkdir(const MakeDirRequest& request);
@@ -35,6 +38,7 @@ private:
 private:
     InodeMap          inodes_;
     DirEntryMap       dir_entries_;
+    DataNodeInfoMap   data_nodes_;
     uint64_t          next_ino_;
     PendingRequestMap pending_requests_;
 };
