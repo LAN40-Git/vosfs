@@ -41,7 +41,7 @@ auto vosfs::raft::RaftNode::create(const std::string& config_path) -> Result<std
         (snapshot_dir / SNAPSHOT_TEMP_FILE_NAME).c_str());
 
     // 初始化状态机
-    auto state_machine = detail::StateMachine{};
+    auto state_machine = detail::StateMachine{config};
 
     // 尝试加载快照
     if (auto ret = util::get_file_size((snapshot_dir / SNAPSHOT_FILE_NAME).c_str()); ret == -1) {

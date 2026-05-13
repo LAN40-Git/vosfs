@@ -4,8 +4,8 @@
 #include <kosio/runtime/runtime.hpp>
 
 vosfs::raft::detail::StateMachine::StateMachine(const Config& config) {
-    for (auto& node : config.data_nodes | std::views::values) {
-        data_nodes_.emplace(node.id, NodeInfo(node.id, node.name, node.host, node.port));
+    for (auto& node : config.data_nodes) {
+        data_nodes_.emplace_back(NodeInfo(node.id, node.name, node.host, node.port));
     }
 
     Inode root_inode;
@@ -164,7 +164,17 @@ void vosfs::raft::detail::StateMachine::ls(const ListDirRequest& request, ListDi
 void vosfs::raft::detail::StateMachine::prepare_upload_file(
     PrepareUploadFileRequest& request,
     PrepareUploadFileResponse& response) {
-
+    google::protobuf::RepeatedPtrField<BlockInfo> block_infos;
+    block_infos.Swap(request.mutable_blocks());
+    auto ino = next_ino_++;
+    for (auto& block_info : block_infos) {
+        auto key = ino << 32 | block_info.id();
+        auto data_node_index = std::hash<uint64_t>{}(key) % data_nodes_.size();
+        block_info.set_ino(ino);
+        block_info.set_host(data_nodes_[data_node_index].host);
+        block_info.set_port(data_nodes_[data_node_index].port);
+    }
+    response.mutable_blocks()->Swap(&block_infos);
 }
 
 void vosfs::raft::detail::StateMachine::mkdir(const MakeDirRequest& request) {

@@ -14,7 +14,6 @@ struct PendingRequest {
 class StateMachine {
     using InodeMap = std::unordered_map<uint64_t, Inode>;
     using DirEntryMap = std::unordered_map<std::string, DirEntry>;
-    using DataNodeInfoMap = std::unordered_map<uint64_t, NodeInfo>;
     using PendingRequestMap = std::unordered_map<uint64_t, PendingRequest>;
 public:
     explicit StateMachine(const Config& config);
@@ -36,10 +35,10 @@ private:
     void mkdir(const MakeDirRequest& request, MakeDirResponse* response);
 
 private:
-    InodeMap          inodes_;
-    DirEntryMap       dir_entries_;
-    DataNodeInfoMap   data_nodes_;
-    uint64_t          next_ino_;
-    PendingRequestMap pending_requests_;
+    InodeMap              inodes_;
+    DirEntryMap           dir_entries_;
+    std::vector<NodeInfo> data_nodes_;
+    uint64_t              next_ino_;
+    PendingRequestMap     pending_requests_;
 };
 } // namespace vosfs::raft::detail
