@@ -125,6 +125,11 @@ auto vosfs::raft::RaftNode::wait() -> Task<void> {
         [this](MakeDirRequest& request) -> Task<MakeDirResponse> {
         co_return co_await this->handle_make_dir_request(request);
     })
+    .register_method<PrepareUploadFileRequest, PrepareUploadFileResponse>(
+        "fs", "prepareuploadfile",
+        [this](PrepareUploadFileRequest& request) -> Task<PrepareUploadFileResponse> {
+            co_return co_await this->handle_prepare_upload_file_request(request);
+        })
     .wait();
 }
 
@@ -589,12 +594,12 @@ auto vosfs::raft::RaftNode::handle_prepare_upload_file_request(
     }
 
     co_await mutex_.lock();
+    std::lock_guard lock(mutex_, std::adopt_lock);
     if (leader_id_.has_value()) {
         leader_id = std::to_string(leader_id_.value());
     }
 
     if (role_.load(std::memory_order_relaxed) != kLeader) {
-        mutex_.unlock();
         co_return make_prepare_upload_file_response(Status::kNotLeader, leader_id);
     }
 

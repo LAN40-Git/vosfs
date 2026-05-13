@@ -15,6 +15,7 @@ auto main_coro() -> Task<void> {
         .add_raft_node(2, "raft_node2", "127.0.0.1", 8081)
         .add_data_node(1, "data_node1", "127.0.0.1", 7070)
         .add_data_node(2, "data_node2", "127.0.0.1", 7071)
+        .add_data_node(3, "data_node3", "127.0.0.1", 7072)
         .build();
     config.to_json("node2.json");
 

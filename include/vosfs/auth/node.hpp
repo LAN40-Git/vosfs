@@ -29,6 +29,7 @@ public:
         uint16_t port = 9000) -> Result<std::unique_ptr<AuthNode>>;
 
 public:
+    [[REMEMBER_CO_AWAIT]]
     auto wait() -> kosio::async::Task<void>;
 
 private:

@@ -164,15 +164,24 @@ void vosfs::raft::detail::StateMachine::ls(const ListDirRequest& request, ListDi
 void vosfs::raft::detail::StateMachine::prepare_upload_file(
     PrepareUploadFileRequest& request,
     PrepareUploadFileResponse& response) {
+    response.set_local_path(request.local_path());
+    response.set_remote_path(request.remote_path());
     google::protobuf::RepeatedPtrField<BlockInfo> block_infos;
     block_infos.Swap(request.mutable_blocks());
     auto ino = next_ino_++;
     for (auto& block_info : block_infos) {
-        auto key = ino << 32 | block_info.id();
-        auto data_node_index = std::hash<uint64_t>{}(key) % data_nodes_.size();
+        auto key = (ino << 32) | block_info.id();
+
+        auto node_index = std::hash<uint64_t>{}(key) % data_nodes_.size();
+
         block_info.set_ino(ino);
-        block_info.set_host(data_nodes_[data_node_index].host);
-        block_info.set_port(data_nodes_[data_node_index].port);
+
+        for (int i = 0; i < REPLICA_NODE_SIZE; ++i) {
+            uint64_t node_id = data_nodes_[node_index].id;
+            block_info.add_data_node_id(node_id);
+
+            node_index = (node_index + 1) % data_nodes_.size();
+        }
     }
     response.mutable_blocks()->Swap(&block_infos);
 }

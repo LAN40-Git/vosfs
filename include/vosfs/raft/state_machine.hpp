@@ -12,6 +12,7 @@ struct PendingRequest {
 };
 
 class StateMachine {
+    static constexpr std::size_t REPLICA_NODE_SIZE = 2;
     using InodeMap = std::unordered_map<uint64_t, Inode>;
     using DirEntryMap = std::unordered_map<std::string, DirEntry>;
     using PendingRequestMap = std::unordered_map<uint64_t, PendingRequest>;

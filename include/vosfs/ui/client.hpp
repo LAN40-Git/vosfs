@@ -30,6 +30,7 @@ public:
     explicit VosfsClient(
         RPCClient auth_client,
         std::unordered_map<uint64_t, RPCClient> raft_clients,
+        std::unordered_map<uint64_t, RPCClient> data_clients,
         SignalBrige& signal_brige,
         QObject *parent = nullptr);
 
@@ -61,6 +62,7 @@ public slots:
     void login_user_by_name(const QString& user_name, const QString& password, int role);
     void list_dir(const QString& path);
     void make_dir(const QString& parent_path, const QString& name);
+    void prepare_upload_file(const QString& path);
 
 public:
     [[REMEMBER_CO_AWAIT]]
@@ -88,20 +90,27 @@ public:
         std::string parent_path,
         std::string name) -> Task<void>;
 
+    [[REMEMBER_CO_AWAIT]]
+    auto send_prepare_upload_file_request(
+        std::string path) -> Task<void>;
+
 private:
     void handle_register_user_response(const vrpc::Status& status, const auth::RegisterUserResponse& response);
     void handle_delete_user_response(const vrpc::Status& status, const auth::DeleteUserResponse& response);
     void handle_login_user_by_name_response(const vrpc::Status& status, const auth::LoginUserByNameResponse& response);
     auto handle_list_dir_response(const vrpc::Status& status, const raft::ListDirResponse& response) -> Task<void>;
     auto handle_make_dir_response(const vrpc::Status& status, const raft::MakeDirResponse& response) -> Task<void>;
+    auto handle_prepare_upload_file_response(const vrpc::Status& status, const raft::PrepareUploadFileResponse& response) -> Task<void>;
 
 private:
     std::atomic<bool>                       is_shutdown_{true};
     std::latch                              latch_{1};
+    kosio::sync::Mutex                      mutex_;
     UserSession                             session_{};
     RPCClient                               auth_client_;
     uint64_t                                leader_id_{0};
     std::unordered_map<uint64_t, RPCClient> raft_clients_;
+    std::unordered_map<uint64_t, RPCClient> data_clients_;
     tbb::concurrent_queue<Task<void>>       tasks_;
     SignalBrige&                            signal_brige_;
 };

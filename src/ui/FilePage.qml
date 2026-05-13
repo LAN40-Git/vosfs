@@ -128,7 +128,7 @@ Item {
 
             onAccepted: {
                 var filePath = selectedFile.toString().replace(/^file:\/\//, "")
-                console.log("上传文件:", filePath)
+                VosfsClient.prepare_upload_file(filePath);
             }
         }
 

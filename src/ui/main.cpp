@@ -14,8 +14,10 @@ auto main(int argc, char *argv[]) -> int {
     vosfs::ui::ConfigBuilder::options()
         .set_auth_host("127.0.0.1")
         .set_auth_port(9000)
-        .add_node(1, "127.0.0.1", 8080)
-        .add_node(2, "127.0.0.1", 8081)
+        .add_raft_node(1, "127.0.0.1", 8080)
+        .add_raft_node(2, "127.0.0.1", 8081)
+        .add_data_node(1, "127.0.0.1", 7070)
+        .add_data_node(2, "127.0.0.1", 7071)
         .build().to_json("config.json");
 
     auto has_vosfs_client = vosfs::ui::VosfsClient::create("config.json", signal_brige);

@@ -1,8 +1,8 @@
 #include <jwt-cpp/jwt.h>
 #include "authpb/auth.pb.h"
 #include "vosfs/common/util/jwt.hpp"
-#include "../../include/vosfs/auth/config.hpp"
-#include "../../include/vosfs/common/status.hpp"
+#include "vosfs/auth/config.hpp"
+#include "vosfs/common/status.hpp"
 #include "vosfs/auth/node.hpp"
 
 auto vosfs::auth::AuthNode::create(
@@ -64,7 +64,6 @@ auto vosfs::auth::AuthNode::wait() -> kosio::async::Task<void> {
 
 auto vosfs::auth::AuthNode::handle_register_user_request(const RegisterUserRequest& request)
     -> kosio::async::Task<RegisterUserResponse> {
-    ;
     RegisterUserResponse response;
 
     auto& user_name = request.user_name();

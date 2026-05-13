@@ -24,14 +24,23 @@ struct Config {
         auto json = nlohmann::json::parse(f);
         auto auth_host = json["auth_host"].get<std::string>();
         auto auth_port = json["auth_port"].get<uint16_t>();
-        std::unordered_map<uint64_t, NodeInfo> nodes;
+        std::unordered_map<uint64_t, NodeInfo> raft_nodes;
+        std::unordered_map<uint64_t, NodeInfo> data_nodes;
 
-        auto& nodes_json = json["nodes"];
-        for (auto& node : nodes_json) {
+        auto& raft_nodes_json = json["raft_nodes"];
+        for (auto& node : raft_nodes_json) {
             auto id = node["id"].get<uint64_t>();
             auto host = node["host"].get<std::string>();
             auto port = node["port"].get<uint16_t>();
-            nodes.emplace(id, NodeInfo{id, host, port});
+            raft_nodes.emplace(id, NodeInfo{id, host, port});
+        }
+
+        auto& data_nodes_json = json["data_nodes"];
+        for (auto& node : data_nodes_json) {
+            auto id = node["id"].get<uint64_t>();
+            auto host = node["host"].get<std::string>();
+            auto port = node["port"].get<uint16_t>();
+            data_nodes.emplace(id, NodeInfo{id, host, port});
         }
 
         std::cout << json.dump(4) << std::endl;
@@ -39,7 +48,8 @@ struct Config {
         return Config{
             .auth_host = std::move(auth_host),
             .auth_port = auth_port,
-            .nodes = std::move(nodes)
+            .raft_nodes = std::move(raft_nodes),
+            .data_nodes = std::move(data_nodes)
         };
     }
 
@@ -52,15 +62,25 @@ struct Config {
         json["auth_host"] = auth_host;
         json["auth_port"] = auth_port;
 
-        nlohmann::json nodes_json;
-        for (const auto& node : nodes | std::views::values) {
+        nlohmann::json raft_nodes_json;
+        for (const auto& node : raft_nodes | std::views::values) {
             nlohmann::json node_json;
             node_json["id"] = node.id;
             node_json["host"] = node.host;
             node_json["port"] = node.port;
-            nodes_json.push_back(std::move(node_json));
+            raft_nodes_json.push_back(std::move(node_json));
         }
-        json["nodes"] = std::move(nodes_json);
+        json["raft_nodes"] = std::move(raft_nodes_json);
+
+        nlohmann::json data_nodes_json;
+        for (const auto& node : data_nodes | std::views::values) {
+            nlohmann::json node_json;
+            node_json["id"] = node.id;
+            node_json["host"] = node.host;
+            node_json["port"] = node.port;
+            data_nodes_json.push_back(std::move(node_json));
+        }
+        json["data_nodes"] = std::move(data_nodes_json);
 
         std::ofstream f(path);
         f << json.dump(4);
@@ -73,7 +93,10 @@ struct Config {
     uint16_t auth_port{9000};
 
     // 集群节点
-    std::unordered_map<uint64_t, NodeInfo> nodes;
+    std::unordered_map<uint64_t, NodeInfo> raft_nodes;
+
+    // 数据节点
+    std::unordered_map<uint64_t, NodeInfo> data_nodes;
 };
 } // namespace detail
 
@@ -91,8 +114,14 @@ struct ConfigBuilder {
     }
 
     [[nodiscard]]
-    auto add_node(uint64_t id, std::string host, uint16_t port) -> ConfigBuilder& {
-        config_.nodes.emplace(id, detail::NodeInfo{id,  std::move(host), port});
+    auto add_raft_node(uint64_t id, std::string host, uint16_t port) -> ConfigBuilder& {
+        config_.raft_nodes.emplace(id, detail::NodeInfo{id,  std::move(host), port});
+        return *this;
+    }
+
+    [[nodiscard]]
+    auto add_data_node(uint64_t id, std::string host, uint16_t port) -> ConfigBuilder& {
+        config_.data_nodes.emplace(id, detail::NodeInfo{id,  std::move(host), port});
         return *this;
     }
 
