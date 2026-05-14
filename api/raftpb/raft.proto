@@ -149,11 +149,16 @@ message PrepareUploadFileResponse {
 
 message PrepareDownloadFileRequest {
   string token = 1;
-  string path = 2;
+  string local_path = 2;
+  string remote_path = 3;
 }
 
 message PrepareDownloadFileResponse {
-
+  uint32 status_code = 1;
+  string message = 2;
+  string local_path = 3;
+  string remote_path = 4;
+  repeated BlockInfo blocks = 5;
 }
 
 message UploadFileRequest {
@@ -170,13 +175,14 @@ message UploadFileResponse {
 
 message UploadBlockRequest {
   string token = 1;
-  uint64 offset = 2;
+  BlockInfo block_info = 2;
   bytes data = 3;
 }
 
 message UploadBlockResponse {
   uint32 status_code = 1;
   string message = 2;
+  BlockInfo block_info = 3;
 }
 
 message DownloadBlockRequest {
@@ -187,5 +193,6 @@ message DownloadBlockRequest {
 message DownloadBlockResponse {
   uint32 status_code = 1;
   string message = 2;
-  bytes data = 3;
+  BlockInfo block_info = 3;
+  bytes data = 4;
 }

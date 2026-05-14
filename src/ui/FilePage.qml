@@ -213,7 +213,7 @@ Item {
             color: "#FFFFFF"
             background: Rectangle {
                 color: "#2A2A2A"
-                radius: 4
+                radius: 47
             }
         }
     }

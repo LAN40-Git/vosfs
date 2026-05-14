@@ -8,6 +8,7 @@
 #include <vrpc/net/tcp/tcp_client.hpp>
 #include "raftpb/raft.pb.h"
 #include "vosfs/ui/config.hpp"
+#include "vosfs/ui/transport_task.hpp"
 #include "vosfs/common/error.hpp"
 #include "vosfs/auth/user_session.hpp"
 
@@ -31,6 +32,8 @@ public:
         RPCClient auth_client,
         std::unordered_map<uint64_t, RPCClient> raft_clients,
         std::unordered_map<uint64_t, RPCClient> data_clients,
+        nlohmann::json json,
+        std::unordered_map<uint64_t, detail::TransportTask> upload_tasks,
         SignalBrige& signal_brige,
         QObject *parent = nullptr);
 
@@ -62,7 +65,7 @@ public slots:
     void login_user_by_name(const QString& user_name, const QString& password, int role);
     void list_dir(const QString& path);
     void make_dir(const QString& parent_path, const QString& name);
-    void prepare_upload_file(const QString& path);
+    void prepare_upload_file(const QString& local_path, const QString& current_dir);
 
 public:
     [[REMEMBER_CO_AWAIT]]
@@ -92,7 +95,7 @@ public:
 
     [[REMEMBER_CO_AWAIT]]
     auto send_prepare_upload_file_request(
-        std::string path) -> Task<void>;
+        std::string local_path, std::string current_dir) -> Task<void>;
 
 private:
     void handle_register_user_response(const vrpc::Status& status, const auth::RegisterUserResponse& response);
@@ -112,6 +115,8 @@ private:
     std::unordered_map<uint64_t, RPCClient> raft_clients_;
     std::unordered_map<uint64_t, RPCClient> data_clients_;
     tbb::concurrent_queue<Task<void>>       tasks_;
+    nlohmann::json                          json_;
+    std::unordered_map<uint64_t, detail::TransportTask> upload_tasks_;
     SignalBrige&                            signal_brige_;
 };
 } // namespace vosfs::ui
