@@ -175,14 +175,16 @@ message UploadFileResponse {
 
 message UploadBlockRequest {
   string token = 1;
-  BlockInfo block_info = 2;
-  bytes data = 3;
+  uint64 block_id = 2;
+  uint64 ino = 3;
+  bytes data = 4;
 }
 
 message UploadBlockResponse {
   uint32 status_code = 1;
   string message = 2;
-  BlockInfo block_info = 3;
+  uint64 block_id = 3;
+  uint64 ino = 4;
 }
 
 message DownloadBlockRequest {

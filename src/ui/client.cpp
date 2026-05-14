@@ -8,16 +8,12 @@ vosfs::ui::VosfsClient::VosfsClient(
     RPCClient auth_client,
     std::unordered_map<uint64_t, RPCClient> raft_clients,
     std::unordered_map<uint64_t, RPCClient> data_clients,
-    nlohmann::json json,
-    std::unordered_map<uint64_t, detail::TransportTask> upload_tasks,
     SignalBrige& signal_brige,
     QObject* parent)
     : QObject(parent)
     , auth_client_(std::move(auth_client))
     , raft_clients_(std::move(raft_clients))
     , data_clients_(std::move(data_clients))
-    , json_(std::move(json))
-    , upload_tasks_(std::move(upload_tasks))
     , signal_brige_(signal_brige) {
     if (!raft_clients_.empty()) {
         leader_id_ = raft_clients_.begin()->first;
@@ -42,43 +38,10 @@ auto vosfs::ui::VosfsClient::create(
     for (auto& node : config.data_nodes | std::views::values) {
         data_clients.emplace(node.id, std::make_unique<vrpc::TcpClient>(node.host, node.port));
     }
-    if (!std::filesystem::exists("transport_tasks.json")) {
-        std::ofstream("transport_tasks.json").close();
-    }
-    std::ifstream ifs("transport_tasks.json");
-    auto json = nlohmann::json::parse(ifs);
-    std::unordered_map<uint64_t, detail::TransportTask> upload_tasks;
-    auto& upload_tasks_json = json["upload_tasks"];
-    for (auto& upload_task : upload_tasks_json) {
-        auto ino = upload_task["ino"].get<uint64_t>();
-        auto total_blocks = upload_task["total_blocks"].get<uint64_t>();
-        auto done_blocks = upload_task["done_blocks"].get<uint64_t>();
-        auto local_path = upload_task["local_path"].get<std::string>();
-        auto remote_path = upload_task["remote_path"].get<std::string>();
-        auto& blocks = upload_task["blocks"];
-        detail::TransportTask task;
-        task.ino = ino;
-        task.total_blocks = total_blocks;
-        task.done_blocks = done_blocks;
-        task.local_path = local_path;
-        task.remote_path = remote_path;
-        for (auto& block : blocks) {
-            detail::BlockInfo block_info;
-            block_info.done = block["done"].get<bool>();
-            block_info.id = block["id"].get<uint64_t>();
-            block_info.ino = block["ino"].get<uint64_t>();
-            block_info.offset = block["offset"].get<uint64_t>();
-            block_info.size = block["size"].get<uint64_t>();
-            block_info.data_node_ids = block["data_node_ids"].get<std::vector<uint64_t>>();
-        }
-        upload_tasks.emplace(ino, std::move(task));
-    }
     return std::make_unique<VosfsClient>(
         std::move(auth_client),
         std::move(raft_clients),
         std::move(data_clients),
-        std::move(json),
-        std::move(upload_tasks),
         signal_brige);
 }
 
@@ -298,6 +261,46 @@ auto vosfs::ui::VosfsClient::send_prepare_upload_file_request(std::string local_
         });
 }
 
+auto vosfs::ui::VosfsClient::send_upload_block_request(
+    const std::string& local_path,
+    uint64_t block_id,
+    uint64_t ino,
+    uint64_t offset,
+    uint64_t size,
+    uint64_t data_node_id) -> Task<void> {
+    raft::UploadBlockRequest request;
+    request.set_token(session_.token);
+    request.set_block_id(block_id);
+    request.set_ino(ino);
+
+    std::ifstream file(local_path, std::ios::binary);
+    if (!file.is_open()) {
+        signal_brige_.appendLog(QString::fromStdString(std::format("错误：无法打开文件 {}", local_path)));
+        co_return;
+    }
+
+    std::string block_data;
+    block_data.resize(size);
+    file.read(block_data.data(), size);
+    request.set_data(std::move(block_data));
+
+    auto it = data_clients_.find(data_node_id);
+    if (it == data_clients_.end()) {
+        signal_brige_.appendLog(QString::fromStdString(std::format("请求失败，节点 {} 不存在，请检查集群配置", leader_id_)));
+        co_return;
+    }
+    auto& data_client = it->second;
+    co_await data_client->call_method<raft::UploadBlockRequest, raft::UploadBlockResponse>(
+        "fs", "uploadblock", request,
+        [this](const vrpc::Status& status, const raft::UploadBlockResponse& response) -> Task<void> {
+            co_await this->handle_upload_block_response(status, response);
+        });
+}
+
+auto vosfs::ui::VosfsClient::send_upload_file_request(uint64_t ino) -> Task<void> {
+
+}
+
 void vosfs::ui::VosfsClient::handle_register_user_response(
     const vrpc::Status& status,
     const auth::RegisterUserResponse& response) {
@@ -339,6 +342,7 @@ void vosfs::ui::VosfsClient::handle_login_user_by_name_response(
         session_.role = static_cast<auth::User_Role>(stoi(decode.get_payload_claim("role").as_string()));
         session_.quota = static_cast<uint64_t>(stoull(decode.get_payload_claim("quota").as_string()));
         session_.create_time = response.create_time();
+        load_transport_tasks_json();
     }
     signal_brige_.appendLog(QString::fromStdString(std::string{response.message()}));
     signal_brige_.loginFinished(res_status.ok(), QString::fromStdString(response.message()));
@@ -467,8 +471,126 @@ auto vosfs::ui::VosfsClient::handle_prepare_upload_file_response(
         co_await mutex_.lock();
         auto& upload_tasks_json = json_["upload_tasks"];
         upload_tasks_json.push_back(std::move(task_json));
-        [[maybe_unused]] auto json_str = json_.dump(4);
+        auto path = std::to_string(session_.uid) + "-" + "transport_tasks.json";
+        std::ofstream f(path);
+        f << json_.dump(4);
+        f.close();
         upload_tasks_.emplace(transport_task.ino, std::move(transport_task));
         mutex_.unlock();
+    }
+}
+
+auto vosfs::ui::VosfsClient::handle_upload_block_response(
+    const vrpc::Status& status,
+    const raft::UploadBlockResponse& response) -> Task<void> {
+    if (!status.ok()) {
+        signal_brige_.appendLog(QString::fromStdString(std::string{status.message()}));
+        co_return;
+    }
+
+    auto res_status = Status{response.status_code()};
+    if (res_status.ok()) {
+        auto& upload_task = upload_tasks_[response.ino()];
+        auto& block = upload_task.blocks[response.block_id()];
+        block.done = true;
+        ++upload_task.done_blocks;
+        if (upload_task.done_blocks >= upload_task.total_blocks) {
+            tasks_.emplace(send_upload_file_request(upload_task.ino));
+        }
+        // TODO: 更新进度
+    } else {
+        // TODO: 重传
+    }
+}
+
+void vosfs::ui::VosfsClient::load_transport_tasks_json() {
+    auto path = std::to_string(session_.uid) + "-" + "transport_tasks.json";
+    if (!std::filesystem::exists(path)) {
+        nlohmann::json json;
+        json["upload_tasks"] = nlohmann::json::array();
+        json["download_tasks"] = nlohmann::json::array();
+        std::ofstream f(path);
+        f << json.dump(4);
+        f.close();
+    }
+    std::ifstream ifs(path);
+    auto json = nlohmann::json::parse(ifs);
+    std::unordered_map<uint64_t, detail::TransportTask> upload_tasks;
+    auto& upload_tasks_json = json["upload_tasks"];
+    for (auto& upload_task : upload_tasks_json) {
+        auto ino = upload_task["ino"].get<uint64_t>();
+        auto total_blocks = upload_task["total_blocks"].get<uint64_t>();
+        auto done_blocks = upload_task["done_blocks"].get<uint64_t>();
+        auto local_path = upload_task["local_path"].get<std::string>();
+        auto remote_path = upload_task["remote_path"].get<std::string>();
+        auto& blocks = upload_task["blocks"];
+        detail::TransportTask task;
+        task.ino = ino;
+        task.total_blocks = total_blocks;
+        task.done_blocks = done_blocks;
+        task.local_path = local_path;
+        task.remote_path = remote_path;
+        for (auto& block : blocks) {
+            detail::BlockInfo block_info;
+            block_info.done = block["done"].get<bool>();
+            block_info.id = block["id"].get<uint64_t>();
+            block_info.ino = block["ino"].get<uint64_t>();
+            block_info.offset = block["offset"].get<uint64_t>();
+            block_info.size = block["size"].get<uint64_t>();
+            block_info.data_node_ids = block["data_node_ids"].get<std::vector<uint64_t>>();
+        }
+        upload_tasks.emplace(ino, std::move(task));
+    }
+    std::unordered_map<uint64_t, detail::TransportTask> download_tasks;
+    auto& download_tasks_json = json["download_tasks"];
+    for (auto& download_task : download_tasks_json) {
+        auto ino = download_task["ino"].get<uint64_t>();
+        auto total_blocks = download_task["total_blocks"].get<uint64_t>();
+        auto done_blocks = download_task["done_blocks"].get<uint64_t>();
+        auto local_path = download_task["local_path"].get<std::string>();
+        auto remote_path = download_task["remote_path"].get<std::string>();
+        auto& blocks = download_task["blocks"];
+        detail::TransportTask task;
+        task.ino = ino;
+        task.total_blocks = total_blocks;
+        task.done_blocks = done_blocks;
+        task.local_path = local_path;
+        task.remote_path = remote_path;
+        for (auto& block : blocks) {
+            detail::BlockInfo block_info;
+            block_info.done = block["done"].get<bool>();
+            block_info.id = block["id"].get<uint64_t>();
+            block_info.ino = block["ino"].get<uint64_t>();
+            block_info.offset = block["offset"].get<uint64_t>();
+            block_info.size = block["size"].get<uint64_t>();
+            block_info.data_node_ids = block["data_node_ids"].get<std::vector<uint64_t>>();
+        }
+        download_tasks.emplace(ino, std::move(task));
+    }
+    json_ = std::move(json);
+    upload_tasks_ = std::move(upload_tasks);
+    download_tasks_ = std::move(download_tasks);
+}
+
+auto vosfs::ui::VosfsClient::do_upload_task(const detail::TransportTask& task) -> Task<void> {
+    if (task.done_blocks >= task.total_blocks) {
+        tasks_.emplace(send_upload_file_request(task.ino));
+        co_return;
+    }
+
+    for (const auto& block : task.blocks | std::views::values) {
+        if (block.done) {
+            continue;
+        }
+
+        for (const auto& data_node_id : block.data_node_ids) {
+            tasks_.emplace(send_upload_block_request(
+                task.local_path,
+                block.id,
+                block.ino,
+                block.offset,
+                block.size,
+                data_node_id));
+        }
     }
 }

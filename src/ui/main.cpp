@@ -18,6 +18,7 @@ auto main(int argc, char *argv[]) -> int {
         .add_raft_node(2, "127.0.0.1", 8081)
         .add_data_node(1, "127.0.0.1", 7070)
         .add_data_node(2, "127.0.0.1", 7071)
+        .add_data_node(3, "127.0.0.1", 7072)
         .build().to_json("config.json");
 
     auto has_vosfs_client = vosfs::ui::VosfsClient::create("config.json", signal_brige);

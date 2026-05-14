@@ -128,7 +128,7 @@ Item {
 
             onAccepted: {
                 var filePath = selectedFile.toString().replace(/^file:\/\//, "")
-                VosfsClient.prepare_upload_file(filePath);
+                VosfsClient.prepare_upload_file(filePath, mainWindow.currentDir);
             }
         }
 

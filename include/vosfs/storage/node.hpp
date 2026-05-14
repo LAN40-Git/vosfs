@@ -1,4 +1,5 @@
 #pragma once
+#include <kosio/fs.hpp>
 #include <vrpc/net/tcp/tcp_server.hpp>
 #include "vosfs/common/error.hpp"
 #include "raftpb/raft.pb.h"
@@ -23,8 +24,17 @@ private:
     auto handle_download_block_request(const raft::UploadBlockRequest& request) -> kosio::async::Task<raft::UploadBlockResponse>;
 
 private:
-    std::string     host_;
-    uint16_t        port_;
-    std::string     block_dir_;
+    [[nodiscard]]
+    auto make_upload_block_response(
+    uint32_t status_code,
+    std::string message,
+    uint64_t block_id,
+    uint64_t ino) const -> raft::UploadBlockResponse;
+
+private:
+    std::string        host_;
+    uint16_t           port_;
+    std::string        block_dir_;
+    kosio::sync::Mutex mutex_;
 };
 } // namespace vosfs::storage

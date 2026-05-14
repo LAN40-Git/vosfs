@@ -32,8 +32,6 @@ public:
         RPCClient auth_client,
         std::unordered_map<uint64_t, RPCClient> raft_clients,
         std::unordered_map<uint64_t, RPCClient> data_clients,
-        nlohmann::json json,
-        std::unordered_map<uint64_t, detail::TransportTask> upload_tasks,
         SignalBrige& signal_brige,
         QObject *parent = nullptr);
 
@@ -97,6 +95,19 @@ public:
     auto send_prepare_upload_file_request(
         std::string local_path, std::string current_dir) -> Task<void>;
 
+    [[REMEMBER_CO_AWAIT]]
+    auto send_upload_block_request(
+        const std::string& local_path,
+        uint64_t block_id,
+        uint64_t ino,
+        uint64_t offset,
+        uint64_t size,
+        uint64_t data_node_id) -> Task<void>;
+
+    [[REMEMBER_CO_AWAIT]]
+    auto send_upload_file_request(
+        uint64_t ino) -> Task<void>;
+
 private:
     void handle_register_user_response(const vrpc::Status& status, const auth::RegisterUserResponse& response);
     void handle_delete_user_response(const vrpc::Status& status, const auth::DeleteUserResponse& response);
@@ -104,6 +115,12 @@ private:
     auto handle_list_dir_response(const vrpc::Status& status, const raft::ListDirResponse& response) -> Task<void>;
     auto handle_make_dir_response(const vrpc::Status& status, const raft::MakeDirResponse& response) -> Task<void>;
     auto handle_prepare_upload_file_response(const vrpc::Status& status, const raft::PrepareUploadFileResponse& response) -> Task<void>;
+    auto handle_upload_block_response(const vrpc::Status& status, const raft::UploadBlockResponse& response) -> Task<void>;
+
+private:
+    void load_transport_tasks_json();
+    auto do_upload_task(const detail::TransportTask& task) -> Task<void>;
+    auto do_download_task(const detail::TransportTask& task);
 
 private:
     std::atomic<bool>                       is_shutdown_{true};
@@ -117,6 +134,7 @@ private:
     tbb::concurrent_queue<Task<void>>       tasks_;
     nlohmann::json                          json_;
     std::unordered_map<uint64_t, detail::TransportTask> upload_tasks_;
+    std::unordered_map<uint64_t, detail::TransportTask> download_tasks_;
     SignalBrige&                            signal_brige_;
 };
 } // namespace vosfs::ui

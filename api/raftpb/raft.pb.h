@@ -23,7 +23,6 @@
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/arena.h>
 #include <google/protobuf/arenastring.h>
-#include <google/protobuf/generated_message_bases.h>
 #include <google/protobuf/generated_message_util.h>
 #include <google/protobuf/metadata_lite.h>
 #include <google/protobuf/generated_message_reflection.h>
@@ -4164,7 +4163,8 @@ class PrepareDownloadFileRequest final :
 
   enum : int {
     kTokenFieldNumber = 1,
-    kPathFieldNumber = 2,
+    kLocalPathFieldNumber = 2,
+    kRemotePathFieldNumber = 3,
   };
   // string token = 1;
   void clear_token();
@@ -4180,18 +4180,32 @@ class PrepareDownloadFileRequest final :
   std::string* _internal_mutable_token();
   public:
 
-  // string path = 2;
-  void clear_path();
-  const std::string& path() const;
+  // string local_path = 2;
+  void clear_local_path();
+  const std::string& local_path() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_path(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_path();
-  PROTOBUF_NODISCARD std::string* release_path();
-  void set_allocated_path(std::string* path);
+  void set_local_path(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_local_path();
+  PROTOBUF_NODISCARD std::string* release_local_path();
+  void set_allocated_local_path(std::string* local_path);
   private:
-  const std::string& _internal_path() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_path(const std::string& value);
-  std::string* _internal_mutable_path();
+  const std::string& _internal_local_path() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_local_path(const std::string& value);
+  std::string* _internal_mutable_local_path();
+  public:
+
+  // string remote_path = 3;
+  void clear_remote_path();
+  const std::string& remote_path() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_remote_path(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_remote_path();
+  PROTOBUF_NODISCARD std::string* release_remote_path();
+  void set_allocated_remote_path(std::string* remote_path);
+  private:
+  const std::string& _internal_remote_path() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_remote_path(const std::string& value);
+  std::string* _internal_mutable_remote_path();
   public:
 
   // @@protoc_insertion_point(class_scope:vosfs.raft.PrepareDownloadFileRequest)
@@ -4203,7 +4217,8 @@ class PrepareDownloadFileRequest final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr token_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr path_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr local_path_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr remote_path_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -4212,9 +4227,10 @@ class PrepareDownloadFileRequest final :
 // -------------------------------------------------------------------
 
 class PrepareDownloadFileResponse final :
-    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:vosfs.raft.PrepareDownloadFileResponse) */ {
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vosfs.raft.PrepareDownloadFileResponse) */ {
  public:
   inline PrepareDownloadFileResponse() : PrepareDownloadFileResponse(nullptr) {}
+  ~PrepareDownloadFileResponse() override;
   explicit PROTOBUF_CONSTEXPR PrepareDownloadFileResponse(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
   PrepareDownloadFileResponse(const PrepareDownloadFileResponse& from);
@@ -4287,15 +4303,29 @@ class PrepareDownloadFileResponse final :
   PrepareDownloadFileResponse* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<PrepareDownloadFileResponse>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
-  inline void CopyFrom(const PrepareDownloadFileResponse& from) {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const PrepareDownloadFileResponse& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const PrepareDownloadFileResponse& from) {
+    PrepareDownloadFileResponse::MergeImpl(*this, from);
   }
-  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
-  void MergeFrom(const PrepareDownloadFileResponse& from) {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
-  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
   public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(PrepareDownloadFileResponse* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
@@ -4316,6 +4346,82 @@ class PrepareDownloadFileResponse final :
 
   // accessors -------------------------------------------------------
 
+  enum : int {
+    kBlocksFieldNumber = 5,
+    kMessageFieldNumber = 2,
+    kLocalPathFieldNumber = 3,
+    kRemotePathFieldNumber = 4,
+    kStatusCodeFieldNumber = 1,
+  };
+  // repeated .vosfs.raft.BlockInfo blocks = 5;
+  int blocks_size() const;
+  private:
+  int _internal_blocks_size() const;
+  public:
+  void clear_blocks();
+  ::vosfs::raft::BlockInfo* mutable_blocks(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::BlockInfo >*
+      mutable_blocks();
+  private:
+  const ::vosfs::raft::BlockInfo& _internal_blocks(int index) const;
+  ::vosfs::raft::BlockInfo* _internal_add_blocks();
+  public:
+  const ::vosfs::raft::BlockInfo& blocks(int index) const;
+  ::vosfs::raft::BlockInfo* add_blocks();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::BlockInfo >&
+      blocks() const;
+
+  // string message = 2;
+  void clear_message();
+  const std::string& message() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_message(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_message();
+  PROTOBUF_NODISCARD std::string* release_message();
+  void set_allocated_message(std::string* message);
+  private:
+  const std::string& _internal_message() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_message(const std::string& value);
+  std::string* _internal_mutable_message();
+  public:
+
+  // string local_path = 3;
+  void clear_local_path();
+  const std::string& local_path() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_local_path(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_local_path();
+  PROTOBUF_NODISCARD std::string* release_local_path();
+  void set_allocated_local_path(std::string* local_path);
+  private:
+  const std::string& _internal_local_path() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_local_path(const std::string& value);
+  std::string* _internal_mutable_local_path();
+  public:
+
+  // string remote_path = 4;
+  void clear_remote_path();
+  const std::string& remote_path() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_remote_path(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_remote_path();
+  PROTOBUF_NODISCARD std::string* release_remote_path();
+  void set_allocated_remote_path(std::string* remote_path);
+  private:
+  const std::string& _internal_remote_path() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_remote_path(const std::string& value);
+  std::string* _internal_mutable_remote_path();
+  public:
+
+  // uint32 status_code = 1;
+  void clear_status_code();
+  uint32_t status_code() const;
+  void set_status_code(uint32_t value);
+  private:
+  uint32_t _internal_status_code() const;
+  void _internal_set_status_code(uint32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:vosfs.raft.PrepareDownloadFileResponse)
  private:
   class _Internal;
@@ -4324,7 +4430,14 @@ class PrepareDownloadFileResponse final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::BlockInfo > blocks_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr message_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr local_path_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr remote_path_;
+    uint32_t status_code_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
+  union { Impl_ _impl_; };
   friend struct ::TableStruct_raft_2eproto;
 };
 // -------------------------------------------------------------------
@@ -4820,8 +4933,9 @@ class UploadBlockRequest final :
 
   enum : int {
     kTokenFieldNumber = 1,
-    kDataFieldNumber = 3,
-    kOffsetFieldNumber = 2,
+    kDataFieldNumber = 4,
+    kBlockIdFieldNumber = 2,
+    kInoFieldNumber = 3,
   };
   // string token = 1;
   void clear_token();
@@ -4837,7 +4951,7 @@ class UploadBlockRequest final :
   std::string* _internal_mutable_token();
   public:
 
-  // bytes data = 3;
+  // bytes data = 4;
   void clear_data();
   const std::string& data() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -4851,13 +4965,22 @@ class UploadBlockRequest final :
   std::string* _internal_mutable_data();
   public:
 
-  // uint64 offset = 2;
-  void clear_offset();
-  uint64_t offset() const;
-  void set_offset(uint64_t value);
+  // uint64 block_id = 2;
+  void clear_block_id();
+  uint64_t block_id() const;
+  void set_block_id(uint64_t value);
   private:
-  uint64_t _internal_offset() const;
-  void _internal_set_offset(uint64_t value);
+  uint64_t _internal_block_id() const;
+  void _internal_set_block_id(uint64_t value);
+  public:
+
+  // uint64 ino = 3;
+  void clear_ino();
+  uint64_t ino() const;
+  void set_ino(uint64_t value);
+  private:
+  uint64_t _internal_ino() const;
+  void _internal_set_ino(uint64_t value);
   public:
 
   // @@protoc_insertion_point(class_scope:vosfs.raft.UploadBlockRequest)
@@ -4870,7 +4993,8 @@ class UploadBlockRequest final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr token_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr data_;
-    uint64_t offset_;
+    uint64_t block_id_;
+    uint64_t ino_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -5000,6 +5124,8 @@ class UploadBlockResponse final :
 
   enum : int {
     kMessageFieldNumber = 2,
+    kBlockIdFieldNumber = 3,
+    kInoFieldNumber = 4,
     kStatusCodeFieldNumber = 1,
   };
   // string message = 2;
@@ -5014,6 +5140,24 @@ class UploadBlockResponse final :
   const std::string& _internal_message() const;
   inline PROTOBUF_ALWAYS_INLINE void _internal_set_message(const std::string& value);
   std::string* _internal_mutable_message();
+  public:
+
+  // uint64 block_id = 3;
+  void clear_block_id();
+  uint64_t block_id() const;
+  void set_block_id(uint64_t value);
+  private:
+  uint64_t _internal_block_id() const;
+  void _internal_set_block_id(uint64_t value);
+  public:
+
+  // uint64 ino = 4;
+  void clear_ino();
+  uint64_t ino() const;
+  void set_ino(uint64_t value);
+  private:
+  uint64_t _internal_ino() const;
+  void _internal_set_ino(uint64_t value);
   public:
 
   // uint32 status_code = 1;
@@ -5034,6 +5178,8 @@ class UploadBlockResponse final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr message_;
+    uint64_t block_id_;
+    uint64_t ino_;
     uint32_t status_code_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -5337,7 +5483,8 @@ class DownloadBlockResponse final :
 
   enum : int {
     kMessageFieldNumber = 2,
-    kDataFieldNumber = 3,
+    kDataFieldNumber = 4,
+    kBlockInfoFieldNumber = 3,
     kStatusCodeFieldNumber = 1,
   };
   // string message = 2;
@@ -5354,7 +5501,7 @@ class DownloadBlockResponse final :
   std::string* _internal_mutable_message();
   public:
 
-  // bytes data = 3;
+  // bytes data = 4;
   void clear_data();
   const std::string& data() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -5367,6 +5514,24 @@ class DownloadBlockResponse final :
   inline PROTOBUF_ALWAYS_INLINE void _internal_set_data(const std::string& value);
   std::string* _internal_mutable_data();
   public:
+
+  // .vosfs.raft.BlockInfo block_info = 3;
+  bool has_block_info() const;
+  private:
+  bool _internal_has_block_info() const;
+  public:
+  void clear_block_info();
+  const ::vosfs::raft::BlockInfo& block_info() const;
+  PROTOBUF_NODISCARD ::vosfs::raft::BlockInfo* release_block_info();
+  ::vosfs::raft::BlockInfo* mutable_block_info();
+  void set_allocated_block_info(::vosfs::raft::BlockInfo* block_info);
+  private:
+  const ::vosfs::raft::BlockInfo& _internal_block_info() const;
+  ::vosfs::raft::BlockInfo* _internal_mutable_block_info();
+  public:
+  void unsafe_arena_set_allocated_block_info(
+      ::vosfs::raft::BlockInfo* block_info);
+  ::vosfs::raft::BlockInfo* unsafe_arena_release_block_info();
 
   // uint32 status_code = 1;
   void clear_status_code();
@@ -5387,6 +5552,7 @@ class DownloadBlockResponse final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr message_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr data_;
+    ::vosfs::raft::BlockInfo* block_info_;
     uint32_t status_code_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -8053,59 +8219,319 @@ inline void PrepareDownloadFileRequest::set_allocated_token(std::string* token) 
   // @@protoc_insertion_point(field_set_allocated:vosfs.raft.PrepareDownloadFileRequest.token)
 }
 
-// string path = 2;
-inline void PrepareDownloadFileRequest::clear_path() {
-  _impl_.path_.ClearToEmpty();
+// string local_path = 2;
+inline void PrepareDownloadFileRequest::clear_local_path() {
+  _impl_.local_path_.ClearToEmpty();
 }
-inline const std::string& PrepareDownloadFileRequest::path() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.PrepareDownloadFileRequest.path)
-  return _internal_path();
+inline const std::string& PrepareDownloadFileRequest::local_path() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.PrepareDownloadFileRequest.local_path)
+  return _internal_local_path();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void PrepareDownloadFileRequest::set_path(ArgT0&& arg0, ArgT... args) {
+void PrepareDownloadFileRequest::set_local_path(ArgT0&& arg0, ArgT... args) {
  
- _impl_.path_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:vosfs.raft.PrepareDownloadFileRequest.path)
+ _impl_.local_path_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.raft.PrepareDownloadFileRequest.local_path)
 }
-inline std::string* PrepareDownloadFileRequest::mutable_path() {
-  std::string* _s = _internal_mutable_path();
-  // @@protoc_insertion_point(field_mutable:vosfs.raft.PrepareDownloadFileRequest.path)
+inline std::string* PrepareDownloadFileRequest::mutable_local_path() {
+  std::string* _s = _internal_mutable_local_path();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.PrepareDownloadFileRequest.local_path)
   return _s;
 }
-inline const std::string& PrepareDownloadFileRequest::_internal_path() const {
-  return _impl_.path_.Get();
+inline const std::string& PrepareDownloadFileRequest::_internal_local_path() const {
+  return _impl_.local_path_.Get();
 }
-inline void PrepareDownloadFileRequest::_internal_set_path(const std::string& value) {
+inline void PrepareDownloadFileRequest::_internal_set_local_path(const std::string& value) {
   
-  _impl_.path_.Set(value, GetArenaForAllocation());
+  _impl_.local_path_.Set(value, GetArenaForAllocation());
 }
-inline std::string* PrepareDownloadFileRequest::_internal_mutable_path() {
+inline std::string* PrepareDownloadFileRequest::_internal_mutable_local_path() {
   
-  return _impl_.path_.Mutable(GetArenaForAllocation());
+  return _impl_.local_path_.Mutable(GetArenaForAllocation());
 }
-inline std::string* PrepareDownloadFileRequest::release_path() {
-  // @@protoc_insertion_point(field_release:vosfs.raft.PrepareDownloadFileRequest.path)
-  return _impl_.path_.Release();
+inline std::string* PrepareDownloadFileRequest::release_local_path() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.PrepareDownloadFileRequest.local_path)
+  return _impl_.local_path_.Release();
 }
-inline void PrepareDownloadFileRequest::set_allocated_path(std::string* path) {
-  if (path != nullptr) {
+inline void PrepareDownloadFileRequest::set_allocated_local_path(std::string* local_path) {
+  if (local_path != nullptr) {
     
   } else {
     
   }
-  _impl_.path_.SetAllocated(path, GetArenaForAllocation());
+  _impl_.local_path_.SetAllocated(local_path, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.path_.IsDefault()) {
-    _impl_.path_.Set("", GetArenaForAllocation());
+  if (_impl_.local_path_.IsDefault()) {
+    _impl_.local_path_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.PrepareDownloadFileRequest.path)
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.PrepareDownloadFileRequest.local_path)
+}
+
+// string remote_path = 3;
+inline void PrepareDownloadFileRequest::clear_remote_path() {
+  _impl_.remote_path_.ClearToEmpty();
+}
+inline const std::string& PrepareDownloadFileRequest::remote_path() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.PrepareDownloadFileRequest.remote_path)
+  return _internal_remote_path();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void PrepareDownloadFileRequest::set_remote_path(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.remote_path_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.raft.PrepareDownloadFileRequest.remote_path)
+}
+inline std::string* PrepareDownloadFileRequest::mutable_remote_path() {
+  std::string* _s = _internal_mutable_remote_path();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.PrepareDownloadFileRequest.remote_path)
+  return _s;
+}
+inline const std::string& PrepareDownloadFileRequest::_internal_remote_path() const {
+  return _impl_.remote_path_.Get();
+}
+inline void PrepareDownloadFileRequest::_internal_set_remote_path(const std::string& value) {
+  
+  _impl_.remote_path_.Set(value, GetArenaForAllocation());
+}
+inline std::string* PrepareDownloadFileRequest::_internal_mutable_remote_path() {
+  
+  return _impl_.remote_path_.Mutable(GetArenaForAllocation());
+}
+inline std::string* PrepareDownloadFileRequest::release_remote_path() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.PrepareDownloadFileRequest.remote_path)
+  return _impl_.remote_path_.Release();
+}
+inline void PrepareDownloadFileRequest::set_allocated_remote_path(std::string* remote_path) {
+  if (remote_path != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.remote_path_.SetAllocated(remote_path, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.remote_path_.IsDefault()) {
+    _impl_.remote_path_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.PrepareDownloadFileRequest.remote_path)
 }
 
 // -------------------------------------------------------------------
 
 // PrepareDownloadFileResponse
+
+// uint32 status_code = 1;
+inline void PrepareDownloadFileResponse::clear_status_code() {
+  _impl_.status_code_ = 0u;
+}
+inline uint32_t PrepareDownloadFileResponse::_internal_status_code() const {
+  return _impl_.status_code_;
+}
+inline uint32_t PrepareDownloadFileResponse::status_code() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.PrepareDownloadFileResponse.status_code)
+  return _internal_status_code();
+}
+inline void PrepareDownloadFileResponse::_internal_set_status_code(uint32_t value) {
+  
+  _impl_.status_code_ = value;
+}
+inline void PrepareDownloadFileResponse::set_status_code(uint32_t value) {
+  _internal_set_status_code(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.PrepareDownloadFileResponse.status_code)
+}
+
+// string message = 2;
+inline void PrepareDownloadFileResponse::clear_message() {
+  _impl_.message_.ClearToEmpty();
+}
+inline const std::string& PrepareDownloadFileResponse::message() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.PrepareDownloadFileResponse.message)
+  return _internal_message();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void PrepareDownloadFileResponse::set_message(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.message_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.raft.PrepareDownloadFileResponse.message)
+}
+inline std::string* PrepareDownloadFileResponse::mutable_message() {
+  std::string* _s = _internal_mutable_message();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.PrepareDownloadFileResponse.message)
+  return _s;
+}
+inline const std::string& PrepareDownloadFileResponse::_internal_message() const {
+  return _impl_.message_.Get();
+}
+inline void PrepareDownloadFileResponse::_internal_set_message(const std::string& value) {
+  
+  _impl_.message_.Set(value, GetArenaForAllocation());
+}
+inline std::string* PrepareDownloadFileResponse::_internal_mutable_message() {
+  
+  return _impl_.message_.Mutable(GetArenaForAllocation());
+}
+inline std::string* PrepareDownloadFileResponse::release_message() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.PrepareDownloadFileResponse.message)
+  return _impl_.message_.Release();
+}
+inline void PrepareDownloadFileResponse::set_allocated_message(std::string* message) {
+  if (message != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.message_.SetAllocated(message, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.message_.IsDefault()) {
+    _impl_.message_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.PrepareDownloadFileResponse.message)
+}
+
+// string local_path = 3;
+inline void PrepareDownloadFileResponse::clear_local_path() {
+  _impl_.local_path_.ClearToEmpty();
+}
+inline const std::string& PrepareDownloadFileResponse::local_path() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.PrepareDownloadFileResponse.local_path)
+  return _internal_local_path();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void PrepareDownloadFileResponse::set_local_path(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.local_path_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.raft.PrepareDownloadFileResponse.local_path)
+}
+inline std::string* PrepareDownloadFileResponse::mutable_local_path() {
+  std::string* _s = _internal_mutable_local_path();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.PrepareDownloadFileResponse.local_path)
+  return _s;
+}
+inline const std::string& PrepareDownloadFileResponse::_internal_local_path() const {
+  return _impl_.local_path_.Get();
+}
+inline void PrepareDownloadFileResponse::_internal_set_local_path(const std::string& value) {
+  
+  _impl_.local_path_.Set(value, GetArenaForAllocation());
+}
+inline std::string* PrepareDownloadFileResponse::_internal_mutable_local_path() {
+  
+  return _impl_.local_path_.Mutable(GetArenaForAllocation());
+}
+inline std::string* PrepareDownloadFileResponse::release_local_path() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.PrepareDownloadFileResponse.local_path)
+  return _impl_.local_path_.Release();
+}
+inline void PrepareDownloadFileResponse::set_allocated_local_path(std::string* local_path) {
+  if (local_path != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.local_path_.SetAllocated(local_path, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.local_path_.IsDefault()) {
+    _impl_.local_path_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.PrepareDownloadFileResponse.local_path)
+}
+
+// string remote_path = 4;
+inline void PrepareDownloadFileResponse::clear_remote_path() {
+  _impl_.remote_path_.ClearToEmpty();
+}
+inline const std::string& PrepareDownloadFileResponse::remote_path() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.PrepareDownloadFileResponse.remote_path)
+  return _internal_remote_path();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void PrepareDownloadFileResponse::set_remote_path(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.remote_path_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vosfs.raft.PrepareDownloadFileResponse.remote_path)
+}
+inline std::string* PrepareDownloadFileResponse::mutable_remote_path() {
+  std::string* _s = _internal_mutable_remote_path();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.PrepareDownloadFileResponse.remote_path)
+  return _s;
+}
+inline const std::string& PrepareDownloadFileResponse::_internal_remote_path() const {
+  return _impl_.remote_path_.Get();
+}
+inline void PrepareDownloadFileResponse::_internal_set_remote_path(const std::string& value) {
+  
+  _impl_.remote_path_.Set(value, GetArenaForAllocation());
+}
+inline std::string* PrepareDownloadFileResponse::_internal_mutable_remote_path() {
+  
+  return _impl_.remote_path_.Mutable(GetArenaForAllocation());
+}
+inline std::string* PrepareDownloadFileResponse::release_remote_path() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.PrepareDownloadFileResponse.remote_path)
+  return _impl_.remote_path_.Release();
+}
+inline void PrepareDownloadFileResponse::set_allocated_remote_path(std::string* remote_path) {
+  if (remote_path != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.remote_path_.SetAllocated(remote_path, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.remote_path_.IsDefault()) {
+    _impl_.remote_path_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.PrepareDownloadFileResponse.remote_path)
+}
+
+// repeated .vosfs.raft.BlockInfo blocks = 5;
+inline int PrepareDownloadFileResponse::_internal_blocks_size() const {
+  return _impl_.blocks_.size();
+}
+inline int PrepareDownloadFileResponse::blocks_size() const {
+  return _internal_blocks_size();
+}
+inline void PrepareDownloadFileResponse::clear_blocks() {
+  _impl_.blocks_.Clear();
+}
+inline ::vosfs::raft::BlockInfo* PrepareDownloadFileResponse::mutable_blocks(int index) {
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.PrepareDownloadFileResponse.blocks)
+  return _impl_.blocks_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::BlockInfo >*
+PrepareDownloadFileResponse::mutable_blocks() {
+  // @@protoc_insertion_point(field_mutable_list:vosfs.raft.PrepareDownloadFileResponse.blocks)
+  return &_impl_.blocks_;
+}
+inline const ::vosfs::raft::BlockInfo& PrepareDownloadFileResponse::_internal_blocks(int index) const {
+  return _impl_.blocks_.Get(index);
+}
+inline const ::vosfs::raft::BlockInfo& PrepareDownloadFileResponse::blocks(int index) const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.PrepareDownloadFileResponse.blocks)
+  return _internal_blocks(index);
+}
+inline ::vosfs::raft::BlockInfo* PrepareDownloadFileResponse::_internal_add_blocks() {
+  return _impl_.blocks_.Add();
+}
+inline ::vosfs::raft::BlockInfo* PrepareDownloadFileResponse::add_blocks() {
+  ::vosfs::raft::BlockInfo* _add = _internal_add_blocks();
+  // @@protoc_insertion_point(field_add:vosfs.raft.PrepareDownloadFileResponse.blocks)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::BlockInfo >&
+PrepareDownloadFileResponse::blocks() const {
+  // @@protoc_insertion_point(field_list:vosfs.raft.PrepareDownloadFileResponse.blocks)
+  return _impl_.blocks_;
+}
 
 // -------------------------------------------------------------------
 
@@ -8429,27 +8855,47 @@ inline void UploadBlockRequest::set_allocated_token(std::string* token) {
   // @@protoc_insertion_point(field_set_allocated:vosfs.raft.UploadBlockRequest.token)
 }
 
-// uint64 offset = 2;
-inline void UploadBlockRequest::clear_offset() {
-  _impl_.offset_ = uint64_t{0u};
+// uint64 block_id = 2;
+inline void UploadBlockRequest::clear_block_id() {
+  _impl_.block_id_ = uint64_t{0u};
 }
-inline uint64_t UploadBlockRequest::_internal_offset() const {
-  return _impl_.offset_;
+inline uint64_t UploadBlockRequest::_internal_block_id() const {
+  return _impl_.block_id_;
 }
-inline uint64_t UploadBlockRequest::offset() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.UploadBlockRequest.offset)
-  return _internal_offset();
+inline uint64_t UploadBlockRequest::block_id() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.UploadBlockRequest.block_id)
+  return _internal_block_id();
 }
-inline void UploadBlockRequest::_internal_set_offset(uint64_t value) {
+inline void UploadBlockRequest::_internal_set_block_id(uint64_t value) {
   
-  _impl_.offset_ = value;
+  _impl_.block_id_ = value;
 }
-inline void UploadBlockRequest::set_offset(uint64_t value) {
-  _internal_set_offset(value);
-  // @@protoc_insertion_point(field_set:vosfs.raft.UploadBlockRequest.offset)
+inline void UploadBlockRequest::set_block_id(uint64_t value) {
+  _internal_set_block_id(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.UploadBlockRequest.block_id)
 }
 
-// bytes data = 3;
+// uint64 ino = 3;
+inline void UploadBlockRequest::clear_ino() {
+  _impl_.ino_ = uint64_t{0u};
+}
+inline uint64_t UploadBlockRequest::_internal_ino() const {
+  return _impl_.ino_;
+}
+inline uint64_t UploadBlockRequest::ino() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.UploadBlockRequest.ino)
+  return _internal_ino();
+}
+inline void UploadBlockRequest::_internal_set_ino(uint64_t value) {
+  
+  _impl_.ino_ = value;
+}
+inline void UploadBlockRequest::set_ino(uint64_t value) {
+  _internal_set_ino(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.UploadBlockRequest.ino)
+}
+
+// bytes data = 4;
 inline void UploadBlockRequest::clear_data() {
   _impl_.data_.ClearToEmpty();
 }
@@ -8571,6 +9017,46 @@ inline void UploadBlockResponse::set_allocated_message(std::string* message) {
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:vosfs.raft.UploadBlockResponse.message)
+}
+
+// uint64 block_id = 3;
+inline void UploadBlockResponse::clear_block_id() {
+  _impl_.block_id_ = uint64_t{0u};
+}
+inline uint64_t UploadBlockResponse::_internal_block_id() const {
+  return _impl_.block_id_;
+}
+inline uint64_t UploadBlockResponse::block_id() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.UploadBlockResponse.block_id)
+  return _internal_block_id();
+}
+inline void UploadBlockResponse::_internal_set_block_id(uint64_t value) {
+  
+  _impl_.block_id_ = value;
+}
+inline void UploadBlockResponse::set_block_id(uint64_t value) {
+  _internal_set_block_id(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.UploadBlockResponse.block_id)
+}
+
+// uint64 ino = 4;
+inline void UploadBlockResponse::clear_ino() {
+  _impl_.ino_ = uint64_t{0u};
+}
+inline uint64_t UploadBlockResponse::_internal_ino() const {
+  return _impl_.ino_;
+}
+inline uint64_t UploadBlockResponse::ino() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.UploadBlockResponse.ino)
+  return _internal_ino();
+}
+inline void UploadBlockResponse::_internal_set_ino(uint64_t value) {
+  
+  _impl_.ino_ = value;
+}
+inline void UploadBlockResponse::set_ino(uint64_t value) {
+  _internal_set_ino(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.UploadBlockResponse.ino)
 }
 
 // -------------------------------------------------------------------
@@ -8791,7 +9277,97 @@ inline void DownloadBlockResponse::set_allocated_message(std::string* message) {
   // @@protoc_insertion_point(field_set_allocated:vosfs.raft.DownloadBlockResponse.message)
 }
 
-// bytes data = 3;
+// .vosfs.raft.BlockInfo block_info = 3;
+inline bool DownloadBlockResponse::_internal_has_block_info() const {
+  return this != internal_default_instance() && _impl_.block_info_ != nullptr;
+}
+inline bool DownloadBlockResponse::has_block_info() const {
+  return _internal_has_block_info();
+}
+inline void DownloadBlockResponse::clear_block_info() {
+  if (GetArenaForAllocation() == nullptr && _impl_.block_info_ != nullptr) {
+    delete _impl_.block_info_;
+  }
+  _impl_.block_info_ = nullptr;
+}
+inline const ::vosfs::raft::BlockInfo& DownloadBlockResponse::_internal_block_info() const {
+  const ::vosfs::raft::BlockInfo* p = _impl_.block_info_;
+  return p != nullptr ? *p : reinterpret_cast<const ::vosfs::raft::BlockInfo&>(
+      ::vosfs::raft::_BlockInfo_default_instance_);
+}
+inline const ::vosfs::raft::BlockInfo& DownloadBlockResponse::block_info() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.DownloadBlockResponse.block_info)
+  return _internal_block_info();
+}
+inline void DownloadBlockResponse::unsafe_arena_set_allocated_block_info(
+    ::vosfs::raft::BlockInfo* block_info) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.block_info_);
+  }
+  _impl_.block_info_ = block_info;
+  if (block_info) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:vosfs.raft.DownloadBlockResponse.block_info)
+}
+inline ::vosfs::raft::BlockInfo* DownloadBlockResponse::release_block_info() {
+  
+  ::vosfs::raft::BlockInfo* temp = _impl_.block_info_;
+  _impl_.block_info_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::vosfs::raft::BlockInfo* DownloadBlockResponse::unsafe_arena_release_block_info() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.DownloadBlockResponse.block_info)
+  
+  ::vosfs::raft::BlockInfo* temp = _impl_.block_info_;
+  _impl_.block_info_ = nullptr;
+  return temp;
+}
+inline ::vosfs::raft::BlockInfo* DownloadBlockResponse::_internal_mutable_block_info() {
+  
+  if (_impl_.block_info_ == nullptr) {
+    auto* p = CreateMaybeMessage<::vosfs::raft::BlockInfo>(GetArenaForAllocation());
+    _impl_.block_info_ = p;
+  }
+  return _impl_.block_info_;
+}
+inline ::vosfs::raft::BlockInfo* DownloadBlockResponse::mutable_block_info() {
+  ::vosfs::raft::BlockInfo* _msg = _internal_mutable_block_info();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.DownloadBlockResponse.block_info)
+  return _msg;
+}
+inline void DownloadBlockResponse::set_allocated_block_info(::vosfs::raft::BlockInfo* block_info) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.block_info_;
+  }
+  if (block_info) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(block_info);
+    if (message_arena != submessage_arena) {
+      block_info = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, block_info, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.block_info_ = block_info;
+  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.DownloadBlockResponse.block_info)
+}
+
+// bytes data = 4;
 inline void DownloadBlockResponse::clear_data() {
   _impl_.data_.ClearToEmpty();
 }
