@@ -130,6 +130,16 @@ auto vosfs::raft::RaftNode::wait() -> Task<void> {
         [this](PrepareUploadFileRequest& request) -> Task<PrepareUploadFileResponse> {
             co_return co_await this->handle_prepare_upload_file_request(request);
         })
+    .register_method<UploadFileRequest, UploadFileResponse>(
+        "fs", "uploadfile",
+        [this](UploadFileRequest& request) -> Task<UploadFileResponse> {
+            co_return co_await this->handle_upload_file_request(request);
+        })
+    .register_method<PrepareDownloadFileRequest, PrepareDownloadFileResponse>(
+        "fs", "preparedownloadfile",
+        [this](PrepareDownloadFileRequest& request) -> Task<PrepareDownloadFileResponse> {
+            co_return co_await this->handle_prepare_download_file_request(request);
+        })
     .wait();
 }
 
@@ -608,6 +618,74 @@ auto vosfs::raft::RaftNode::handle_prepare_upload_file_request(
     co_return response;
 }
 
+auto vosfs::raft::RaftNode::handle_upload_file_request(UploadFileRequest& request) -> Task<UploadFileResponse> {
+    std::string leader_id;
+    auto& token = request.token();
+    auto ino = request.ino();
+
+    if (!util::vertify_token(token)) {
+        co_return make_upload_file_response(Status::kPermissionDenied, "无效 Token", ino);
+    }
+
+    co_await mutex_.lock();
+    if (leader_id_.has_value()) {
+        leader_id = std::to_string(leader_id_.value());
+    }
+
+    if (role_.load(std::memory_order_relaxed) != kLeader) {
+        mutex_.unlock();
+        co_return make_upload_file_response(Status::kNotLeader, leader_id, ino);
+    }
+
+    // 包装为 Raft 日志，并准备同步到集群
+    EntryCommand command;
+    auto* mutable_upload_file = command.mutable_upload_file();
+    mutable_upload_file->Swap(&request);
+
+    LogEntry entry;
+    entry.set_term(hard_state_.current_term());
+    auto log_index = logs_.last_log_index() + 1;
+    entry.set_index(log_index);
+    entry.set_command(command.SerializeAsString());
+    logs_.append_entry(std::move(entry));
+
+    PendingResponse response;
+    response.mutable_upload_file()->set_status_code(Status::kFailed);
+    response.mutable_upload_file()->set_message("文件上传失败，未知错误");
+    auto task = suspend_task();
+    auto handle = task.handle();
+    auto& pending_request = state_machine_.append_request(log_index, detail::PendingRequest{handle, std::move(response)});
+    mutex_.unlock();
+    co_await task;
+
+    co_return pending_request.response.upload_file();
+}
+
+auto vosfs::raft::RaftNode::handle_prepare_download_file_request(
+    PrepareDownloadFileRequest& request) -> Task<PrepareDownloadFileResponse> {
+    std::string leader_id;
+    auto& token = request.token();
+
+    // 校验 token
+    if (!util::vertify_token(token)) {
+        co_return make_prepare_download_file_response(Status::kPermissionDenied, "无效 Token");
+    }
+
+    co_await mutex_.lock();
+    std::lock_guard lock(mutex_, std::adopt_lock);
+    if (leader_id_.has_value()) {
+        leader_id = std::to_string(leader_id_.value());
+    }
+
+    if (role_.load(std::memory_order_relaxed) != kLeader) {
+        co_return make_prepare_download_file_response(Status::kNotLeader, leader_id);
+    }
+
+    PrepareDownloadFileResponse response;
+    state_machine_.prepare_download_file(request, response);
+    co_return response;
+}
+
 auto vosfs::raft::RaftNode::handle_request_vote_response(
     const RequestVoteResponse& response) -> Task<void> {
     [[maybe_unused]] auto id = response.id();
@@ -811,6 +889,26 @@ auto vosfs::raft::RaftNode::make_prepare_upload_file_response(
     uint32_t status_code,
     std::string message) -> PrepareUploadFileResponse {
     PrepareUploadFileResponse response;
+    response.set_status_code(status_code);
+    response.set_message(std::move(message));
+    return response;
+}
+
+auto vosfs::raft::RaftNode::make_upload_file_response(
+    uint32_t status_code,
+    std::string message,
+    uint64_t ino) -> UploadFileResponse {
+    UploadFileResponse response;
+    response.set_status_code(status_code);
+    response.set_message(std::move(message));
+    response.set_ino(ino);
+    return response;
+}
+
+auto vosfs::raft::RaftNode::make_prepare_download_file_response(
+    uint32_t status_code,
+    std::string message) -> PrepareDownloadFileResponse {
+    PrepareDownloadFileResponse response;
     response.set_status_code(status_code);
     response.set_message(std::move(message));
     return response;

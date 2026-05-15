@@ -48,7 +48,7 @@ auto vosfs::ui::VosfsClient::create(
 void vosfs::ui::VosfsClient::run() {
     is_shutdown_.store(false, std::memory_order_release);
     kosio::runtime::CurrentThreadBuilder::default_create().block_on(process_tasks());
-    latch_.count_down();
+    shutdown_latch_.count_down();
 }
 
 void vosfs::ui::VosfsClient::shutdown() {
@@ -60,8 +60,7 @@ void vosfs::ui::VosfsClient::shutdown() {
         tasks_.emplace(raft_client->shutdown());
     }
     is_shutdown_.store(true, std::memory_order_release);
-    latch_.wait();
-    save_transport_tasks_json();
+    shutdown_latch_.wait();
 }
 
 auto vosfs::ui::VosfsClient::process_tasks() -> Task<void> {
@@ -80,6 +79,7 @@ auto vosfs::ui::VosfsClient::process_tasks() -> Task<void> {
         }
         co_await kosio::time::sleep(10);
     }
+    co_await update_json_latch_.wait();
 }
 
 void vosfs::ui::VosfsClient::register_user(
@@ -364,6 +364,34 @@ auto vosfs::ui::VosfsClient::send_upload_file_request(uint64_t ino) -> Task<void
         });
 }
 
+auto vosfs::ui::VosfsClient::send_prepare_download_file_request(
+    std::string local_path,
+    std::string remote_path) -> Task<void> {
+    raft::PrepareDownloadFileRequest request;
+    request.set_token(session_.token);
+    request.set_local_path(std::move(local_path));
+    request.set_remote_path(std::move(remote_path));
+
+    auto it = raft_clients_.find(leader_id_);
+    if (it == raft_clients_.end()) {
+        signal_brige_.appendLog(QString::fromStdString(std::format("请求失败，节点 {} 不存在，请检查集群配置", leader_id_)));
+        co_return;
+    }
+    auto& raft_client = it->second;
+    co_await raft_client->call_method<raft::PrepareDownloadFileRequest, raft::PrepareDownloadFileResponse>(
+        "fs", "preparedownloadfile", request,
+        [this](const vrpc::Status& status, const raft::PrepareDownloadFileResponse& response) -> Task<void> {
+            co_await this->handle_prepare_download_file_response(status, response);
+        });
+}
+
+auto vosfs::ui::VosfsClient::send_download_block_request(
+    uint64_t block_id,
+    uint64_t ino,
+    uint64_t data_node_id) -> Task<void> {
+
+}
+
 void vosfs::ui::VosfsClient::handle_register_user_response(
     const vrpc::Status& status,
     const auth::RegisterUserResponse& response) {
@@ -426,18 +454,27 @@ auto vosfs::ui::VosfsClient::handle_list_dir_response(
         co_return;
     }
     if (res_status.ok()) {
-        std::vector<raft::DirEntry> entries;
+        std::vector<raft::DirEntry> dirs;
+        std::vector<raft::DirEntry> files;
         for (const auto& entry : response.dir_entries()) {
-            entries.push_back(entry);
+            if (entry.is_dir()) {
+                dirs.push_back(entry);
+            } else {
+                files.push_back(entry);
+            }
         }
 
-        std::ranges::sort(entries, [](const auto& a, const auto& b) {
+        std::ranges::sort(dirs, [](const auto& a, const auto& b) {
+            return a.name() < b.name();
+        });
+
+        std::ranges::sort(files, [](const auto& a, const auto& b) {
             return a.name() < b.name();
         });
 
         QVariantList list;
 
-        for (const auto &entry : entries) {
+        for (const auto &entry : dirs) {
             QVariantMap item;
 
             item["ino"] = static_cast<qulonglong>(entry.ino());
@@ -449,6 +486,20 @@ auto vosfs::ui::VosfsClient::handle_list_dir_response(
 
             list.append(item);
         }
+
+        for (const auto &entry : files) {
+            QVariantMap item;
+
+            item["ino"] = static_cast<qulonglong>(entry.ino());
+            item["name"] = QString::fromStdString(entry.name());
+            item["path"] = QString::fromStdString(entry.path());
+            item["is_dir"] = entry.is_dir();
+            item["ctime"] = QString::fromStdString(kosio::util::format_time(entry.ctime()));
+            item["mtime"] = QString::fromStdString(kosio::util::format_time(entry.mtime()));
+
+            list.append(item);
+        }
+
         signal_brige_.listDirFinished(QString::fromStdString(response.path()), std::move(list));
     }
     signal_brige_.appendLog(QString::fromStdString(response.message()));
@@ -530,7 +581,9 @@ auto vosfs::ui::VosfsClient::handle_upload_block_response(
     if (res_status.ok()) {
         auto& upload_task = upload_tasks_[response.ino()];
         auto& block = upload_task.blocks[response.block_id()];
-        block.remaing_times--;
+        if (block.remaing_times > 0) {
+            --block.remaing_times;
+        }
         block.data_node_ids[response.data_node_id()] = true;
         if (block.remaing_times == 0) {
             ++upload_task.done_blocks;
@@ -557,9 +610,60 @@ auto vosfs::ui::VosfsClient::handle_upload_file_response(
         signal_brige_.appendLog(QString("重定向到集群领导者，请重试"));
         co_return;
     }
-    if (res_status.ok()) {
+    signal_brige_.uploadFileFinished(res_status.ok(), QString::fromStdString(response.message()));
+    co_await mutex_.lock();
+    upload_tasks_.erase(response.ino());
+    mutex_.unlock();
+}
 
+auto vosfs::ui::VosfsClient::handle_prepare_download_file_response(
+    const vrpc::Status& status,
+    const raft::PrepareDownloadFileResponse& response) -> Task<void> {
+    if (!status.ok()) {
+        signal_brige_.appendLog(QString::fromStdString(std::string{status.message()}));
+        co_return;
     }
+
+    auto res_status = Status{response.status_code()};
+    if (res_status.is_not_leader()) {
+        leader_id_ = std::stoull(response.message());
+        signal_brige_.appendLog(QString("重定向到集群领导者，请重试"));
+        co_return;
+    }
+
+    if (res_status.ok()) {
+        detail::TransportTask transport_task;
+        transport_task.ino = response.blocks().begin()->ino();
+        transport_task.total_blocks = response.blocks_size();
+        transport_task.done_blocks = 0;
+        transport_task.local_path = response.local_path();
+        transport_task.remote_path = response.remote_path();
+
+        for (const auto& block : response.blocks()) {
+            detail::BlockInfo block_info;
+            block_info.remaing_times = block.data_node_id_size();
+            block_info.id = block.id();
+            block_info.ino = block.ino();
+            block_info.offset = block.offset();
+            block_info.size = block.size();
+
+            for (auto& data_node_id : block.data_node_id()) {
+                block_info.data_node_ids.emplace(data_node_id, false);
+            }
+
+            transport_task.blocks.emplace(block_info.id, std::move(block_info));
+        }
+        co_await mutex_.lock();
+        co_await do_download_task(transport_task);
+        download_tasks_.emplace(transport_task.ino, std::move(transport_task));
+        mutex_.unlock();
+    }
+}
+
+auto vosfs::ui::VosfsClient::handle_download_block_response(
+    const vrpc::Status& status,
+    const raft::DownloadBlockResponse& response) -> Task<void> {
+
 }
 
 auto vosfs::ui::VosfsClient::update_transport_tasks_json() -> Task<void> {
@@ -567,7 +671,8 @@ auto vosfs::ui::VosfsClient::update_transport_tasks_json() -> Task<void> {
         co_await kosio::time::sleep(5000);
         save_transport_tasks_json();
     }
-    latch_.count_down();
+    save_transport_tasks_json();
+    update_json_latch_.count_down();
 }
 
 void vosfs::ui::VosfsClient::load_transport_tasks_json() {
@@ -729,6 +834,27 @@ auto vosfs::ui::VosfsClient::do_upload_task(const detail::TransportTask& task) -
     }
 }
 
-auto vosfs::ui::VosfsClient::do_download_task(const detail::TransportTask& task) {
+auto vosfs::ui::VosfsClient::do_download_task(const detail::TransportTask& task) -> Task<void> {
+    if (task.done_blocks >= task.total_blocks) {
+        co_await mutex_.lock();
+        download_tasks_.erase(task.ino);
+        mutex_.unlock();
+    }
 
+    for (const auto& block : task.blocks | std::views::values) {
+        if (block.remaing_times == 0) {
+            continue;
+        }
+
+        for (const auto& [data_node_id, done] : block.data_node_ids) {
+            if (done) {
+                continue;
+            }
+            tasks_.emplace(send_download_block_request(
+                block.id,
+                block.ino,
+                data_node_id));
+            break;
+        }
+    }
 }

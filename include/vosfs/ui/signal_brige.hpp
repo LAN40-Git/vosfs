@@ -15,6 +15,6 @@ signals:
     void loginFinished(bool success, QString msg);
     void listDirFinished(QString path, QVariantList dir_entries);
     void makeDirFinished();
-    void uploadFileFinished();
+    void uploadFileFinished(bool success, QString msg);
 };
 } // namespace vosfs::ui

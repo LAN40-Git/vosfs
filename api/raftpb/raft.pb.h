@@ -2572,6 +2572,7 @@ class EntryCommand final :
   }
   enum TypeCase {
     kMkdir = 1,
+    kUploadFile = 2,
     TYPE_NOT_SET = 0,
   };
 
@@ -2654,6 +2655,7 @@ class EntryCommand final :
 
   enum : int {
     kMkdirFieldNumber = 1,
+    kUploadFileFieldNumber = 2,
   };
   // .vosfs.raft.MakeDirRequest mkdir = 1;
   bool has_mkdir() const;
@@ -2673,12 +2675,31 @@ class EntryCommand final :
       ::vosfs::raft::MakeDirRequest* mkdir);
   ::vosfs::raft::MakeDirRequest* unsafe_arena_release_mkdir();
 
+  // .vosfs.raft.UploadFileRequest upload_file = 2;
+  bool has_upload_file() const;
+  private:
+  bool _internal_has_upload_file() const;
+  public:
+  void clear_upload_file();
+  const ::vosfs::raft::UploadFileRequest& upload_file() const;
+  PROTOBUF_NODISCARD ::vosfs::raft::UploadFileRequest* release_upload_file();
+  ::vosfs::raft::UploadFileRequest* mutable_upload_file();
+  void set_allocated_upload_file(::vosfs::raft::UploadFileRequest* upload_file);
+  private:
+  const ::vosfs::raft::UploadFileRequest& _internal_upload_file() const;
+  ::vosfs::raft::UploadFileRequest* _internal_mutable_upload_file();
+  public:
+  void unsafe_arena_set_allocated_upload_file(
+      ::vosfs::raft::UploadFileRequest* upload_file);
+  ::vosfs::raft::UploadFileRequest* unsafe_arena_release_upload_file();
+
   void clear_type();
   TypeCase type_case() const;
   // @@protoc_insertion_point(class_scope:vosfs.raft.EntryCommand)
  private:
   class _Internal;
   void set_has_mkdir();
+  void set_has_upload_file();
 
   inline bool has_type() const;
   inline void clear_has_type();
@@ -2691,6 +2712,7 @@ class EntryCommand final :
       constexpr TypeUnion() : _constinit_{} {}
         ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized _constinit_;
       ::vosfs::raft::MakeDirRequest* mkdir_;
+      ::vosfs::raft::UploadFileRequest* upload_file_;
     } type_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     uint32_t _oneof_case_[1];
@@ -2746,6 +2768,7 @@ class PendingResponse final :
   }
   enum TypeCase {
     kMkdir = 1,
+    kUploadFile = 2,
     TYPE_NOT_SET = 0,
   };
 
@@ -2828,6 +2851,7 @@ class PendingResponse final :
 
   enum : int {
     kMkdirFieldNumber = 1,
+    kUploadFileFieldNumber = 2,
   };
   // .vosfs.raft.MakeDirResponse mkdir = 1;
   bool has_mkdir() const;
@@ -2847,12 +2871,31 @@ class PendingResponse final :
       ::vosfs::raft::MakeDirResponse* mkdir);
   ::vosfs::raft::MakeDirResponse* unsafe_arena_release_mkdir();
 
+  // .vosfs.raft.UploadFileResponse upload_file = 2;
+  bool has_upload_file() const;
+  private:
+  bool _internal_has_upload_file() const;
+  public:
+  void clear_upload_file();
+  const ::vosfs::raft::UploadFileResponse& upload_file() const;
+  PROTOBUF_NODISCARD ::vosfs::raft::UploadFileResponse* release_upload_file();
+  ::vosfs::raft::UploadFileResponse* mutable_upload_file();
+  void set_allocated_upload_file(::vosfs::raft::UploadFileResponse* upload_file);
+  private:
+  const ::vosfs::raft::UploadFileResponse& _internal_upload_file() const;
+  ::vosfs::raft::UploadFileResponse* _internal_mutable_upload_file();
+  public:
+  void unsafe_arena_set_allocated_upload_file(
+      ::vosfs::raft::UploadFileResponse* upload_file);
+  ::vosfs::raft::UploadFileResponse* unsafe_arena_release_upload_file();
+
   void clear_type();
   TypeCase type_case() const;
   // @@protoc_insertion_point(class_scope:vosfs.raft.PendingResponse)
  private:
   class _Internal;
   void set_has_mkdir();
+  void set_has_upload_file();
 
   inline bool has_type() const;
   inline void clear_has_type();
@@ -2865,6 +2908,7 @@ class PendingResponse final :
       constexpr TypeUnion() : _constinit_{} {}
         ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized _constinit_;
       ::vosfs::raft::MakeDirResponse* mkdir_;
+      ::vosfs::raft::UploadFileResponse* upload_file_;
     } type_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     uint32_t _oneof_case_[1];
@@ -4764,7 +4808,7 @@ class UploadFileResponse final :
 
   enum : int {
     kMessageFieldNumber = 2,
-    kParentPathFieldNumber = 3,
+    kInoFieldNumber = 3,
     kStatusCodeFieldNumber = 1,
   };
   // string message = 2;
@@ -4781,18 +4825,13 @@ class UploadFileResponse final :
   std::string* _internal_mutable_message();
   public:
 
-  // string parent_path = 3;
-  void clear_parent_path();
-  const std::string& parent_path() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_parent_path(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_parent_path();
-  PROTOBUF_NODISCARD std::string* release_parent_path();
-  void set_allocated_parent_path(std::string* parent_path);
+  // uint64 ino = 3;
+  void clear_ino();
+  uint64_t ino() const;
+  void set_ino(uint64_t value);
   private:
-  const std::string& _internal_parent_path() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_parent_path(const std::string& value);
-  std::string* _internal_mutable_parent_path();
+  uint64_t _internal_ino() const;
+  void _internal_set_ino(uint64_t value);
   public:
 
   // uint32 status_code = 1;
@@ -4813,7 +4852,7 @@ class UploadFileResponse final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr message_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr parent_path_;
+    uint64_t ino_;
     uint32_t status_code_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -5332,7 +5371,8 @@ class DownloadBlockRequest final :
 
   enum : int {
     kTokenFieldNumber = 1,
-    kBlockInfoFieldNumber = 2,
+    kBlockIdFieldNumber = 2,
+    kInoFieldNumber = 3,
   };
   // string token = 1;
   void clear_token();
@@ -5348,23 +5388,23 @@ class DownloadBlockRequest final :
   std::string* _internal_mutable_token();
   public:
 
-  // .vosfs.raft.BlockInfo block_info = 2;
-  bool has_block_info() const;
+  // uint64 block_id = 2;
+  void clear_block_id();
+  uint64_t block_id() const;
+  void set_block_id(uint64_t value);
   private:
-  bool _internal_has_block_info() const;
+  uint64_t _internal_block_id() const;
+  void _internal_set_block_id(uint64_t value);
   public:
-  void clear_block_info();
-  const ::vosfs::raft::BlockInfo& block_info() const;
-  PROTOBUF_NODISCARD ::vosfs::raft::BlockInfo* release_block_info();
-  ::vosfs::raft::BlockInfo* mutable_block_info();
-  void set_allocated_block_info(::vosfs::raft::BlockInfo* block_info);
+
+  // uint64 ino = 3;
+  void clear_ino();
+  uint64_t ino() const;
+  void set_ino(uint64_t value);
   private:
-  const ::vosfs::raft::BlockInfo& _internal_block_info() const;
-  ::vosfs::raft::BlockInfo* _internal_mutable_block_info();
+  uint64_t _internal_ino() const;
+  void _internal_set_ino(uint64_t value);
   public:
-  void unsafe_arena_set_allocated_block_info(
-      ::vosfs::raft::BlockInfo* block_info);
-  ::vosfs::raft::BlockInfo* unsafe_arena_release_block_info();
 
   // @@protoc_insertion_point(class_scope:vosfs.raft.DownloadBlockRequest)
  private:
@@ -5375,7 +5415,8 @@ class DownloadBlockRequest final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr token_;
-    ::vosfs::raft::BlockInfo* block_info_;
+    uint64_t block_id_;
+    uint64_t ino_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -5505,8 +5546,10 @@ class DownloadBlockResponse final :
 
   enum : int {
     kMessageFieldNumber = 2,
-    kDataFieldNumber = 4,
-    kBlockInfoFieldNumber = 3,
+    kDataFieldNumber = 6,
+    kBlockIdFieldNumber = 3,
+    kInoFieldNumber = 4,
+    kDataNodeIdFieldNumber = 5,
     kStatusCodeFieldNumber = 1,
   };
   // string message = 2;
@@ -5523,7 +5566,7 @@ class DownloadBlockResponse final :
   std::string* _internal_mutable_message();
   public:
 
-  // bytes data = 4;
+  // bytes data = 6;
   void clear_data();
   const std::string& data() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -5537,23 +5580,32 @@ class DownloadBlockResponse final :
   std::string* _internal_mutable_data();
   public:
 
-  // .vosfs.raft.BlockInfo block_info = 3;
-  bool has_block_info() const;
+  // uint64 block_id = 3;
+  void clear_block_id();
+  uint64_t block_id() const;
+  void set_block_id(uint64_t value);
   private:
-  bool _internal_has_block_info() const;
+  uint64_t _internal_block_id() const;
+  void _internal_set_block_id(uint64_t value);
   public:
-  void clear_block_info();
-  const ::vosfs::raft::BlockInfo& block_info() const;
-  PROTOBUF_NODISCARD ::vosfs::raft::BlockInfo* release_block_info();
-  ::vosfs::raft::BlockInfo* mutable_block_info();
-  void set_allocated_block_info(::vosfs::raft::BlockInfo* block_info);
+
+  // uint64 ino = 4;
+  void clear_ino();
+  uint64_t ino() const;
+  void set_ino(uint64_t value);
   private:
-  const ::vosfs::raft::BlockInfo& _internal_block_info() const;
-  ::vosfs::raft::BlockInfo* _internal_mutable_block_info();
+  uint64_t _internal_ino() const;
+  void _internal_set_ino(uint64_t value);
   public:
-  void unsafe_arena_set_allocated_block_info(
-      ::vosfs::raft::BlockInfo* block_info);
-  ::vosfs::raft::BlockInfo* unsafe_arena_release_block_info();
+
+  // uint64 data_node_id = 5;
+  void clear_data_node_id();
+  uint64_t data_node_id() const;
+  void set_data_node_id(uint64_t value);
+  private:
+  uint64_t _internal_data_node_id() const;
+  void _internal_set_data_node_id(uint64_t value);
+  public:
 
   // uint32 status_code = 1;
   void clear_status_code();
@@ -5574,7 +5626,9 @@ class DownloadBlockResponse final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr message_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr data_;
-    ::vosfs::raft::BlockInfo* block_info_;
+    uint64_t block_id_;
+    uint64_t ino_;
+    uint64_t data_node_id_;
     uint32_t status_code_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -7117,6 +7171,80 @@ inline ::vosfs::raft::MakeDirRequest* EntryCommand::mutable_mkdir() {
   return _msg;
 }
 
+// .vosfs.raft.UploadFileRequest upload_file = 2;
+inline bool EntryCommand::_internal_has_upload_file() const {
+  return type_case() == kUploadFile;
+}
+inline bool EntryCommand::has_upload_file() const {
+  return _internal_has_upload_file();
+}
+inline void EntryCommand::set_has_upload_file() {
+  _impl_._oneof_case_[0] = kUploadFile;
+}
+inline void EntryCommand::clear_upload_file() {
+  if (_internal_has_upload_file()) {
+    if (GetArenaForAllocation() == nullptr) {
+      delete _impl_.type_.upload_file_;
+    }
+    clear_has_type();
+  }
+}
+inline ::vosfs::raft::UploadFileRequest* EntryCommand::release_upload_file() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.EntryCommand.upload_file)
+  if (_internal_has_upload_file()) {
+    clear_has_type();
+    ::vosfs::raft::UploadFileRequest* temp = _impl_.type_.upload_file_;
+    if (GetArenaForAllocation() != nullptr) {
+      temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.type_.upload_file_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::vosfs::raft::UploadFileRequest& EntryCommand::_internal_upload_file() const {
+  return _internal_has_upload_file()
+      ? *_impl_.type_.upload_file_
+      : reinterpret_cast< ::vosfs::raft::UploadFileRequest&>(::vosfs::raft::_UploadFileRequest_default_instance_);
+}
+inline const ::vosfs::raft::UploadFileRequest& EntryCommand::upload_file() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.EntryCommand.upload_file)
+  return _internal_upload_file();
+}
+inline ::vosfs::raft::UploadFileRequest* EntryCommand::unsafe_arena_release_upload_file() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:vosfs.raft.EntryCommand.upload_file)
+  if (_internal_has_upload_file()) {
+    clear_has_type();
+    ::vosfs::raft::UploadFileRequest* temp = _impl_.type_.upload_file_;
+    _impl_.type_.upload_file_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void EntryCommand::unsafe_arena_set_allocated_upload_file(::vosfs::raft::UploadFileRequest* upload_file) {
+  clear_type();
+  if (upload_file) {
+    set_has_upload_file();
+    _impl_.type_.upload_file_ = upload_file;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:vosfs.raft.EntryCommand.upload_file)
+}
+inline ::vosfs::raft::UploadFileRequest* EntryCommand::_internal_mutable_upload_file() {
+  if (!_internal_has_upload_file()) {
+    clear_type();
+    set_has_upload_file();
+    _impl_.type_.upload_file_ = CreateMaybeMessage< ::vosfs::raft::UploadFileRequest >(GetArenaForAllocation());
+  }
+  return _impl_.type_.upload_file_;
+}
+inline ::vosfs::raft::UploadFileRequest* EntryCommand::mutable_upload_file() {
+  ::vosfs::raft::UploadFileRequest* _msg = _internal_mutable_upload_file();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.EntryCommand.upload_file)
+  return _msg;
+}
+
 inline bool EntryCommand::has_type() const {
   return type_case() != TYPE_NOT_SET;
 }
@@ -7201,6 +7329,80 @@ inline ::vosfs::raft::MakeDirResponse* PendingResponse::_internal_mutable_mkdir(
 inline ::vosfs::raft::MakeDirResponse* PendingResponse::mutable_mkdir() {
   ::vosfs::raft::MakeDirResponse* _msg = _internal_mutable_mkdir();
   // @@protoc_insertion_point(field_mutable:vosfs.raft.PendingResponse.mkdir)
+  return _msg;
+}
+
+// .vosfs.raft.UploadFileResponse upload_file = 2;
+inline bool PendingResponse::_internal_has_upload_file() const {
+  return type_case() == kUploadFile;
+}
+inline bool PendingResponse::has_upload_file() const {
+  return _internal_has_upload_file();
+}
+inline void PendingResponse::set_has_upload_file() {
+  _impl_._oneof_case_[0] = kUploadFile;
+}
+inline void PendingResponse::clear_upload_file() {
+  if (_internal_has_upload_file()) {
+    if (GetArenaForAllocation() == nullptr) {
+      delete _impl_.type_.upload_file_;
+    }
+    clear_has_type();
+  }
+}
+inline ::vosfs::raft::UploadFileResponse* PendingResponse::release_upload_file() {
+  // @@protoc_insertion_point(field_release:vosfs.raft.PendingResponse.upload_file)
+  if (_internal_has_upload_file()) {
+    clear_has_type();
+    ::vosfs::raft::UploadFileResponse* temp = _impl_.type_.upload_file_;
+    if (GetArenaForAllocation() != nullptr) {
+      temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.type_.upload_file_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::vosfs::raft::UploadFileResponse& PendingResponse::_internal_upload_file() const {
+  return _internal_has_upload_file()
+      ? *_impl_.type_.upload_file_
+      : reinterpret_cast< ::vosfs::raft::UploadFileResponse&>(::vosfs::raft::_UploadFileResponse_default_instance_);
+}
+inline const ::vosfs::raft::UploadFileResponse& PendingResponse::upload_file() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.PendingResponse.upload_file)
+  return _internal_upload_file();
+}
+inline ::vosfs::raft::UploadFileResponse* PendingResponse::unsafe_arena_release_upload_file() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:vosfs.raft.PendingResponse.upload_file)
+  if (_internal_has_upload_file()) {
+    clear_has_type();
+    ::vosfs::raft::UploadFileResponse* temp = _impl_.type_.upload_file_;
+    _impl_.type_.upload_file_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void PendingResponse::unsafe_arena_set_allocated_upload_file(::vosfs::raft::UploadFileResponse* upload_file) {
+  clear_type();
+  if (upload_file) {
+    set_has_upload_file();
+    _impl_.type_.upload_file_ = upload_file;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:vosfs.raft.PendingResponse.upload_file)
+}
+inline ::vosfs::raft::UploadFileResponse* PendingResponse::_internal_mutable_upload_file() {
+  if (!_internal_has_upload_file()) {
+    clear_type();
+    set_has_upload_file();
+    _impl_.type_.upload_file_ = CreateMaybeMessage< ::vosfs::raft::UploadFileResponse >(GetArenaForAllocation());
+  }
+  return _impl_.type_.upload_file_;
+}
+inline ::vosfs::raft::UploadFileResponse* PendingResponse::mutable_upload_file() {
+  ::vosfs::raft::UploadFileResponse* _msg = _internal_mutable_upload_file();
+  // @@protoc_insertion_point(field_mutable:vosfs.raft.PendingResponse.upload_file)
   return _msg;
 }
 
@@ -8793,54 +8995,24 @@ inline void UploadFileResponse::set_allocated_message(std::string* message) {
   // @@protoc_insertion_point(field_set_allocated:vosfs.raft.UploadFileResponse.message)
 }
 
-// string parent_path = 3;
-inline void UploadFileResponse::clear_parent_path() {
-  _impl_.parent_path_.ClearToEmpty();
+// uint64 ino = 3;
+inline void UploadFileResponse::clear_ino() {
+  _impl_.ino_ = uint64_t{0u};
 }
-inline const std::string& UploadFileResponse::parent_path() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.UploadFileResponse.parent_path)
-  return _internal_parent_path();
+inline uint64_t UploadFileResponse::_internal_ino() const {
+  return _impl_.ino_;
 }
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void UploadFileResponse::set_parent_path(ArgT0&& arg0, ArgT... args) {
- 
- _impl_.parent_path_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:vosfs.raft.UploadFileResponse.parent_path)
+inline uint64_t UploadFileResponse::ino() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.UploadFileResponse.ino)
+  return _internal_ino();
 }
-inline std::string* UploadFileResponse::mutable_parent_path() {
-  std::string* _s = _internal_mutable_parent_path();
-  // @@protoc_insertion_point(field_mutable:vosfs.raft.UploadFileResponse.parent_path)
-  return _s;
-}
-inline const std::string& UploadFileResponse::_internal_parent_path() const {
-  return _impl_.parent_path_.Get();
-}
-inline void UploadFileResponse::_internal_set_parent_path(const std::string& value) {
+inline void UploadFileResponse::_internal_set_ino(uint64_t value) {
   
-  _impl_.parent_path_.Set(value, GetArenaForAllocation());
+  _impl_.ino_ = value;
 }
-inline std::string* UploadFileResponse::_internal_mutable_parent_path() {
-  
-  return _impl_.parent_path_.Mutable(GetArenaForAllocation());
-}
-inline std::string* UploadFileResponse::release_parent_path() {
-  // @@protoc_insertion_point(field_release:vosfs.raft.UploadFileResponse.parent_path)
-  return _impl_.parent_path_.Release();
-}
-inline void UploadFileResponse::set_allocated_parent_path(std::string* parent_path) {
-  if (parent_path != nullptr) {
-    
-  } else {
-    
-  }
-  _impl_.parent_path_.SetAllocated(parent_path, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.parent_path_.IsDefault()) {
-    _impl_.parent_path_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.UploadFileResponse.parent_path)
+inline void UploadFileResponse::set_ino(uint64_t value) {
+  _internal_set_ino(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.UploadFileResponse.ino)
 }
 
 // -------------------------------------------------------------------
@@ -9175,94 +9347,44 @@ inline void DownloadBlockRequest::set_allocated_token(std::string* token) {
   // @@protoc_insertion_point(field_set_allocated:vosfs.raft.DownloadBlockRequest.token)
 }
 
-// .vosfs.raft.BlockInfo block_info = 2;
-inline bool DownloadBlockRequest::_internal_has_block_info() const {
-  return this != internal_default_instance() && _impl_.block_info_ != nullptr;
+// uint64 block_id = 2;
+inline void DownloadBlockRequest::clear_block_id() {
+  _impl_.block_id_ = uint64_t{0u};
 }
-inline bool DownloadBlockRequest::has_block_info() const {
-  return _internal_has_block_info();
+inline uint64_t DownloadBlockRequest::_internal_block_id() const {
+  return _impl_.block_id_;
 }
-inline void DownloadBlockRequest::clear_block_info() {
-  if (GetArenaForAllocation() == nullptr && _impl_.block_info_ != nullptr) {
-    delete _impl_.block_info_;
-  }
-  _impl_.block_info_ = nullptr;
+inline uint64_t DownloadBlockRequest::block_id() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.DownloadBlockRequest.block_id)
+  return _internal_block_id();
 }
-inline const ::vosfs::raft::BlockInfo& DownloadBlockRequest::_internal_block_info() const {
-  const ::vosfs::raft::BlockInfo* p = _impl_.block_info_;
-  return p != nullptr ? *p : reinterpret_cast<const ::vosfs::raft::BlockInfo&>(
-      ::vosfs::raft::_BlockInfo_default_instance_);
-}
-inline const ::vosfs::raft::BlockInfo& DownloadBlockRequest::block_info() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.DownloadBlockRequest.block_info)
-  return _internal_block_info();
-}
-inline void DownloadBlockRequest::unsafe_arena_set_allocated_block_info(
-    ::vosfs::raft::BlockInfo* block_info) {
-  if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.block_info_);
-  }
-  _impl_.block_info_ = block_info;
-  if (block_info) {
-    
-  } else {
-    
-  }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:vosfs.raft.DownloadBlockRequest.block_info)
-}
-inline ::vosfs::raft::BlockInfo* DownloadBlockRequest::release_block_info() {
+inline void DownloadBlockRequest::_internal_set_block_id(uint64_t value) {
   
-  ::vosfs::raft::BlockInfo* temp = _impl_.block_info_;
-  _impl_.block_info_ = nullptr;
-#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
-  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
-  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  if (GetArenaForAllocation() == nullptr) { delete old; }
-#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
-  if (GetArenaForAllocation() != nullptr) {
-    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  }
-#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
-  return temp;
+  _impl_.block_id_ = value;
 }
-inline ::vosfs::raft::BlockInfo* DownloadBlockRequest::unsafe_arena_release_block_info() {
-  // @@protoc_insertion_point(field_release:vosfs.raft.DownloadBlockRequest.block_info)
+inline void DownloadBlockRequest::set_block_id(uint64_t value) {
+  _internal_set_block_id(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.DownloadBlockRequest.block_id)
+}
+
+// uint64 ino = 3;
+inline void DownloadBlockRequest::clear_ino() {
+  _impl_.ino_ = uint64_t{0u};
+}
+inline uint64_t DownloadBlockRequest::_internal_ino() const {
+  return _impl_.ino_;
+}
+inline uint64_t DownloadBlockRequest::ino() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.DownloadBlockRequest.ino)
+  return _internal_ino();
+}
+inline void DownloadBlockRequest::_internal_set_ino(uint64_t value) {
   
-  ::vosfs::raft::BlockInfo* temp = _impl_.block_info_;
-  _impl_.block_info_ = nullptr;
-  return temp;
+  _impl_.ino_ = value;
 }
-inline ::vosfs::raft::BlockInfo* DownloadBlockRequest::_internal_mutable_block_info() {
-  
-  if (_impl_.block_info_ == nullptr) {
-    auto* p = CreateMaybeMessage<::vosfs::raft::BlockInfo>(GetArenaForAllocation());
-    _impl_.block_info_ = p;
-  }
-  return _impl_.block_info_;
-}
-inline ::vosfs::raft::BlockInfo* DownloadBlockRequest::mutable_block_info() {
-  ::vosfs::raft::BlockInfo* _msg = _internal_mutable_block_info();
-  // @@protoc_insertion_point(field_mutable:vosfs.raft.DownloadBlockRequest.block_info)
-  return _msg;
-}
-inline void DownloadBlockRequest::set_allocated_block_info(::vosfs::raft::BlockInfo* block_info) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  if (message_arena == nullptr) {
-    delete _impl_.block_info_;
-  }
-  if (block_info) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(block_info);
-    if (message_arena != submessage_arena) {
-      block_info = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, block_info, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  _impl_.block_info_ = block_info;
-  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.DownloadBlockRequest.block_info)
+inline void DownloadBlockRequest::set_ino(uint64_t value) {
+  _internal_set_ino(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.DownloadBlockRequest.ino)
 }
 
 // -------------------------------------------------------------------
@@ -9339,97 +9461,67 @@ inline void DownloadBlockResponse::set_allocated_message(std::string* message) {
   // @@protoc_insertion_point(field_set_allocated:vosfs.raft.DownloadBlockResponse.message)
 }
 
-// .vosfs.raft.BlockInfo block_info = 3;
-inline bool DownloadBlockResponse::_internal_has_block_info() const {
-  return this != internal_default_instance() && _impl_.block_info_ != nullptr;
+// uint64 block_id = 3;
+inline void DownloadBlockResponse::clear_block_id() {
+  _impl_.block_id_ = uint64_t{0u};
 }
-inline bool DownloadBlockResponse::has_block_info() const {
-  return _internal_has_block_info();
+inline uint64_t DownloadBlockResponse::_internal_block_id() const {
+  return _impl_.block_id_;
 }
-inline void DownloadBlockResponse::clear_block_info() {
-  if (GetArenaForAllocation() == nullptr && _impl_.block_info_ != nullptr) {
-    delete _impl_.block_info_;
-  }
-  _impl_.block_info_ = nullptr;
+inline uint64_t DownloadBlockResponse::block_id() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.DownloadBlockResponse.block_id)
+  return _internal_block_id();
 }
-inline const ::vosfs::raft::BlockInfo& DownloadBlockResponse::_internal_block_info() const {
-  const ::vosfs::raft::BlockInfo* p = _impl_.block_info_;
-  return p != nullptr ? *p : reinterpret_cast<const ::vosfs::raft::BlockInfo&>(
-      ::vosfs::raft::_BlockInfo_default_instance_);
-}
-inline const ::vosfs::raft::BlockInfo& DownloadBlockResponse::block_info() const {
-  // @@protoc_insertion_point(field_get:vosfs.raft.DownloadBlockResponse.block_info)
-  return _internal_block_info();
-}
-inline void DownloadBlockResponse::unsafe_arena_set_allocated_block_info(
-    ::vosfs::raft::BlockInfo* block_info) {
-  if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.block_info_);
-  }
-  _impl_.block_info_ = block_info;
-  if (block_info) {
-    
-  } else {
-    
-  }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:vosfs.raft.DownloadBlockResponse.block_info)
-}
-inline ::vosfs::raft::BlockInfo* DownloadBlockResponse::release_block_info() {
+inline void DownloadBlockResponse::_internal_set_block_id(uint64_t value) {
   
-  ::vosfs::raft::BlockInfo* temp = _impl_.block_info_;
-  _impl_.block_info_ = nullptr;
-#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
-  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
-  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  if (GetArenaForAllocation() == nullptr) { delete old; }
-#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
-  if (GetArenaForAllocation() != nullptr) {
-    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  }
-#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
-  return temp;
+  _impl_.block_id_ = value;
 }
-inline ::vosfs::raft::BlockInfo* DownloadBlockResponse::unsafe_arena_release_block_info() {
-  // @@protoc_insertion_point(field_release:vosfs.raft.DownloadBlockResponse.block_info)
-  
-  ::vosfs::raft::BlockInfo* temp = _impl_.block_info_;
-  _impl_.block_info_ = nullptr;
-  return temp;
-}
-inline ::vosfs::raft::BlockInfo* DownloadBlockResponse::_internal_mutable_block_info() {
-  
-  if (_impl_.block_info_ == nullptr) {
-    auto* p = CreateMaybeMessage<::vosfs::raft::BlockInfo>(GetArenaForAllocation());
-    _impl_.block_info_ = p;
-  }
-  return _impl_.block_info_;
-}
-inline ::vosfs::raft::BlockInfo* DownloadBlockResponse::mutable_block_info() {
-  ::vosfs::raft::BlockInfo* _msg = _internal_mutable_block_info();
-  // @@protoc_insertion_point(field_mutable:vosfs.raft.DownloadBlockResponse.block_info)
-  return _msg;
-}
-inline void DownloadBlockResponse::set_allocated_block_info(::vosfs::raft::BlockInfo* block_info) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  if (message_arena == nullptr) {
-    delete _impl_.block_info_;
-  }
-  if (block_info) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(block_info);
-    if (message_arena != submessage_arena) {
-      block_info = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, block_info, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  _impl_.block_info_ = block_info;
-  // @@protoc_insertion_point(field_set_allocated:vosfs.raft.DownloadBlockResponse.block_info)
+inline void DownloadBlockResponse::set_block_id(uint64_t value) {
+  _internal_set_block_id(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.DownloadBlockResponse.block_id)
 }
 
-// bytes data = 4;
+// uint64 ino = 4;
+inline void DownloadBlockResponse::clear_ino() {
+  _impl_.ino_ = uint64_t{0u};
+}
+inline uint64_t DownloadBlockResponse::_internal_ino() const {
+  return _impl_.ino_;
+}
+inline uint64_t DownloadBlockResponse::ino() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.DownloadBlockResponse.ino)
+  return _internal_ino();
+}
+inline void DownloadBlockResponse::_internal_set_ino(uint64_t value) {
+  
+  _impl_.ino_ = value;
+}
+inline void DownloadBlockResponse::set_ino(uint64_t value) {
+  _internal_set_ino(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.DownloadBlockResponse.ino)
+}
+
+// uint64 data_node_id = 5;
+inline void DownloadBlockResponse::clear_data_node_id() {
+  _impl_.data_node_id_ = uint64_t{0u};
+}
+inline uint64_t DownloadBlockResponse::_internal_data_node_id() const {
+  return _impl_.data_node_id_;
+}
+inline uint64_t DownloadBlockResponse::data_node_id() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.DownloadBlockResponse.data_node_id)
+  return _internal_data_node_id();
+}
+inline void DownloadBlockResponse::_internal_set_data_node_id(uint64_t value) {
+  
+  _impl_.data_node_id_ = value;
+}
+inline void DownloadBlockResponse::set_data_node_id(uint64_t value) {
+  _internal_set_data_node_id(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.DownloadBlockResponse.data_node_id)
+}
+
+// bytes data = 6;
 inline void DownloadBlockResponse::clear_data() {
   _impl_.data_.ClearToEmpty();
 }

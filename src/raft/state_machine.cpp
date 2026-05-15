@@ -91,6 +91,13 @@ void vosfs::raft::detail::StateMachine::apply_entry(const LogEntry& entry) {
             }
             break;
         }
+        case EntryCommand::kUploadFile: {
+            upload_file(command.upload_file(), pending_response.mutable_upload_file());
+            if (pending_request.handle) {
+                pending_request.handle.resume();
+            }
+            break;
+        }
         default: {
             LOG_FATAL("invalid command at entry {}", entry.index());
             if (pending_request.handle) {
@@ -111,6 +118,10 @@ void vosfs::raft::detail::StateMachine::apply_entry_no_response(const LogEntry& 
     switch (command.type_case()) {
         case EntryCommand::kMkdir: {
             mkdir(command.mkdir());
+            break;
+        }
+        case EntryCommand::kUploadFile: {
+            upload_file(command.upload_file());
             break;
         }
         default: {
@@ -184,6 +195,34 @@ void vosfs::raft::detail::StateMachine::prepare_upload_file(
         }
     }
     response.mutable_blocks()->Swap(&block_infos);
+    response.set_status_code(Status::kOk);
+    // response.set_message("成功获取分片地址信息");
+}
+
+void vosfs::raft::detail::StateMachine::prepare_download_file(
+    const PrepareDownloadFileRequest& request,
+    PrepareDownloadFileResponse& response) {
+    response.set_local_path(request.local_path());
+    response.set_remote_path(request.remote_path());
+    auto entry_it = dir_entries_.find(request.remote_path());
+    if (entry_it == dir_entries_.end()) {
+        response.set_status_code(Status::kInvalidArgument);
+        response.set_message("文件下载失败：不存在");
+        return;
+    }
+
+    auto& entry = entry_it->second;
+    auto ino = entry.ino();
+    auto inode_it = inodes_.find(ino);
+    if (inode_it == inodes_.end()) {
+        response.set_status_code(Status::kInvalidArgument);
+        response.set_message("文件下载失败：节点不存在");
+        return;
+    }
+
+    auto& inode = inode_it->second;
+    response.mutable_blocks()->CopyFrom(inode.blocks());
+    response.set_status_code(Status::kOk);
 }
 
 void vosfs::raft::detail::StateMachine::mkdir(const MakeDirRequest& request) {
@@ -261,7 +300,7 @@ void vosfs::raft::detail::StateMachine::mkdir(
     auto parent_it = dir_entries_.find(parent_path);
     if (parent_it == dir_entries_.end()) {
         response->set_status_code(Status::kInvalidArgument);
-        response->set_message("父目录不存在");
+        response->set_message("目录创建失败：父目录不存在");
         return;
     }
 
@@ -269,7 +308,7 @@ void vosfs::raft::detail::StateMachine::mkdir(
     auto parent_inode_it = inodes_.find(parent_it->second.ino());
     if (parent_inode_it == inodes_.end()) {
         response->set_status_code(Status::kInvalidArgument);
-        response->set_message("父节点不存在");
+        response->set_message("目录创建失败：父节点不存在");
         LOG_FATAL("inode not exist with path: {}", parent_path);
         return;
     }
@@ -278,14 +317,14 @@ void vosfs::raft::detail::StateMachine::mkdir(
     // 判断父节点是否为目录
     if (!parent_inode.is_dir()) {
         response->set_status_code(Status::kInvalidArgument);
-        response->set_message("父节点不是目录");
+        response->set_message("目录创建失败：父节点不是目录");
         return;
     }
 
     // 判断目录名合法性
     if (name.empty() || name.contains('/')) {
         response->set_status_code(Status::kInvalidArgument);
-        response->set_message("非法目录名，不能为空或包含'/'");
+        response->set_message("目录创建失败：非法目录名，不能为空或包含'/'");
         return;
     }
 
@@ -300,7 +339,7 @@ void vosfs::raft::detail::StateMachine::mkdir(
     // 判断目录是否存在
     if (dir_entries_.contains(path)) {
         response->set_status_code(Status::kInvalidArgument);
-        response->set_message("目录已存在");
+        response->set_message("目录创建失败：目录已存在");
         return;
     }
 
@@ -328,4 +367,159 @@ void vosfs::raft::detail::StateMachine::mkdir(
     response->set_status_code(Status::kOk);
     response->set_message(std::format("创建目录成功：{}", path));
     response->set_parent_path(parent_path);
+}
+
+void vosfs::raft::detail::StateMachine::upload_file(const UploadFileRequest& request) {
+auto ino = request.ino();
+    auto& path = request.path();
+
+    if (inodes_.contains(ino) || dir_entries_.contains(path)) {
+        return;
+    }
+
+    auto current_ms = kosio::util::current_ms();
+    uint64_t size = 0;
+    for (const auto& block : request.blocks()) {
+        size += block.size();
+    }
+
+    Inode new_inode;
+    new_inode.set_ino(ino);
+    new_inode.set_is_dir(false);
+    new_inode.set_size(size);
+    new_inode.set_ctime(current_ms);
+    new_inode.set_mtime(current_ms);
+    new_inode.set_nlink(1);
+    new_inode.mutable_blocks()->CopyFrom(request.blocks());
+
+    // 获取文件名
+    auto pos = path.find_last_of('/');
+    if (pos == std::string::npos) {
+        return;
+    }
+
+    auto name = path.substr(pos + 1);
+    auto parent_path = path.substr(0, pos + 1);
+
+    // 判断父目录是否存在
+    auto parent_it = dir_entries_.find(parent_path);
+    if (parent_it == dir_entries_.end()) {
+        return;
+    }
+
+    // 获取父节点
+    auto parent_inode_it = inodes_.find(parent_it->second.ino());
+    if (parent_inode_it == inodes_.end()) {
+        LOG_FATAL("inode not exist with path: {}", parent_path);
+        return;
+    }
+
+    auto& parent_inode = parent_inode_it->second;
+    // 判断父节点是否为目录
+    if (!parent_inode.is_dir()) {
+        return;
+    }
+
+    // 判断目录名合法性
+    if (name.empty() || name.contains('/')) {
+        return;
+    }
+
+    DirEntry new_entry;
+    new_entry.set_ino(ino);
+    new_entry.set_name(name);
+    new_entry.set_path(path);
+    new_entry.set_is_dir(false);
+    new_entry.set_size(size);
+    new_entry.set_ctime(current_ms);
+    new_entry.set_mtime(current_ms);
+
+    parent_inode.mutable_dir_entries()->Add()->CopyFrom(new_entry);
+    inodes_.emplace(ino, std::move(new_inode));
+    dir_entries_.emplace(path, std::move(new_entry));
+}
+
+void vosfs::raft::detail::StateMachine::upload_file(const UploadFileRequest& request, UploadFileResponse* response) {
+    auto ino = request.ino();
+    auto& path = request.path();
+    response->set_ino(ino);
+
+    if (inodes_.contains(ino) || dir_entries_.contains(path)) {
+        response->set_status_code(Status::kInvalidArgument);
+        response->set_message("文件上传失败：已存在");
+        return;
+    }
+
+    auto current_ms = kosio::util::current_ms();
+    uint64_t size = 0;
+    for (const auto& block : request.blocks()) {
+        size += block.size();
+    }
+
+    Inode new_inode;
+    new_inode.set_ino(ino);
+    new_inode.set_is_dir(false);
+    new_inode.set_size(size);
+    new_inode.set_ctime(current_ms);
+    new_inode.set_mtime(current_ms);
+    new_inode.set_nlink(1);
+    new_inode.mutable_blocks()->CopyFrom(request.blocks());
+
+    // 获取文件名
+    auto pos = path.find_last_of('/');
+    if (pos == std::string::npos) {
+        response->set_status_code(Status::kInvalidArgument);
+        response->set_message("文件路径非法：无分隔符");
+        return;
+    }
+
+    auto name = path.substr(pos + 1);
+    auto parent_path = path.substr(0, pos + 1);
+
+    // 判断父目录是否存在
+    auto parent_it = dir_entries_.find(parent_path);
+    if (parent_it == dir_entries_.end()) {
+        response->set_status_code(Status::kInvalidArgument);
+        response->set_message("文件上传失败：父目录不存在");
+        return;
+    }
+
+    // 获取父节点
+    auto parent_inode_it = inodes_.find(parent_it->second.ino());
+    if (parent_inode_it == inodes_.end()) {
+        response->set_status_code(Status::kInvalidArgument);
+        response->set_message("文件上传失败：父节点不存在");
+        LOG_FATAL("inode not exist with path: {}", parent_path);
+        return;
+    }
+
+    auto& parent_inode = parent_inode_it->second;
+    // 判断父节点是否为目录
+    if (!parent_inode.is_dir()) {
+        response->set_status_code(Status::kInvalidArgument);
+        response->set_message("文件上传失败：父节点不是目录");
+        return;
+    }
+
+    // 判断目录名合法性
+    if (name.empty() || name.contains('/')) {
+        response->set_status_code(Status::kInvalidArgument);
+        response->set_message("文件上传失败：非法文件名，不能为空或包含'/'");
+        return;
+    }
+
+    DirEntry new_entry;
+    new_entry.set_ino(ino);
+    new_entry.set_name(name);
+    new_entry.set_path(path);
+    new_entry.set_is_dir(false);
+    new_entry.set_size(size);
+    new_entry.set_ctime(current_ms);
+    new_entry.set_mtime(current_ms);
+
+    parent_inode.mutable_dir_entries()->Add()->CopyFrom(new_entry);
+    inodes_.emplace(ino, std::move(new_inode));
+    dir_entries_.emplace(path, std::move(new_entry));
+    response->set_status_code(Status::kOk);
+    response->set_message(std::format("文件上传成功：{}", path));
 }

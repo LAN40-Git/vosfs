@@ -108,6 +108,16 @@ public:
     auto send_upload_file_request(
         uint64_t ino) -> Task<void>;
 
+    [[REMEMBER_CO_AWAIT]]
+    auto send_prepare_download_file_request(
+        std::string local_path, std::string remote_path) -> Task<void>;
+
+    [[REMEMBER_CO_AWAIT]]
+    auto send_download_block_request(
+        uint64_t block_id,
+        uint64_t ino,
+        uint64_t data_node_id) -> Task<void>;
+
 private:
     void handle_register_user_response(const vrpc::Status& status, const auth::RegisterUserResponse& response);
     void handle_delete_user_response(const vrpc::Status& status, const auth::DeleteUserResponse& response);
@@ -117,17 +127,20 @@ private:
     auto handle_prepare_upload_file_response(const vrpc::Status& status, const raft::PrepareUploadFileResponse& response) -> Task<void>;
     auto handle_upload_block_response(const vrpc::Status& status, const raft::UploadBlockResponse& response) -> Task<void>;
     auto handle_upload_file_response(const vrpc::Status& status, const raft::UploadFileResponse& response) -> Task<void>;
+    auto handle_prepare_download_file_response(const vrpc::Status& status, const raft::PrepareDownloadFileResponse& response) -> Task<void>;
+    auto handle_download_block_response(const vrpc::Status& status, const raft::DownloadBlockResponse& response) -> Task<void>;
 
 private:
     auto update_transport_tasks_json() -> Task<void>;
     void load_transport_tasks_json();
     void save_transport_tasks_json();
     auto do_upload_task(const detail::TransportTask& task) -> Task<void>;
-    auto do_download_task(const detail::TransportTask& task);
+    auto do_download_task(const detail::TransportTask& task) -> Task<void>;
 
 private:
     std::atomic<bool>                       is_shutdown_{true};
-    std::latch                              latch_{2};
+    std::latch                              shutdown_latch_{1};
+    kosio::sync::Latch                      update_json_latch_{1};
     kosio::sync::Mutex                      mutex_;
     UserSession                             session_{};
     RPCClient                               auth_client_;

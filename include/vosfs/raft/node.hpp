@@ -59,6 +59,10 @@ private:
     auto handle_make_dir_request(MakeDirRequest& request) -> Task<MakeDirResponse>;
     [[REMEMBER_CO_AWAIT]]
     auto handle_prepare_upload_file_request(PrepareUploadFileRequest& request) -> Task<PrepareUploadFileResponse>;
+    [[REMEMBER_CO_AWAIT]]
+    auto handle_upload_file_request(UploadFileRequest& request) -> Task<UploadFileResponse>;
+    [[REMEMBER_CO_AWAIT]]
+    auto handle_prepare_download_file_request(PrepareDownloadFileRequest& request) -> Task<PrepareDownloadFileResponse>;
 
 private:
     [[REMEMBER_CO_AWAIT]]
@@ -131,6 +135,17 @@ private:
     static auto make_prepare_upload_file_response(
         uint32_t status_code,
         std::string message) -> PrepareUploadFileResponse;
+
+    [[nodiscard]]
+    static auto make_upload_file_response(
+        uint32_t status_code,
+        std::string message,
+        uint64_t ino) -> UploadFileResponse;
+
+    [[nodiscard]]
+    static auto make_prepare_download_file_response(
+        uint32_t status_code,
+        std::string message) -> PrepareDownloadFileResponse;
 
 private:
     enum Role { kLeader, kFollower, kCandidate };

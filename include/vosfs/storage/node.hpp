@@ -26,7 +26,7 @@ private:
     auto handle_upload_block_request(const raft::UploadBlockRequest& request) -> kosio::async::Task<raft::UploadBlockResponse>;
 
     [[REMEMBER_CO_AWAIT]]
-    auto handle_download_block_request(const raft::UploadBlockRequest& request) -> kosio::async::Task<raft::UploadBlockResponse>;
+    auto handle_download_block_request(const raft::DownloadBlockRequest& request) -> kosio::async::Task<raft::DownloadBlockResponse>;
 
 private:
     [[nodiscard]]
@@ -36,6 +36,19 @@ private:
     uint64_t block_id,
     uint64_t ino,
     uint64_t data_node_id) const -> raft::UploadBlockResponse;
+
+    [[nodiscard]]
+    auto make_download_block_response(
+        uint32_t status_code,
+        std::string message,
+        uint64_t block_id,
+        uint64_t ino,
+        uint64_t data_node_id,
+        std::string data) const -> raft::DownloadBlockResponse;
+
+private:
+    [[nodiscard]]
+    auto get_block_path(uint64_t ino, uint64_t block_id) const -> std::string;
 
 private:
     uint64_t           id_;

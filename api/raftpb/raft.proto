@@ -98,12 +98,14 @@ message EntryCommand {
   // 只有写请求会被包装成 Raft 日志
   oneof type {
     MakeDirRequest mkdir = 1;
+    UploadFileRequest upload_file = 2;
   }
 }
 
 message PendingResponse {
   oneof type {
     MakeDirResponse mkdir = 1;
+    UploadFileResponse upload_file = 2;
   }
 }
 
@@ -171,7 +173,7 @@ message UploadFileRequest {
 message UploadFileResponse {
   uint32 status_code = 1;
   string message = 2;
-  string parent_path = 3;
+  uint64 ino = 3;
 }
 
 message UploadBlockRequest {
@@ -191,12 +193,20 @@ message UploadBlockResponse {
 
 message DownloadBlockRequest {
   string token = 1;
-  BlockInfo block_info = 2;
+  uint64 block_id = 2;
+  uint64 ino = 3;
 }
 
 message DownloadBlockResponse {
   uint32 status_code = 1;
   string message = 2;
-  BlockInfo block_info = 3;
-  bytes data = 4;
+  uint64 block_id = 3;
+  uint64 ino = 4;
+  uint64 data_node_id = 5;
+  bytes data = 6;
+}
+
+message DownloadFileRequest {
+  string token = 1;
+  string path = 2;
 }

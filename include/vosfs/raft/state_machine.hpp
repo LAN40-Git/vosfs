@@ -30,10 +30,13 @@ public:
 public:
     void ls(const ListDirRequest& request, ListDirResponse& response);
     void prepare_upload_file(PrepareUploadFileRequest& request, PrepareUploadFileResponse& response);
+    void prepare_download_file(const PrepareDownloadFileRequest& request, PrepareDownloadFileResponse& response);
 
 private:
     void mkdir(const MakeDirRequest& request);
     void mkdir(const MakeDirRequest& request, MakeDirResponse* response);
+    void upload_file(const UploadFileRequest& request);
+    void upload_file(const UploadFileRequest& request, UploadFileResponse* response);
 
 private:
     InodeMap              inodes_;
