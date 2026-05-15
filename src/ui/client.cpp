@@ -61,10 +61,12 @@ void vosfs::ui::VosfsClient::shutdown() {
     }
     is_shutdown_.store(true, std::memory_order_release);
     latch_.wait();
+    save_transport_tasks_json();
 }
 
 auto vosfs::ui::VosfsClient::process_tasks() -> Task<void> {
     static constexpr std::size_t MAX_POP_SIZE = 16;
+    kosio::spawn(update_transport_tasks_json());
     while (!is_shutdown_.load(std::memory_order_relaxed) || !tasks_.empty()) {
         int n = 0;
         Task<void> task;
@@ -262,7 +264,7 @@ auto vosfs::ui::VosfsClient::send_prepare_upload_file_request(std::string local_
 }
 
 auto vosfs::ui::VosfsClient::send_upload_block_request(
-    const std::string& local_path,
+    std::string local_path,
     uint64_t block_id,
     uint64_t ino,
     uint64_t offset,
@@ -273,15 +275,44 @@ auto vosfs::ui::VosfsClient::send_upload_block_request(
     request.set_block_id(block_id);
     request.set_ino(ino);
 
-    std::ifstream file(local_path, std::ios::binary);
-    if (!file.is_open()) {
-        signal_brige_.appendLog(QString::fromStdString(std::format("错误：无法打开文件 {}", local_path)));
+    auto open_result = co_await kosio::fs::File::open(local_path);
+    if (!open_result) {
+        signal_brige_.appendLog(QString::fromStdString(
+            std::format("文件 {} 打开失败: {}", local_path, open_result.error())
+        ));
+        co_return;
+    }
+    const auto& file = open_result.value();
+
+
+    off64_t seek_ret = file.seek(static_cast<off64_t>(offset), SEEK_SET);
+    if (seek_ret == -1) {
+        signal_brige_.appendLog(QString::fromStdString(
+            std::format("文件 seek 失败 offset={}", offset)
+        ));
         co_return;
     }
 
     std::string block_data;
     block_data.resize(size);
-    file.read(block_data.data(), size);
+
+    auto read_result = co_await file.read(
+        std::span<char>{block_data.data(), static_cast<size_t>(size)}
+    );
+    if (!read_result) {
+        signal_brige_.appendLog(QString::fromStdString(
+            std::format("文件读取失败: {}", read_result.error())
+        ));
+        co_return;
+    }
+
+    size_t bytes_read = read_result.value();
+    if (bytes_read == 0) {
+        signal_brige_.appendLog("文件读取到末尾，无数据");
+        co_return;
+    }
+
+    block_data.resize(bytes_read);
     request.set_data(std::move(block_data));
 
     auto it = data_clients_.find(data_node_id);
@@ -298,7 +329,39 @@ auto vosfs::ui::VosfsClient::send_upload_block_request(
 }
 
 auto vosfs::ui::VosfsClient::send_upload_file_request(uint64_t ino) -> Task<void> {
+    auto upload_task_it = upload_tasks_.find(ino);
+    if (upload_task_it == upload_tasks_.end()) {
+        LOG_FATAL("upload task not exists {}", ino);
+        co_return;
+    }
+    auto& upload_task = upload_task_it->second;
 
+    raft::UploadFileRequest request;
+    request.set_token(session_.token);
+    request.set_ino(ino);
+    request.set_path(upload_task.remote_path);
+    for (const auto& block : upload_task.blocks | std::views::values) {
+        auto* new_block = request.mutable_blocks()->Add();
+        new_block->set_id(block.id);
+        new_block->set_ino(block.ino);
+        new_block->set_offset(block.offset);
+        new_block->set_size(block.size);
+        for (const auto& data_node_id : block.data_node_ids | std::views::keys) {
+            new_block->add_data_node_id(data_node_id);
+        }
+    }
+
+    auto it = raft_clients_.find(leader_id_);
+    if (it == raft_clients_.end()) {
+        signal_brige_.appendLog(QString::fromStdString(std::format("请求失败，节点 {} 不存在，请检查集群配置", leader_id_)));
+        co_return;
+    }
+    auto& raft_client = it->second;
+    co_await raft_client->call_method<raft::UploadFileRequest, raft::UploadFileResponse>(
+        "fs", "uploadfile", request,
+        [this](const vrpc::Status& status, const raft::UploadFileResponse& response) -> Task<void> {
+            co_await this->handle_upload_file_response(status, response);
+        });
 }
 
 void vosfs::ui::VosfsClient::handle_register_user_response(
@@ -434,47 +497,22 @@ auto vosfs::ui::VosfsClient::handle_prepare_upload_file_response(
         transport_task.local_path = response.local_path();
         transport_task.remote_path = response.remote_path();
 
-        nlohmann::json task_json;
-        task_json["ino"] = transport_task.ino;
-        task_json["total_blocks"] = transport_task.total_blocks;
-        task_json["done_blocks"] = transport_task.done_blocks;
-        task_json["local_path"] = transport_task.local_path;
-        task_json["remote_path"] = transport_task.remote_path;
-
-        nlohmann::json blocks_json = nlohmann::json::array();
-
         for (const auto& block : response.blocks()) {
             detail::BlockInfo block_info;
-            block_info.done = false;
+            block_info.remaing_times = block.data_node_id_size();
             block_info.id = block.id();
             block_info.ino = block.ino();
             block_info.offset = block.offset();
             block_info.size = block.size();
 
             for (auto& data_node_id : block.data_node_id()) {
-                block_info.data_node_ids.push_back(data_node_id);
+                block_info.data_node_ids.emplace(data_node_id, false);
             }
 
-            // 把 block 转成 json
-            nlohmann::json block_json;
-            block_json["done"] = block_info.done;
-            block_json["id"] = block_info.id;
-            block_json["ino"] = block_info.ino;
-            block_json["offset"] = block_info.offset;
-            block_json["size"] = block_info.size;
-            block_json["data_node_ids"] = block_info.data_node_ids;
-
-            blocks_json.push_back(std::move(block_json));
             transport_task.blocks.emplace(block_info.id, std::move(block_info));
         }
-        task_json["blocks"] = std::move(blocks_json);
         co_await mutex_.lock();
-        auto& upload_tasks_json = json_["upload_tasks"];
-        upload_tasks_json.push_back(std::move(task_json));
-        auto path = std::to_string(session_.uid) + "-" + "transport_tasks.json";
-        std::ofstream f(path);
-        f << json_.dump(4);
-        f.close();
+        co_await do_upload_task(transport_task);
         upload_tasks_.emplace(transport_task.ino, std::move(transport_task));
         mutex_.unlock();
     }
@@ -492,15 +530,44 @@ auto vosfs::ui::VosfsClient::handle_upload_block_response(
     if (res_status.ok()) {
         auto& upload_task = upload_tasks_[response.ino()];
         auto& block = upload_task.blocks[response.block_id()];
-        block.done = true;
-        ++upload_task.done_blocks;
+        block.remaing_times--;
+        block.data_node_ids[response.data_node_id()] = true;
+        if (block.remaing_times == 0) {
+            ++upload_task.done_blocks;
+        }
         if (upload_task.done_blocks >= upload_task.total_blocks) {
             tasks_.emplace(send_upload_file_request(upload_task.ino));
         }
-        // TODO: 更新进度
     } else {
         // TODO: 重传
     }
+}
+
+auto vosfs::ui::VosfsClient::handle_upload_file_response(
+    const vrpc::Status& status,
+    const raft::UploadFileResponse& response) -> Task<void> {
+    if (!status.ok()) {
+        signal_brige_.appendLog(QString::fromStdString(std::string{status.message()}));
+        co_return;
+    }
+
+    auto res_status = Status{response.status_code()};
+    if (res_status.is_not_leader()) {
+        leader_id_ = std::stoull(response.message());
+        signal_brige_.appendLog(QString("重定向到集群领导者，请重试"));
+        co_return;
+    }
+    if (res_status.ok()) {
+
+    }
+}
+
+auto vosfs::ui::VosfsClient::update_transport_tasks_json() -> Task<void> {
+    while (!is_shutdown_.load(std::memory_order_relaxed)) {
+        co_await kosio::time::sleep(5000);
+        save_transport_tasks_json();
+    }
+    latch_.count_down();
 }
 
 void vosfs::ui::VosfsClient::load_transport_tasks_json() {
@@ -532,12 +599,12 @@ void vosfs::ui::VosfsClient::load_transport_tasks_json() {
         task.remote_path = remote_path;
         for (auto& block : blocks) {
             detail::BlockInfo block_info;
-            block_info.done = block["done"].get<bool>();
+            block_info.remaing_times = block["remaing_times"].get<uint64_t>();
             block_info.id = block["id"].get<uint64_t>();
             block_info.ino = block["ino"].get<uint64_t>();
             block_info.offset = block["offset"].get<uint64_t>();
             block_info.size = block["size"].get<uint64_t>();
-            block_info.data_node_ids = block["data_node_ids"].get<std::vector<uint64_t>>();
+            block_info.data_node_ids = block["data_node_ids"].get<std::unordered_map<uint64_t, bool>>();
         }
         upload_tasks.emplace(ino, std::move(task));
     }
@@ -558,18 +625,82 @@ void vosfs::ui::VosfsClient::load_transport_tasks_json() {
         task.remote_path = remote_path;
         for (auto& block : blocks) {
             detail::BlockInfo block_info;
-            block_info.done = block["done"].get<bool>();
+            block_info.remaing_times = block["remaing_times"].get<uint64_t>();
             block_info.id = block["id"].get<uint64_t>();
             block_info.ino = block["ino"].get<uint64_t>();
             block_info.offset = block["offset"].get<uint64_t>();
             block_info.size = block["size"].get<uint64_t>();
-            block_info.data_node_ids = block["data_node_ids"].get<std::vector<uint64_t>>();
+            block_info.data_node_ids = block["data_node_ids"].get<std::unordered_map<uint64_t, bool>>();
         }
         download_tasks.emplace(ino, std::move(task));
     }
-    json_ = std::move(json);
     upload_tasks_ = std::move(upload_tasks);
     download_tasks_ = std::move(download_tasks);
+}
+
+void vosfs::ui::VosfsClient::save_transport_tasks_json() {
+    if (session_.token.empty()) {
+        return;
+    }
+
+    nlohmann::json root;
+
+    nlohmann::json upload_tasks_json = nlohmann::json::array();
+    for (const auto& [ino, task] : upload_tasks_) {
+        nlohmann::json task_json;
+        task_json["ino"] = task.ino;
+        task_json["total_blocks"] = task.total_blocks;
+        task_json["done_blocks"] = task.done_blocks;
+        task_json["local_path"] = task.local_path;
+        task_json["remote_path"] = task.remote_path;
+
+        nlohmann::json blocks_json = nlohmann::json::array();
+        for (const auto& [block_id, block] : task.blocks) {
+            nlohmann::json block_json;
+            block_json["remaing_times"] = block.remaing_times;
+            block_json["id"] = block.id;
+            block_json["ino"] = block.ino;
+            block_json["offset"] = block.offset;
+            block_json["size"] = block.size;
+            block_json["data_node_ids"] = block.data_node_ids;
+            blocks_json.push_back(std::move(block_json));
+        }
+        task_json["blocks"] = std::move(blocks_json);
+        upload_tasks_json.push_back(std::move(task_json));
+    }
+    root["upload_tasks"] = std::move(upload_tasks_json);
+
+    nlohmann::json download_tasks_json = nlohmann::json::array();
+    for (const auto& [ino, task] : download_tasks_) {
+        nlohmann::json task_json;
+        task_json["ino"] = task.ino;
+        task_json["total_blocks"] = task.total_blocks;
+        task_json["done_blocks"] = task.done_blocks;
+        task_json["local_path"] = task.local_path;
+        task_json["remote_path"] = task.remote_path;
+
+        nlohmann::json blocks_json = nlohmann::json::array();
+        for (const auto& [block_id, block] : task.blocks) {
+            nlohmann::json block_json;
+            block_json["remaing_times"] = block.remaing_times;
+            block_json["id"] = block.id;
+            block_json["ino"] = block.ino;
+            block_json["offset"] = block.offset;
+            block_json["size"] = block.size;
+            block_json["data_node_ids"] = block.data_node_ids;
+            blocks_json.push_back(std::move(block_json));
+        }
+        task_json["blocks"] = std::move(blocks_json);
+        download_tasks_json.push_back(std::move(task_json));
+    }
+    root["download_tasks"] = std::move(download_tasks_json);
+
+    std::string path = std::to_string(session_.uid) + "-transport_tasks.json";
+    std::ofstream f(path, std::ios::trunc);
+    if (f.is_open()) {
+        f << root.dump(4);
+        f.close();
+    }
 }
 
 auto vosfs::ui::VosfsClient::do_upload_task(const detail::TransportTask& task) -> Task<void> {
@@ -579,11 +710,14 @@ auto vosfs::ui::VosfsClient::do_upload_task(const detail::TransportTask& task) -
     }
 
     for (const auto& block : task.blocks | std::views::values) {
-        if (block.done) {
+        if (block.remaing_times == 0) {
             continue;
         }
 
-        for (const auto& data_node_id : block.data_node_ids) {
+        for (const auto& [data_node_id, done] : block.data_node_ids) {
+            if (done) {
+                continue;
+            }
             tasks_.emplace(send_upload_block_request(
                 task.local_path,
                 block.id,
@@ -593,4 +727,8 @@ auto vosfs::ui::VosfsClient::do_upload_task(const detail::TransportTask& task) -
                 data_node_id));
         }
     }
+}
+
+auto vosfs::ui::VosfsClient::do_download_task(const detail::TransportTask& task) {
+
 }

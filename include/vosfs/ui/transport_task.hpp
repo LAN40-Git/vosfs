@@ -6,12 +6,12 @@
 
 namespace vosfs::ui::detail {
 struct BlockInfo {
-    bool done;
+    uint64_t remaing_times;
     uint64_t id;
     uint64_t ino;
     uint64_t offset;
     uint64_t size;
-    std::vector<uint64_t> data_node_ids;
+    std::unordered_map<uint64_t, bool> data_node_ids;
 };
 
 struct TransportTask {

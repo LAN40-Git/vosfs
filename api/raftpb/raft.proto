@@ -163,8 +163,9 @@ message PrepareDownloadFileResponse {
 
 message UploadFileRequest {
   string token = 1;
-  string path = 2;
-  repeated BlockInfo blocks = 3;
+  uint64 ino = 2;
+  string path = 3;
+  repeated BlockInfo blocks = 4;
 }
 
 message UploadFileResponse {
@@ -185,6 +186,7 @@ message UploadBlockResponse {
   string message = 2;
   uint64 block_id = 3;
   uint64 ino = 4;
+  uint64 data_node_id = 5;
 }
 
 message DownloadBlockRequest {

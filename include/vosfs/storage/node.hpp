@@ -7,8 +7,13 @@
 namespace vosfs::storage {
 class DataNode {
 public:
-    explicit DataNode(std::string_view host, uint16_t port, std::string_view block_dir)
-        : host_(host)
+    explicit DataNode(
+        uint64_t id,
+        std::string_view host,
+        uint16_t port,
+        std::string_view block_dir)
+        : id_(id)
+        , host_(host)
         , port_(port)
         , block_dir_(block_dir) {}
 
@@ -29,9 +34,11 @@ private:
     uint32_t status_code,
     std::string message,
     uint64_t block_id,
-    uint64_t ino) const -> raft::UploadBlockResponse;
+    uint64_t ino,
+    uint64_t data_node_id) const -> raft::UploadBlockResponse;
 
 private:
+    uint64_t           id_;
     std::string        host_;
     uint16_t           port_;
     std::string        block_dir_;

@@ -4563,11 +4563,12 @@ class UploadFileRequest final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kBlocksFieldNumber = 3,
+    kBlocksFieldNumber = 4,
     kTokenFieldNumber = 1,
-    kPathFieldNumber = 2,
+    kPathFieldNumber = 3,
+    kInoFieldNumber = 2,
   };
-  // repeated .vosfs.raft.BlockInfo blocks = 3;
+  // repeated .vosfs.raft.BlockInfo blocks = 4;
   int blocks_size() const;
   private:
   int _internal_blocks_size() const;
@@ -4599,7 +4600,7 @@ class UploadFileRequest final :
   std::string* _internal_mutable_token();
   public:
 
-  // string path = 2;
+  // string path = 3;
   void clear_path();
   const std::string& path() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -4613,6 +4614,15 @@ class UploadFileRequest final :
   std::string* _internal_mutable_path();
   public:
 
+  // uint64 ino = 2;
+  void clear_ino();
+  uint64_t ino() const;
+  void set_ino(uint64_t value);
+  private:
+  uint64_t _internal_ino() const;
+  void _internal_set_ino(uint64_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:vosfs.raft.UploadFileRequest)
  private:
   class _Internal;
@@ -4624,6 +4634,7 @@ class UploadFileRequest final :
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::vosfs::raft::BlockInfo > blocks_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr token_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr path_;
+    uint64_t ino_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -5126,6 +5137,7 @@ class UploadBlockResponse final :
     kMessageFieldNumber = 2,
     kBlockIdFieldNumber = 3,
     kInoFieldNumber = 4,
+    kDataNodeIdFieldNumber = 5,
     kStatusCodeFieldNumber = 1,
   };
   // string message = 2;
@@ -5160,6 +5172,15 @@ class UploadBlockResponse final :
   void _internal_set_ino(uint64_t value);
   public:
 
+  // uint64 data_node_id = 5;
+  void clear_data_node_id();
+  uint64_t data_node_id() const;
+  void set_data_node_id(uint64_t value);
+  private:
+  uint64_t _internal_data_node_id() const;
+  void _internal_set_data_node_id(uint64_t value);
+  public:
+
   // uint32 status_code = 1;
   void clear_status_code();
   uint32_t status_code() const;
@@ -5180,6 +5201,7 @@ class UploadBlockResponse final :
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr message_;
     uint64_t block_id_;
     uint64_t ino_;
+    uint64_t data_node_id_;
     uint32_t status_code_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -8587,7 +8609,27 @@ inline void UploadFileRequest::set_allocated_token(std::string* token) {
   // @@protoc_insertion_point(field_set_allocated:vosfs.raft.UploadFileRequest.token)
 }
 
-// string path = 2;
+// uint64 ino = 2;
+inline void UploadFileRequest::clear_ino() {
+  _impl_.ino_ = uint64_t{0u};
+}
+inline uint64_t UploadFileRequest::_internal_ino() const {
+  return _impl_.ino_;
+}
+inline uint64_t UploadFileRequest::ino() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.UploadFileRequest.ino)
+  return _internal_ino();
+}
+inline void UploadFileRequest::_internal_set_ino(uint64_t value) {
+  
+  _impl_.ino_ = value;
+}
+inline void UploadFileRequest::set_ino(uint64_t value) {
+  _internal_set_ino(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.UploadFileRequest.ino)
+}
+
+// string path = 3;
 inline void UploadFileRequest::clear_path() {
   _impl_.path_.ClearToEmpty();
 }
@@ -8637,7 +8679,7 @@ inline void UploadFileRequest::set_allocated_path(std::string* path) {
   // @@protoc_insertion_point(field_set_allocated:vosfs.raft.UploadFileRequest.path)
 }
 
-// repeated .vosfs.raft.BlockInfo blocks = 3;
+// repeated .vosfs.raft.BlockInfo blocks = 4;
 inline int UploadFileRequest::_internal_blocks_size() const {
   return _impl_.blocks_.size();
 }
@@ -9057,6 +9099,26 @@ inline void UploadBlockResponse::_internal_set_ino(uint64_t value) {
 inline void UploadBlockResponse::set_ino(uint64_t value) {
   _internal_set_ino(value);
   // @@protoc_insertion_point(field_set:vosfs.raft.UploadBlockResponse.ino)
+}
+
+// uint64 data_node_id = 5;
+inline void UploadBlockResponse::clear_data_node_id() {
+  _impl_.data_node_id_ = uint64_t{0u};
+}
+inline uint64_t UploadBlockResponse::_internal_data_node_id() const {
+  return _impl_.data_node_id_;
+}
+inline uint64_t UploadBlockResponse::data_node_id() const {
+  // @@protoc_insertion_point(field_get:vosfs.raft.UploadBlockResponse.data_node_id)
+  return _internal_data_node_id();
+}
+inline void UploadBlockResponse::_internal_set_data_node_id(uint64_t value) {
+  
+  _impl_.data_node_id_ = value;
+}
+inline void UploadBlockResponse::set_data_node_id(uint64_t value) {
+  _internal_set_data_node_id(value);
+  // @@protoc_insertion_point(field_set:vosfs.raft.UploadBlockResponse.data_node_id)
 }
 
 // -------------------------------------------------------------------

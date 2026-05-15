@@ -16,6 +16,7 @@ Window {
     property bool isRegistering: false
     property bool isLoggedIn: false
     property ListModel fileListModel: ListModel {}
+    property ListModel transportListModel: ListModel {}
     property var backStack: []    // 后退栈
     property bool canGoBack: false
     property var forwardStack: [] // 前进栈

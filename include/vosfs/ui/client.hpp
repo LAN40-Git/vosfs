@@ -97,7 +97,7 @@ public:
 
     [[REMEMBER_CO_AWAIT]]
     auto send_upload_block_request(
-        const std::string& local_path,
+        std::string local_path,
         uint64_t block_id,
         uint64_t ino,
         uint64_t offset,
@@ -116,15 +116,18 @@ private:
     auto handle_make_dir_response(const vrpc::Status& status, const raft::MakeDirResponse& response) -> Task<void>;
     auto handle_prepare_upload_file_response(const vrpc::Status& status, const raft::PrepareUploadFileResponse& response) -> Task<void>;
     auto handle_upload_block_response(const vrpc::Status& status, const raft::UploadBlockResponse& response) -> Task<void>;
+    auto handle_upload_file_response(const vrpc::Status& status, const raft::UploadFileResponse& response) -> Task<void>;
 
 private:
+    auto update_transport_tasks_json() -> Task<void>;
     void load_transport_tasks_json();
+    void save_transport_tasks_json();
     auto do_upload_task(const detail::TransportTask& task) -> Task<void>;
     auto do_download_task(const detail::TransportTask& task);
 
 private:
     std::atomic<bool>                       is_shutdown_{true};
-    std::latch                              latch_{1};
+    std::latch                              latch_{2};
     kosio::sync::Mutex                      mutex_;
     UserSession                             session_{};
     RPCClient                               auth_client_;
@@ -132,7 +135,6 @@ private:
     std::unordered_map<uint64_t, RPCClient> raft_clients_;
     std::unordered_map<uint64_t, RPCClient> data_clients_;
     tbb::concurrent_queue<Task<void>>       tasks_;
-    nlohmann::json                          json_;
     std::unordered_map<uint64_t, detail::TransportTask> upload_tasks_;
     std::unordered_map<uint64_t, detail::TransportTask> download_tasks_;
     SignalBrige&                            signal_brige_;
