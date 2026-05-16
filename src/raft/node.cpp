@@ -662,7 +662,7 @@ auto vosfs::raft::RaftNode::handle_upload_file_request(UploadFileRequest& reques
 }
 
 auto vosfs::raft::RaftNode::handle_prepare_download_file_request(
-    PrepareDownloadFileRequest& request) -> Task<PrepareDownloadFileResponse> {
+    const PrepareDownloadFileRequest& request) -> Task<PrepareDownloadFileResponse> {
     std::string leader_id;
     auto& token = request.token();
 

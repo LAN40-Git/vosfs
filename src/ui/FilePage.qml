@@ -241,14 +241,20 @@ Item {
             MenuItem {
                 text: "打开"
                 onTriggered: {
-
+                    var ItemData = fileListView.model.get(fileListView.currentIndex)
+                    if (ItemData.is_dir) {
+                        goToDir(ItemData.path)
+                    }
                 }
             }
 
             MenuItem {
                 text: "下载"
                 onTriggered: {
-
+                    var ItemData = fileListView.model.get(fileListView.currentIndex)
+                    if (!ItemData.is_dir) {
+                        VosfsClient.prepare_download_file(ItemData.name, ItemData.path);
+                    }
                 }
             }
 

@@ -177,6 +177,13 @@ void vosfs::raft::detail::StateMachine::prepare_upload_file(
     PrepareUploadFileResponse& response) {
     response.set_local_path(request.local_path());
     response.set_remote_path(request.remote_path());
+
+    if (dir_entries_.contains(request.remote_path())) {
+        response.set_status_code(Status::kInvalidArgument);
+        response.set_message("文件上传失败：存在同名文件");
+        return;
+    }
+
     google::protobuf::RepeatedPtrField<BlockInfo> block_infos;
     block_infos.Swap(request.mutable_blocks());
     auto ino = next_ino_++;
@@ -399,7 +406,7 @@ auto ino = request.ino();
     }
 
     auto name = path.substr(pos + 1);
-    auto parent_path = path.substr(0, pos + 1);
+    auto parent_path = pos == 0 ? "/" : path.substr(0, pos);
 
     // 判断父目录是否存在
     auto parent_it = dir_entries_.find(parent_path);
@@ -474,13 +481,13 @@ void vosfs::raft::detail::StateMachine::upload_file(const UploadFileRequest& req
     }
 
     auto name = path.substr(pos + 1);
-    auto parent_path = path.substr(0, pos + 1);
+    auto parent_path = pos == 0 ? "/" : path.substr(0, pos);
 
     // 判断父目录是否存在
     auto parent_it = dir_entries_.find(parent_path);
     if (parent_it == dir_entries_.end()) {
         response->set_status_code(Status::kInvalidArgument);
-        response->set_message("文件上传失败：父目录不存在");
+        response->set_message(std::format("文件上传失败：父目录不存在 {}", parent_path));
         return;
     }
 

@@ -59,6 +59,7 @@ Window {
 
     Connections {
         target: SignalBrige
+
         function onLoginFinished(success, msg) {
             if (success) {
                 mainWindow.uid = VosfsClient.uid
@@ -86,6 +87,24 @@ Window {
                 })
             }
             currentDir = path
+        }
+
+        function onUploadFileFinished(success) {
+            if (success) {
+                goToDir(mainWindow.currentDir)
+            }
+        }
+
+        function onUpdateTransportPageFinished(tasks) {
+            transportListModel.clear()
+            for(var i = 0; i < tasks.length; i++) {
+                var item = tasks[i]
+                mainWindow.transportListModel.append({
+                    type: item.type,
+                    ino: item.ino,
+                    progress: item.progress,
+                })
+            }
         }
     }
 
@@ -295,7 +314,10 @@ Window {
             }
 
             onClicked: {
-
+                if (mainWindow.isLoggedIn) {
+                    bodyStack.replace("TransportPage.qml")
+                    VosfsClient.update_transport_page()
+                }
             }
         }
 

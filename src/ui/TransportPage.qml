@@ -6,16 +6,10 @@ import QtQuick.Dialogs
 Item {
     id: transportPage
 
-    Connections {
-        target: SignalBrige
-
-
-    }
-
     // 传输列表区域
     ListView {
         id: transportListView
-        anchors.top: toolBar.bottom
+        anchors.top: parent.bottom
         anchors.topMargin: 20
         anchors.left: parent.left
         anchors.right: parent.right
@@ -61,16 +55,22 @@ Item {
                 anchors.rightMargin: 10
 
                 Text {
-                    text: name; color: "white"
+                    text: type; color: "white"
                     font.pixelSize: 16
                     font.bold: true
                     Layout.preferredWidth: 100
                 }
 
                 Text {
-                    text: mtime
+                    text: "ino：" + ino
                     color: "#aaa"; font.pixelSize: 16
-                    Layout.preferredWidth: 150
+                    Layout.preferredWidth: 100
+                }
+
+                Text {
+                    text: "进度：" + progress
+                    color: "#aaa"; font.pixelSize: 16
+                    Layout.preferredWidth: 100
                 }
             }
         }

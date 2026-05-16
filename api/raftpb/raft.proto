@@ -205,8 +205,3 @@ message DownloadBlockResponse {
   uint64 data_node_id = 5;
   bytes data = 6;
 }
-
-message DownloadFileRequest {
-  string token = 1;
-  string path = 2;
-}

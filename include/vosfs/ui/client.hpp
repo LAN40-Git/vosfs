@@ -64,6 +64,8 @@ public slots:
     void list_dir(const QString& path);
     void make_dir(const QString& parent_path, const QString& name);
     void prepare_upload_file(const QString& local_path, const QString& current_dir);
+    void prepare_download_file(const QString& name, const QString& remote_path);
+    void update_transport_page();
 
 public:
     [[REMEMBER_CO_AWAIT]]
@@ -148,6 +150,7 @@ private:
     std::unordered_map<uint64_t, RPCClient> raft_clients_;
     std::unordered_map<uint64_t, RPCClient> data_clients_;
     tbb::concurrent_queue<Task<void>>       tasks_;
+    uint64_t start_ms_{};
     std::unordered_map<uint64_t, detail::TransportTask> upload_tasks_;
     std::unordered_map<uint64_t, detail::TransportTask> download_tasks_;
     SignalBrige&                            signal_brige_;

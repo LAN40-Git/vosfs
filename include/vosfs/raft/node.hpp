@@ -62,7 +62,7 @@ private:
     [[REMEMBER_CO_AWAIT]]
     auto handle_upload_file_request(UploadFileRequest& request) -> Task<UploadFileResponse>;
     [[REMEMBER_CO_AWAIT]]
-    auto handle_prepare_download_file_request(PrepareDownloadFileRequest& request) -> Task<PrepareDownloadFileResponse>;
+    auto handle_prepare_download_file_request(const PrepareDownloadFileRequest& request) -> Task<PrepareDownloadFileResponse>;
 
 private:
     [[REMEMBER_CO_AWAIT]]

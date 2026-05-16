@@ -46,7 +46,7 @@ auto vosfs::storage::DataNode::handle_upload_block_request(
         co_return make_upload_block_response(Status::kInternal, "分片写入失败", block_id, ino, id_);
     }
 
-    co_await file.value().fsync(0);
+    // co_await file.value().fsync(0);
 
     co_return make_upload_block_response(Status::kOk, "分片上传成功", block_id, ino, id_);
 }
@@ -106,7 +106,7 @@ auto vosfs::storage::DataNode::make_download_block_response(
     response.set_block_id(block_id);
     response.set_ino(ino);
     response.set_data_node_id(data_node_id);
-    response.set_data(std::move(data));
+    response.set_data(data);
     return response;
 }
 
