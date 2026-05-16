@@ -287,8 +287,6 @@ auto vosfs::ui::VosfsClient::send_prepare_upload_file_request(std::string local_
         signal_brige_.appendLog(QString::fromStdString(std::format("请求失败，节点 {} 不存在，请检查集群配置", leader_id_)));
         co_return;
     }
-    // TODO:
-    start_ms_ = kosio::util::current_ms();
     auto& raft_client = it->second;
     co_await raft_client->call_method<raft::PrepareUploadFileRequest, raft::PrepareUploadFileResponse>(
         "fs", "prepareuploadfile", request,
@@ -487,7 +485,7 @@ void vosfs::ui::VosfsClient::handle_login_user_by_name_response(
         session_.role = static_cast<auth::User_Role>(stoi(decode.get_payload_claim("role").as_string()));
         session_.quota = static_cast<uint64_t>(stoull(decode.get_payload_claim("quota").as_string()));
         session_.create_time = response.create_time();
-        load_transport_tasks_json();
+        tasks_.emplace(load_transport_tasks_json());
     }
     signal_brige_.appendLog(QString::fromStdString(std::string{response.message()}));
     signal_brige_.loginFinished(res_status.ok(), QString::fromStdString(response.message()));
@@ -673,7 +671,6 @@ auto vosfs::ui::VosfsClient::handle_upload_file_response(
     upload_tasks_.erase(response.ino());
     mutex_.unlock();
     signal_brige_.appendLog(QString::fromStdString(response.message()));
-    signal_brige_.appendLog(QString::fromStdString("耗时（ms）：" + std::to_string(kosio::util::current_ms() - start_ms_)));
 }
 
 auto vosfs::ui::VosfsClient::handle_prepare_download_file_response(
@@ -788,7 +785,7 @@ auto vosfs::ui::VosfsClient::update_transport_tasks_json() -> Task<void> {
     update_json_latch_.count_down();
 }
 
-void vosfs::ui::VosfsClient::load_transport_tasks_json() {
+auto vosfs::ui::VosfsClient::load_transport_tasks_json() -> Task<void> {
     auto path = std::to_string(session_.uid) + "-" + "transport_tasks.json";
     if (!std::filesystem::exists(path)) {
         nlohmann::json json;
@@ -825,6 +822,7 @@ void vosfs::ui::VosfsClient::load_transport_tasks_json() {
             block_info.data_node_ids = block["data_node_ids"].get<std::unordered_map<uint64_t, bool>>();
             task.blocks.emplace(block_info.id, std::move(block_info));
         }
+        co_await do_upload_task(task);
         upload_tasks.emplace(ino, std::move(task));
     }
     std::unordered_map<uint64_t, detail::TransportTask> download_tasks;
@@ -852,6 +850,7 @@ void vosfs::ui::VosfsClient::load_transport_tasks_json() {
             block_info.data_node_ids = block["data_node_ids"].get<std::unordered_map<uint64_t, bool>>();
             task.blocks.emplace(block_info.id, std::move(block_info));
         }
+        co_await do_download_task(task);
         download_tasks.emplace(ino, std::move(task));
     }
     upload_tasks_ = std::move(upload_tasks);
@@ -954,6 +953,11 @@ auto vosfs::ui::VosfsClient::do_download_task(const detail::TransportTask& task)
         co_await mutex_.lock();
         download_tasks_.erase(task.ino);
         mutex_.unlock();
+    }
+
+    auto block_it = task.blocks.find(task.done_blocks);
+    if (block_it == task.blocks.end()) {
+        co_return;
     }
 
     for (const auto& block : task.blocks | std::views::values) {

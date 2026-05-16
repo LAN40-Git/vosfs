@@ -134,7 +134,7 @@ private:
 
 private:
     auto update_transport_tasks_json() -> Task<void>;
-    void load_transport_tasks_json();
+    auto load_transport_tasks_json() -> Task<void>;
     void save_transport_tasks_json();
     auto do_upload_task(const detail::TransportTask& task) -> Task<void>;
     auto do_download_task(const detail::TransportTask& task) -> Task<void>;
@@ -150,7 +150,6 @@ private:
     std::unordered_map<uint64_t, RPCClient> raft_clients_;
     std::unordered_map<uint64_t, RPCClient> data_clients_;
     tbb::concurrent_queue<Task<void>>       tasks_;
-    uint64_t start_ms_{};
     std::unordered_map<uint64_t, detail::TransportTask> upload_tasks_;
     std::unordered_map<uint64_t, detail::TransportTask> download_tasks_;
     SignalBrige&                            signal_brige_;
